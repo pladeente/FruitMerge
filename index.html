@@ -30,6 +30,11 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-o
 .pwb:disabled{opacity:.38;cursor:default}
 .pwb:not(:disabled):active{transform:translateY(2px);box-shadow:0 1px 0 #1b1029}
 .pwb.on{background:var(--teal);color:#07302c}
+.pwb{position:relative;overflow:hidden}
+.pwb .cd{position:absolute;inset:0;background:#120a1fc0;transform-origin:bottom;transform:scaleY(var(--cd,0));pointer-events:none}
+.pwb .cdn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 24px var(--display);color:var(--cream);text-shadow:0 2px 0 #000a;pointer-events:none}
+.pwb .cdn:empty{display:none}
+.pwb.cool:disabled{opacity:1}
 .msg{pointer-events:auto;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--plum);border:3px solid var(--line);border-radius:18px;padding:16px 18px;width:90%;max-width:380px;text-align:center;box-shadow:0 10px 40px #0008;max-height:94%;overflow-y:auto;box-sizing:border-box}
 .msg h3{margin:0 0 6px;font:400 32px var(--display);color:var(--brass)}
 .msg h4{margin:12px 0 0;font:400 20px var(--display);color:var(--teal)}
@@ -90,6 +95,16 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const best=(m=G.mode)=>SC[m].length?SC[m][0].s:0;
 const qualifies=(s,m)=>s>0&&(SC[m].length<MAXS||s>SC[m][SC[m].length-1].s);
 const PRICE={swap:5,shake:12,pluck:20,rainbow:30};
+const COOL={swap:5,shake:15,pluck:12,rainbow:25}; /* seconds of play before a power can be used again */
+
+/* ---------- world leaderboard (Firebase Realtime Database over REST, setup in README) ---------- */
+const LB_URL=''; /* e.g. 'https://fruit-merge-1234-default-rtdb.firebaseio.com'. Empty = local scores only */
+const LB=LB_URL.replace(/\/+$/,''),LBC={};
+function lbReq(path,opt={}){const ab=new AbortController(),to=setTimeout(()=>ab.abort(),7000);return fetch(LB+path,{...opt,signal:ab.signal}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).finally(()=>clearTimeout(to));}
+function lbTop(m,fresh){const c=LBC[m];if(!fresh&&c&&Date.now()-c.at<20000)return Promise.resolve(c.list);
+ return lbReq(`/scores/${m}.json?orderBy=%22s%22&limitToLast=100`).then(o=>{const by={};for(const r of Object.values(o||{})){if(!r||typeof r.s!=='number'||typeof r.n!=='string')continue;const k=r.n.toLowerCase();if(!by[k]||r.s>by[k].s)by[k]={n:r.n,s:r.s,t:r.t||0};}
+  const list=Object.values(by).sort((a,b)=>b.s-a.s||a.t-b.t).slice(0,MAXS);LBC[m]={at:Date.now(),list};return list;});}
+function lbSubmit(m,n,s){delete LBC[m];return lbReq(`/scores/${m}.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n,s,t:{'.sv':'timestamp'}})});}
 const ASP=.72; /* jar width / height */
 
 /* ---------- sound: small synth ---------- */
@@ -159,6 +174,7 @@ const SPW=[['sticky',3],['slip',3],['magnet',3],['ice',2],['bomb',1]],SPT=12;
 function makeGame(W,H,wild,onOver){
  const L=12,Rw=W-12,bot=H-12,line=Math.round(H*.2);const rad=l=>FRUIT[l][1]*W;const tri=l=>(l+1)*(l+2)/2;
  let fr=[],cur=rint(3),nxt=rint(3),curSp=null,nxtSp=null,cx=W/2,cool=0,overT=0,score=0,parts=[],over=false,drops=0,time=0,shake=0;
+ const cd={swap:0,shake:0,pluck:0,rainbow:0};
  let cat=null,catT=wild?28:1e9,meals=0,coins=0,picking=false,skipUp=false,combo=0,lastM=-9;
  const merge=[];
  const isSt=f=>!!(f.stuck||f.frz>0);
@@ -196,19 +212,19 @@ function makeGame(W,H,wild,onOver){
  const add=(o)=>{o.seed=Math.random()*6.28;fr.push(o);};
  function fruitAt(x,y){for(let i=fr.length-1;i>=0;i--){const f=fr[i];if(!f.dead&&Math.hypot(f.x-x,f.y-y)<=rad(f.l)+6)return f;}return null;}
  return{
- get score(){return score},get coins(){return coins},get picking(){return picking},
+ get score(){return score},get coins(){return coins},get cd(){return cd},get picking(){return picking},
  nudge(d){cx=clampN(cx+d,L,Rw);},
- down(x,y){if(picking){skipUp=true;const f=fruitAt(x,y);if(f&&coins>=PRICE.pluck){coins-=PRICE.pluck;picking=false;f.dead=1;burst(f.x,f.y,FRUIT[f.l][0],14,360);floatTxt('Plucked!',f.x,f.y,'#3b2346',18);snd('pluck');}else snd('nope');return;}cx=x;},
+ down(x,y){if(picking){skipUp=true;const f=fruitAt(x,y);if(f&&coins>=PRICE.pluck){coins-=PRICE.pluck;cd.pluck=COOL.pluck;picking=false;f.dead=1;burst(f.x,f.y,FRUIT[f.l][0],14,360);floatTxt('Plucked!',f.x,f.y,'#3b2346',18);snd('pluck');}else snd('nope');return;}cx=x;},
  move(x){if(!picking)cx=x;},
  up(x){if(skipUp){skipUp=false;return;}if(picking||cool>0||over)return;if(x!=null)cx=x;const r=rad(cur);add({x:clampN(cx,L+r,Rw-r),y:line-r-6,vx:0,vy:60,l:cur,age:0,sp:curSp});drops++;cur=nxt;curSp=nxtSp;nxt=rint(cur<2?4:5);nxtSp=pickSp();if(nxtSp==='magnet'){const t=commonTier();if(t>=0)nxt=t;}cool=.55;},
  use(p){if(over)return false;
-  if(p==='pluck'){if(picking){picking=false;snd('ui');return true;}if(coins<PRICE.pluck)return false;picking=true;snd('pick');return true;}
-  if(coins<PRICE[p])return false;
+  if(p==='pluck'){if(picking){picking=false;snd('ui');return true;}if(coins<PRICE.pluck||cd.pluck>0)return false;picking=true;snd('pick');return true;}
+  if(coins<PRICE[p]||cd[p]>0)return false;
   if(p==='swap'){[cur,nxt]=[nxt,cur];[curSp,nxtSp]=[nxtSp,curSp];snd('swap');}
   else if(p==='shake'){for(const f of fr){if(isSt(f)||f.dead)continue;f.vy=-260-Math.random()*320;f.vx=(Math.random()-.5)*420;}overT=0;shake=.4;snd('shake');}
   else if(p==='rainbow'){if(curSp==='rainbow')return false;curSp='rainbow';snd('rainbow');}
-  coins-=PRICE[p];return true;},
- update(dt){cool-=dt;time+=dt;shake=Math.max(0,shake-dt);const sub=4,h=dt/sub;
+  coins-=PRICE[p];cd[p]=COOL[p];return true;},
+ update(dt){cool-=dt;time+=dt;for(const k in cd)cd[k]=Math.max(0,cd[k]-dt);shake=Math.max(0,shake-dt);const sub=4,h=dt/sub;
   if(wild)for(const m of fr){if(m.sp!=='magnet'||m.dead)continue;const R=Math.max(W*.3,rad(m.l)*4);for(const o of fr){if(o===m||o.l!==m.l||isSt(o)||noMerge(o))continue;const dx=m.x-o.x,dy=m.y-o.y,d=Math.hypot(dx,dy)||1;if(d<R){o.vx+=dx/d*2000*dt;o.vy+=dy/d*2000*dt;}}}
   for(let s=0;s<sub;s++){
    for(const f of fr){if(isSt(f)){f.vx=f.vy=0;continue;}const sl=f.sp==='slip';f.vy+=1100*h;f.x+=f.vx*h;f.y+=f.vy*h;const r=rad(f.l);f.a=(f.a||0)+f.vx/r*h;let hit=false;
@@ -253,7 +269,8 @@ function makeGame(W,H,wild,onOver){
 /* ---------- runner ---------- */
 const cv=$('#cv'),st=$('#stage'),ui=$('#ui'),pw=$('#pw');let ctx=cv.getContext('2d');
 const pwBtns=[...pw.querySelectorAll('[data-p]')];
-const G={state:'menu',g:null,W:300,H:480,cssW:300,raf:0,last:0,mode:store.get('mode','classic'),tab:null,pending:null,pwKey:'',lastCoins:0};
+for(const b of pwBtns){b.insertAdjacentHTML('beforeend','<i class="cd"></i><span class="cdn"></span>');b.title+=`, ${COOL[b.dataset.p]}s cooldown`;}
+const G={state:'menu',g:null,W:300,H:480,cssW:300,raf:0,last:0,mode:store.get('mode','classic'),tab:null,scope:LB?'world':'local',pending:null,pwKey:'',lastCoins:0};
 if(!SC[G.mode])G.mode='classic';
 function fit(){const hd=$('#hd').getBoundingClientRect().height,ph=pw.hidden?0:pw.getBoundingClientRect().height+8,app=$('#app'),cs=getComputedStyle(app);
  const aw=app.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=app.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-hd-8-ph;
@@ -270,17 +287,22 @@ const PKEYS={'1':'swap','2':'shake','3':'pluck','4':'rainbow'};
 window.addEventListener('keydown',e=>{if(G.state!=='play')return;if(e.key==='ArrowLeft'||e.key==='a'){G.g.nudge(-G.W/24);e.preventDefault()}else if(e.key==='ArrowRight'||e.key==='d'){G.g.nudge(G.W/24);e.preventDefault()}else if(e.key===' '||e.key==='ArrowDown'||e.key==='Enter'){if(!e.repeat)G.g.up(null);e.preventDefault()}else if(e.key==='p'||e.key==='Escape')pause();else if(PKEYS[e.key]&&G.mode==='wild')usePower(PKEYS[e.key])});
 function usePower(p){if(G.state!=='play'||!G.g)return;if(G.g.use(p)===false)snd('nope');}
 pw.addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(b)usePower(b.dataset.p)});
-function syncPw(){if(pw.hidden)return;const on=G.state==='play'&&!!G.g,c=G.g?G.g.coins:0,pk=!!(G.g&&G.g.picking),key=on+'|'+c+'|'+pk;if(key===G.pwKey)return;G.pwKey=key;
+function syncPw(){if(pw.hidden)return;const g=G.g,on=G.state==='play'&&!!g,c=g?g.coins:0,pk=!!(g&&g.picking),cd=g?g.cd:{},key=on+'|'+c+'|'+pk+'|'+pwBtns.map(b=>Math.ceil((cd[b.dataset.p]||0)*10)).join(',');if(key===G.pwKey)return;G.pwKey=key;
  $('#coinN').textContent=c;if(c>G.lastCoins){const el=$('#coins');el.classList.remove('up');void el.offsetWidth;el.classList.add('up');}G.lastCoins=c;
- for(const b of pwBtns){const p=b.dataset.p;b.disabled=!on||(p==='pluck'?(c<PRICE.pluck&&!pk):c<PRICE[p]);b.classList.toggle('on',p==='pluck'&&pk);}}
+ for(const b of pwBtns){const p=b.dataset.p,left=cd[p]||0,cooling=on&&left>0;b.disabled=!on||cooling||(p==='pluck'?(c<PRICE.pluck&&!pk):c<PRICE[p]);b.classList.toggle('on',p==='pluck'&&pk);b.classList.toggle('cool',cooling);b.style.setProperty('--cd',cooling?left/COOL[p]:0);b.querySelector('.cdn').textContent=cooling?Math.ceil(left):'';}}
 function loop(t){G.raf=requestAnimationFrame(loop);const dt=G.last?Math.min(.05,(t-G.last)/1000):.016;G.last=t;
  if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();}
 function drawIdle(){ctx.fillStyle='#fff3e6';ctx.fillRect(0,0,G.W,G.H);const r=G.W*.09;for(let i=0;i<7;i++){const l=(i*3)%11;drawFruit(ctx,(i+.5)*G.W/7,G.H-r*1.1-(i%2)*r*.9,r*(.55+l*.05),l)}}
 function show(html){let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');m.className='msg';ui.appendChild(m)}m.innerHTML=html;m.scrollTop=0;return m}
 function hide(){ui.innerHTML=''}
 function setBest(){$('#best').textContent=best()}
-function table(m,hi=-1){const L=SC[m];if(!L.length)return '<p class="none">No scores yet. Be the first!</p>';
- return '<table>'+L.map((r,i)=>`<tr${i===hi?' class="me"':''}><td>${i+1}</td><td>${esc(r.n)}</td><td>${r.s}</td><td>${esc(r.d)}</td></tr>`).join('')+'</table>'}
+const rows=(L,me)=>'<table>'+L.map((r,i)=>`<tr${me(r,i)?' class="me"':''}><td>${i+1}</td><td>${esc(r.n)}</td><td>${r.s}</td><td>${esc(r.d)}</td></tr>`).join('')+'</table>';
+function table(m,hi=-1){const L=SC[m];if(!L.length)return '<p class="none">No scores yet. Be the first!</p>';return rows(L,(r,i)=>i===hi)}
+const fmtD=t=>t?new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short'}):'';
+function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loading world scores…</p>';
+ (sub?sub.then(()=>'',()=>'<p class="none">Couldn\'t send your score.</p>'):Promise.resolve('')).then(note=>lbTop(m,!!sub).then(L=>{if(!el.isConnected)return;const k=me&&me.toLowerCase();
+  el.innerHTML=note+(L.length?rows(L.map(r=>({...r,d:fmtD(r.t)})),r=>k&&r.n.toLowerCase()===k):'<p class="none">No world scores yet. Be the first!</p>');}))
+ .catch(()=>{if(el.isConnected)el.innerHTML='<p class="none">Couldn\'t reach the world leaderboard.</p>'});}
 
 function menu(){G.state='menu';G.g=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;$('#hd .t').textContent='🍉 Fruit Merge';fit();setBest();
  const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild 🐛</button><br><button class="go alt sm" data-a="scores">High scores</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><p style="font-size:13px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`);
@@ -294,27 +316,27 @@ function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Spec
 <li><span>🧊</span><div><b>Frozen</b>: freezes the fruit it touches. When the ice cracks they shrink one size and lose any mould.</div></li>
 <li><span>🦠</span><div><b>Mould</b>: fruit sitting on the bottom too long goes mouldy and can't merge.</div></li>
 <li><span>🐛</span><div><b>Caterpillar</b>: visits now and then. It loves mouldy fruit (+25). No mould? It eats one of your small fruits. Every 3rd meal it turns into a butterfly (+150).</div></li></ul>
-<h4>Coins &amp; powers</h4><p style="font-size:14px">Merges earn coins, bigger merges earn more. Spend them on powers below the jar.</p><ul class="wl">
-<li><span>🔀</span><div><b>Swap</b> (5): swap your fruit with the next one.</div></li>
-<li><span>🌀</span><div><b>Shake</b> (12): jolt the jar to shuffle the pile.</div></li>
-<li><span>👆</span><div><b>Pluck</b> (20): tap any fruit to remove it.</div></li>
-<li><span>🌈</span><div><b>Rainbow</b> (30): your fruit merges with whatever it touches.</div></li></ul>
+<h4>Coins &amp; powers</h4><p style="font-size:14px">Merges earn coins, bigger merges earn more. Spend them on powers below the jar. Each power needs a short rest before you can use it again.</p><ul class="wl">
+<li><span>🔀</span><div><b>Swap</b> (5 coins, 5s cooldown): swap your fruit with the next one.</div></li>
+<li><span>🌀</span><div><b>Shake</b> (12 coins, 15s cooldown): jolt the jar to shuffle the pile.</div></li>
+<li><span>👆</span><div><b>Pluck</b> (20 coins, 12s cooldown): tap any fruit to remove it.</div></li>
+<li><span>🌈</span><div><b>Rainbow</b> (30 coins, 25s cooldown): your fruit merges with whatever it touches.</div></li></ul>
 <button class="go wild" data-a="play" data-m="wild">Play Wild</button><button class="go alt" data-a="menu">Back</button>`)}
-function showScores(m=G.mode){G.tab=m;const n=SC[m].length;show(`<h3>High scores</h3><div class="tabs"><button data-a="tab" data-m="classic" class="${m==='classic'?'on':''}">Classic</button><button data-a="tab" data-m="wild" class="${m==='wild'?'on':''}">Wild</button></div>${table(m)}<button class="go${m==='wild'?' wild':''}" data-a="play" data-m="${m}">Play ${MNAME[m]}</button><button class="go alt" data-a="menu">Back</button>${n?`<br><button class="go lnk" data-a="reset">Clear ${MNAME[m]} scores</button>`:''}`)}
+function showScores(m=G.mode){G.tab=m;const w=LB&&G.scope==='world',n=SC[m].length;const el=show(`<h3>High scores</h3><div class="tabs"><button data-a="tab" data-m="classic" class="${m==='classic'?'on':''}">Classic</button><button data-a="tab" data-m="wild" class="${m==='wild'?'on':''}">Wild</button></div>${LB?`<div class="tabs"><button data-a="scope" data-s="world" class="${w?'on':''}">🌍 World</button><button data-a="scope" data-s="local" class="${w?'':'on'}">📱 This device</button></div>`:''}${w?'<div id="bd"></div>':table(m)}<button class="go${m==='wild'?' wild':''}" data-a="play" data-m="${m}">Play ${MNAME[m]}</button><button class="go alt" data-a="menu">Back</button>${n&&!w?`<br><button class="go lnk" data-a="reset">Clear ${MNAME[m]} scores</button>`:''}`);if(w)worldBoard(el.querySelector('#bd'),m,lastName)}
 function play(mode=G.mode){G.mode=mode;store.set('mode',mode);setBest();$('#hd .t').textContent=mode==='wild'?'🐛 Wild Merge':'🍉 Fruit Merge';hide();FLOAT.length=0;G.g=null;pw.hidden=mode!=='wild';G.pwKey='';G.lastCoins=0;fit();G.W=G.cssW;G.H=Math.floor(G.cssW/ASP);fit();G.g=makeGame(G.W,G.H,mode==='wild',gameOver);G.state='play';G.last=0;$('#pauseB').hidden=false;}
 function pause(){if(G.state!=='play')return;G.state='pause';$('#pauseB').hidden=true;show('<h3>Paused</h3><button class="go" data-a="resume">Keep playing</button><button class="go alt" data-a="quit">Quit</button>')}
-function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode;
- if(qualifies(s,m)){snd('hi');const rank=SC[m].filter(r=>r.s>=s).length+1;
-  const el=show(`<div class="mode">${MNAME[m]}</div><span class="new">${rank===1?'New best!':'High score #'+rank}</span><div class="big">${s}</div><p>Put your name on the board:</p><form class="nm"><input id="nmI" maxlength="12" autocomplete="off" placeholder="Your name" value="${esc(lastName)}"><button class="go" type="submit">Save</button></form><button class="go alt" data-a="skip">Skip</button>`);
+function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode,loc=qualifies(s,m);
+ if(loc||(LB&&s>0&&!lastName)){snd(loc?'hi':'over');const rank=SC[m].filter(r=>r.s>=s).length+1;
+  const el=show(`<div class="mode">${MNAME[m]}</div>${loc?`<span class="new">${rank===1?'New best!':'High score #'+rank}</span>`:'<h3>Game over!</h3>'}<div class="big">${s}</div><p>Put your name on the board:</p><form class="nm"><input id="nmI" maxlength="12" autocomplete="off" placeholder="Your name" value="${esc(lastName)}"><button class="go" type="submit">Save</button></form><button class="go alt" data-a="skip">Skip</button>`);
   const inp=el.querySelector('#nmI');setTimeout(()=>{try{inp.focus();inp.select()}catch(_){}},50);
-  el.querySelector('form').onsubmit=e=>{e.preventDefault();const n=inp.value.trim().slice(0,12)||'Player';lastName=n;store.set('name',n);saveScore(n,s,m)};
+  el.querySelector('form').onsubmit=e=>{e.preventDefault();const n=inp.value.trim().slice(0,12)||'Player';lastName=n;store.set('name',n);saveScore(n,s,m,loc)};
   G.pending=s;}
- else{snd('over');showOver(s,-1)}}
-function saveScore(n,s,m){const d=new Date().toLocaleDateString(undefined,{day:'numeric',month:'short'});const rec={n,s,d,t:Date.now()};SC[m].push(rec);SC[m].sort((a,b)=>b.s-a.s||a.t-b.t);SC[m]=SC[m].slice(0,MAXS);store.set(SKEY[m],SC[m]);setBest();G.pending=null;showOver(s,SC[m].indexOf(rec))}
-function showOver(s,hi){const m=G.mode;show(`<div class="mode">${MNAME[m]}</div><h3>Game over!</h3><div class="big">${s}</div>${hi<0&&best()?`<p class="tg">Best: ${best()}</p>`:''}${table(m,hi)}<button class="go${m==='wild'?' wild':''}" data-a="play" data-m="${m}">Play again</button><button class="go alt" data-a="menu">Menu</button>`)}
+ else{snd('over');showOver(s,-1,LB&&s>0?lbSubmit(m,lastName,s):null)}}
+function saveScore(n,s,m,loc=true){let hi=-1;if(loc){const rec={n,s,d:fmtD(Date.now()),t:Date.now()};SC[m].push(rec);SC[m].sort((a,b)=>b.s-a.s||a.t-b.t);SC[m]=SC[m].slice(0,MAXS);store.set(SKEY[m],SC[m]);setBest();hi=SC[m].indexOf(rec);}G.pending=null;showOver(s,hi,LB?lbSubmit(m,n,s):null)}
+function showOver(s,hi,sub){const m=G.mode,w=!!LB;const el=show(`<div class="mode">${MNAME[m]}</div><h3>Game over!</h3><div class="big">${s}</div>${hi<0&&best()?`<p class="tg">Best: ${best()}</p>`:''}${w?`${hi>=0?`<p class="tg">#${hi+1} on this device</p>`:''}<h4>🌍 World top ${MAXS}</h4><div id="bd"></div>`:table(m,hi)}<button class="go${m==='wild'?' wild':''}" data-a="play" data-m="${m}">Play again</button><button class="go alt" data-a="menu">Menu</button>`);if(w)worldBoard(el.querySelector('#bd'),m,sub?lastName:null,sub)}
 
 ui.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;snd('ui');
- if(a==='play')play(b.dataset.m||G.mode);else if(a==='scores')showScores();else if(a==='tab')showScores(b.dataset.m);else if(a==='wildinfo')wildInfo();else if(a==='menu'||a==='quit')menu();
+ if(a==='play')play(b.dataset.m||G.mode);else if(a==='scores')showScores();else if(a==='tab')showScores(b.dataset.m);else if(a==='scope'){G.scope=b.dataset.s;showScores(G.tab||G.mode)}else if(a==='wildinfo')wildInfo();else if(a==='menu'||a==='quit')menu();
  else if(a==='resume'){hide();G.state='play';G.last=0;$('#pauseB').hidden=false}
  else if(a==='skip')showOver(G.pending,-1);
  else if(a==='reset'){const m=G.tab||G.mode;if(b.dataset.sure){SC[m]=[];store.set(SKEY[m],[]);setBest();showScores(m)}else{b.dataset.sure=1;b.textContent='Tap again to clear '+MNAME[m]+' scores'}}});

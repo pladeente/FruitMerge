@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "scores": {
+      "$mode": {
+        ".read": "$mode === 'classic' || $mode === 'wild'",
+        ".indexOn": ["s"],
+        "$id": {
+          ".write": "($mode === 'classic' || $mode === 'wild') && !data.exists()",
+          ".validate": "newData.hasChildren(['n', 's', 't']) && newData.child('n').isString() && newData.child('n').val().length >= 1 && newData.child('n').val().length <= 12 && newData.child('s').isNumber() && newData.child('s').val() > 0 && newData.child('s').val() < 1000000 && newData.child('t').val() === now",
+          "$other": { ".validate": "$other === 'n' || $other === 's' || $other === 't'" }
+        }
+      }
+    }
+  }
+}
