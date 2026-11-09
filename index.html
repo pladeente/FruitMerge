@@ -81,7 +81,6 @@ tr.me td{background:#35c2b42a}
   <button class="pwb" data-p="swap" title="Swap your fruit with the next one (key 1)"><b>🔀</b>Swap<em><i class="coin"></i>5</em></button>
   <button class="pwb" data-p="shake" title="Shake the jar (key 2)"><b>🌀</b>Shake<em><i class="coin"></i>12</em></button>
   <button class="pwb" data-p="pluck" title="Tap a fruit to remove it (key 3)"><b>👆</b>Pluck<em><i class="coin"></i>20</em></button>
-  <button class="pwb" data-p="rainbow" title="Your fruit merges with anything (key 4)"><b>🌈</b>Rainbow<em><i class="coin"></i>30</em></button>
  </div>
 </div>
 <script>
@@ -94,8 +93,8 @@ let sndOn=store.get('snd2',true),lastName=store.get('name','');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const best=(m=G.mode)=>SC[m].length?SC[m][0].s:0;
 const qualifies=(s,m)=>s>0&&(SC[m].length<MAXS||s>SC[m][SC[m].length-1].s);
-const PRICE={swap:5,shake:12,pluck:20,rainbow:30};
-const COOL={swap:5,shake:15,pluck:12,rainbow:25}; /* seconds of play before a power can be used again */
+const PRICE={swap:5,shake:12,pluck:20};
+const COOL={swap:5,shake:15,pluck:12}; /* seconds of play before a power can be used again */
 
 /* ---------- world leaderboard (Firebase Realtime Database over REST, setup in README) ---------- */
 const LB_URL='https://fruitmerge-cd4d4-default-rtdb.firebaseio.com'; /* e.g. 'https://fruit-merge-1234-default-rtdb.firebaseio.com'. Empty = local scores only */
@@ -134,7 +133,6 @@ const SFX={
  shake(){for(let i=0;i<5;i++)noise(.07,{vol:.25,type:'bandpass',f:420+i*90,q:2,at:i*.06});tone(70,.4,{vol:.25,slide:1.3})},
  pick(){tone(900,.08,{vol:.1})},
  pluck(){tone(420,.12,{vol:.3,slide:2.8});noise(.05,{vol:.12,type:'highpass',f:3000})},
- rainbow(){[523,659,784,988,1175,1568].forEach((f,i)=>tone(f,.45,{type:'triangle',vol:.09,at:i*.035}))},
  warn(){tone(330,.12,{type:'square',vol:.06})},
  over(){[392,330,262,196].forEach((f,i)=>tone(f,.32,{type:'triangle',vol:.2,at:i*.16,slide:.97}))},
  hi(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.25,{type:'triangle',vol:.14,at:i*.09}))}
@@ -154,7 +152,6 @@ function drawFloats(c,dt){for(let i=FLOAT.length-1;i>=0;i--){const f=FLOAT[i];f.
 
 /* ---------- fruit art (second value = radius as a fraction of jar width) ---------- */
 const FRUIT=[['#ff4d6d',.047],['#ff8fab',.062],['#b388eb',.079],['#ffb703',.097],['#fb8500',.117],['#e63946',.138],['#ffd6a5',.158],['#f9e076',.18],['#ffafcc',.19],['#b5e48c',.215],['#38b000',.25]];
-const RAINBOW=['#ff4d6d','#ffb703','#f9e076','#7bc950','#4cc9f0','#b388eb'];
 function drawFruit(c,x,y,r,l,mood){c.fillStyle=FRUIT[l][0];dot(c,x,y,r);if(l===10){c.strokeStyle='#1b5e20';c.lineWidth=r*.12;for(let k=-2;k<=2;k++){c.beginPath();c.ellipse(x+k*r*.38,y,r*.12,r*.92,0,0,7);c.stroke();}}c.strokeStyle='#00000022';c.lineWidth=2;c.beginPath();c.arc(x,y,r,0,7);c.stroke();dot(c,x-r*.38,y-r*.42,r*.16,'#ffffff77');if(l<3||l===5){c.fillStyle='#38b000';c.beginPath();c.ellipse(x+r*.2,y-r*.95,r*.28,r*.12,-.4,0,7);c.fill();}cface(c,x,y+r*.05,r,mood);}
 function drawMold(c,r,f){if(!f.mold)return;const n=Math.ceil(f.mold*8);for(let i=0;i<n;i++){const a=f.seed+i*2.39,dd=r*(.2+.6*(((i*53+Math.floor(f.seed*10))%10)/10)),sx=Math.cos(a)*dd,sy=Math.sin(a)*dd,sr=r*(.1+.12*f.mold);dot(c,sx,sy,sr,'#6f8f33cc');dot(c,sx-sr*.3,sy-sr*.3,sr*.45,'#b9d470cc');}if(f.rot){c.fillStyle='rgba(70,80,30,.3)';dot(c,0,0,r);}}
 function drawIce(c,x,y,r,f){c.fillStyle='rgba(200,240,255,.55)';rr(c,x-r*1.04,y-r*1.04,r*2.08,r*2.08,r*.38);c.fill();c.strokeStyle='#ffffffcc';c.lineWidth=2;c.stroke();c.strokeStyle='#ffffffb0';c.lineWidth=2.5;c.lineCap='round';c.beginPath();c.moveTo(x-r*.75,y-r*.35);c.lineTo(x-r*.4,y-r*.78);c.stroke();
@@ -164,17 +161,16 @@ function drawSp(c,f,x,y,r,t){const sp=f.sp;c.lineCap='round';
  else if(sp==='slip'){c.strokeStyle='#4cc9f0';c.lineWidth=2.5;c.setLineDash([6,5]);c.lineDashOffset=-t*40;c.beginPath();c.arc(x,y,r+3,0,7);c.stroke();c.setLineDash([]);c.lineDashOffset=0;dot(c,x+r*1.1,y-r*.2,r*.1+1,'#4cc9f0');dot(c,x-r*1.12,y+r*.25,r*.08+1,'#4cc9f0');}
  else if(sp==='magnet'){const p=(t*1.2)%1;c.strokeStyle=`rgba(142,68,236,${(1-p)*.7})`;c.lineWidth=2;c.beginPath();c.arc(x,y,r*(1+p*1.6),0,7);c.stroke();const m=r*.3+2,my=y-r-m*.5;c.lineCap='butt';c.lineWidth=m*.6;c.strokeStyle='#e63946';c.beginPath();c.arc(x,my,m,Math.PI,0);c.stroke();c.strokeStyle='#d8d8e0';c.beginPath();c.moveTo(x-m,my);c.lineTo(x-m,my+m*.65);c.moveTo(x+m,my);c.lineTo(x+m,my+m*.65);c.stroke();c.lineCap='round';}
  else if(sp==='bomb'){const lit=f.fuse!=null,fx=x+r*.55,fy=y-r*1.18;c.strokeStyle='#3b2346';c.lineWidth=Math.max(2,r*.1);c.beginPath();c.moveTo(x+r*.15,y-r*.9);c.quadraticCurveTo(x+r*.15,y-r*1.25,fx,fy);c.stroke();const fl=lit?(Math.sin(t*40)>0?1:.6):.55;dot(c,fx,fy,r*.17*fl+2,lit?'#ffb703':'#ff8c42');if(lit)dot(c,fx,fy,r*.08+1,'#fff');const pul=lit?(.55+.45*Math.sin(t*28)):(.35+.2*Math.sin(t*5));c.strokeStyle=`rgba(230,57,70,${pul})`;c.lineWidth=3;c.beginPath();c.arc(x,y,r+2,0,7);c.stroke();}
- else if(sp==='rainbow'){c.lineWidth=4;const n=RAINBOW.length,seg=Math.PI*2/n;for(let i=0;i<n;i++){c.strokeStyle=RAINBOW[i];c.beginPath();c.arc(x,y,r+3,t*2.5+i*seg,t*2.5+(i+1)*seg);c.stroke();}c.globalAlpha=.25+.15*Math.sin(t*6);c.fillStyle='#fff';dot(c,x,y,r);c.globalAlpha=1;}
  if(sp==='ice'||f.frz>0)drawIce(c,x,y,r,f);}
 
 /* ---------- the game ---------- */
-const SPN={sticky:'STICKY',slip:'SLIPPERY',bomb:'BOOM',magnet:'MAGNET',ice:'FROZEN',rainbow:'RAINBOW'};
-const SPC={sticky:'#c77d00',slip:'#1592c4',bomb:'#e63946',magnet:'#8e44ec',ice:'#2fa8d8',rainbow:'#d6336c'};
+const SPN={sticky:'STICKY',slip:'SLIPPERY',bomb:'BOOM',magnet:'MAGNET',ice:'FROZEN'};
+const SPC={sticky:'#c77d00',slip:'#1592c4',bomb:'#e63946',magnet:'#8e44ec',ice:'#2fa8d8'};
 const SPW=[['sticky',3],['slip',3],['magnet',3],['ice',2],['bomb',1]],SPT=12;
 function makeGame(W,H,wild,onOver){
  const K=W/400,L=12,Rw=W-12,bot=H-12,line=Math.round(H*.2);const rad=l=>FRUIT[l][1]*W;const tri=l=>(l+1)*(l+2)/2;
  let fr=[],cur=rint(3),nxt=rint(3),curSp=null,nxtSp=null,cx=W/2,cool=0,overT=0,score=0,parts=[],over=false,drops=0,time=0,shake=0;
- const cd={swap:0,shake:0,pluck:0,rainbow:0};
+ const cd={swap:0,shake:0,pluck:0};
  let cat=null,catT=wild?28:1e9,meals=0,coins=0,picking=false,skipUp=false,combo=0,lastM=-9;
  const merge=[];
  const isSt=f=>!!(f.stuck||f.frz>0);
@@ -222,7 +218,6 @@ function makeGame(W,H,wild,onOver){
   if(coins<PRICE[p]||cd[p]>0)return false;
   if(p==='swap'){[cur,nxt]=[nxt,cur];[curSp,nxtSp]=[nxtSp,curSp];snd('swap');}
   else if(p==='shake'){for(const f of fr){if(isSt(f)||f.dead)continue;f.vy=(-260-Math.random()*320)*K;f.vx=(Math.random()-.5)*420*K;}overT=0;shake=.4;snd('shake');}
-  else if(p==='rainbow'){if(curSp==='rainbow')return false;curSp='rainbow';snd('rainbow');}
   coins-=PRICE[p];cd[p]=COOL[p];return true;},
  update(dt){cool-=dt;time+=dt;for(const k in cd)cd[k]=Math.max(0,cd[k]-dt);shake=Math.max(0,shake-dt);const sub=4,h=dt/sub;
   if(wild)for(const m of fr){if(m.sp!=='magnet'||m.dead)continue;const R=Math.max(W*.3,rad(m.l)*4);for(const o of fr){if(o===m||o.l!==m.l||isSt(o)||noMerge(o))continue;const dx=m.x-o.x,dy=m.y-o.y,d=Math.hypot(dx,dy)||1;if(d<R){o.vx+=dx/d*2000*K*dt;o.vy+=dy/d*2000*K*dt;}}}
@@ -231,8 +226,6 @@ function makeGame(W,H,wild,onOver){
     if(f.x-r<L){f.x=L+r;f.vx*=sl?-.85:-.5;hit=true;}if(f.x+r>Rw){f.x=Rw-r;f.vx*=sl?-.85:-.5;hit=true;}if(f.y+r>bot){if(!f.landed){f.landed=1;snd('land',f.l);}f.y=bot-r;f.vy=f.vy>80*K?f.vy*(sl?-.6:-.32):0;if(!sl)f.vx*=.997;hit=true;}
     if(hit&&f.sp&&!f.lit)trigger(f);}
    for(let it=0;it<2;it++)for(let i=0;i<fr.length;i++)for(let j=i+1;j<fr.length;j++){const a=fr[i],b=fr[j];if(a.dead||b.dead)continue;const ra=rad(a.l),rb=rad(b.l);let dx=b.x-a.x,dy=b.y-a.y;const d=Math.hypot(dx,dy)||.01,rs=ra+rb;if(d>=rs)continue;
-    const rw=a.sp==='rainbow'?a:b.sp==='rainbow'?b:null;
-    if(rw){const o=rw===a?b:a;if(o.sp!=='bomb'&&o.sp!=='ice'&&!(o.frz>0)){a.dead=b.dead=true;if(o.l>=10){score+=200;floatTxt('MEGA! +200',o.x,o.y,'#d6336c',26);burst(o.x,o.y,'#38b000',30,500);snd('melon');}else merge.push({x:o.x,y:o.y,l:o.l+1});continue;}}
     if(a.l===b.l&&a.l<10&&!noMerge(a)&&!noMerge(b)){a.dead=b.dead=true;merge.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,l:a.l+1});continue;}
     if(!a.landed){a.landed=1;snd('land',a.l);}if(!b.landed){b.landed=1;snd('land',b.l);}
     if(a.sp&&!a.lit)trigger(a);if(b.sp&&!b.lit)trigger(b);
@@ -285,7 +278,7 @@ cv.addEventListener('pointerdown',e=>{e.preventDefault();if(G.state!=='play')ret
 cv.addEventListener('pointermove',e=>{if(G.state==='play')G.g.move(...pos(e))});
 cv.addEventListener('pointerup',e=>{if(!pressed)return;pressed=false;if(G.state==='play')G.g.up(pos(e)[0])});
 cv.addEventListener('pointercancel',()=>pressed=false);
-const PKEYS={'1':'swap','2':'shake','3':'pluck','4':'rainbow'};
+const PKEYS={'1':'swap','2':'shake','3':'pluck'};
 window.addEventListener('keydown',e=>{if(G.state!=='play')return;if(e.key==='ArrowLeft'||e.key==='a'){G.g.nudge(-G.W/24);e.preventDefault()}else if(e.key==='ArrowRight'||e.key==='d'){G.g.nudge(G.W/24);e.preventDefault()}else if(e.key===' '||e.key==='ArrowDown'||e.key==='Enter'){if(!e.repeat)G.g.up(null);e.preventDefault()}else if(e.key==='p'||e.key==='Escape')pause();else if(PKEYS[e.key]&&G.mode==='wild')usePower(PKEYS[e.key])});
 function usePower(p){if(G.state!=='play'||!G.g)return;if(G.g.use(p)===false)snd('nope');}
 pw.addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(b)usePower(b.dataset.p)});
@@ -307,7 +300,7 @@ function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loa
  .catch(()=>{if(el.isConnected)el.innerHTML='<p class="none">Couldn\'t reach the world leaderboard.</p>'});}
 
 function menu(){G.state='menu';G.g=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;$('#hd .t').textContent='🍉 Fruit Merge';fit();setBest();
- const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild 🐛</button><br><button class="go alt sm" data-a="scores">High scores</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><p style="font-size:13px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`);
+ const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild 🐛</button><br><button class="go alt sm" data-a="scores">High scores</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><p style="font-size:13px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–3 powers</p>`);
  const ch=m.querySelector('#chain'),dpr=Math.min(2,window.devicePixelRatio||1),w=ch.clientWidth,h=44;ch.width=w*dpr;ch.height=h*dpr;const c=ch.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
  const gap=w/11;for(let l=0;l<11;l++)drawFruit(c,gap*(l+.5),h/2,Math.min(gap*.48,7+l*1.4),l);}
 function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Specials show up in the <b>Next</b> box.</p><ul class="wl">
@@ -321,8 +314,7 @@ function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Spec
 <h4>Coins &amp; powers</h4><p style="font-size:14px">Merges earn coins, bigger merges earn more. Spend them on powers below the jar. Each power needs a short rest before you can use it again.</p><ul class="wl">
 <li><span>🔀</span><div><b>Swap</b> (5 coins, 5s cooldown): swap your fruit with the next one.</div></li>
 <li><span>🌀</span><div><b>Shake</b> (12 coins, 15s cooldown): jolt the jar to shuffle the pile.</div></li>
-<li><span>👆</span><div><b>Pluck</b> (20 coins, 12s cooldown): tap any fruit to remove it.</div></li>
-<li><span>🌈</span><div><b>Rainbow</b> (30 coins, 25s cooldown): your fruit merges with whatever it touches.</div></li></ul>
+<li><span>👆</span><div><b>Pluck</b> (20 coins, 12s cooldown): tap any fruit to remove it.</div></li></ul>
 <button class="go wild" data-a="play" data-m="wild">Play Wild</button><button class="go alt" data-a="menu">Back</button>`)}
 function showScores(m=G.mode){G.tab=m;const w=LB&&G.scope==='world',n=SC[m].length;const el=show(`<h3>High scores</h3><div class="tabs"><button data-a="tab" data-m="classic" class="${m==='classic'?'on':''}">Classic</button><button data-a="tab" data-m="wild" class="${m==='wild'?'on':''}">Wild</button></div>${LB?`<div class="tabs"><button data-a="scope" data-s="world" class="${w?'on':''}">🌍 World</button><button data-a="scope" data-s="local" class="${w?'':'on'}">📱 This device</button></div>`:''}${w?'<div id="bd"></div>':table(m)}<button class="go${m==='wild'?' wild':''}" data-a="play" data-m="${m}">Play ${MNAME[m]}</button><button class="go alt" data-a="menu">Back</button>${n&&!w?`<br><button class="go lnk" data-a="reset">Clear ${MNAME[m]} scores</button>`:''}`);if(w)worldBoard(el.querySelector('#bd'),m,lastName)}
 function play(mode=G.mode){G.mode=mode;store.set('mode',mode);setBest();$('#hd .t').textContent=mode==='wild'?'🐛 Wild Merge':'🍉 Fruit Merge';hide();FLOAT.length=0;G.g=null;pw.hidden=mode!=='wild';G.pwKey='';G.lastCoins=0;fit();G.W=G.cssW;G.H=Math.floor(G.cssW/ASP);fit();G.g=makeGame(G.W,G.H,mode==='wild',gameOver);G.state='play';G.last=0;$('#pauseB').hidden=false;}
