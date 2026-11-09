@@ -173,7 +173,7 @@ function makeGame(W,H,wild,onOver){
  const K=W/400,L=12,Rw=W-12,bot=H-12,line=Math.round(H*.2);const rad=l=>FRUIT[l][1]*W;const tri=l=>(l+1)*(l+2)/2;
  let fr=[],cur=rint(3),nxt=rint(3),curSp=null,nxtSp=null,cx=W/2,cool=0,overT=0,score=0,parts=[],over=false,drops=0,time=0,shake=0;
  const cd={swap:0,shake:0,whirl:0,rumble:0};
- let cat=null,catT=wild?28:1e9,meals=0,coins=0,whirl=0,wdir=1,rumble=0,rt=0,combo=0,lastM=-9;
+ let cat=null,catT=wild?28:1e9,meals=0,coins=0,whirl=0,wdir=1,rumble=0,settle=0,rt=0,grace=0,combo=0,lastM=-9;
  const merge=[];
  const isSt=f=>!!(f.stuck||f.frz>0);
  const noMerge=f=>f.sp==='bomb'||f.sp==='ice'||f.rot||f.frz>0;
@@ -181,8 +181,8 @@ function makeGame(W,H,wild,onOver){
  function commonTier(){const n=[0,0,0,0,0];for(const f of fr)if(f.l<5&&!noMerge(f)&&!isSt(f))n[f.l]++;let b=-1,bv=0;n.forEach((v,i)=>{if(v>bv){bv=v;b=i}});return b;}
  function earn(n){if(!wild||n<=0)return;const b=coins;coins+=n;if(Object.values(PRICE).some(p=>b<p&&coins>=p))snd('coin');}
  const burst=(x,y,col,n=10,sp=300)=>{for(let q=0;q<n;q++)parts.push({x,y,vx:(Math.random()-.5)*sp*K,vy:(Math.random()-.5)*sp*K,t:.5,col})};
- function freezeAround(f){f.lit=1;f.frz=3;f.vx=f.vy=0;let n=0;const r=rad(f.l);for(const o of fr){if(o===f||o.dead||o.frz>0||n>=4)continue;if(Math.hypot(o.x-f.x,o.y-f.y)<r+rad(o.l)+8*K){o.frz=3;o.vx=o.vy=0;n++;}}burst(f.x,f.y,'#bfefff',14);snd('ice');}
- function trigger(f){if(f.lit)return;if(f.sp==='sticky'){f.stuck=1;f.lit=1;f.vx=f.vy=0;snd('sticky');}else if(f.sp==='bomb'){f.lit=1;f.fuse=1.3;snd('fuse');}else if(f.sp==='ice')freezeAround(f);else if(f.sp==='slip'){f.lit=1;snd('slip');}else if(f.sp==='magnet'){f.lit=1;snd('magnet');}}
+ function freezeAround(f){f.lit=1;f.frz=3;f.vx=f.vy=0;let n=0;const r=rad(f.l);for(const o of fr){if(o===f||o.dead||o.frz>0||n>=4||o.y-rad(o.l)<line)continue;if(Math.hypot(o.x-f.x,o.y-f.y)<r+rad(o.l)+8*K){o.frz=3;o.vx=o.vy=0;n++;}}burst(f.x,f.y,'#bfefff',14);snd('ice');}
+ function trigger(f){if(f.lit)return;if((f.sp==='sticky'||f.sp==='ice')&&f.y-rad(f.l)<line)return;if(f.sp==='sticky'){f.stuck=1;f.lit=1;f.vx=f.vy=0;snd('sticky');}else if(f.sp==='bomb'){f.lit=1;f.fuse=1.3;snd('fuse');}else if(f.sp==='ice')freezeAround(f);else if(f.sp==='slip'){f.lit=1;snd('slip');}else if(f.sp==='magnet'){f.lit=1;snd('magnet');}}
  function explode(f){const rf=rad(f.l);
   const near=fr.filter(o=>o!==f&&!o.dead).map(o=>({o,d:Math.hypot(o.x-f.x,o.y-f.y)-rad(o.l)-rf})).filter(e=>e.d<12*K).sort((a,b)=>a.d-b.d).slice(0,3);
   for(const{o}of near){burst(o.x,o.y,FRUIT[o.l][0],8);if(o.l>=6){o.l--;o.frz=0;o.stuck=0;}else o.dead=1;}
@@ -217,16 +217,16 @@ function makeGame(W,H,wild,onOver){
  use(p){if(over)return false;
   if(coins<PRICE[p]||cd[p]>0)return false;
   if(p==='swap'){[cur,nxt]=[nxt,cur];[curSp,nxtSp]=[nxtSp,curSp];snd('swap');}
-  else if(p==='shake'){for(const f of fr){if(isSt(f)||f.dead)continue;f.vy=(-260-Math.random()*320)*K;f.vx=(Math.random()-.5)*420*K;}overT=0;shake=.4;snd('shake');}
-  else if(p==='whirl'){whirl=1.1;wdir=Math.random()<.5?1:-1;overT=0;snd('whirl');}
-  else if(p==='rumble'){rumble=3;rt=0;snd('rumble');}
+  else if(p==='shake'){for(const f of fr){if(isSt(f)||f.dead)continue;f.vy=(-260-Math.random()*320)*K;f.vx=(Math.random()-.5)*420*K;}overT=0;grace=1.8;shake=.4;snd('shake');}
+  else if(p==='whirl'){whirl=1.1;wdir=Math.random()<.5?1:-1;overT=0;grace=3.6;snd('whirl');}
+  else if(p==='rumble'){rumble=3;rt=0;grace=3.6;snd('rumble');}
   coins-=PRICE[p];cd[p]=COOL[p];return true;},
- update(dt){cool-=dt;time+=dt;for(const k in cd)cd[k]=Math.max(0,cd[k]-dt);whirl=Math.max(0,whirl-dt);
-   if(rumble>0){rumble-=dt;rt-=dt;if(rt<=0){rt=.07;for(const f of fr){if(isSt(f)||f.dead)continue;f.vx+=(Math.random()-.5)*170*K;f.vy-=Math.random()*130*K;}}shake=Math.max(shake,.07);}
+ update(dt){cool-=dt;time+=dt;for(const k in cd)cd[k]=Math.max(0,cd[k]-dt);if(whirl>0){whirl-=dt;if(whirl<=0){whirl=0;settle=1.3;}}grace=Math.max(0,grace-dt);
+   if(rumble>0||settle>0){const rb=rumble>0;rumble=Math.max(0,rumble-dt);settle=Math.max(0,settle-dt);rt-=dt;if(rt<=0){rt=.07;for(const f of fr){if(isSt(f)||f.dead)continue;f.vx+=(Math.random()-.5)*170*K;f.vy-=Math.random()*130*K;}}if(rb)shake=Math.max(shake,.07);}
    const wcy=(line+bot)/2;shake=Math.max(0,shake-dt);const sub=4,h=dt/sub;
   if(wild)for(const m of fr){if(m.sp!=='magnet'||m.dead)continue;const R=Math.max(W*.3,rad(m.l)*4);for(const o of fr){if(o===m||o.l!==m.l||isSt(o)||noMerge(o))continue;const dx=m.x-o.x,dy=m.y-o.y,d=Math.hypot(dx,dy)||1;if(d<R){o.vx+=dx/d*2000*K*dt;o.vy+=dy/d*2000*K*dt;}}}
   for(let s=0;s<sub;s++){
-   for(const f of fr){if(isSt(f)){f.vx=f.vy=0;continue;}if(whirl>0){const dx=f.x-W/2,dy=f.y-wcy,d=Math.hypot(dx,dy)||1;f.vx+=(-dy/d*wdir*1700-dx/d*350)*K*h;f.vy+=(dx/d*wdir*1700-dy/d*350-800)*K*h;const sp=Math.hypot(f.vx,f.vy),mx=650*K;if(sp>mx){f.vx*=mx/sp;f.vy*=mx/sp;}}const sl=f.sp==='slip';f.vy+=1100*K*h;f.x+=f.vx*h;f.y+=f.vy*h;const r=rad(f.l);f.a=(f.a||0)+f.vx/r*h;let hit=false;
+   for(const f of fr){if(isSt(f)){f.vx=f.vy=0;continue;}if(whirl>0){const dx=f.x-W/2,dy=f.y-wcy,d=Math.hypot(dx,dy)||1;f.vx+=(-dy/d*wdir*1700-dx/d*350)*K*h;f.vy+=(dx/d*wdir*1700-dy/d*350-500)*K*h;const sp=Math.hypot(f.vx,f.vy),mx=540*K;if(sp>mx){f.vx*=mx/sp;f.vy*=mx/sp;}}const sl=f.sp==='slip';f.vy+=1100*K*h;f.x+=f.vx*h;f.y+=f.vy*h;const r=rad(f.l);f.a=(f.a||0)+f.vx/r*h;let hit=false;if(f.y-r<0){f.y=r;if(f.vy<0)f.vy*=-.3;}
     if(f.x-r<L){f.x=L+r;f.vx*=sl?-.85:-.5;hit=true;}if(f.x+r>Rw){f.x=Rw-r;f.vx*=sl?-.85:-.5;hit=true;}if(f.y+r>bot){if(!f.landed){f.landed=1;snd('land',f.l);}f.y=bot-r;f.vy=f.vy>80*K?f.vy*(sl?-.6:-.32):0;if(!sl)f.vx*=.997;hit=true;}
     if(hit&&f.sp&&!f.lit)trigger(f);}
    for(let it=0;it<2;it++)for(let i=0;i<fr.length;i++)for(let j=i+1;j<fr.length;j++){const a=fr[i],b=fr[j];if(a.dead||b.dead)continue;const ra=rad(a.l),rb=rad(b.l);let dx=b.x-a.x,dy=b.y-a.y;const d=Math.hypot(dx,dy)||.01,rs=ra+rb;if(d>=rs)continue;
@@ -245,7 +245,7 @@ function makeGame(W,H,wild,onOver){
    if(wild&&!(f.frz>0)&&!f.rot){const r=rad(f.l);if(f.y+r>=bot-3&&Math.abs(f.vy)<60*K)f.bt=(f.bt||0)+dt;f.mold=clampN(((f.bt||0)-14)/14,0,1);if(f.mold>=1){f.rot=1;floatTxt('Mouldy!',f.x,f.y-r,'#5e7d24',16);}}}
   if(wild)updCat(dt);
   fr=fr.filter(f=>!f.dead);
-  let danger=false;for(const f of fr){f.age+=dt;if(f.age>1.5&&f.y-rad(f.l)<line&&Math.abs(f.vy)<120*K)danger=true;}
+  let danger=false;for(const f of fr){f.age+=dt;if(grace<=0&&f.age>1.5&&f.y-rad(f.l)<line&&Math.abs(f.vy)<120*K)danger=true;}
   const pT=overT;overT=danger?overT+dt:0;if(overT>0&&Math.floor(overT*2.5)!==Math.floor(pT*2.5))snd('warn');
   if(overT>2.2&&!over){over=true;onOver(score);}
   parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.t-=dt;});parts=parts.filter(p=>p.t>0);},
