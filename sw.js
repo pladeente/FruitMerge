@@ -1,6 +1,6 @@
 /* Fruit Merge service worker: network first so updates show straight away, cache as offline fallback. */
-const CACHE = 'fruit-merge-v4';
-const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE = 'fruit-merge-v5';
+const CORE = ['./', './index.html', './icons.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });
