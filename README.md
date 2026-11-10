@@ -16,6 +16,8 @@ Charms combo through tags. Each charm can list what it gives (`g`) and what it w
 
 No image files. Every icon is a 12x12 grid of letters in `icons.js`, one letter per pixel, drawn at load time. To change an icon, edit its letters. To add one, add a grid and use it as `<i class="px px-NAME"></i>`. A charm, boss or upgrade uses the grid with the same name as its id, unless `ICN` in `index.html` points it at another one. The score pop-up font is in the same file.
 
+The text font is [Jersey 15](https://github.com/scfried/soft-type-jersey) (SIL Open Font License 1.1), embedded in `index.html`.
+
 ## World leaderboard setup (Firebase, free tier)
 
 Without this the game still works and keeps scores on the device only.
