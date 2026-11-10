@@ -115,6 +115,7 @@ function lbTop(m,fresh){const c=LBC[m];if(!fresh&&c&&Date.now()-c.at<20000)retur
   const list=Object.values(by).sort((a,b)=>b.s-a.s||a.t-b.t).slice(0,MAXS);LBC[m]={at:Date.now(),list};return list;});}
 function lbSubmit(m,n,s){delete LBC[m];return lbReq(`/scores/${m}.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n,s,t:{'.sv':'timestamp'}})});}
 const ASP=.68; /* jar width / height */
+const ASP_TALL=.52; /* tall phones get extra headroom above the line, the play area itself never changes */
 
 /* ---------- sound: small synth ---------- */
 let AC=null,master=null,NB=null;
@@ -187,7 +188,7 @@ const SPN={sticky:'STICKY',slip:'SLIPPERY',bomb:'BOOM',magnet:'MAGNET',ice:'FROZ
 const SPC={sticky:'#c77d00',slip:'#1592c4',bomb:'#e63946',magnet:'#8e44ec',ice:'#2fa8d8'};
 const SPW=[['sticky',3],['slip',3],['magnet',3],['ice',2],['bomb',1]],SPT=12;
 function makeGame(W,H,wild,onOver){
- const K=W/400,L=12,Rw=W-12,bot=H-12,line=Math.round(H*.2);const rad=l=>FRUIT[l][1]*W;const tri=l=>(l+1)*(l+2)/2;
+ const K=W/400,L=12,Rw=W-12,bot=H-12,line=H-Math.floor(W/ASP)+Math.round(Math.floor(W/ASP)*.2);const rad=l=>FRUIT[l][1]*W;const tri=l=>(l+1)*(l+2)/2;
  let fr=[],cur=rint(3),nxt=rint(3),curSp=null,nxtSp=null,cx=W/2,cool=0,overT=0,score=0,parts=[],over=false,drops=0,time=0,shake=0;
  const cd={swap:0,shake:0,whirl:0,rumble:0};
  let cat=null,catT=wild?45:1e9,meals=0,coins=0,whirl=0,wdir=1,rumble=0,settle=0,rt=0,grace=0,combo=0,lastM=-9;
@@ -289,8 +290,9 @@ const G={state:'menu',g:null,W:300,H:480,cssW:300,raf:0,last:0,mode:store.get('m
 if(!SC[G.mode])G.mode='classic';
 function fit(){const hd=$('#hd').getBoundingClientRect().height,ph=pw.hidden?0:pw.getBoundingClientRect().height+8,app=$('#app'),cs=getComputedStyle(app);
  const aw=app.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=app.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-hd-8-ph;
- const w=Math.max(220,Math.floor(Math.min(480,aw,ah*ASP))),h=Math.floor(w/ASP);
- st.style.width=w+'px';st.style.height=h+'px';$('#hd').style.maxWidth=w+'px';pw.style.maxWidth=w+'px';G.cssW=w;const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+ let w,h;if(G.g&&G.state!=='menu'){const a=G.W/G.H;w=Math.max(220,Math.floor(Math.min(480,aw,ah*a)));h=Math.floor(w/a);}
+ else{w=Math.max(220,Math.floor(Math.min(480,aw,ah*ASP)));h=Math.max(Math.floor(w/ASP),Math.min(Math.floor(ah),Math.floor(w/ASP_TALL)));}
+ st.style.width=w+'px';st.style.height=h+'px';$('#hd').style.maxWidth=w+'px';pw.style.maxWidth=w+'px';G.cssW=w;G.cssH=h;const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
  if(!G.g||G.state==='menu'){G.W=w;G.H=h;}const k=w/G.W;ctx.setTransform(dpr*k,0,0,dpr*k,0,0);}
 const pos=e=>{const r=cv.getBoundingClientRect(),k=G.W/r.width;return[(e.clientX-r.left)*k,(e.clientY-r.top)*k]};
 let pressed=false;
@@ -320,7 +322,7 @@ function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loa
  .catch(()=>{if(el.isConnected)el.innerHTML='<p class="none">Couldn\'t reach the world leaderboard.</p>'});}
 
 function menu(){G.state='menu';G.g=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;$('#hd .t').textContent='🍉 Fruit Merge';fit();setBest();
- const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild 🐛</button><br><button class="go alt sm" data-a="scores">🏆 Leaderboard</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><span id="instSlot">${installBtn()}</span><p style="font-size:13px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`);
+ const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild 🐛</button><br><button class="go alt sm" data-a="scores">🏆 Leaderboard</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><span id="instSlot">${installBtn()}</span>${matchMedia('(pointer:coarse)').matches?'':`<p style="font-size:13px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`}`);
  const ch=m.querySelector('#chain'),dpr=Math.min(2,window.devicePixelRatio||1),w=ch.clientWidth,h=44;ch.width=w*dpr;ch.height=h*dpr;const c=ch.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
  const gap=w/11;for(let l=0;l<11;l++)drawFruit(c,gap*(l+.5),h/2,Math.min(gap*.48,7+l*1.4),l);}
 function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Specials show up in the <b>Next</b> box.</p><ul class="wl">
@@ -338,7 +340,7 @@ function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Spec
 <li><span>📳</span><div><b>Rumble</b> (10 coins, 15s cooldown): the jar vibrates for 3 seconds so the pile jiggles and settles tighter.</div></li></ul>
 <button class="go wild" data-a="play" data-m="wild">Play Wild</button><button class="go alt" data-a="menu">Back</button>`)}
 function showScores(m=G.mode){G.tab=m;const w=LB&&G.scope==='world',n=SC[m].length;const el=show(`<h3>Leaderboard</h3><div class="tabs"><button data-a="tab" data-m="classic" class="${m==='classic'?'on':''}">Classic</button><button data-a="tab" data-m="wild" class="${m==='wild'?'on':''}">Wild</button></div>${LB?`<div class="tabs"><button data-a="scope" data-s="world" class="${w?'on':''}">🌍 World</button><button data-a="scope" data-s="local" class="${w?'':'on'}">📱 This device</button></div>`:''}${w?'<div id="bd"></div>':table(m)}<button class="go${m==='wild'?' wild':''}" data-a="play" data-m="${m}">Play ${MNAME[m]}</button><button class="go alt" data-a="${G.lbFrom==='pause'?'paused':'menu'}">Back</button>${n&&!w?`<br><button class="go lnk" data-a="reset">Clear ${MNAME[m]} scores</button>`:''}`);if(w)worldBoard(el.querySelector('#bd'),m,lastName)}
-function play(mode=G.mode){G.mode=mode;store.set('mode',mode);setBest();$('#hd .t').textContent=mode==='wild'?'🐛 Wild Merge':'🍉 Fruit Merge';hide();FLOAT.length=0;G.g=null;pw.hidden=mode!=='wild';G.pwKey='';G.lastCoins=0;fit();G.W=G.cssW;G.H=Math.floor(G.cssW/ASP);fit();G.g=makeGame(G.W,G.H,mode==='wild',gameOver);G.state='play';G.last=0;$('#pauseB').hidden=false;}
+function play(mode=G.mode){G.mode=mode;store.set('mode',mode);setBest();$('#hd .t').textContent=mode==='wild'?'🐛 Wild Merge':'🍉 Fruit Merge';hide();FLOAT.length=0;G.g=null;pw.hidden=mode!=='wild';G.pwKey='';G.lastCoins=0;fit();G.W=G.cssW;G.H=G.cssH;fit();G.g=makeGame(G.W,G.H,mode==='wild',gameOver);G.state='play';G.last=0;$('#pauseB').hidden=false;}
 function pause(){if(G.state!=='play')return;G.state='pause';$('#pauseB').hidden=true;pauseMsg()}
 function pauseMsg(){show('<h3>Paused</h3><button class="go" data-a="resume">Keep playing</button><button class="go alt" data-a="quit">Quit</button>')}
 function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode,loc=qualifies(s,m);
