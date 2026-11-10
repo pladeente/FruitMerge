@@ -182,6 +182,7 @@ function drawSp(c,f,x,y,r,t){const sp=f.sp;c.lineCap='round';
  if(sp==='ice'||f.frz>0)drawIce(c,x,y,r,f);}
 
 /* ---------- the game ---------- */
+const MOLD_MAX=5; /* tiers above this never go mouldy */
 const SPN={sticky:'STICKY',slip:'SLIPPERY',bomb:'BOOM',magnet:'MAGNET',ice:'FROZEN'};
 const SPC={sticky:'#c77d00',slip:'#1592c4',bomb:'#e63946',magnet:'#8e44ec',ice:'#2fa8d8'};
 const SPW=[['sticky',3],['slip',3],['magnet',3],['ice',2],['bomb',1]],SPT=12;
@@ -189,7 +190,7 @@ function makeGame(W,H,wild,onOver){
  const K=W/400,L=12,Rw=W-12,bot=H-12,line=Math.round(H*.2);const rad=l=>FRUIT[l][1]*W;const tri=l=>(l+1)*(l+2)/2;
  let fr=[],cur=rint(3),nxt=rint(3),curSp=null,nxtSp=null,cx=W/2,cool=0,overT=0,score=0,parts=[],over=false,drops=0,time=0,shake=0;
  const cd={swap:0,shake:0,whirl:0,rumble:0};
- let cat=null,catT=wild?28:1e9,meals=0,coins=0,whirl=0,wdir=1,rumble=0,settle=0,rt=0,grace=0,combo=0,lastM=-9;
+ let cat=null,catT=wild?45:1e9,meals=0,coins=0,whirl=0,wdir=1,rumble=0,settle=0,rt=0,grace=0,combo=0,lastM=-9;
  const merge=[];
  const isSt=f=>!!(f.stuck||f.frz>0);
  const noMerge=f=>f.sp==='bomb'||f.sp==='ice'||f.rot||f.frz>0;
@@ -205,9 +206,9 @@ function makeGame(W,H,wild,onOver){
   const R=rf*3+60*K;for(const o of fr){if(o===f||o.dead||isSt(o))continue;const d=Math.hypot(o.x-f.x,o.y-f.y)||1;if(d<R){const k=(1-d/R)*380*K;o.vx+=(o.x-f.x)/d*k;o.vy+=(o.y-f.y)/d*k;}}
   f.dead=1;burst(f.x,f.y,'#ffb703',22,480);burst(f.x,f.y,'#e63946',12,380);shake=.3;floatTxt('BOOM!',f.x,f.y,'#e63946',24);snd('boom');}
  function thaw(f){f.frz=0;if(f.sp==='ice'){f.dead=1;burst(f.x,f.y,'#bfefff',16,380);snd('crack');return;}f.bt=0;f.mold=0;f.rot=0;burst(f.x,f.y,'#e0f7ff',10);if(f.l===0)f.dead=1;else{f.l--;score+=2;}}
- function pickTg(){const rot=fr.filter(f=>f.rot&&!f.dead);if(rot.length)return rot[rint(rot.length)];const sm=fr.filter(f=>!f.dead&&f.l<=2&&!isSt(f)&&f.age>2);return sm.length?sm[rint(sm.length)]:null;}
+ function pickTg(){const rot=fr.filter(f=>f.rot&&!f.dead&&f.l<=MOLD_MAX);if(rot.length)return rot[rint(rot.length)];const sm=fr.filter(f=>!f.dead&&f.l<=2&&!isSt(f)&&f.age>2);return sm.length?sm[rint(sm.length)]:null;}
  function updCat(dt){
-  if(!cat){catT-=dt;if(catT<=0){const tg=pickTg();if(tg){const fromL=tg.x<W/2;cat={x:fromL?-30:W+30,y:line-24,st:'go',tg,t:0,ph:0,dir:fromL?0:Math.PI};floatTxt('A caterpillar!',W/2,line+30,'#2d8a2d',20);snd('cat');catT=32+Math.random()*16;}else catT=5;}return;}
+  if(!cat){catT-=dt;if(catT<=0){const tg=pickTg();if(tg){const fromL=tg.x<W/2;cat={x:fromL?-30:W+30,y:line-24,st:'go',tg,t:0,ph:0,dir:fromL?0:Math.PI};floatTxt('A caterpillar!',W/2,line+30,'#2d8a2d',20);snd('cat');catT=45+Math.random()*20;}else catT=5;}return;}
   cat.ph+=dt;const alive=t=>t&&!t.dead&&fr.includes(t);
   const go=(tx,ty,sp)=>{const dx=tx-cat.x,dy=ty-cat.y,d=Math.hypot(dx,dy);if(d>1){cat.dir=Math.atan2(dy,dx);const s=Math.min(d,sp*dt);cat.x+=dx/d*s;cat.y+=dy/d*s;}return d;};
   if(cat.st==='go'){if(!alive(cat.tg)){cat.tg=pickTg();if(!cat.tg){cat.st='out';return;}}const t=cat.tg;if(go(t.x,t.y-rad(t.l)*.6,150*K)<4){cat.st='eat';cat.t=1.6;}}
@@ -258,7 +259,7 @@ function makeGame(W,H,wild,onOver){
   for(const f of fr){if(f.dead)continue;
    if(f.fuse!=null){f.fuse-=dt;if(f.fuse<=0){f.fuse=null;explode(f);continue;}}
    if(f.frz>0){f.frz-=dt;if(f.frz<=0){thaw(f);continue;}}
-   if(wild&&!(f.frz>0)&&!f.rot){const r=rad(f.l);if(f.y+r>=bot-3&&Math.abs(f.vy)<60*K)f.bt=(f.bt||0)+dt;f.mold=clampN(((f.bt||0)-14)/14,0,1);if(f.mold>=1){f.rot=1;floatTxt('Mouldy!',f.x,f.y-r,'#5e7d24',16);}}}
+   if(wild&&!(f.frz>0)&&!f.rot&&f.l<=MOLD_MAX){const r=rad(f.l);if(f.y+r>=bot-3&&Math.abs(f.vy)<60*K)f.bt=(f.bt||0)+dt;else f.bt=Math.max(0,(f.bt||0)-dt*.5);f.mold=clampN(((f.bt||0)-20)/20,0,1);if(f.mold>=1){f.rot=1;floatTxt('Mouldy!',f.x,f.y-r,'#5e7d24',16);}}}
   if(wild)updCat(dt);
   fr=fr.filter(f=>!f.dead);
   let danger=false;for(const f of fr){f.age+=dt;if(grace<=0&&f.age>1.5&&f.y-rad(f.l)<line&&Math.abs(f.vy)<120*K)danger=true;}
@@ -328,8 +329,8 @@ function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Spec
 <li><span>💣</span><div><b>Boom</b>: blows up the fruit touching it a moment after it lands. Big fruit just shrink a size.</div></li>
 <li><span>🧲</span><div><b>Magnet</b>: pulls matching fruit towards it so they merge.</div></li>
 <li><span>🧊</span><div><b>Frozen</b>: freezes the fruit it touches. When the ice cracks they shrink one size and lose any mould.</div></li>
-<li><span>🦠</span><div><b>Mould</b>: fruit sitting on the bottom too long goes mouldy and can't merge.</div></li>
-<li><span>🐛</span><div><b>Caterpillar</b>: visits now and then. It loves mouldy fruit (+25). No mould? It eats one of your small fruits. Every 3rd meal it turns into a butterfly (+150).</div></li></ul>
+<li><span>🦠</span><div><b>Mould</b>: the six smallest fruits go mouldy if left on the bottom too long, and then can't merge. Bigger fruit never goes mouldy.</div></li>
+<li><span>🐛</span><div><b>Caterpillar</b>: visits every minute or so. It loves mouldy fruit (+25). No mould? It eats one of your small fruits. Every 3rd meal it turns into a butterfly (+150).</div></li></ul>
 <h4>Coins &amp; powers</h4><p style="font-size:14px">Merges earn coins, bigger merges earn more. Spend them on powers below the jar. Each power needs a short rest before you can use it again.</p><ul class="wl">
 <li><span>🔀</span><div><b>Swap</b> (5 coins, 5s cooldown): swap your fruit with the next one.</div></li>
 <li><span>🌀</span><div><b>Shake</b> (12 coins, 15s cooldown): jolt the jar to shuffle the pile.</div></li>
