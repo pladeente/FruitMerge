@@ -112,8 +112,6 @@ tr.me td{background:#35c2b42a}
 .it li>div{flex:1;min-width:0}
 .it li b{font:700 18px var(--display);color:var(--brass)}
 .it li>.go{margin:0;flex:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.syn{color:#8ff0e6;font-size:15px;font-weight:800;margin:3px 0 0}
-p.syn{margin:8px 0;font-weight:400}p.syn b{color:var(--brass)}
 .own{display:flex;gap:6px;justify-content:center}
 .trk{display:flex;gap:6px}
 .nd{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;background:#00000038;box-shadow:inset 0 0 0 2px var(--line);font-size:15px}
@@ -390,43 +388,42 @@ const RPAY=[3,4,6],RPRICE={swap:1,shake:3,whirl:3,rumble:2},RAR=['Common','Uncom
 /* Charms. r = rarity, c = price, d = description. Scoring hooks get a context c:
    l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar,
    pu = powers used this jar, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
-   chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG.
-   Combos: g lists what a charm gives, w what it wants. Two charms combo when one gives something the other wants (RG.syn). */
+   chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG. */
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
- chain:{n:'Chain Reaction',r:0,c:5,d:'In a combo, each merge after the first gets +1 Mult more than the one before (up to +8).',add:c=>Math.min(8,c.combo),w:['combo']},
- bull:{n:'Bullseye',r:0,c:5,d:'A dropped fruit that merges before it touches anything else scores ×2.',x:c=>c.bull?2:1,w:['pull']},
+ chain:{n:'Chain Reaction',r:0,c:5,d:'In a combo, each merge after the first gets +1 Mult more than the one before (up to +8).',add:c=>Math.min(8,c.combo)},
+ bull:{n:'Bullseye',r:0,c:5,d:'A dropped fruit that merges before it touches anything else scores ×2.',x:c=>c.bull?2:1},
  early:{n:'Early Bird',r:0,c:4,d:'×2 Mult for your first 6 drops of each jar.',x:c=>c.jd<=6?2:1},
  clutch:{n:'Photo Finish',r:0,c:4,d:'×2.5 Mult for your last 5 drops of each jar.',x:c=>c.dl<5?2.5:1},
- lucky:{n:'Lucky Clover',r:0,c:5,d:'1 in 4 merges score ×3.',x:c=>c.l>=0&&Math.random()<.25*c.luck?3:1,w:['luck']},
- scratch:{n:'Scratch Card',r:0,c:4,d:'1 in 6 merges pays 1 coin.',g:['coin'],w:['luck']},
- lode:{n:'Lodestone',r:0,c:4,d:'Every 5th drop is a Magnet that pulls its matches in.',g:['combo','pull'],w:['drops']},
- piggy:{n:'Piggy Bank',r:0,c:4,d:'+3 coins every time you clear a jar.',g:['coin']},
- bag:{n:'Big Basket',r:0,c:5,d:'+5 drops in every jar.',g:['drops']},
- juggle:{n:'Juggler',r:0,c:4,d:'Swap is free.',g:['power']},
- coupon:{n:'Coupon',r:0,c:4,d:'Everything in the shop costs 1 coin less.',g:['coin']},
- heavy:{n:'Heavyweight',r:1,c:7,d:'Merges that make a size 6 fruit or bigger score ×2.5.',x:c=>c.l>=5?2.5:1,w:['big']},
- hot:{n:'Hot Streak',r:1,c:6,d:'+0.15 Mult for every merge you have made this jar.',add:c=>c.jm*.15,w:['drops']},
+ lucky:{n:'Lucky Clover',r:0,c:5,d:'1 in 4 merges score ×3.',x:c=>c.l>=0&&Math.random()<.25*c.luck?3:1},
+ scratch:{n:'Scratch Card',r:0,c:4,d:'1 in 6 merges pays 1 coin.'},
+ lode:{n:'Lodestone',r:0,c:4,d:'Every 5th drop is a Magnet that pulls its matches in.'},
+ piggy:{n:'Piggy Bank',r:0,c:4,d:'+3 coins every time you clear a jar.'},
+ bag:{n:'Big Basket',r:0,c:5,d:'+5 drops in every jar.'},
+ juggle:{n:'Juggler',r:0,c:4,d:'Swap is free.'},
+ coupon:{n:'Coupon',r:0,c:4,d:'Everything in the shop costs 1 coin less.'},
+ heavy:{n:'Heavyweight',r:1,c:7,d:'Merges that make a size 6 fruit or bigger score ×2.5.',x:c=>c.l>=5?2.5:1},
+ hot:{n:'Hot Streak',r:1,c:6,d:'+0.15 Mult for every merge you have made this jar.',add:c=>c.jm*.15},
  vintage:{n:'Vintage',r:1,c:7,d:'Gains +0.4 Mult every time you clear a jar.',add:c=>c.ch.v||0,live:1},
- hoard:{n:'Hoarder',r:1,c:6,d:'+0.15 Mult for every fruit in the jar.',add:c=>c.n*.15,g:['tall'],w:['tall']},
- tidy:{n:'Clean Plate',r:1,c:7,d:'×2 Mult while the jar holds 6 fruit or fewer.',x:c=>c.n<=6&&!c.idle?2:1,w:['kill']},
- wallet:{n:'Fat Wallet',r:1,c:7,d:'+0.1 Mult for every coin you hold.',add:c=>c.coins*.1,w:['coin']},
- boom:{n:'Fireworks',r:1,c:6,d:'Every 6th drop is a Boom fruit. Each fruit it blows up scores 20 points.',g:['kill'],w:['drops']},
- pet:{n:'Pet Caterpillar',r:1,c:6,d:'Every 5 drops it eats a small fruit (size 3 or less) for 30 points.',g:['kill'],w:['drops']},
- compost:{n:'Compost',r:1,c:6,d:'Gains +0.05 Mult every time a fruit is destroyed (Boom, caterpillar, Scrub, Safety Net).',add:c=>c.ch.v||0,live:1,w:['kill']},
- show:{n:'Showman',r:1,c:6,d:'The first time you use each power in a jar gives +1 Mult until the jar ends.',add:c=>c.pu,w:['power']},
- encore:{n:'Encore',r:1,c:6,d:'After you use a power, your next merge scores ×3.',x:c=>c.enc&&c.l>=0?3:1,w:['power']},
- battery:{n:'Battery',r:1,c:5,d:'Powers recharge twice as fast.',g:['power']},
- shoe:{n:'Horseshoe',r:1,c:6,d:'Every "1 in" chance comes up twice as often.',g:['luck']},
- metro:{n:'Metronome',r:1,c:6,d:'Combos stay alive for 2.5 seconds instead of 1.',g:['combo']},
- net:{n:'Safety Net',r:1,c:6,d:'If the pile overflows, the top half of the jar is cleared instead. Works once.',g:['tall','kill']},
- bank:{n:'Savings Account',r:1,c:6,d:'Interest can pay up to 8 coins per jar instead of 4.',g:['coin'],w:['coin']},
- gold:{n:'Golden Touch',r:1,c:6,d:'Earn 1 coin whenever you make a size 6 fruit or bigger.',g:['coin'],w:['big']},
- soil:{n:'Rich Soil',r:2,c:9,d:'Every fruit you drop is one size bigger.',g:['big']},
- wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1,g:['tall'],w:['tall']},
+ hoard:{n:'Hoarder',r:1,c:6,d:'+0.15 Mult for every fruit in the jar.',add:c=>c.n*.15},
+ tidy:{n:'Clean Plate',r:1,c:7,d:'×2 Mult while the jar holds 6 fruit or fewer.',x:c=>c.n<=6&&!c.idle?2:1},
+ wallet:{n:'Fat Wallet',r:1,c:7,d:'+0.1 Mult for every coin you hold.',add:c=>c.coins*.1},
+ boom:{n:'Fireworks',r:1,c:6,d:'Every 6th drop is a Boom fruit. Each fruit it blows up scores 20 points.'},
+ pet:{n:'Pet Caterpillar',r:1,c:6,d:'Every 5 drops it eats a small fruit (size 3 or less) for 30 points.'},
+ compost:{n:'Compost',r:1,c:6,d:'Gains +0.05 Mult every time a fruit is destroyed (Boom, caterpillar, Scrub, Safety Net).',add:c=>c.ch.v||0,live:1},
+ show:{n:'Showman',r:1,c:6,d:'The first time you use each power in a jar gives +1 Mult until the jar ends.',add:c=>c.pu},
+ encore:{n:'Encore',r:1,c:6,d:'After you use a power, your next merge scores ×3.',x:c=>c.enc&&c.l>=0?3:1},
+ battery:{n:'Battery',r:1,c:5,d:'Powers recharge twice as fast.'},
+ shoe:{n:'Horseshoe',r:1,c:6,d:'Every "1 in" chance comes up twice as often.'},
+ metro:{n:'Metronome',r:1,c:6,d:'Combos stay alive for 2.5 seconds instead of 1.'},
+ net:{n:'Safety Net',r:1,c:6,d:'If the pile overflows, the top half of the jar is cleared instead. Works once.'},
+ bank:{n:'Savings Account',r:1,c:6,d:'Interest can pay up to 8 coins per jar instead of 4.'},
+ gold:{n:'Golden Touch',r:1,c:6,d:'Earn 1 coin whenever you make a size 6 fruit or bigger.'},
+ soil:{n:'Rich Soil',r:2,c:9,d:'Every fruit you drop is one size bigger.'},
+ wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.3 Mult more for every charm you own, this one included.',x:c=>1+.3*c.nc},
- fever:{n:'Melon Fever',r:2,c:9,d:'Gains +1.5 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,live:1,w:['big']}
+ fever:{n:'Melon Fever',r:2,c:9,d:'Gains +1.5 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,live:1}
 };
 /* min = first depth a boss can show up at, q = score target multiplier */
 const BOSS={
@@ -471,7 +468,6 @@ const RG={
  made(R,l){const ev=[],f=RG.has(R,'fever');if(l>=5&&RG.has(R,'gold')){R.coins++;ev.push('gold');}if(RG.has(R,'scratch')&&Math.random()<(RG.has(R,'shoe')?2:1)/6){R.coins++;ev.push('scratch');}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}return ev;},
  kill(R,n){const c=RG.has(R,'compost');if(!c||!(n>0))return false;c.v=+((c.v||0)+.05*n).toFixed(2);return true;},
  net(R){const i=R.ch.findIndex(c=>c.id==='net');if(i<0)return false;R.ch.splice(i,1);return true;},
- syn(id){const a=CH[id],hit=(x,y)=>(x.w||[]).some(t=>(y.g||[]).includes(t));return Object.keys(CH).filter(k=>k!==id&&(hit(a,CH[k])||hit(CH[k],a)));},
  price:(R,p)=>p==='swap'&&RG.has(R,'juggle')?0:RPRICE[p],
  cost:(R,c)=>Math.max(1,c-(RG.has(R,'coupon')?1:0)),
  upCost:(R,id)=>RG.cost(R,UPG[id].c+(id==='scrub'?0:R.up[id]*2)),
@@ -573,10 +569,6 @@ const num=v=>String(+(+v).toFixed(2));
 const chD=c=>CH[c.id].d+(CH[c.id].live?` <b>Now +${num(c.v||0)}.</b>`:'');
 const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id),1)}</${tag}>`;
 const chip=r=>`<small class="chip r${r}">${RAR[r]}</small>`;
-/* which charms combo with this one. short = only the ones you own, as one line for the shop */
-function synH(id,short){const own=RUN.ch.map(c=>c.id),all=RG.syn(id),mine=all.filter(k=>own.includes(k));
- if(short)return mine.length?`<div class="syn">Combos with your ${mine.map(k=>CH[k].n).join(', ')}</div>`:'';
- return all.length?`<p class="syn">Combos with: ${all.map(k=>own.includes(k)?`<b>${CH[k].n}</b>`:CH[k].n).join(', ')}</p>`:'';}
 function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
 /* during a run the header shows the five charm slots. Tap one to inspect or sell it */
 function rgHead(){const t=$('#hd .t');t.className='t ch';let h='';for(let i=0;i<SLOTS;i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
@@ -599,11 +591,11 @@ function rgStart(R){RUN=R;G.mode='rogue';store.set('mode','rogue');setBest();hid
 function rgHub(){G.state='rogue';$('#pauseB').hidden=true;RUN.at='hub';rgSave();
  show(`<div class="mode">Rogue run</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}<button class="go rogue" data-a="rgo">Start jar</button><br><button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
 function rgInfo(){const nb=RG.boss(RUN),ups=Object.keys(UPG).filter(k=>k!=='scrub'&&RUN.up[k]);
- show(`<div class="mode">${jn()} · jar ${RUN.jar+1} of 3</div><h3>Run info</h3>${rgBar()}<div class="sec"><h5>Your charms (${RUN.ch.length}/${SLOTS}) <small>Tap one to see its combos or sell it.</small></h5>${RUN.ch.length?`<ul class="it">${RUN.ch.map((c,i)=>`<li data-a="rch" data-i="${i}">${tile(c.id,'r'+CH[c.id].r)}<div><b>${CH[c.id].n}</b> ${chip(CH[c.id].r)}<br>${chD(c)}</div></li>`).join('')}</ul>`:'<p class="none">None yet. Buy some in the shop.</p>'}</div>
+ show(`<div class="mode">${jn()} · jar ${RUN.jar+1} of 3</div><h3>Run info</h3>${rgBar()}<div class="sec"><h5>Your charms (${RUN.ch.length}/${SLOTS}) <small>Tap one to inspect or sell it.</small></h5>${RUN.ch.length?`<ul class="it">${RUN.ch.map((c,i)=>`<li data-a="rch" data-i="${i}">${tile(c.id,'r'+CH[c.id].r)}<div><b>${CH[c.id].n}</b> ${chip(CH[c.id].r)}<br>${chD(c)}</div></li>`).join('')}</ul>`:'<p class="none">None yet. Buy some in the shop.</p>'}</div>
 ${ups.length?`<div class="sec"><h5>Upgrades</h5><ul class="it">${ups.map(k=>`<li>${tile(k,'up')}<div><b>${UPG[k].n} ×${RUN.up[k]}</b><br>${UPG[k].d}</div></li>`).join('')}</ul></div>`:''}
 <div class="sec"><h5>This depth's boss</h5><ul class="it"><li>${tile(nb,'boss')}<div><b>${BOSS[nb].n}</b><br>${BOSS[nb].d}</div></li></ul></div><button class="go alt" data-a="${G.state==='pause'?'paused':'rback'}">Back</button>`);}
 function rgCharm(i){const c=RUN.ch[i];if(!c)return rgInfo();const d=CH[c.id];
- show(`<div class="mode">Charm ${i+1} of ${RUN.ch.length}</div>${tile(c.id,'big r'+d.r)}<h3>${d.n}</h3><p>${chip(d.r)}</p><p>${chD(c)}</p>${synH(c.id)}<button class="go alt" data-a="rsell" data-i="${i}">Sell for <i class="coin"></i>${Math.floor(d.c/2)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
+ show(`<div class="mode">Charm ${i+1} of ${RUN.ch.length}</div>${tile(c.id,'big r'+d.r)}<h3>${d.n}</h3><p>${chip(d.r)}</p><p>${chD(c)}</p><button class="go alt" data-a="rsell" data-i="${i}">Sell for <i class="coin"></i>${Math.floor(d.c/2)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
 function rgGo(){const c=RG.jarCfg(RUN);RUN.cfg=c;hide();FLOAT.length=0;G.g.jar(c);G.state='play';G.last=0;$('#pauseB').hidden=false;}
 function rgClear(left){const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=`Depth ${RUN.depth} · ${c.boss?BOSS[c.boss].n:'Jar '+(RUN.jar+1)}`;let sum=0;for(const r of rows)sum+=r[1];
  const win=RG.advance(RUN,sum);FLOAT.length=0;if(RUN.jar===0)G.g.wipe();G.state='rogue';$('#pauseB').hidden=true;rgSave();
@@ -612,14 +604,14 @@ function rgClear(left){const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=`Depth ${R
  else show(`<div class="mode">${was}</div><h3>Jar cleared!</h3>${pay}<p class="tg">You now have ${cn(RUN.coins)}</p><button class="go rogue" data-a="rshop">Shop</button>`);}
 function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgSave();const S=RUN.shop,full=RUN.ch.length>=SLOTS,rr=RG.cost(RUN,2+S.rr),old=ui.querySelector('.msg'),sy=keep&&old?old.scrollTop:0;
  const buy=(a,i,p,no)=>`<button class="go sm" data-a="${a}" data-i="${i}"${no||RUN.coins<p?' disabled':''}>${no?'Full':'<i class="coin"></i>'+p}</button>`;
- const it=S.ch.map((id,i)=>{if(!id)return'';const d=CH[id];return `<li>${tile(id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}${synH(id,1)}</div>${buy('rbuy',i,RG.cost(RUN,d.c),full)}</li>`}).join('');
+ const it=S.ch.map((id,i)=>{if(!id)return'';const d=CH[id];return `<li>${tile(id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}</div>${buy('rbuy',i,RG.cost(RUN,d.c),full)}</li>`}).join('');
  const up=S.up.map((id,i)=>{if(!id)return'';const d=UPG[id];return `<li>${tile(id,'up')}<div><b>${d.n}</b>${id!=='scrub'&&RUN.up[id]?` <small class="chip">Owned ×${RUN.up[id]}</small>`:''}<br>${d.d}</div>${buy('rup',i,RG.upCost(RUN,id))}</li>`}).join('');
  let own='';for(let i=0;i<SLOTS;i++){const c=RUN.ch[i];own+=c?tile(c.id,'r'+CH[c.id].r,'button',` data-a="rch" data-i="${i}" aria-label="${CH[c.id].n}"`):'<i class="tile e"></i>';}
  const m=show(`<div class="mode">${jn()}</div><h3>Shop</h3><p class="tg">You have ${cn(RUN.coins)}</p>
 <div class="sec"><h5>Charms <small>Items that work on their own once bought. You can hold ${SLOTS}.${full?' Sell one to make room.':''}</small></h5>${it?`<ul class="it">${it}</ul>`:'<p class="none">Sold out.</p>'}</div>
 <div class="sec"><h5>Upgrades <small>Permanent boosts. They don't take a slot.</small></h5>${up?`<ul class="it">${up}</ul>`:'<p class="none">Sold out.</p>'}</div>
 <button class="go alt sm" data-a="rroll"${RUN.coins<rr?' disabled':''}>Reroll shop <i class="coin"></i>${rr}</button>
-<div class="sec"><h5>Your charms (${RUN.ch.length}/${SLOTS}) <small>Tap one to see its combos or sell it.</small></h5><div class="own">${own}</div></div>
+<div class="sec"><h5>Your charms (${RUN.ch.length}/${SLOTS}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${own}</div></div>
 <div class="sec"><h5>Up next</h5>${rgTrack()}</div><button class="go rogue" data-a="rgo">Start jar</button><br><button class="go lnk" data-a="menu">Save &amp; quit</button>`);m.scrollTop=sy;}
 function rgEnd(why){G.over={why,d:RUN.depth,j:RUN.jar};store.set('run',null);gameOver(RUN.total);}
 function ovH(){const o=G.over;if(G.mode!=='rogue'||!o)return '<h3>Game over!</h3>';if(o.why==='win')return `<h3>Run complete!</h3><p class="tg">You beat ${o.d>DEPTHS+1?o.d-1:'all '+DEPTHS} depths.</p>`;

@@ -10,8 +10,6 @@ Drop fruit, merge matching ones, make a watermelon. The game lives in `index.htm
 
 Rogue rules live in the `rogue mode: rules` section of `index.html`: `CH` (charms), `BOSS`, `UPG` (upgrades), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RPAY` (coins per jar) and `RPRICE` (power prices).
 
-Charms combo through tags. Each charm can list what it gives (`g`) and what it wants (`w`), for example Piggy Bank gives `coin` and Fat Wallet wants `coin`. Two charms combo when one gives something the other wants. The shop and the charm screen read those tags to show "Combos with".
-
 ## Icons
 
 No image files. Every icon is a 12x12 grid of letters in `icons.js`, one letter per pixel, drawn at load time. To change an icon, edit its letters. To add one, add a grid and use it as `<i class="px px-NAME"></i>`. A charm, boss or upgrade uses the grid with the same name as its id, unless `ICN` in `index.html` points it at another one. The score pop-up font is in the same file.
