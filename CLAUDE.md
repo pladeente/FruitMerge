@@ -8,7 +8,8 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 
 | File | What it holds |
 |---|---|
-| `index.html` | Everything: CSS, HTML shell, engine, all three modes, UI. About 660 very long lines. |
+| `index.html` | CSS, HTML shell, engine (`makeGame`), Classic and Wild, all screens including the Rogue ones, the dev panel. About 580 very long lines. |
+| `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `RG`, balance tables), the player profile (`PF`, `mergeProfile`) and run events (`rgEv`). Loaded before the main script. No DOM access. |
 | `icons.js` | Pixel art. `PXD` = 12x12 letter grids, `PXP` = palette, `PXF`/`PXFB` = score pop-up font. |
 | `sw.js` | Service worker, network first, cache fallback. Bump `CACHE` and update `CORE` whenever a file is added or renamed. |
 | `database.rules.json` | Firebase Realtime Database rules for the leaderboard (pasted into the console by hand). |
@@ -19,6 +20,8 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - Run: `python3 -m http.server 8000` in the repo root, open `http://localhost:8000`. Opening the file directly also works, minus the service worker.
 - No test suite. Verify changes by driving the page with Playwright (preinstalled in cloud sessions): load, start a Rogue run, drop fruit, open the shop, check the console for errors. Keep throwaway scripts out of the repo.
 - Syntax check quickly by loading the page headless and failing on any `pageerror`.
+- The engine can be stepped by hand in a test: `G.g.up(x)` drops, `G.g.update(.016)` advances one frame, so a whole jar plays in milliseconds. Top-level `const`s (`G`, `RUN`, `RG`, `PF`) are reachable from `page.evaluate`.
+- **Dev panel**: open the page with `?dev`. Jump to any depth and jar, set the boss, add charms and upgrades, add coins, clear the jar being played, log or reset the profile. Any run it touches gets `R.dev=1`: no stats, no glossary marks, no score boards. Add new item types to it as they land.
 
 ## Code conventions
 
@@ -31,18 +34,21 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - Font is Jersey 15, embedded as base64 in `index.html`. Do not open that line in an editor view if avoidable, it is huge.
 - In-game text is short, plain and literal. A description must say exactly what the item does, with numbers.
 
-## Architecture (index.html)
+## Architecture
 
-- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run).
+- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress).
 - `G`: app state. `G.state` is one of `menu`, `play`, `pause`, `over`, `rogue` (any Rogue screen between jars). `G.g` is the live game, `RUN` the live Rogue run.
 - `makeGame(W,H,wild,onOver,ro)`: the engine (physics, merging, specials, powers, drawing). Returns `{update, draw, up, use, jar, wipe, snap, load, scrub, ...}`. `ro` is null in Classic and Wild. In Rogue it is the hook object from `RG.ro(R, clear, fail, fx)`, the only way the engine talks to run state.
-- `RG`: pure Rogue rules over a run object `R`: `new`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`.
+- `RG` (`rogue.js`): pure Rogue rules over a run object `R`: `new`, `saved`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`.
+- `PF` (`rogue.js`): the profile, one object under one storage key: `{v, rev, at, seen, unlocked, ach, stats, stakes}`. `seen`/`unlocked`/`ach` map namespaced ids (`ch.juicer`, `boss.fog`, `up.fert`) to the time first reached. `stats` is flat counters and records that only go up (`PF.inc`, `PF.max`). `PF.save()` writes only when dirty and is called from `rgSave`, `rgEnd`, tab hide and page hide. `mergeProfile(a,b)` joins two copies (earliest time, highest number) and is the whole sync story for sign-in. All meta progress must live in the profile.
+- `rgEv(R, name, data)` (`rogue.js`): the single place things get counted, into `R.st` (run), `R.jst` (current jar, reset by the `start` event) and `PF.d.stats` (lifetime). The engine fires `drop`, `merge`, `tool`, `kill`, `net` through `ro.ev`. Screens fire `run`, `start`, `jar`, `end`, `buy`, `sell`, `up`, `roll`. Achievements (Stage 5) hook in at the end of it. New mechanics must fire an event here.
+- `rgSee(kind, ids)`: marks things as met for the glossary. Called when the shop or hub shows them.
 - Rogue UI: `rgIntro`, `rgStart`, `rgHub`, `rgGo`, `rgClear`, `rgShop`, `rgInfo`, `rgCharm`, `rgEnd`, header charm slots in `rgHead`, charm flash in `rgPulse`.
 - Leaderboard: `lbTop`/`lbSubmit`, Firebase REST, no SDK. Modes `classic`, `wild`, `rogue`.
 
-### Run object (save version `v:2`)
+### Run object (save version `RV`, now 3)
 
-`{v, depth, jar, coins, total, ch:[{id, v?}], up:{fert,sauce,can,scrub}, bs:[boss ids per depth], shop:{ch,up,rr}, pile:[snapshot], at:'hub'|'shop', won, cfg}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves (`rgIntro` and `rgAct` check `sv.v`).
+`{v, depth, jar, coins, total, ch:[{id, v?}], up:{fert,sauce,can,scrub}, bs:[boss ids per depth], shop:{ch,up,rr}, pile:[snapshot], at:'hub'|'shop', won, cfg, st:{run stats}, jst:{jar stats}, dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
 
 ## Rogue mode as it stands
 
@@ -73,12 +79,9 @@ Taken from what makes Balatro and Vampire Survivors work, applied to a physics m
 
 Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section as stages land. One stage per commit series, each stage leaves the game playable.
 
-### Stage 0: Foundations — planned
-- Move Rogue data and rules (`CH`, `BOSS`, `UPG`, `RG`, balance tables) into a new `rogue.js`. Add it to `sw.js` `CORE`, bump `CACHE`.
-- `profile` save: one versioned JSON blob `{v, rev, updatedAt, seen:{}, unlocked:{}, ach:{}, stats:{}, stakes:{}}` under one key. All meta progress goes here and nowhere else, so sign-in later is a single-object sync. Include `mergeProfile(a,b)` (union of sets, max of counters) from day one.
-- Engine event hook `ro.ev(name, data)` for stats and achievements (merge, drop, tool used, fruit destroyed, jar cleared, boss cleared, overflow saved).
-- Run save `v:3`. Old `v:2` runs are dropped.
-- `?dev` panel: jump to a depth, grant coins/items, pick boss. For balance testing only.
+### Stage 0: Foundations — done
+- Rogue rules moved to `rogue.js`. Profile save with `mergeProfile`. Event hook `rgEv` / `ro.ev`. Run save `v:3`, older runs dropped. `?dev` panel. See Architecture above.
+- No gameplay change. Stats and glossary marks are recorded from here on, with no screen to show them until Stage 5.
 
 ### Stage 1: Tools (clickable abilities) — planned
 - Powers become **Tools**: a loadout of slots (start 2, max 4) filled from shop and crates. Start with Swap and Shake.
@@ -122,14 +125,12 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 ## Open decisions (defaults will be used unless the user says otherwise)
 
 1. Tools charge from merges, coins are shop-only.
-2. Rogue code moves to `rogue.js`.
-3. Saved `v:2` runs are dropped at Stage 0.
-4. Charm order stays irrelevant to scoring.
-5. Existing charms stay unlocked.
+2. Charm order stays irrelevant to scoring.
+3. Existing charms stay unlocked.
 
 ## Working rules
 
-- Nothing in the roadmap is implemented until the user gives the go-ahead for that stage.
+- Nothing in the roadmap is implemented until the user gives the go-ahead for that stage. One go-ahead covers one stage.
 - Keep `README.md` and this file current when rules or tables change.
 - Never add permanent power meta progression (see pillar 7) without asking.
 - The Firebase rules file is applied by hand in the console. Any change to it must be called out to the user.

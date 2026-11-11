@@ -1,6 +1,6 @@
 # Fruit Merge
 
-Drop fruit, merge matching ones, make a watermelon. The game lives in `index.html`, the pixel art in `icons.js`.
+Drop fruit, merge matching ones, make a watermelon. The game lives in `index.html`, the Rogue rules in `rogue.js`, the pixel art in `icons.js`.
 
 ## Modes
 
@@ -8,7 +8,11 @@ Drop fruit, merge matching ones, make a watermelon. The game lives in `index.htm
 - **Wild**: special fruit, mould, a caterpillar, and coin powers.
 - **Rogue**: a run of 8 depths. Each depth is 3 jars with a score target and a drop limit, and the third jar is a boss with its own rule. The pile carries over between jars and is emptied at each new depth. Cleared jars pay coins for the shop, which sells charms (passive items, 5 slots) and permanent upgrades. Coins also pay for powers mid-jar. A run is saved between jars, so it can be continued later. Beating depth 8 wins, after which the run can continue into endless depths.
 
-Rogue rules live in the `rogue mode: rules` section of `index.html`: `CH` (charms), `BOSS`, `UPG` (upgrades), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RPAY` (coins per jar) and `RPRICE` (power prices).
+Rogue rules live in `rogue.js`: `CH` (charms), `BOSS`, `UPG` (upgrades), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RPAY` (coins per jar) and `RPRICE` (power prices).
+
+Progress that outlives a run (stats, things met) is kept in one `profile` object on the device, ready to sync once sign-in exists.
+
+For testing, open the page with `?dev` on the end of the address. A panel lets you jump to any depth, pick the boss and hand yourself charms. Runs it touches do not count for scores or stats.
 
 ## Icons
 
