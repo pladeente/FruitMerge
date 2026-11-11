@@ -14,6 +14,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 | `sw.js` | Service worker, network first, cache fallback. Bump `CACHE` and update `CORE` whenever a file is added or renamed. |
 | `database.rules.json` | Firebase Realtime Database rules for the leaderboard (pasted into the console by hand). |
 | `README.md` | Player/host facing notes, including Firebase setup. |
+| `DESIGN.md` | Rogue design view: builds each item feeds, thin builds, power budget by rarity, how often items turn up, candidate items. Read before proposing new items. |
 
 ## Run and test
 
@@ -137,6 +138,6 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 ## Working rules
 
 - Ask before starting anything under "Later". The seven stages above were each started on the user's go-ahead.
-- Keep `README.md` and this file current when rules or tables change.
+- Keep `README.md` and this file current when rules or tables change. Keep `DESIGN.md` current when items are added, removed or change build.
 - Never add permanent power meta progression (see pillar 7) without asking.
 - The Firebase rules file is applied by hand in the console. Any change to it must be called out to the user.
