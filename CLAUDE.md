@@ -2,7 +2,7 @@
 
 A drop-and-merge physics game (drop fruit, matching pairs merge one size up, 11 sizes, the last is a watermelon). Static site, no build step, no dependencies, installable as a PWA. Hosted from the repo root (GitHub Pages style).
 
-The active work is turning **Rogue mode** into a deep roguelite. Classic and Wild are finished and should not change unless asked.
+Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses with phases, awards, stakes and starting jars. All seven stages of the expansion plan below are done. Classic and Wild are finished and should not change unless asked.
 
 ## Files
 
@@ -36,7 +36,7 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 
 ## Architecture
 
-- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress).
+- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress), `jar` and `stake` (the last picks on the new-run screen, a device preference).
 - `G`: app state. `G.state` is one of `menu`, `play`, `pause`, `over`, `rogue` (any Rogue screen between jars). `G.g` is the live game, `RUN` the live Rogue run.
 - `makeGame(W,H,wild,onOver,ro)`: the engine (physics, merging, specials, powers, drawing). Returns `{update, draw, up, use, jar, wipe, snap, load, scrub, ...}`. `ro` is null in Classic and Wild. In Rogue it is the hook object from `RG.ro(R, clear, fail, fx)`, the only way the engine talks to run state.
 - `RG` (`rogue.js`): pure Rogue rules over a run object `R`: `new`, `saved`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`, and for tools `tool`, `ts` (slots), `need`, `charge`, `fill`, `buyTl`, `sellTl`. Read limits and prices through the helpers, never the raw tables: `slots` (charm slots), `ts`, `need` (charge a tool needs), `sellV`, `rrCost`, `upCost`, `upOk`, `sdCost`. Upgrades change all of them.
@@ -47,12 +47,12 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - `rgSee(kind, ids)`: marks things as met for the Almanac. Called when the shop, hub or a crate shows them. Kinds: `ch`, `tl`, `fu`, `up`, `sd`, `boss`.
 - Awards (`ACH` in `rogue.js`): `on` = the events that can earn it, `t(R, d, S)` = the test, `un` = the lock key it opens (`ch.id`, `tl.id`, `up.id`, `fu.id`, `jar.id`), `secret` hides the text until earned. `LOCK` maps each key back to its award. `PF.lk(key)` is true while a thing is locked, and `RG.stock`, `RG.crate`, `RG.fusable` and `RG.upOk` all respect it. Earned awards go to `PF.d.ach` and `PF.d.unlocked`, to `R.got` (run over screen) and to `ACHQ` (the toast, shown by `toastTick`). Tests that need locked content must unlock it first: `for(const k in LOCK)PF.d.unlocked[k]=1`.
 - Almanac: `almanac(tab)` with `alRows(kind)` building the entries. Locked entries show the award's text, unmet ones a silhouette, met ones the full text and lifetime stats. Opened from the menu, the Rogue intro and the pause screen (`G.alFrom` says where Back goes).
-- Rogue UI: `rgIntro`, `rgStart`, `rgHub`, `rgGo`, `rgClear`, `rgCrate`, `rgShop`, `rgInfo`, `rgCharm`, `rgTool`, `rgEnd`, shared pieces `rgOwn` (owned charms and tools as tiles), `rgFuNote`, `rgSkipB`, header charm slots in `rgHead`, charm flash in `rgPulse`.
-- Leaderboard: `lbTop`/`lbSubmit`, Firebase REST, no SDK. Modes `classic`, `wild`, `rogue`.
+- Rogue UI: `rgIntro`, `rgSetup` (pick jar and stake), `rgStart`, `rgHub`, `rgGo`, `rgClear`, `rgCrate`, `rgShop`, `rgInfo`, `rgCharm`, `rgTool`, `rgEnd`, shared pieces `rgOwn` (owned charms and tools as tiles), `rgFuNote`, `rgSkipB`, header charm slots in `rgHead`, charm flash in `rgPulse`.
+- Leaderboard: `lbTop`/`lbSubmit`, Firebase REST, no SDK. Modes `classic`, `wild`, `rogue`. A Rogue score above stake 1 carries `k` (the stake). `lbSubmit` sends it and, if the write is refused (database rules older than the field), sends the score again without it. Boards show a Stake chip.
 
-### Run object (save version `RV`, now 8)
+### Run object (save version `RV`, now 9)
 
-`{v, depth, jar, coins, total, ch:[{id, v?}], tl:[{id, c}] (tools, `c` = charge held), up:{one count per `UPG` key}, sd:[11 seed levels, index = tier made], bs:[boss ids per depth], ms:{depth: mini boss id}, bq:{depth: [two rule ids] for The Orchard Queen}, off (charms switched off by The Thief, only non-zero mid-jar), shop:{ch,tl,up,sd,cr,rr} (`cr` = kind of the crate on sale), crate:{tier,then,kind,opts}|null, pile:[snapshot], at:'hub'|'shop'|'crate', won, cfg, st:{run stats}, jst:{jar stats}, got:[awards earned this run], dsk (jars skipped this depth), dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
+`{v, jarId, stake, depth, jar, coins, total, ch:[{id, v?}], tl:[{id, c}] (tools, `c` = charge held), up:{one count per `UPG` key}, sd:[11 seed levels, index = tier made], bs:[boss ids per depth], ms:{depth: mini boss id}, bq:{depth: [two rule ids] for The Orchard Queen}, bx:{depth: extra rule id for a final boss on stake 8}, off (charms switched off by The Thief, only non-zero mid-jar), shop:{ch,tl,up,sd,cr,rr} (`cr` = kind of the crate on sale), crate:{tier,then,kind,opts}|null, pile:[snapshot], at:'hub'|'shop'|'crate', won, cfg, st:{run stats}, jst:{jar stats}, got:[awards earned this run], dsk (jars skipped this depth), dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
 
 ## Rogue mode as it stands
 
@@ -69,6 +69,8 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - Boss phases: on the boss jar (`cfg.p2`), reaching half the target calls `phase2()` in the engine. Every rule flag in `B` goes from 1 to 2 and the code reads the flag's value (`seq%(B.sticky>1?2:3)`). One-off hits (Padlock drains tools, Hourglass takes 2 drops, Melon King drops a rock) happen there. `cfg.rules` lists the flags a jar switches on: one for a normal boss, two for the Orchard Queen (`RG.rules`). Texts come from `RG.bossD(R, id, depth, two)`, never straight from `BOSS[id].d`, because the Queen's text depends on the run.
 - Boss machinery in the engine: `bossTick(dt)` runs every frame (line position for Lid and Tide, wall position for Vise, the phase switch, Leech drain, Clock auto-drop). `sc()` wraps every score so the Auditor can cap Mult, `chg()` wraps every tool charge so the Miser can slow it, `mx()` flips the aim for the Mirror. The walls `L`/`Rw` and the line `line` are variables now, with `L0`/`R0`/`line0` as the resting values (the pile snapshot uses the resting ones). `RG.has` ignores the first `R.off` charms, which is how the Thief works.
 - Upgrades (`UPG`, 18): `max` caps how many can be owned, `now` marks the instant ones (Scrub, Bribe). Owned ones cost 2 more each time. Stacking with no cap: Fertiliser, Hot Sauce, Watering Can. Capped: Tool Belt, Charm Pouch, Bigger Shelf, Seed Bag, Loaded Dice, Good Taste, Haggler, Vault, Packed Lunch, Whetstone, Slow Fuse, Tambourine, Crowbar. The engine reads them through `ro.up(id)`.
+- Stakes (`STAKES`, 8): each adds one rule on top of the ones below: 2 jars pay 1 coin less, 3 targets ×1.25, 4 three fewer drops, 5 shop prices +1, 6 a mini boss on every depth from 5, 7 one charm slot fewer, 8 bosses start in phase 2 and the final boss brings a second boss rule. `RG.stakeMax()` is one above the best stake won with any jar. Wins are stored per jar in `PF.d.stakes`. All of it is read from `R.stake` inside `RG.jarCfg`, `RG.cost`, `RG.slots`, `RG.mid` and `RG.rules`.
+- Starting jars (`JARS`, 6): Classic, and five opened by awards. Piggy (12 coins, interest cap +2, jars pay 1 less), Deep (+4 drops, targets ×1.15), Charm (+1 charm slot, starts with Swap only, 1 tool slot fewer), Tool Kit (3 tools and 3 slots, 1 charm slot fewer), Crate (no charms in the shop, every cleared jar drops a wooden crate). Read from `R.jarId` in the same helpers.
 - Seeds: `R.sd[l]` is the level for the fruit of tier `l` (1 to 10, shown as size `l+1`). Each level gives `sdP(l)=4+2l` points and `SDM=0.5` Mult when that fruit is made. Price `SDC=3` plus 1 per level held. The shop offers sizes 2 to 8 before depth 4, every size after.
 - Economy: jar payout `RPAY`, unused drops bonus, interest 1 per 5 coins (cap 4), shop of 3 charms, 2 tools, 3 upgrades, 2 seeds and 1 crate, reroll from 2 coins, sell for half price. Coins are spent in the shop only.
 - Balance tables: `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RSCX`, `RDROPS`, `RPAY`, and `c`/`ch` on each tool. `RSC` was set from bot runs, not human play: a bot that aims every fruit at a matching one and buys nothing scores about 230 points per 24-drop jar at any depth. The same bot buying greedily (first charm it can afford, no thought for synergy, no targeted tools) wins about 1 run in 12 on this curve and usually dies between depths 3 and 6. Re-measure after any change to scoring power.
@@ -116,13 +118,14 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - None of the charms from before the expansion is locked.
 - Almanac with tabs Charms, Tools, Fusions, Upgrades (seeds included), Bosses, Awards. Award toasts in play, awards listed on the run over screen.
 
-### Stage 6: Stakes and starting jars — planned
-- **Stakes**: 8 stacking difficulty levels, each unlocked by winning the one below (lower payouts, faster targets, fewer drops, dearer shop, mid-bosses from depth 5, perishable charms, phase 2 from the start, double-rule final boss).
-- **Starting jars**: 5 or 6 unlockable loadouts with a rule twist each.
-- Leaderboard: record the stake with the score. Needs a `database.rules.json` change and a console re-publish, flag this to the user.
-- Full balance pass.
+### Stage 6: Stakes and starting jars — done
+- 8 stakes, 6 starting jars, a new-run screen to pick them, the stake on local and world score boards.
+- "Perishable charms" was dropped for stake 7 in favour of one charm slot fewer: it needed a per-charm countdown and is more annoying than hard.
+- `database.rules.json` now accepts the optional stake field `k` on Rogue scores. Until the user re-publishes the rules in the Firebase console, scores still post, without their stake.
 
 ### Later
+- Fruit art: the user is drawing fruit sprites. Fruit are drawn in code today (`drawFruit`, `drawMelon`). Each fruit is a circle in the physics and rotates, so art should be a square image filled edge to edge, and the face (including the X-eyed mouldy one) is drawn by the game.
+- Human playtesting of the difficulty curve, stakes and the newer bosses. Everything so far was tuned against a bot.
 - Sign-in and cloud save (user will ask). Plan: Firebase Auth, `users/$uid/profile`, merge with `mergeProfile`. The run save can sync too.
 - Charm editions, daily seeded run, more fusions.
 
@@ -133,7 +136,7 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 
 ## Working rules
 
-- Nothing in the roadmap is implemented until the user gives the go-ahead for that stage. One go-ahead covers one stage.
+- Ask before starting anything under "Later". The seven stages above were each started on the user's go-ahead.
 - Keep `README.md` and this file current when rules or tables change.
 - Never add permanent power meta progression (see pillar 7) without asking.
 - The Firebase rules file is applied by hand in the console. Any change to it must be called out to the user.

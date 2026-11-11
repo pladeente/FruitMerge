@@ -113,7 +113,7 @@ tr.me td{background:#35c2b42a}
 .tile.up{box-shadow:inset 0 0 0 3px #b388eb}.tile.tl{box-shadow:inset 0 0 0 3px #4cc9f0}.tile.sd{box-shadow:inset 0 0 0 3px #7bc950}.tile.boss{box-shadow:inset 0 0 0 3px var(--coral)}.slot.boss{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--coral)}
 .tile.e,.slot.e{background:#ffffff10;box-shadow:inset 0 0 0 2px var(--line)}
 .tile.big{width:64px;height:64px;border-radius:12px;margin-top:8px}.tile.big .px{width:48px;height:48px}
-.tabs.al{flex-wrap:wrap}.tabs.al button{padding:5px 9px;font-size:16px}
+.tabs.al{flex-wrap:wrap}.tabs button:disabled{opacity:.3;cursor:default}.tabs.al button{padding:5px 9px;font-size:16px}
 .tile.un .px{filter:brightness(0);opacity:.3}.it li.un b,.it li.lk b{color:var(--muted)}.it small.st{color:var(--muted);font-size:14px}
 #toast{position:absolute;left:8px;right:8px;bottom:8px;z-index:5;padding:8px 10px;border-radius:12px;background:#2f1e47f7;box-shadow:0 0 0 2px var(--brass),0 6px 18px #0008;display:flex;gap:10px;align-items:center;text-align:left;font-size:16px;line-height:1.15;pointer-events:none;animation:toast 4s ease both}
 #toast[hidden]{display:none}#toast b{display:block;font:700 20px var(--display);color:var(--brass)}
@@ -182,9 +182,10 @@ const LB_URL='https://fruitmerge-cd4d4-default-rtdb.firebaseio.com'; /* e.g. 'ht
 const LB=LB_URL.replace(/\/+$/,''),LBC={};
 function lbReq(path,opt={}){const ab=new AbortController(),to=setTimeout(()=>ab.abort(),7000);return fetch(LB+path,{...opt,signal:ab.signal}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).finally(()=>clearTimeout(to));}
 function lbTop(m,fresh){const c=LBC[m];if(!fresh&&c&&Date.now()-c.at<20000)return Promise.resolve(c.list);
- return lbReq(`/scores/${m}.json?orderBy=%22s%22&limitToLast=100`).then(o=>{const by={};for(const r of Object.values(o||{})){if(!r||typeof r.s!=='number'||typeof r.n!=='string')continue;const k=r.n.toLowerCase();if(!by[k]||r.s>by[k].s)by[k]={n:r.n,s:r.s,t:r.t||0};}
+ return lbReq(`/scores/${m}.json?orderBy=%22s%22&limitToLast=100`).then(o=>{const by={};for(const r of Object.values(o||{})){if(!r||typeof r.s!=='number'||typeof r.n!=='string')continue;const k=r.n.toLowerCase();if(!by[k]||r.s>by[k].s)by[k]={n:r.n,s:r.s,t:r.t||0,k:r.k};}
   const list=Object.values(by).sort((a,b)=>b.s-a.s||a.t-b.t).slice(0,MAXS);LBC[m]={at:Date.now(),list};return list;});}
-function lbSubmit(m,n,s){delete LBC[m];return lbReq(`/scores/${m}.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n,s,t:{'.sv':'timestamp'}})});}
+/* k = the Rogue stake, sent only above stake 1. If the database rules are older than that field the write is refused, so it is sent again without it */
+function lbSubmit(m,n,s,k){delete LBC[m];const post=o=>lbReq(`/scores/${m}.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}),o={n,s,t:{'.sv':'timestamp'}};return k>1?post({...o,k}).catch(()=>post(o)):post(o);}
 const ASP=.68; /* jar width / height */
 const ASP_TALL=.52; /* tall phones get extra headroom above the line, the play area itself never changes */
 
@@ -371,7 +372,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  get score(){return score},get jarScore(){return Math.floor(js)},get phase(){return ph},get coins(){return ro?ro.coins:coins},get cd(){return cd},get locked(){return !!(J&&B.lock)},get arm(){return arm},price:p=>PRICE[p],
  jar(j){ph=1;vz=0;ck=0;gotC=0;L=L0;Rw=R0;cyc=0;arm=null;free=0;dd=0;tu=0;lastF=null;stash=null;for(const f of fr)if(f.anch){f.anch=0;f.stuck=0;}if(ro.has('spark'))ro.fill();
   J=j;B={};for(const k of j.rules||[])B[k]=1;ro.off(B.thief?1:0);js=0;dl=j.drops;jd=0;jm=0;seq=0;done=0;doneT=0;pu={};enc=0;over=false;overT=0;grace=2.5;cool=.4;lastD=time;combo=0;catT=1e9;for(const k in cd)cd[k]=0;
-  bossTick(0);cur=genT();curSp=genSp();deal();if(B.melon)add({x:W/2,y:rad(10)+2,vx:0,vy:0,l:10,age:0,a:0});ban={t:3.2,a:j.name,b:j.rule,ic:j.ic};},
+  bossTick(0);cur=genT();curSp=genSp();deal();if(B.melon)add({x:W/2,y:rad(10)+2,vx:0,vy:0,l:10,age:0,a:0});ban={t:3.2,a:j.name,b:j.rule,ic:j.ic};if(j.p2s){phase2();ban={t:4.2,a:j.name,b:j.rule+' '+j.rule2,ic:j.ic};}},
  wipe(){fr=[];cat=null;parts=[];line=line0;L=L0;Rw=R0;vz=0;B={};J=null;},
  cheat(f=1){if(J&&!done){js=J.quota*f;if(f>=1)gotC=1;}}, /* dev panel: fill the jar's target (or a share of it) */
  peek(){return{dl,free,dd,cyc,jd,jm,tu,cur,curSp,nxt,nxtSp,arm,n:fr.length,ph,B:{...B},line,L,Rw,js,gotC,vz};}, /* for tests and the dev panel */
@@ -509,7 +510,7 @@ function drawIdle(){ctx.fillStyle='#fff3e6';ctx.fillRect(0,0,G.W,G.H);const r=G.
 function show(html){let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');m.className='msg';ui.appendChild(m)}m.innerHTML=html;m.scrollTop=0;return m}
 function hide(){ui.innerHTML=''}
 function setBest(){$('#best').textContent=best()}
-const rows=(L,me)=>'<table>'+L.map((r,i)=>`<tr${me(r,i)?' class="me"':''}><td>${i+1}</td><td>${esc(r.n)}</td><td>${r.s}</td><td>${esc(r.d)}</td></tr>`).join('')+'</table>';
+const rows=(L,me)=>'<table>'+L.map((r,i)=>`<tr${me(r,i)?' class="me"':''}><td>${i+1}</td><td>${esc(r.n)}${r.k>1?` <small class="chip">Stake ${+r.k}</small>`:''}</td><td>${r.s}</td><td>${esc(r.d)}</td></tr>`).join('')+'</table>';
 function table(m,hi=-1){const L=SC[m];if(!L.length)return '<p class="none">No scores yet. Be the first!</p>';return rows(L,(r,i)=>i===hi)}
 const fmtD=t=>t?new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short'}):'';
 function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loading world scores…</p>';
@@ -547,7 +548,7 @@ function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode,loc=
   el.querySelector('form').onsubmit=e=>{e.preventDefault();const n=inp.value.trim().slice(0,12)||'Player';lastName=n;store.set('name',n);saveScore(n,s,m,loc)};
   G.pending=s;}
  else{snd('over');showOver(s,-1,LB&&s>0?lbSubmit(m,lastName,s):null)}}
-function saveScore(n,s,m,loc=true){let hi=-1;if(loc){const rec={n,s,d:fmtD(Date.now()),t:Date.now()};SC[m].push(rec);SC[m].sort((a,b)=>b.s-a.s||a.t-b.t);SC[m]=SC[m].slice(0,MAXS);store.set(SKEY[m],SC[m]);setBest();hi=SC[m].indexOf(rec);}G.pending=null;showOver(s,hi,LB?lbSubmit(m,n,s):null)}
+function saveScore(n,s,m,loc=true){let hi=-1;const k=m==='rogue'&&G.over?G.over.k||1:1;if(loc){const rec={n,s,d:fmtD(Date.now()),t:Date.now()};if(k>1)rec.k=k;SC[m].push(rec);SC[m].sort((a,b)=>b.s-a.s||a.t-b.t);SC[m]=SC[m].slice(0,MAXS);store.set(SKEY[m],SC[m]);setBest();hi=SC[m].indexOf(rec);}G.pending=null;showOver(s,hi,LB?lbSubmit(m,n,s,k):null)}
 function showOver(s,hi,sub){const m=G.mode,w=!!LB;const el=show(`<div class="mode">${MNAME[m]}</div>${ovH()}<div class="big">${s}</div>${hi<0&&best()?`<p class="tg">Best: ${best()}</p>`:''}${w?`${hi>=0?`<p class="tg">#${hi+1} on this device</p>`:''}<h4>World top ${MAXS}</h4><div id="bd"></div>`:table(m,hi)}<button class="go${GOC[m]}" data-a="play" data-m="${m}">Play again</button><button class="go alt" data-a="menu">Menu</button>`);if(w)worldBoard(el.querySelector('#bd'),m,sub?lastName:null,sub)}
 
 /* ---------- almanac: everything met so far, and the awards ---------- */
@@ -599,6 +600,14 @@ function rgIntro(){if(G.state!=='menu'||RUN)menu();G.mode='rogue';store.set('mod
 <li><span>${ic('gold')}</span><div>A merge scores its points times your <b>Mult</b>. Charms push both up, and the right pairs <b>combo</b>.</div></li></ul>
 <canvas id="chain"></canvas><p style="font-size:15px;color:var(--muted);margin:0">Fruit sizes, as charms and bosses call them.</p>
 ${ok?`<button class="go rogue" data-a="rcont">Continue (depth ${sv.depth}, jar ${sv.jar+1})</button><br>`:''}<button class="go${ok?' alt':' rogue'}" data-a="rnew">New run</button><br><button class="go alt sm" data-a="almanac" data-f="intro">Almanac</button><button class="go alt sm" data-a="menu">Back</button>`);chain(m,1);}
+/* new run: pick a starting jar and a stake */
+function rgSetup(){const mx=RG.stakeMax(),U=G.su=G.su||{jar:store.get('jar','classic'),stake:store.get('stake',1)};if(!JARS[U.jar]||PF.lk('jar.'+U.jar))U.jar='classic';U.stake=clampN(+U.stake||1,1,mx);const old=ui.querySelector('.msg'),sy=old&&old.querySelector('[data-a=rbegin]')?old.scrollTop:0;
+ const jars=Object.keys(JARS).map(id=>{const lk=PF.lk('jar.'+id),a=lk&&ACH[LOCK['jar.'+id]],best=PF.d.stakes[id],on=id===U.jar;return `<li${lk?' class="lk"':` data-a="rjar" data-j="${id}"`}>${tile(lk?'lock':'jar_'+id,lk?'e':on?'r1':'')}<div><b>${lk?'Locked':JARS[id].n}</b>${on?' <small class="chip r1">Picked</small>':''}${best?` <small class="chip r2">Won on stake ${best}</small>`:''}<br>${lk?(a.secret?'A secret award unlocks this.':'Award: '+a.d):JARS[id].d}</div></li>`}).join('');
+ const m=show(`<h3>New run</h3><div class="sec"><h5>Starting jar</h5><ul class="it">${jars}</ul></div>
+<div class="sec"><h5>Stake ${U.stake} <small>Each stake adds a rule on top of the ones below it.${mx<STAKES.length?` Win on stake ${mx} to open stake ${mx+1}.`:''}</small></h5><div class="tabs al">${STAKES.map((t,i)=>`<button data-a="rstake" data-s="${i+1}"${i+1===U.stake?' class="on"':''}${i+1>mx?' disabled':''}>${i+1}</button>`).join('')}</div>
+<ul class="wl">${STAKES.slice(1,U.stake).map((t,i)=>`<li><span>${i+2}</span><div>${t}</div></li>`).join('')||`<li><div>${STAKES[0]}</div></li>`}</ul></div>
+<button class="go rogue" data-a="rbegin">Start run</button><button class="go alt" data-a="rogue">Back</button>`);m.scrollTop=sy;}
+const rgWho=(R=RUN)=>`${JARS[R.jarId||'classic'].n} · Stake ${R.stake||1}`;
 function rgStart(R){RUN=R;R.off=0;G.mode='rogue';store.set('mode','rogue');setBest();hide();FLOAT.length=0;G.g=null;pw.hidden=false;pw.classList.add('rg');G.pwKey=G.tbKey='';G.lastCoins=R.coins;G.over=null;rgHead();syncTb();fit();G.W=G.cssW;G.H=G.cssH;fit();
  G.g=makeGame(G.W,G.H,false,null,RG.ro(R,rgClear,rgEnd,rgPulse));if(R.pile&&R.pile.length)G.g.load(R.pile);G.last=0;if(R.at==='crate'&&R.crate)rgCrate();else if(R.at==='shop'&&R.shop)rgShop();else rgHub();}
 const rgFuNote=()=>RG.fusable(RUN).map(f=>`<p class="nxt">Fusion ready: <b>${f.a}</b> + <b>${f.b}</b>. The next boss crate will offer it.</p>`).join('');
@@ -619,12 +628,13 @@ function rgCrate(){const C=RUN.crate;if(!C)return RUN.at==='shop'&&RUN.shop?rgSh
  show(`<div class="mode">${jn()}</div>${tile('crate_'+C.tier,'big cr')}<h3>${C.kind?CRN[C.kind]:T.n}</h3><p class="tg">Pick one. It is free.</p><div class="sec">${C.opts.length?`<ul class="it">${C.opts.map(row).join('')}</ul>`:'<p class="none">Empty.</p>'}</div>
 <button class="go alt sm" data-a="rleave">Leave it for <i class="coin"></i>${T.out}</button>${rgOwn()}`);}
 function rgHub(){G.state='rogue';$('#pauseB').hidden=true;RUN.at='hub';rgSee('boss',[RG.boss(RUN),RG.mid(RUN)]);rgSee('tl',RUN.tl.map(t=>t.id));rgSave();
- show(`<div class="mode">Rogue run</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}${rgFuNote()}<button class="go rogue" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
+ show(`<div class="mode">${rgWho()}</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}${rgFuNote()}<button class="go rogue" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
 function rgInfo(){const nb=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,ups=Object.keys(UPG).filter(k=>!UPG[k].now&&RUN.up[k]),sds=RUN.sd.map((v,l)=>v?l:0).filter(l=>l);
  show(`<div class="mode">${jn()} · jar ${RUN.jar+1} of 3</div><h3>Run info</h3>${rgBar()}<div class="sec"><h5>Your charms (${RUN.ch.length}/${RG.slots(RUN)}) <small>Tap one to inspect or sell it.</small></h5>${RUN.ch.length?`<ul class="it">${RUN.ch.map((c,i)=>`<li data-a="rch" data-i="${i}">${tile(c.id,'r'+CH[c.id].r)}<div><b>${CH[c.id].n}</b> ${chip(CH[c.id].r)}<br>${chD(c)}</div></li>`).join('')}</ul>`:'<p class="none">None yet. Buy some in the shop.</p>'}</div>
 <div class="sec"><h5>Your tools (${RUN.tl.length}/${RG.ts(RUN)}) <small>Tap one to inspect or sell it. They charge 1 for every merge.</small></h5>${RUN.tl.length?`<ul class="it">${RUN.tl.map((t,i)=>`<li data-a="rtl" data-i="${i}">${tile(t.id,TL[t.id].fu?'r3':'tl')}<div><b>${TL[t.id].n}</b> <small class="chip">Charge ${t.c}/${RG.need(RUN,t.id)}</small><br>${TL[t.id].d}</div></li>`).join('')}</ul>`:'<p class="none">None. Buy some in the shop.</p>'}</div>
 ${ups.length?`<div class="sec"><h5>Upgrades</h5><ul class="it">${ups.map(k=>`<li>${tile(k,'up')}<div><b>${UPG[k].n} ×${RUN.up[k]}</b><br>${UPG[k].d}</div></li>`).join('')}</ul></div>`:''}
 ${sds.length?`<div class="sec"><h5>Seeds</h5><ul class="it">${sds.map(l=>`<li>${tile('fr'+l,'sd')}<div><b>Size ${l+1} Seed</b> <small class="chip">Level ${RUN.sd[l]}</small><br>Making a size ${l+1} fruit scores +${RUN.sd[l]*sdP(l)} points and +${num(RUN.sd[l]*SDM)} Mult.</div></li>`).join('')}</ul></div>`:''}
+<div class="sec"><h5>This run</h5><ul class="it"><li>${tile('jar_'+(RUN.jarId||'classic'),'')}<div><b>${JARS[RUN.jarId||'classic'].n}</b><br>${JARS[RUN.jarId||'classic'].d}</div></li>${RUN.stake>1?`<li>${tile('lid','boss')}<div><b>Stake ${RUN.stake}</b><br>${STAKES.slice(1,RUN.stake).join(' ')}</div></li>`:''}</ul></div>
 <div class="sec"><h5>This depth's boss</h5><ul class="it">${mid?`<li>${tile(mid,'boss')}<div><b>${BOSS[mid].n}</b> <small class="chip">Mini boss</small><br>${BOSS[mid].d}</div></li>`:''}<li>${tile(nb,'boss')}<div><b>${BOSS[nb].n}</b><br>${RG.bossD(RUN,nb)}<br><i>At half the target:</i> ${RG.bossD(RUN,nb,RUN.depth,1)}</div></li></ul></div><button class="go alt" data-a="${G.state==='pause'?'paused':'rback'}">Back</button>`);}
 function rgCharm(i){const c=RUN.ch[i];if(!c)return rgInfo();const d=CH[c.id];
  show(`<div class="mode">Charm ${i+1} of ${RUN.ch.length}</div>${tile(c.id,'big r'+d.r)}<h3>${d.n}</h3><p>${chip(d.r)}</p><p>${chD(c)}</p><button class="go alt" data-a="rsell" data-i="${i}">Sell for <i class="coin"></i>${RG.sellV(RUN,d.c)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
@@ -634,7 +644,7 @@ function rgGo(){const c=RG.jarCfg(RUN);RUN.cfg=c;rgEv(RUN,'start');hide();FLOAT.
 function rgClear(left){RUN.off=0;const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=`Depth ${RUN.depth} · ${c.boss?BOSS[c.boss].n:'Jar '+(RUN.jar+1)}`;let sum=0;for(const r of rows)sum+=r[1];
  const ev={depth:RUN.depth,jar:RUN.jar,boss:c.boss,left,score:G.g.jarScore,quota:c.quota,win:RUN.depth===DEPTHS&&RUN.jar===2&&!RUN.won};rgEv(RUN,'jar',ev);
  const win=RG.advance(RUN,sum),tier=c.crate||'';if(tier){RUN.crate=RG.crate(RUN,tier,'shop');RUN.at='crate';rgEv(RUN,'crate',{tier});}
- FLOAT.length=0;if(RUN.jar===0)G.g.wipe();G.state='rogue';$('#pauseB').hidden=true;rgSave();const drop=tier?`<p class="nxt">The boss dropped a <b>${CRT[tier].n.toLowerCase()}</b>.</p>`:'',nxt=tier?'<button class="go rogue" data-a="rcr">Open the crate</button>':'<button class="go rogue" data-a="rshop">Shop</button>';
+ FLOAT.length=0;if(RUN.jar===0)G.g.wipe();G.state='rogue';$('#pauseB').hidden=true;rgSave();const drop=tier?`<p class="nxt">${c.boss?'The boss':'The jar'} dropped a <b>${CRT[tier].n.toLowerCase()}</b>.</p>`:'',nxt=tier?'<button class="go rogue" data-a="rcr">Open the crate</button>':'<button class="go rogue" data-a="rshop">Shop</button>';
  const pay=`<ul class="wl">${rows.map(r=>`<li><div>${r[0]}</div><em><i class="coin"></i>+${r[1]}</em></li>`).join('')}<li><div><b>Total</b></div><em><i class="coin"></i>+${sum}</em></li></ul>`;
  if(win){snd('hi');show(`<div class="mode">${was}</div>${tile(c.boss,'big boss')}<h3>You win!</h3><p>${BOSS[c.boss].n} is beaten. Run score:</p><div class="big">${RUN.total}</div>${pay}${drop}<p>Bank this score, or go deeper for a bigger one.</p><button class="go rogue" data-a="rcr">Open the crate and go deeper</button><button class="go alt" data-a="rbank">Bank score</button>`);}
  else show(`<div class="mode">${was}</div><h3>Jar cleared!</h3>${pay}<p class="tg">You now have ${cn(RUN.coins)}</p>${drop}${nxt}`);}
@@ -654,12 +664,15 @@ ${cr}<button class="go alt sm" data-a="rroll"${RUN.coins<rr?' disabled':''}>Rero
 ${rgOwn()}
 <div class="sec"><h5>Up next</h5>${rgTrack()}</div><button class="go rogue" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go lnk" data-a="menu">Save &amp; quit</button>`);m.scrollTop=sy;}
 function rgEnd(why){rgEv(RUN,'end',{why,boss:(why==='over'||why==='drops')&&RUN.cfg?RUN.cfg.boss:null});PF.save();store.set('run',null);if(RUN.dev){G.state='over';setTimeout(menu,0);return;} /* dev runs never reach the score boards */
- G.over={why,d:RUN.depth,j:RUN.jar,got:RUN.got||[]};gameOver(RUN.total);}
+ G.over={why,d:RUN.depth,j:RUN.jar,got:RUN.got||[],k:RUN.stake||1};gameOver(RUN.total);}
 function ovH(){const o=G.over;if(G.mode!=='rogue'||!o)return '<h3>Game over!</h3>';const got=o.got&&o.got.length?`<p class="nxt">Awards this run: ${o.got.map(id=>`<b>${ACH[id].n}</b>`).join(', ')}</p>`:'';if(o.why==='win')return `<h3>Run complete!</h3><p class="tg">You beat ${o.d>DEPTHS+1?o.d-1:'all '+DEPTHS} depths.</p>${got}`;
  return `<h3>Run over!</h3><p class="tg">${o.why==='over'?'The pile overflowed':o.why==='drops'?'Out of drops':'Ended'} on depth ${o.d}, ${o.j===2?'the boss':'jar '+(o.j+1)}.</p>${got}`;}
 function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;b.dataset.sure=1;b.textContent=t;return false;},back=()=>{if(G.state==='pause')pauseMsg();else if(RUN.at==='crate')rgCrate();else if(RUN.at==='shop')rgShop(1);else rgHub();},after=()=>{if(RUN.at==='shop'&&RUN.shop)rgShop();else rgHub();};
  if(a==='rogue')rgIntro();
- else if(a==='rnew'){if(!RG.saved()||sure('Tap again to drop your saved run')){const R=RG.new();rgEv(R,'run');rgStart(R);}}
+ else if(a==='rnew'){if(!RG.saved()||sure('Tap again to drop your saved run'))rgSetup();}
+ else if(a==='rjar'){G.su.jar=b.dataset.j;rgSetup();}
+ else if(a==='rstake'){G.su.stake=+b.dataset.s;rgSetup();}
+ else if(a==='rbegin'){store.set('jar',G.su.jar);store.set('stake',G.su.stake);const R=RG.new(G.su.jar,G.su.stake);rgEv(R,'run');rgStart(R);}
  else if(a==='rcont'){const sv=RG.saved();if(sv)rgStart(sv);else rgIntro();}
  else if(!RUN||a[0]!=='r')return false;
  else if(a==='rgo')rgGo();else if(a==='rhub')rgHub();else if(a==='rshop')rgShop();else if(a==='rinfo')rgInfo();else if(a==='rch')rgCharm(i);else if(a==='rtl')rgTool(i);else if(a==='rback')back();
@@ -719,6 +732,7 @@ if(/[?&]dev\b/.test(location.search))(function(){
 <label>Upgrade <select id="dvU">${opt(UPG)}</select></label><button data-d="up">Add</button><br>
 <label>Seed <select id="dvS">${[1,2,3,4,5,6,7,8,9,10].map(l=>`<option value="${l}">Size ${l+1}</option>`).join('')}</select></label><button data-d="seed">+1 level</button><br>
 <label>Crate <select id="dvK">${opt(CRT)}</select></label><button data-d="crate">Open</button><br>
+<label>Jar <select id="dvA">${opt(JARS)}</select></label><label>Stake <input id="dvK2" type="number" min="1" max="8" value="1"></label><br>
 <button data-d="new">New dev run</button><button data-d="coins">+20 coins</button><button data-d="win">Clear jar</button><br><button data-d="pf">Log profile</button><button data-d="pfu">Unlock all</button><button data-d="pfx">Reset profile</button><p id="dvM"></p>`;
  document.body.appendChild(el);
  const say=t=>{el.querySelector('#dvM').textContent=t;},v=id=>el.querySelector(id).value,redraw=()=>{rgHead();if(RUN.at==='crate')rgCrate();else if(RUN.at==='shop')rgShop(1);else rgHub();};
@@ -726,7 +740,7 @@ if(/[?&]dev\b/.test(location.search))(function(){
   if(a==='pf'){console.log(JSON.stringify(PF.d,null,1));return say('Profile is in the console.');}
   if(a==='pfx'){PF.d=PF.blank();PF.dirty=1;PF.save();return say('Profile reset.');}
   if(a==='pfu'){for(const k in LOCK)PF.d.unlocked[k]=PF.d.unlocked[k]||Date.now();PF.dirty=1;PF.save();return say('Everything unlocked. Awards are not marked as earned.');}
-  if(a==='new'){const R=RG.new();R.dev=1;rgStart(R);return say('Dev run started.');}
+  if(a==='new'){const R=RG.new(v('#dvA'),clampN(+v('#dvK2')||1,1,8));R.dev=1;rgStart(R);return say('Dev run started.');}
   if(!RUN)return say('Start a Rogue run first.');
   if(a==='win'){if(G.state!=='play')return say('Only while a jar is being played.');RUN.dev=1;G.g.cheat();return say('Target filled.');}
   if(a==='coins'){RUN.dev=1;RUN.coins+=20;if(idle)redraw();return say('+20 coins.');}

@@ -3,11 +3,15 @@
     "scores": {
       "$mode": {
         ".read": "$mode === 'classic' || $mode === 'wild' || $mode === 'rogue'",
-        ".indexOn": ["s"],
+        ".indexOn": [
+          "s"
+        ],
         "$id": {
           ".write": "($mode === 'classic' || $mode === 'wild' || $mode === 'rogue') && !data.exists()",
-          ".validate": "newData.hasChildren(['n', 's', 't']) && newData.child('n').isString() && newData.child('n').val().length >= 1 && newData.child('n').val().length <= 12 && newData.child('s').isNumber() && newData.child('s').val() > 0 && (newData.child('s').val() < 1000000 || ($mode === 'rogue' && newData.child('s').val() < 1000000000)) && newData.child('t').val() === now",
-          "$other": { ".validate": "$other === 'n' || $other === 's' || $other === 't'" }
+          ".validate": "newData.hasChildren(['n', 's', 't']) && newData.child('n').isString() && newData.child('n').val().length >= 1 && newData.child('n').val().length <= 12 && newData.child('s').isNumber() && newData.child('s').val() > 0 && (newData.child('s').val() < 1000000 || ($mode === 'rogue' && newData.child('s').val() < 1000000000)) && newData.child('t').val() === now && (!newData.hasChild('k') || ($mode === 'rogue' && newData.child('k').isNumber() && newData.child('k').val() >= 2 && newData.child('k').val() <= 8))",
+          "$other": {
+            ".validate": "$other === 'n' || $other === 's' || $other === 't' || $other === 'k'"
+          }
         }
       }
     }
