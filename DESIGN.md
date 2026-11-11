@@ -91,7 +91,26 @@ All in `CH` except Trick Shot. Numbers changed from the first proposal where not
 
 Gardener's level fires the `grow` event, which also counts for Green Fingers. Not re-measured with the bot yet: that waits for the fusions (step 3).
 
-Pairs that could become fusions later: Small Fry + Pet Caterpillar, Prospector + Magpie, Gardener + Abacus, Low Tide + Clean Plate.
+## Draft fusions for the thin-build charms (proposed, not built)
+
+Rules followed: a fusion is about both halves together plus a bit (budget table above). Every half used here is not in any existing recipe, so no charm is pulled two ways. Recipes stay hidden until the player holds both halves.
+
+| Fusion | Recipe | Effect | Halves were | Note |
+|---|---|---|---|---|
+| Feeding Frenzy | Small Fry + Pet Caterpillar | Merges that make a size 4 fruit or smaller score ×3. Every 4 drops a caterpillar eats a small fruit (size 3 or less) for 60 points. | ×2, every 5 drops for 30 | Small fruit payoff |
+| Snack Pack | Bite Size + Hoarder | Fruit you drop are never bigger than size 3. +0.25 Mult for every fruit in the jar. Every merge scores +6 points. | cap 3 and +4, +0.15 per fruit | Rewards a full jar of small fruit, risky near the line |
+| Fine Mesh (tool) | Sieve + Pip Collector | Clears every size 1 and size 2 fruit out of the jar. Gains +0.05 Mult for each one cleared. | clears size 1, +0.03 per small fruit made | Keeps Pip's grown value. Feeds Compost and Ashes too |
+| Greenhouse | Gardener + Abacus | Every boss you beat (mini bosses too) gives 2 random seed levels. +0.75 Mult for every seed level you hold. | 1 level, +0.5 per level | Seed payoff, slow start, strong late |
+| Seed Vault | Sprout + Seed Packet | Seeds cost 2 coins less. The first time you make each fruit size in a jar, its seed counts triple. | double, 1 coin less | Rewards spreading levels across sizes |
+| Bloom (tool) | Ripen + Sprout | Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level. | grow one size | Capped to once a jar, or Ripen would mint ~40 levels a run |
+| Treasure Hunter | Prospector + Magpie | 1 in 6 fruit you drop are gold. +1.5 Mult for every gold fruit in the jar. | 1 in 10, +1 per gold | Gold payoff. Horseshoe makes it 1 in 3 |
+| Philosopher's Stone | Gold Leaf + Alchemy | The first 2 fruit you drop in each jar are gold. 1 in 2 times a gold fruit merges, the fruit it makes is gold too. | first fruit, 1 in 3 | Watch: with Horseshoe the chain never breaks (×2 and 2 coins at every size). Option: say it ignores Horseshoe |
+| Still Water | Low Tide + Clean Plate | Merges in the bottom third of the jar score ×2.5. ×2 more while the jar holds 8 fruit or fewer. | ×2 low, ×2 at 6 or fewer | Keep-it-low build, opposite of High Wire |
+| Climbing Ivy | Wallflower + High Wire | Merges touching a wall score +30 points and ×1.5. ×3 Mult while the pile reaches the gold line. | +20 at the wall, ×3 at the line | Play-near-the-top build, opposite of Still Water |
+| Keepsake | Pip Collector + Vintage | Gains +0.05 Mult every time you make a size 3 fruit or smaller, and +0.6 every time you clear a jar. | +0.03, +0.4 | Pure grower, keeps both halves' value. Competes with Fine Mesh for Pip |
+| (after testing) | Slingshot + Trick Shot | Throws go further, bank shots score ×4 and refund 1 drop. | throw, ×3 | Only once the throwing feel is settled |
+
+Suggested first batch: Feeding Frenzy, Greenhouse, Treasure Hunter, Still Water, Climbing Ivy (one per thin build, plus the High Wire pairing), and Bloom as a tool fusion. Then re-measure with the bot.
 
 ## Charm feedback
 
