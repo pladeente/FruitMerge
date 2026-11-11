@@ -91,7 +91,7 @@ All in `CH` except Trick Shot. Numbers changed from the first proposal where not
 
 Gardener's level fires the `grow` event, which also counts for Green Fingers. Not re-measured with the bot yet: that waits for the fusions (step 3).
 
-## Draft fusions for the thin-build charms (proposed, not built)
+## Fusions for the thin-build charms
 
 Rules followed: a fusion is about both halves together plus a bit (budget table above). Every half used here is not in any existing recipe, so no charm is pulled two ways. Recipes stay hidden until the player holds both halves.
 
@@ -110,7 +110,7 @@ Rules followed: a fusion is about both halves together plus a bit (budget table 
 | Keepsake | Pip Collector + Vintage | Gains +0.05 Mult every time you make a size 3 fruit or smaller, and +0.6 every time you clear a jar. | +0.03, +0.4 | Pure grower, keeps both halves' value. Competes with Fine Mesh for Pip |
 | (after testing) | Slingshot + Trick Shot | Throws go further, bank shots score ×4 and refund 1 drop. | throw, ×3 | Only once the throwing feel is settled |
 
-Suggested first batch: Feeding Frenzy, Greenhouse, Treasure Hunter, Still Water, Climbing Ivy (one per thin build, plus the High Wire pairing), and Bloom as a tool fusion. Then re-measure with the bot.
+Built: Feeding Frenzy, Greenhouse, Treasure Hunter, Still Water, Climbing Ivy and Bloom (tool), as in the table. Still drafts: Snack Pack, Fine Mesh, Seed Vault, Philosopher's Stone, Keepsake, and the throwing fusion. Next: re-measure with the bot.
 
 ## Charm feedback
 
