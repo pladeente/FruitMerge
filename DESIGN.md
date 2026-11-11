@@ -64,7 +64,7 @@ Long-run growers today are all +Mult: Vintage (per jar), Hot Streak (per merge, 
 ## Priorities
 
 1. **Thin builds first, at common and uncommon.** Done: 11 charms (see below). Small fruit, seeds, gold, physics and position. Each one should link to an existing build so it is not a dead pick (gold to chance and economy, small fruit to destruction, seeds to economy, position to aim).
-2. **Fusions that join the new pieces to old ones,** 2 or 3, once the new charms have been played.
+2. **Fusions that join the new pieces to old ones.** Done: 6 built (see below).
 3. **Re-measure** with the bot (see `RSC` notes in `CLAUDE.md`). Target stays at the greedy bot winning about 1 run in 12.
 4. **Then higher-powered cards:** one or two rares with ×Mult that grows over the run, so late depths have a goal. Only after 1 to 3, because a bigger pool is what keeps these from turning up every run.
 
@@ -111,6 +111,46 @@ Rules followed: a fusion is about both halves together plus a bit (budget table 
 | (after testing) | Slingshot + Trick Shot | Throws go further, bank shots score ×4 and refund 1 drop. | throw, ×3 | Only once the throwing feel is settled |
 
 Built: Feeding Frenzy, Greenhouse, Treasure Hunter, Still Water, Climbing Ivy and Bloom (tool), as in the table. Still drafts: Snack Pack, Fine Mesh, Seed Vault, Philosopher's Stone, Keepsake, and the throwing fusion. Next: re-measure with the bot.
+
+## Pets (proposed, not built)
+
+A Pets build: creatures that live in the jar and act every few drops, plus charms that pay off for them. Today it is one charm (Pet Caterpillar) and one fusion (Feeding Frenzy), with Compost and Ashes as side payoffs, since every meal destroys a fruit.
+
+**Yardstick.** Pet Caterpillar is about 5 meals a jar × 30 points = ~150 base points, plus it clears small fruit. That is close to Honey Pot (+8 on ~18 merges = ~145). New pets aim for the same ~150, each with a different job in the jar, so two pets are a build and not a stack of the same thing.
+
+**Pet combos only show up once you hold a pet** (`req` widened to "any pet"). That keeps them from being dead picks, and it means committing to pets pulls the support into the shop, while a run without pets never sees them, so they do not dilute anything else.
+
+### New pets
+
+| Name | Rarity, price | Effect | Job in the jar | Why it is balanced |
+|---|---|---|---|---|
+| Busy Bee | Uncommon, 6 | Every 4 drops a bee lands on a fruit and pollinates it. A pollinated fruit scores ×2 when it merges. Up to 3 at a time. | Marks targets, rewards aiming at them | ~4 marked merges a jar. ×2 on a merge of ~20 base is ~+80, plus aim skill. Below the yardstick on its own, strong with Ladybird and big Mult |
+| Mole | Uncommon, 6 | Every 6 drops a mole pops up under a fruit on the floor (size 4 or less) and eats it for 40 points. | Clears from the bottom, the pile drops and settles into new merges | 4 meals × 40 = 160. The pile shift is the real value, and it can also wreck a set-up |
+| Hedgehog | Uncommon, 6 | Every 6 drops a hedgehog rolls across the floor, bumping fruit. Merges in the next 2 seconds score ×2. | A small timed Shake on the bottom row, with a scoring window | 4 windows a jar, 1 to 2 merges each. Pairs with Metronome and combo charms |
+| Ladybird | Common, 4 | A ladybird rides one fruit. When that fruit merges, the merge scores ×1.5 and she hops onto the new fruit. | One lucky fruit you grow on purpose | ×1.5 on ~4 merges of a growing fruit. Common budget. Big-fruit link |
+
+### Pet combos (need a pet)
+
+| Name | Rarity, price | Effect | Why it is balanced |
+|---|---|---|---|
+| Pet Bowl | Common, 4 | +0.3 Mult for every meal your pets have eaten this jar. | Hot Streak for pets: ~5 meals, so about +0.75 Mult on average over a jar. Resets each jar |
+| Pet Treats | Common, 4 | Every pet acts 1 drop sooner (caterpillar every 4, mole every 5, bee every 3, hedgehog every 5). | ~+25% pet output. With Feeding Frenzy: every 3 drops |
+| Chrysalis | Uncommon, 6 | Every 4th meal your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run. | Grows ~+0.5 a jar, like Vintage (+0.4), but needs a caterpillar. Brings Wild's butterfly into Rogue |
+| Big Appetite | Uncommon, 6 | Pets can eat fruit up to size 5. Meals of a size 4 or 5 fruit score 3 times as much. | Risk for reward (pillar 5): pets may eat the fruit you were building |
+| Whistle (tool) | 5, charge 6 | Your caterpillar comes out now and eats the fruit you tap (size 3 or less). | Active pet play (pillar 8). Offered only with a caterpillar |
+
+### Pet fusions
+
+| Name | Recipe | Effect |
+|---|---|---|
+| Butterfly Garden | Chrysalis + Busy Bee | Every 3rd caterpillar meal makes a butterfly: +0.5 Mult for the run. Every 3 drops a bee pollinates a fruit, and pollinated fruit score ×2.5. |
+| Menagerie | Pet Bowl + Mole | +0.5 Mult for every meal this jar. The mole comes every 5 drops and meals score 60. |
+
+### Watch
+
+- Screen clutter with 3 or 4 creatures at once. Each gets its own timer, so they rarely act on the same drop. Cap at one creature on screen if it gets busy.
+- Mole, Big Appetite and Feeding Frenzy all destroy fruit, so Compost and Ashes get stronger. Fine, that is the build, but check Volcano + pets.
+- Pets act on boss jars too. The Glutton already uses the caterpillar, so a pet caterpillar and the boss one take turns.
 
 ## Charm feedback
 
