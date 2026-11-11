@@ -30,6 +30,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 - No frameworks, no bundler, no npm. Plain script tags.
 - UI screens are HTML strings passed to `show(html)`, which fills `#ui .msg`. Buttons carry `data-a="action"`, dispatched in one click listener (`rgAct` for Rogue actions, all prefixed `r`).
 - Icons: `ic('name')` returns `<i class="px px-name">`. `fr0` to `fr10` are pictures of the fruit sizes, drawn at load from `drawFruit` (seeds use them). A charm, boss or upgrade uses the grid named after its id unless `ICN` maps it to another. Every new item needs a grid in `icons.js` or an `ICN` entry.
+- What's new: `LOG` in `index.html` (newest first, `news()` shows it from the menu, which marks it New until opened). Add a short player-facing entry for every change players will notice, and bump the version.
 - Canvas text goes through `T()`, score pop-ups through `dmg()`, plain floating text through `floatTxt()`.
 - Charm animations: `rgPulse(ids)` plays the charm's entry in `ANIM` (a CSS move `m-<name>` on the header icon, plus particles from `slotFx`). In the jar, `jfx(ids, merge)` in `makeGame` plays spot effects using `ring()` and `spray()`. Every new charm needs an `ANIM` entry.
 - Sounds are synthesised in `SFX`, played with `snd('name')`.
@@ -38,7 +39,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 
 ## Architecture
 
-- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress), `jar` and `stake` (the last picks on the new-run screen, a device preference).
+- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress), `jar` and `stake` (the last picks on the new-run screen, a device preference), `seenLog` (newest What's new version opened).
 - `G`: app state. `G.state` is one of `menu`, `play`, `pause`, `over`, `rogue` (any Rogue screen between jars). `G.g` is the live game, `RUN` the live Rogue run.
 - `makeGame(W,H,wild,onOver,ro)`: the engine (physics, merging, specials, powers, drawing). Returns `{update, draw, up, use, jar, wipe, snap, load, scrub, ...}`. `ro` is null in Classic and Wild. In Rogue it is the hook object from `RG.ro(R, clear, fail, fx)`, the only way the engine talks to run state.
 - `RG` (`rogue.js`): pure Rogue rules over a run object `R`: `new`, `saved`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`, and for tools `tool`, `ts` (slots), `need`, `charge`, `fill`, `buyTl`, `sellTl`. Read limits and prices through the helpers, never the raw tables: `slots` (charm slots), `ts`, `need` (charge a tool needs), `sellV`, `rrCost`, `upCost`, `upOk`, `sdCost`. Upgrades change all of them.
