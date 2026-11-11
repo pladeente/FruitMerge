@@ -1,7 +1,7 @@
 /* Fruit Merge: Rogue mode rules and the player profile. Loaded before the main script in index.html.
    Nothing here touches the page. It uses rint and store from index.html, but only inside functions, so load order is fine. */
 /* ---------- rogue mode: rules (charms, bosses, shop, scoring) ---------- */
-const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=4; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
+const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=5; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
 const RQ=[100,130,150]; /* depth 1 score targets: jar 1, jar 2, boss */
 const RSC=[1,2.3,4,6.5,9.5,13,17,22]; /* target multiplier per depth */
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare'];
@@ -67,13 +67,30 @@ const BOSS={
  lid:{n:'The Lid',d:'The line sits lower in the jar.',min:4},
  melon:{n:'The Melon King',d:'A watermelon drops into your jar and stays. Keep the pile low.',min:99,q:1.1}
 };
+/* Upgrades. c = price, max = how many can be owned (none = no limit), now = used on the spot instead of owned.
+   Owned ones cost 2 more each time. Effects are read through R.up[id] in RG and ro.up(id) in makeGame. */
 const UPG={
  fert:{n:'Fertiliser',c:3,d:'Every merge scores +2 points for the rest of the run.'},
  sauce:{n:'Hot Sauce',c:4,d:'+0.25 Mult for the rest of the run.'},
  can:{n:'Watering Can',c:3,d:'+2 drops in every jar for the rest of the run.'},
- scrub:{n:'Scrub',c:3,d:'Right now: clears every size 1 and size 2 fruit out of the jar.'},
- belt:{n:'Tool Belt',c:6,d:'+1 tool slot (up to 4).'}
+ scrub:{n:'Scrub',c:3,now:1,d:'Right now: clears every size 1 and size 2 fruit out of the jar.'},
+ bribe:{n:'Bribe',c:4,now:1,d:'Right now: swaps the next boss for a different one.'},
+ belt:{n:'Tool Belt',c:6,max:2,d:'+1 tool slot (up to 4).'},
+ pouch:{n:'Charm Pouch',c:10,max:1,d:'+1 charm slot.'},
+ shelf:{n:'Bigger Shelf',c:5,max:1,d:'The shop offers 1 more charm.'},
+ seedbag:{n:'Seed Bag',c:4,max:1,d:'The shop offers 1 more seed.'},
+ dice:{n:'Loaded Dice',c:5,max:1,d:'The first reroll in every shop is free.'},
+ taste:{n:'Good Taste',c:6,max:2,d:'Uncommon and Rare charms turn up in the shop more often.'},
+ haggle:{n:'Haggler',c:4,max:1,d:'Charms and tools sell for their full price.'},
+ vault:{n:'Vault',c:5,max:2,d:'Interest can pay 2 more coins per jar.'},
+ lunch:{n:'Packed Lunch',c:5,max:3,d:'+1 coin every time you clear a jar.'},
+ whet:{n:'Whetstone',c:6,max:2,d:'Every tool needs 1 less charge (never less than 2).'},
+ fuse:{n:'Slow Fuse',c:4,max:2,d:'The pile can sit over the line 1 second longer before the run ends.'},
+ drum:{n:'Tambourine',c:4,max:2,d:'Combos stay alive 0.5 seconds longer.'}
 };
+/* Seeds level up one fruit size for the run. R.sd[l] = level for the fruit of tier l (1 to 10, shown to the player as size l+1).
+   Each level: making that fruit scores sdP(l) more points and +SDM Mult. A seed costs SDC plus 1 per level already held. */
+const SDC=3,SDM=.5,sdP=l=>4+2*l,sdD=l=>`Making a size ${l+1} fruit scores +${sdP(l)} points and +${SDM} Mult.`;
 /* Tools: abilities the player taps during a jar. c = price, ch = charge needed (1 per merge), tg = the player then taps a fruit.
    What each one does is in tool() in makeGame, which fruit it can target in okTg(). */
 const TL={
@@ -99,21 +116,25 @@ const icn=id=>ICN[id]||id;
 const nice=q=>{const m=Math.pow(10,Math.max(1,Math.floor(Math.log10(q))-1));return Math.round(q/m)*m;};
 const RG={
  new(){const pool=Object.keys(BOSS).filter(k=>k!=='melon'),bs=[];for(let d=1;d<DEPTHS;d++){const c=pool.filter(k=>BOSS[k].min<=d&&!bs.includes(k));bs.push(c[rint(c.length)]);}bs.push('melon');
-  return{v:RV,depth:1,jar:0,coins:4,total:0,ch:[],tl:[RG.tool('swap'),RG.tool('shake')],up:{fert:0,sauce:0,can:0,scrub:0,belt:0},bs,shop:null,pile:[],at:'hub',won:0,st:{},jst:{}};},
+  return{v:RV,depth:1,jar:0,coins:4,total:0,ch:[],tl:[RG.tool('swap'),RG.tool('shake')],up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,shop:null,pile:[],at:'hub',won:0,st:{},jst:{}};},
  /* a saved run that this version can load, or null */
  saved(){const sv=store.get('run',null);if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
  has:(R,id)=>R.ch.find(c=>c.id===id),
  /* tools: {id, c} where c is the charge held. New tools arrive charged */
- tool:id=>({id,c:TL[id].ch}),
+ tool:(id,R)=>({id,c:R?RG.need(R,id):TL[id].ch}),
  ts:R=>Math.min(TSLOTS,TS0+R.up.belt),
- charge(R,n,skip){const k=n*(RG.has(R,'battery')?2:1);for(const t of R.tl)if(t!==skip)t.c=Math.min(TL[t.id].ch,t.c+k);},
- fill(R){for(const t of R.tl)t.c=TL[t.id].ch;},
+ slots:R=>SLOTS+R.up.pouch,
+ need:(R,id)=>Math.max(2,TL[id].ch-R.up.whet),
+ charge(R,n,skip){const k=n*(RG.has(R,'battery')?2:1);for(const t of R.tl)if(t!==skip)t.c=Math.min(RG.need(R,t.id),t.c+k);},
+ fill(R){for(const t of R.tl)t.c=RG.need(R,t.id);},
+ /* swap this depth's boss for another that is allowed here */
+ bribe(R){const d=R.depth,cur=RG.boss(R),k=Object.keys(BOSS).filter(k=>k!=='melon'&&k!==cur&&BOSS[k].min<=d&&k!==R.bs[d-2]);R.bs[d-1]=k[rint(k.length)];return R.bs[d-1];},
  boss(R,d=R.depth){while(R.bs.length<d){const k=Object.keys(BOSS).filter(k=>k!=='melon'&&k!==R.bs[R.bs.length-1]);R.bs.push(R.bs.length%DEPTHS===DEPTHS-1?'melon':k[rint(k.length)]);}return R.bs[d-1];},
  jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):null,bd=b&&BOSS[b],sc=d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(1.6,d-DEPTHS);
   const quota=nice(RQ[j]*sc*(bd&&bd.q||1)),drops=Math.max(8,RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(b==='hour'?6:0));
   return{quota,drops,boss:b,pay:RPAY[j],tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,rule:(bd?bd.d+' ':'')+`Score ${quota} in ${drops} drops.`};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[];c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.has(R,'shoe')?2:1;if(c.l>=0)chips+=R.up.fert*2;
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.has(R,'shoe')?2:1;if(c.l>=0)chips+=R.up.fert*2;if(sd){chips+=sd*sdP(c.l);a+=sd*SDM;}
   for(const ch of R.ch){const d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0){chips+=d.chip(c);on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit};},
  /* a fruit of tier l was made: returns the charms that paid out */
@@ -121,21 +142,26 @@ const RG={
  kill(R,n){const c=RG.has(R,'compost');if(!c||!(n>0))return false;c.v=+((c.v||0)+.05*n).toFixed(2);return true;},
  net(R){const i=R.ch.findIndex(c=>c.id==='net');if(i<0)return false;R.ch.splice(i,1);return true;},
  cost:(R,c)=>Math.max(1,c-(RG.has(R,'coupon')?1:0)),
- upCost:(R,id)=>RG.cost(R,UPG[id].c+(id==='scrub'?0:R.up[id]*2)),
- payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],u=Math.min(3,Math.floor(left/4)),i=Math.min(RG.has(R,'bank')?8:4,Math.floor(R.coins/5));
-  if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push(['Interest (1 per 5 coins held)',i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);return rows;},
+ upCost:(R,id)=>RG.cost(R,UPG[id].c+(UPG[id].now?0:R.up[id]*2)),
+ upOk:(R,k)=>k==='scrub'?R.jar!==0:k==='bribe'?RG.boss(R)!=='melon':!UPG[k].max||R.up[k]<UPG[k].max,
+ sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]),
+ sellV:(R,c)=>R.up.haggle?c:Math.floor(c/2),
+ rrCost:R=>R.up.dice?(R.shop.rr?RG.cost(R,1+R.shop.rr):0):RG.cost(R,2+R.shop.rr),
+ payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],u=Math.min(3,Math.floor(left/4)),i=Math.min((RG.has(R,'bank')?8:4)+R.up.vault*2,Math.floor(R.coins/5));
+  if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push(['Interest (1 per 5 coins held)',i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
  advance(R,sum){R.coins+=sum;const v=RG.has(R,'vintage');if(v)v.v=+((v.v||0)+.4).toFixed(1);let win=false;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}R.shop=RG.stock(R);R.at='shop';return win;},
- stock(R){const own=R.ch.map(c=>c.id),ch=[];for(let i=0;i<3;i++){const left=Object.keys(CH).filter(k=>!own.includes(k)&&!ch.includes(k));if(!left.length)break;const r=Math.random(),rar=r<.6?0:r<.9?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(from[rint(from.length)]);}
-  const u=Object.keys(UPG).filter(k=>k==='scrub'?R.jar!==0:k!=='belt'||RG.ts(R)<TSLOTS),up=[];while(up.length<2)up.push(u.splice(rint(u.length),1)[0]);
-  const t=Object.keys(TL).filter(k=>!R.tl.some(o=>o.id===k)),tl=[];while(tl.length<2&&t.length)tl.push(t.splice(rint(t.length),1)[0]);return{ch,tl,up,rr:0};},
- buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=SLOTS)return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
- buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p)return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;return id;},
- buyTl(R,i){const id=R.shop.tl[i],p=id&&RG.cost(R,TL[id].c);if(!id||R.coins<p||R.tl.length>=RG.ts(R))return false;R.coins-=p;R.tl.push(RG.tool(id));R.shop.tl[i]=null;return true;},
- sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=Math.floor(TL[t.id].c/2);R.tl.splice(i,1);return true;},
- sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=Math.floor(CH[c.id].c/2);R.ch.splice(i,1);return true;},
- reroll(R){const p=RG.cost(R,2+R.shop.rr);if(R.coins<p)return false;R.coins-=p;const s=RG.stock(R);s.rr=R.shop.rr+1;R.shop=s;return true;},
- ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
+ stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste;for(let i=0;i<3+R.up.shelf;i++){const left=Object.keys(CH).filter(k=>!own.includes(k)&&!ch.includes(k));if(!left.length)break;const r=Math.random(),rar=r<.6-.15*tt?0:r<.9-.075*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(from[rint(from.length)]);}
+  const take=(a,n)=>{const o=[];while(o.length<n&&a.length)o.push(a.splice(rint(a.length),1)[0]);return o;},sizes=[];for(let l=1;l<=(R.depth<4?7:10);l++)sizes.push(l);
+  return{ch,tl:take(Object.keys(TL).filter(k=>!R.tl.some(o=>o.id===k)),2),up:take(Object.keys(UPG).filter(k=>RG.upOk(R,k)),3),sd:take(sizes,2+R.up.seedbag),rr:0};},
+ buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
+ buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},
+ buySd(R,i){const l=R.shop.sd[i],p=l&&RG.sdCost(R,l);if(!l||R.coins<p)return 0;R.coins-=p;R.sd[l]++;R.shop.sd[i]=null;return l;},
+ buyTl(R,i){const id=R.shop.tl[i],p=id&&RG.cost(R,TL[id].c);if(!id||R.coins<p||R.tl.length>=RG.ts(R))return false;R.coins-=p;R.tl.push(RG.tool(id,R));R.shop.tl[i]=null;return true;},
+ sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=RG.sellV(R,TL[t.id].c);R.tl.splice(i,1);return true;},
+ sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c);R.ch.splice(i,1);return true;},
+ reroll(R){const p=RG.rrCost(R);if(R.coins<p)return false;R.coins-=p;const s=RG.stock(R);s.rr=R.shop.rr+1;R.shop=s;return true;},
+ ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
 /* ---------- player profile: everything that outlives a run ---------- */
@@ -162,7 +188,7 @@ function mergeProfile(a,b){a=PF.fix(a);b=PF.fix(b);const o=PF.blank(),first=(x,y
 /* Everything worth counting goes through here: the engine through ro.ev, the screens by calling rgEv.
    R.st counts over the whole run, R.jst over the jar being played (reset by the 'start' event), the profile over a lifetime.
    Engine events: drop {l,sp}, merge {l,p,m,combo,bull}, tool {id}, kill {n}, net.
-   Screen events: run, start, jar {depth,jar,boss,left,score,quota,win}, end {why,boss}, buy {id,k}, sell {id,k}, up {id}, roll. k is the kind (ch or tl).
+   Screen events: run, start, jar {depth,jar,boss,left,score,quota,win}, end {why,boss}, buy {id,k}, sell {id,k}, up {id}, seed {l}, roll. k is the kind (ch or tl).
    Runs touched by the dev panel (R.dev) count for nothing. */
 function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R.st={}),inc=(k,v=1)=>{PF.inc(k,v);rs[k]=(rs[k]||0)+v;if(R.jst)R.jst[k]=(R.jst[k]||0)+v;},top=(k,v)=>{PF.max(k,v);if(!(rs[k]>=v))rs[k]=v;};
  if(n==='run')PF.inc('runs');
@@ -177,6 +203,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='buy'){inc('buys');PF.inc((d.k||'ch')+'.'+d.id+'.buy');}
  else if(n==='sell')inc('sells');
  else if(n==='up'){inc('ups');PF.inc('up.'+d.id+'.buy');}
+ else if(n==='seed'){inc('seeds');PF.inc('sd.'+d.l+'.buy');}
  else if(n==='roll')inc('rolls');
  /* Stage 5: achievement checks hook in here */
 }

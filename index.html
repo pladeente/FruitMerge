@@ -110,12 +110,12 @@ tr.me td{background:#35c2b42a}
 .slot{width:34px;height:34px;border-radius:8px;box-shadow:inset 0 0 0 2px #8f8a99}
 .tile.r1{box-shadow:inset 0 0 0 3px var(--teal)}.tile.r2{box-shadow:inset 0 0 0 3px var(--brass)}
 .slot.r1{box-shadow:inset 0 0 0 2px var(--teal)}.slot.r2{box-shadow:inset 0 0 0 2px var(--brass)}
-.tile.up{box-shadow:inset 0 0 0 3px #b388eb}.tile.tl{box-shadow:inset 0 0 0 3px #4cc9f0}.tile.boss{box-shadow:inset 0 0 0 3px var(--coral)}.slot.boss{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--coral)}
+.tile.up{box-shadow:inset 0 0 0 3px #b388eb}.tile.tl{box-shadow:inset 0 0 0 3px #4cc9f0}.tile.sd{box-shadow:inset 0 0 0 3px #7bc950}.tile.boss{box-shadow:inset 0 0 0 3px var(--coral)}.slot.boss{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--coral)}
 .tile.e,.slot.e{background:#ffffff10;box-shadow:inset 0 0 0 2px var(--line)}
 .tile.big{width:64px;height:64px;border-radius:12px;margin-top:8px}.tile.big .px{width:48px;height:48px}
 .slot.hit{animation:hit .3s ease-out}
 @keyframes hit{30%{transform:translateY(-4px) scale(1.22);filter:brightness(1.2)}}
-#hd .t.ch{display:flex;gap:4px;overflow:visible;cursor:pointer}
+#hd .t.ch{display:flex;gap:4px;overflow:visible;cursor:pointer;min-width:0}#hd .t.ch .slot{flex:0 1 34px;min-width:0;height:auto;aspect-ratio:1;max-height:34px}
 .chip{font:800 13px var(--body);text-transform:uppercase;letter-spacing:.5px;padding:1px 6px;border-radius:6px;background:#ffffff1c;color:var(--muted);white-space:nowrap}
 .chip.r1{background:#35c2b440;color:#8ff0e6}.chip.r2{background:#f4bb4a40;color:var(--brass)}
 .sec{margin:14px 0 0;text-align:left}
@@ -370,7 +370,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if(B.glut&&jd%3===0){catT=.4;catB=1;}else if(ro.has('pet')&&jd%5===0&&!cat){catT=.4;catB=0;}}
   else{nxt=Math.random()<.05?4:rint(4);nxtSp=pickSp();if(nxtSp==='magnet'){const t=commonTier();if(t>=0)nxt=t;}}cool=.55;},
  use(p){if(over||(ro&&(!J||done||B.lock)))return false;
-  if(ro){const t=ro.tools.find(t=>t.id===p);if(!t||t.c<TL[p].ch)return false;if(arm===p){arm=null;return true;}arm=null;
+  if(ro){const t=ro.tools.find(t=>t.id===p);if(!t||t.c<ro.need(p))return false;if(arm===p){arm=null;return true;}arm=null;
    if(TL[p].tg){if(!fr.some(f=>okTg(p,f)))return false;arm=p;snd('ui');return true;}if(tool(p)===false)return false;spent(t);return true;}
   if(coins<PRICE[p]||cd[p]>0||power(p)===false)return false;coins-=PRICE[p];cd[p]=COOL[p];return true;},
  update(dt){cool-=dt;time+=dt;if(ban)ban.t-=dt;for(const k in cd)cd[k]=Math.max(0,cd[k]-dt);if(whirl>0){whirl-=dt;if(whirl<=0){whirl=0;settle=1.3;}}grace=Math.max(0,grace-dt);
@@ -389,7 +389,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
     const nx=dx/d,ny=dy/d,ov=rs-d;a.x-=nx*ov*ia/is;a.y-=ny*ov*ia/is;b.x+=nx*ov*ib/is;b.y+=ny*ov*ib/is;
     const sl=a.sp==='slip'||b.sp==='slip',rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){const j2=-(sl?1.6:1.3)*rv/is;a.vx-=j2*ia*nx;a.vy-=j2*ia*ny;b.vx+=j2*ib*nx;b.vy+=j2*ib*ny;}
     if(!sl){a.vx*=.9995;b.vx*=.9995;}if(ny>.2&&ia)a.vx-=nx*260*K*h*(a.sp==='slip'?4:1);else if(ny<-.2&&ib)b.vx+=nx*260*K*h*(b.sp==='slip'?4:1);}
-   if(merge.length){fr=fr.filter(f=>!f.dead);let melon=false,top=0;combo=time-lastM<(ro&&ro.has('metro')?2.5:1)?combo+1:0;lastM=time;
+   if(merge.length){fr=fr.filter(f=>!f.dead);let melon=false,top=0;combo=time-lastM<(ro?(ro.has('metro')?2.5:1)+ro.up('drum')*.5:1)?combo+1:0;lastM=time;
     for(const m of merge){add({x:m.x,y:m.y,vx:(Math.random()-.5)*80*K,vy:-160*K,l:m.l,age:1,a:0,landed:1});top=Math.max(top,m.l);
      if(ro){jm++;let p=0,mm=1;const xm=(m.gold?2:1)*(dd?4:1);if(!(B.prune&&m.l<=3)){const r=ro.score(tri(m.l),rc(m.l,{combo,bull:m.bull,enc}));p=Math.ceil(r.p*xm);mm=r.m*xm;enc=0;ro.fx(r.hit);}
       if(dd){dd=0;floatTxt('Double Down ×4',m.x,m.y-76,'#ff4d8d',18);}if(m.gold){ro.coins+=2;floatTxt('Gold! +2 coin',m.x,m.y-60,'#e09600',16);}gain(p);pop(p,m.x,m.y,mm);ro.charge(1);ro.ev('merge',{l:m.l,p,m:mm,combo,bull:m.bull});
@@ -405,7 +405,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   fr=fr.filter(f=>!f.dead);
   let danger=false;ptop=bot;for(const f of fr){f.age+=dt;const ty=f.y-rad(f.l);if(f.age>1.5&&ty<ptop)ptop=ty;if(grace<=0&&f.age>1.5&&ty<line&&Math.abs(f.vy)<120*K)danger=true;}
   const pT=overT;overT=danger&&!done?overT+dt:0;if(overT>0&&Math.floor(overT*2.5)!==Math.floor(pT*2.5))snd('warn');
-  if(overT>2.2&&!over){if(ro&&ro.net()){const cut=line+(bot-line)*.5;let n=0;for(const f of fr)if(f.y<cut){f.dead=1;n++;burst(f.x,f.y,FRUIT[f.l][0],6);}fr=fr.filter(f=>!f.dead);died(n);ro.ev('net');overT=0;grace=3;shake=.4;floatTxt('Safety Net!',W/2,line+40,'#1f9c90',26);snd('shake');}
+  if(overT>2.2+(ro?ro.up('fuse'):0)&&!over){if(ro&&ro.net()){const cut=line+(bot-line)*.5;let n=0;for(const f of fr)if(f.y<cut){f.dead=1;n++;burst(f.x,f.y,FRUIT[f.l][0],6);}fr=fr.filter(f=>!f.dead);died(n);ro.ev('net');overT=0;grace=3;shake=.4;floatTxt('Safety Net!',W/2,line+40,'#1f9c90',26);snd('shake');}
    else{over=true;ro?ro.fail('over'):onOver(score);}}
   if(J&&!over){if(!done){if(js>=J.quota){done=1;doneT=1.1;floatTxt('JAR CLEARED!',W/2,line+50,'#38b000',30);snd('fly');}
     else if(dl<=0&&free<=0&&time-lastD>3&&time-lastM>1.5&&!fr.some(f=>f.fuse!=null||f.frz>0)){over=true;ro.fail('drops');}}
@@ -440,6 +440,8 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
 const PXC={};
 (function(){let css='';for(const k in PXD){const cv=document.createElement('canvas');cv.width=cv.height=12;const c=cv.getContext('2d');PXD[k].trim().split('\n').forEach((r,y)=>{for(let x=0;x<12;x++)if(PXP[r[x]]){c.fillStyle=PXP[r[x]];c.fillRect(x,y,1,1);}});PXC[k]=cv;css+=`.px-${k}{background-image:url(${cv.toDataURL()})}`;}
  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);})();
+/* a small picture of each fruit size, as px-fr0 to px-fr10 (seeds use them) */
+(function(){let css='.px[class*=px-fr]{image-rendering:auto}';for(let l=0;l<11;l++){const cv=document.createElement('canvas');cv.width=cv.height=48;drawFruit(cv.getContext('2d'),24,24,22,l);PXC['fr'+l]=cv;css+=`.px-fr${l}{background-image:url(${cv.toDataURL()})}`;}const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);})();
 const ic=(n,big)=>`<i class="px${big?' x3':''} px-${n}"></i>`;
 const cv=$('#cv'),st=$('#stage'),ui=$('#ui'),pw=$('#pw');let ctx=cv.getContext('2d');
 const pwBtns=[...pw.querySelectorAll('[data-p]')],tb=$('#tb');
@@ -467,12 +469,12 @@ function syncCoins(c){$('#coinN').textContent=c;if(c>G.lastCoins){const el=$('#c
 function syncTb(){const g=G.g,on=G.state==='play'&&!!g,lk=on&&g.locked,n=Math.max(RG.ts(RUN),RUN.tl.length),ids=RUN.tl.map(t=>t.id).join()+'|'+n,arm=on&&g.arm;
  if(ids!==G.tbKey){G.tbKey=ids;G.pwKey='';G.tbR={};let h='';for(let i=0;i<n;i++){const t=RUN.tl[i],d=t&&TL[t.id];h+=t?`<button class="tlb" data-t="${i}" title="${d.n}: ${d.d} (key ${i+1})"><i class="fill"></i><b>${ic(icn(t.id))}</b><span>${d.n}</span><em></em></button>`:'<span class="tlb e">Empty</span>';}tb.innerHTML=h;}
  const key=on+'|'+RUN.coins+'|'+lk+'|'+arm+'|'+RUN.tl.map(t=>t.c).join();if(key===G.pwKey)return;G.pwKey=key;syncCoins(RUN.coins);let rs=0;
- RUN.tl.forEach((t,i)=>{const b=tb.children[i],need=TL[t.id].ch,rdy=t.c>=need,a=arm===t.id;b.disabled=!on||lk||!rdy;b.style.setProperty('--ch',Math.min(1,t.c/need));b.classList.toggle('rdy',rdy);b.classList.toggle('arm',a);b.lastChild.textContent=lk?'Locked':a?'Tap a fruit':rdy?'Ready':t.c+'/'+need;
+ RUN.tl.forEach((t,i)=>{const b=tb.children[i],need=RG.need(RUN,t.id),rdy=t.c>=need,a=arm===t.id;b.disabled=!on||lk||!rdy;b.style.setProperty('--ch',Math.min(1,t.c/need));b.classList.toggle('rdy',rdy);b.classList.toggle('arm',a);b.lastChild.textContent=lk?'Locked':a?'Tap a fruit':rdy?'Ready':t.c+'/'+need;
   if(rdy&&G.tbR[t.id]===false&&on){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');rs=1;}G.tbR[t.id]=rdy;});if(rs)snd('ready');}
 function syncPw(){if(pw.hidden)return;if(RUN)return syncTb();const g=G.g,on=G.state==='play'&&!!g,c=g?g.coins:0,cd=g?g.cd:{},lk=!!(g&&g.locked),pr=p=>g?g.price(p):PRICE[p],key=on+'|'+c+'|'+lk+'|'+pwBtns.map(b=>Math.ceil((cd[b.dataset.p]||0)*10)+':'+pr(b.dataset.p)).join(',');if(key===G.pwKey)return;G.pwKey=key;syncCoins(c);
  for(const b of pwBtns){const p=b.dataset.p,left=cd[p]||0,cooling=on&&left>0;b.disabled=!on||cooling||lk||c<pr(p);b.querySelector('.pc').textContent=pr(p);b.classList.toggle('cool',cooling);b.style.setProperty('--cd',cooling?left/COOL[p]:0);b.querySelector('.cdn').textContent=cooling?Math.ceil(left):'';}}
 function loop(t){G.raf=requestAnimationFrame(loop);const dt=G.last?Math.min(.05,(t-G.last)/1000):.016;G.last=t;
- if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();if(RUN&&G.chKey!=null&&G.chKey!==RUN.ch.map(c=>c.id).join())rgHead();}
+ if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();if(RUN&&G.chKey!=null&&G.chKey!==chKey())rgHead();}
 function drawIdle(){ctx.fillStyle='#fff3e6';ctx.fillRect(0,0,G.W,G.H);const r=G.W*.09;for(let i=0;i<7;i++){const l=(i*3)%11;drawFruit(ctx,(i+.5)*G.W/7,G.H-r*1.1-(i%2)*r*.9,r*(.55+l*.05),l)}}
 function show(html){let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');m.className='msg';ui.appendChild(m)}m.innerHTML=html;m.scrollTop=0;return m}
 function hide(){ui.innerHTML=''}
@@ -528,8 +530,9 @@ const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id
 const chip=r=>`<small class="chip r${r}">${RAR[r]}</small>`;
 function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
 /* during a run the header shows the five charm slots. Tap one to inspect or sell it */
-function rgHead(){const t=$('#hd .t');t.className='t ch';let h='';for(let i=0;i<SLOTS;i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
- t.innerHTML=h;$('#lbB').hidden=true;G.chKey=RUN.ch.map(c=>c.id).join();}
+function rgHead(){const t=$('#hd .t');t.className='t ch';let h='';for(let i=0;i<RG.slots(RUN);i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
+ t.innerHTML=h;$('#lbB').hidden=true;G.chKey=chKey();}
+const chKey=()=>RUN.ch.map(c=>c.id).join()+'|'+RG.slots(RUN);
 function rgPulse(ids){if(!RUN||G.chKey==null)return;const t=$('#hd .t');for(const id of ids){const el=t.children[RUN.ch.findIndex(c=>c.id===id)];if(el){el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit');}}}
 function rgSave(){RUN.pile=G.g?G.g.snap():[];store.set('run',RUN);PF.save();}
 const rgSee=(k,ids)=>{if(RUN&&!RUN.dev)PF.see(k,ids);}; /* glossary: the player has now met these */
@@ -540,7 +543,7 @@ function rgIntro(){if(G.state!=='menu'||RUN)menu();G.mode='rogue';store.set('mod
  const m=show(`<h3>Rogue run</h3><p>Go ${DEPTHS} depths down. Each depth is 3 jars, and the third is a <b>boss</b> with a nasty rule.</p><ul class="wl">
 <li><span>${ic('bull')}</span><div>Hit the jar's <b>score target</b> before your <b>drops</b> run out. Run dry or overflow and the run is over.</div></li>
 <li><span>${ic('hoard')}</span><div>The pile <b>carries over</b> from jar to jar. It is emptied at each new depth.</div></li>
-<li><span>${ic('wallet')}</span><div>Cleared jars pay coins. Spend them in the shop on <b>charms</b> (hold up to ${SLOTS}), tools and upgrades. Saved coins earn interest.</div></li>
+<li><span>${ic('wallet')}</span><div>Cleared jars pay coins. Spend them in the shop on <b>charms</b> (hold up to ${SLOTS}), tools, upgrades and seeds. Saved coins earn interest.</div></li>
 <li><span>${ic('shake')}</span><div><b>Tools</b> sit under the jar. Tap one to use it. They <b>charge as you merge</b>, so use them often.</div></li>
 <li><span>${ic('gold')}</span><div>A merge scores its points times your <b>Mult</b>. Charms push both up, and the right pairs <b>combo</b>.</div></li></ul>
 <canvas id="chain"></canvas><p style="font-size:15px;color:var(--muted);margin:0">Fruit sizes, as charms and bosses call them.</p>
@@ -549,15 +552,16 @@ function rgStart(R){RUN=R;G.mode='rogue';store.set('mode','rogue');setBest();hid
  G.g=makeGame(G.W,G.H,false,null,RG.ro(R,rgClear,rgEnd,rgPulse));if(R.pile&&R.pile.length)G.g.load(R.pile);G.last=0;if(R.at==='shop'&&R.shop)rgShop();else rgHub();}
 function rgHub(){G.state='rogue';$('#pauseB').hidden=true;RUN.at='hub';rgSee('boss',RG.boss(RUN));rgSee('tl',RUN.tl.map(t=>t.id));rgSave();
  show(`<div class="mode">Rogue run</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}<button class="go rogue" data-a="rgo">Start jar</button><br><button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
-function rgInfo(){const nb=RG.boss(RUN),ups=Object.keys(UPG).filter(k=>k!=='scrub'&&RUN.up[k]);
- show(`<div class="mode">${jn()} · jar ${RUN.jar+1} of 3</div><h3>Run info</h3>${rgBar()}<div class="sec"><h5>Your charms (${RUN.ch.length}/${SLOTS}) <small>Tap one to inspect or sell it.</small></h5>${RUN.ch.length?`<ul class="it">${RUN.ch.map((c,i)=>`<li data-a="rch" data-i="${i}">${tile(c.id,'r'+CH[c.id].r)}<div><b>${CH[c.id].n}</b> ${chip(CH[c.id].r)}<br>${chD(c)}</div></li>`).join('')}</ul>`:'<p class="none">None yet. Buy some in the shop.</p>'}</div>
-<div class="sec"><h5>Your tools (${RUN.tl.length}/${RG.ts(RUN)}) <small>Tap one to inspect or sell it. They charge 1 for every merge.</small></h5>${RUN.tl.length?`<ul class="it">${RUN.tl.map((t,i)=>`<li data-a="rtl" data-i="${i}">${tile(t.id,'tl')}<div><b>${TL[t.id].n}</b> <small class="chip">Charge ${t.c}/${TL[t.id].ch}</small><br>${TL[t.id].d}</div></li>`).join('')}</ul>`:'<p class="none">None. Buy some in the shop.</p>'}</div>
+function rgInfo(){const nb=RG.boss(RUN),ups=Object.keys(UPG).filter(k=>!UPG[k].now&&RUN.up[k]),sds=RUN.sd.map((v,l)=>v?l:0).filter(l=>l);
+ show(`<div class="mode">${jn()} · jar ${RUN.jar+1} of 3</div><h3>Run info</h3>${rgBar()}<div class="sec"><h5>Your charms (${RUN.ch.length}/${RG.slots(RUN)}) <small>Tap one to inspect or sell it.</small></h5>${RUN.ch.length?`<ul class="it">${RUN.ch.map((c,i)=>`<li data-a="rch" data-i="${i}">${tile(c.id,'r'+CH[c.id].r)}<div><b>${CH[c.id].n}</b> ${chip(CH[c.id].r)}<br>${chD(c)}</div></li>`).join('')}</ul>`:'<p class="none">None yet. Buy some in the shop.</p>'}</div>
+<div class="sec"><h5>Your tools (${RUN.tl.length}/${RG.ts(RUN)}) <small>Tap one to inspect or sell it. They charge 1 for every merge.</small></h5>${RUN.tl.length?`<ul class="it">${RUN.tl.map((t,i)=>`<li data-a="rtl" data-i="${i}">${tile(t.id,'tl')}<div><b>${TL[t.id].n}</b> <small class="chip">Charge ${t.c}/${RG.need(RUN,t.id)}</small><br>${TL[t.id].d}</div></li>`).join('')}</ul>`:'<p class="none">None. Buy some in the shop.</p>'}</div>
 ${ups.length?`<div class="sec"><h5>Upgrades</h5><ul class="it">${ups.map(k=>`<li>${tile(k,'up')}<div><b>${UPG[k].n} ×${RUN.up[k]}</b><br>${UPG[k].d}</div></li>`).join('')}</ul></div>`:''}
+${sds.length?`<div class="sec"><h5>Seeds</h5><ul class="it">${sds.map(l=>`<li>${tile('fr'+l,'sd')}<div><b>Size ${l+1} Seed</b> <small class="chip">Level ${RUN.sd[l]}</small><br>Making a size ${l+1} fruit scores +${RUN.sd[l]*sdP(l)} points and +${num(RUN.sd[l]*SDM)} Mult.</div></li>`).join('')}</ul></div>`:''}
 <div class="sec"><h5>This depth's boss</h5><ul class="it"><li>${tile(nb,'boss')}<div><b>${BOSS[nb].n}</b><br>${BOSS[nb].d}</div></li></ul></div><button class="go alt" data-a="${G.state==='pause'?'paused':'rback'}">Back</button>`);}
 function rgCharm(i){const c=RUN.ch[i];if(!c)return rgInfo();const d=CH[c.id];
- show(`<div class="mode">Charm ${i+1} of ${RUN.ch.length}</div>${tile(c.id,'big r'+d.r)}<h3>${d.n}</h3><p>${chip(d.r)}</p><p>${chD(c)}</p><button class="go alt" data-a="rsell" data-i="${i}">Sell for <i class="coin"></i>${Math.floor(d.c/2)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
+ show(`<div class="mode">Charm ${i+1} of ${RUN.ch.length}</div>${tile(c.id,'big r'+d.r)}<h3>${d.n}</h3><p>${chip(d.r)}</p><p>${chD(c)}</p><button class="go alt" data-a="rsell" data-i="${i}">Sell for <i class="coin"></i>${RG.sellV(RUN,d.c)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
 function rgTool(i){const t=RUN.tl[i];if(!t)return rgInfo();const d=TL[t.id];
- show(`<div class="mode">Tool ${i+1} of ${RUN.tl.length}</div>${tile(t.id,'big tl')}<h3>${d.n}</h3><p><small class="chip">Charge ${t.c}/${d.ch}</small></p><p>${d.d}</p><p class="tg">Gains 1 charge for every merge.</p><button class="go alt" data-a="rtsell" data-i="${i}">Sell for <i class="coin"></i>${Math.floor(d.c/2)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
+ show(`<div class="mode">Tool ${i+1} of ${RUN.tl.length}</div>${tile(t.id,'big tl')}<h3>${d.n}</h3><p><small class="chip">Charge ${t.c}/${RG.need(RUN,t.id)}</small></p><p>${d.d}</p><p class="tg">Gains 1 charge for every merge.</p><button class="go alt" data-a="rtsell" data-i="${i}">Sell for <i class="coin"></i>${RG.sellV(RUN,d.c)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
 function rgGo(){const c=RG.jarCfg(RUN);RUN.cfg=c;rgEv(RUN,'start');hide();FLOAT.length=0;G.g.jar(c);G.state='play';G.last=0;$('#pauseB').hidden=false;}
 function rgClear(left){const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=`Depth ${RUN.depth} · ${c.boss?BOSS[c.boss].n:'Jar '+(RUN.jar+1)}`;let sum=0;for(const r of rows)sum+=r[1];
  const ev={depth:RUN.depth,jar:RUN.jar,boss:c.boss,left,score:G.g.jarScore,quota:c.quota,win:RUN.depth===DEPTHS&&RUN.jar===2&&!RUN.won};rgEv(RUN,'jar',ev);
@@ -565,18 +569,20 @@ function rgClear(left){const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=`Depth ${R
  const pay=`<ul class="wl">${rows.map(r=>`<li><div>${r[0]}</div><em><i class="coin"></i>+${r[1]}</em></li>`).join('')}<li><div><b>Total</b></div><em><i class="coin"></i>+${sum}</em></li></ul>`;
  if(win){snd('hi');show(`<div class="mode">${was}</div>${tile('melon','big boss')}<h3>You win!</h3><p>The Melon King is juice. Run score:</p><div class="big">${RUN.total}</div>${pay}<p>Bank this score, or go deeper for a bigger one.</p><button class="go rogue" data-a="rshop">Go deeper</button><button class="go alt" data-a="rbank">Bank score</button>`);}
  else show(`<div class="mode">${was}</div><h3>Jar cleared!</h3>${pay}<p class="tg">You now have ${cn(RUN.coins)}</p><button class="go rogue" data-a="rshop">Shop</button>`);}
-function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgSee('ch',RUN.shop.ch);rgSee('tl',RUN.shop.tl);rgSee('up',RUN.shop.up);rgSee('boss',RG.boss(RUN));rgSave();const S=RUN.shop,full=RUN.ch.length>=SLOTS,ts=RG.ts(RUN),tfull=RUN.tl.length>=ts,rr=RG.cost(RUN,2+S.rr),old=ui.querySelector('.msg'),sy=keep&&old?old.scrollTop:0;
+function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgSee('ch',RUN.shop.ch);rgSee('tl',RUN.shop.tl);rgSee('up',RUN.shop.up);rgSee('sd',RUN.shop.sd);rgSee('boss',RG.boss(RUN));rgSave();const S=RUN.shop,cs=RG.slots(RUN),full=RUN.ch.length>=cs,ts=RG.ts(RUN),tfull=RUN.tl.length>=ts,rr=RG.rrCost(RUN),old=ui.querySelector('.msg'),sy=keep&&old?old.scrollTop:0;
  const buy=(a,i,p,no)=>`<button class="go sm" data-a="${a}" data-i="${i}"${no||RUN.coins<p?' disabled':''}>${no?'Full':'<i class="coin"></i>'+p}</button>`;
  const it=S.ch.map((id,i)=>{if(!id)return'';const d=CH[id];return `<li>${tile(id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}</div>${buy('rbuy',i,RG.cost(RUN,d.c),full)}</li>`}).join('');
- const tl=S.tl.map((id,i)=>{if(!id)return'';const d=TL[id];return `<li>${tile(id,'tl')}<div><b>${d.n}</b> <small class="chip">Charge ${d.ch}</small><br>${d.d}</div>${buy('rtbuy',i,RG.cost(RUN,d.c),tfull)}</li>`}).join('');let ownT='';for(let i=0;i<ts;i++){const t=RUN.tl[i];ownT+=t?tile(t.id,'tl','button',` data-a="rtl" data-i="${i}" aria-label="${TL[t.id].n}"`):'<i class="tile e"></i>';}
- const up=S.up.map((id,i)=>{if(!id)return'';const d=UPG[id];return `<li>${tile(id,'up')}<div><b>${d.n}</b>${id!=='scrub'&&RUN.up[id]?` <small class="chip">Owned ×${RUN.up[id]}</small>`:''}<br>${d.d}</div>${buy('rup',i,RG.upCost(RUN,id))}</li>`}).join('');
- let own='';for(let i=0;i<SLOTS;i++){const c=RUN.ch[i];own+=c?tile(c.id,'r'+CH[c.id].r,'button',` data-a="rch" data-i="${i}" aria-label="${CH[c.id].n}"`):'<i class="tile e"></i>';}
+ const tl=S.tl.map((id,i)=>{if(!id)return'';const d=TL[id];return `<li>${tile(id,'tl')}<div><b>${d.n}</b> <small class="chip">Charge ${RG.need(RUN,id)}</small><br>${d.d}</div>${buy('rtbuy',i,RG.cost(RUN,d.c),tfull)}</li>`}).join('');let ownT='';for(let i=0;i<ts;i++){const t=RUN.tl[i];ownT+=t?tile(t.id,'tl','button',` data-a="rtl" data-i="${i}" aria-label="${TL[t.id].n}"`):'<i class="tile e"></i>';}
+ const up=S.up.map((id,i)=>{if(!id)return'';const d=UPG[id];return `<li>${tile(id,'up')}<div><b>${d.n}</b>${!d.now&&RUN.up[id]?` <small class="chip">Owned ×${RUN.up[id]}</small>`:''}<br>${d.d}</div>${buy('rup',i,RG.upCost(RUN,id))}</li>`}).join('');
+ const sd=S.sd.map((l,i)=>{if(!l)return'';const lv=RUN.sd[l];return `<li>${tile('fr'+l,'sd')}<div><b>Size ${l+1} Seed</b>${lv?` <small class="chip">Level ${lv}</small>`:''}<br>${sdD(l)}</div>${buy('rsd',i,RG.sdCost(RUN,l))}</li>`}).join('');
+ let own='';for(let i=0;i<cs;i++){const c=RUN.ch[i];own+=c?tile(c.id,'r'+CH[c.id].r,'button',` data-a="rch" data-i="${i}" aria-label="${CH[c.id].n}"`):'<i class="tile e"></i>';}
  const m=show(`<div class="mode">${jn()}</div><h3>Shop</h3><p class="tg">You have ${cn(RUN.coins)}</p>
-<div class="sec"><h5>Charms <small>Items that work on their own once bought. You can hold ${SLOTS}.${full?' Sell one to make room.':''}</small></h5>${it?`<ul class="it">${it}</ul>`:'<p class="none">Sold out.</p>'}</div>
+<div class="sec"><h5>Charms <small>Items that work on their own once bought. You can hold ${cs}.${full?' Sell one to make room.':''}</small></h5>${it?`<ul class="it">${it}</ul>`:'<p class="none">Sold out.</p>'}</div>
 <div class="sec"><h5>Tools <small>Abilities you tap during a jar. They charge as you merge. You can hold ${ts}.${tfull?' Sell one to make room.':''}</small></h5>${tl?`<ul class="it">${tl}</ul>`:'<p class="none">Sold out.</p>'}</div>
 <div class="sec"><h5>Upgrades <small>Permanent boosts. They don't take a slot.</small></h5>${up?`<ul class="it">${up}</ul>`:'<p class="none">Sold out.</p>'}</div>
-<button class="go alt sm" data-a="rroll"${RUN.coins<rr?' disabled':''}>Reroll shop <i class="coin"></i>${rr}</button>
-<div class="sec"><h5>Your charms (${RUN.ch.length}/${SLOTS}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${own}</div></div>
+<div class="sec"><h5>Seeds <small>A seed levels up one fruit size for the rest of the run. Levels stack.</small></h5>${sd?`<ul class="it">${sd}</ul>`:'<p class="none">Sold out.</p>'}</div>
+<button class="go alt sm" data-a="rroll"${RUN.coins<rr?' disabled':''}>Reroll shop ${rr?'<i class="coin"></i>'+rr:'free'}</button>
+<div class="sec"><h5>Your charms (${RUN.ch.length}/${cs}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${own}</div></div>
 <div class="sec"><h5>Your tools (${RUN.tl.length}/${ts}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${ownT}</div></div>
 <div class="sec"><h5>Up next</h5>${rgTrack()}</div><button class="go rogue" data-a="rgo">Start jar</button><br><button class="go lnk" data-a="menu">Save &amp; quit</button>`);m.scrollTop=sy;}
 function rgEnd(why){rgEv(RUN,'end',{why,boss:RUN.jar===2?RG.boss(RUN):null});PF.save();store.set('run',null);if(RUN.dev){G.state='over';setTimeout(menu,0);return;} /* dev runs never reach the score boards */
@@ -594,6 +600,7 @@ function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;
  else if(a==='rbuy'){const id=RUN.shop.ch[i];if(RG.buy(RUN,i)){rgEv(RUN,'buy',{id});snd('coin');rgShop(1);}}
  else if(a==='rtbuy'){const id=RUN.shop.tl[i];if(RG.buyTl(RUN,i)){rgEv(RUN,'buy',{id,k:'tl'});snd('coin');rgShop(1);}}
  else if(a==='rtsell'){const t=RUN.tl[i];if(sure('Tap again to sell')&&RG.sellTl(RUN,i)){rgEv(RUN,'sell',{id:t.id,k:'tl'});snd('coin');back();}}
+ else if(a==='rsd'){const l=RG.buySd(RUN,i);if(l){rgEv(RUN,'seed',{l});snd('coin');rgShop(1);}}
  else if(a==='rup'){const id=RG.buyUp(RUN,i);if(id){rgEv(RUN,'up',{id});if(id==='scrub'){const n=G.g.scrub();if(n)rgEv(RUN,'kill',{n});if(RG.kill(RUN,n))rgPulse(['compost']);}snd('coin');rgShop(1);}}
  else if(a==='rsell'){const c=RUN.ch[i];if(sure('Tap again to sell')&&RG.sell(RUN,i)){rgEv(RUN,'sell',{id:c.id});snd('coin');back();}}
  else if(a==='rroll'){if(RG.reroll(RUN)){rgEv(RUN,'roll');snd('swap');rgShop(1);}}
@@ -636,6 +643,7 @@ if(/[?&]dev\b/.test(location.search))(function(){
 <label>Charm <select id="dvC">${opt(CH)}</select></label><button data-d="charm">Add</button><br>
 <label>Tool <select id="dvT">${opt(TL)}</select></label><button data-d="tool">Add</button><br>
 <label>Upgrade <select id="dvU">${opt(UPG)}</select></label><button data-d="up">Add</button><br>
+<label>Seed <select id="dvS">${[1,2,3,4,5,6,7,8,9,10].map(l=>`<option value="${l}">Size ${l+1}</option>`).join('')}</select></label><button data-d="seed">+1 level</button><br>
 <button data-d="new">New dev run</button><button data-d="coins">+20 coins</button><button data-d="win">Clear jar</button><br><button data-d="pf">Log profile</button><button data-d="pfx">Reset profile</button><p id="dvM"></p>`;
  document.body.appendChild(el);
  const say=t=>{el.querySelector('#dvM').textContent=t;},v=id=>el.querySelector(id).value,redraw=()=>{rgHead();if(RUN.at==='shop')rgShop(1);else rgHub();};
@@ -649,9 +657,10 @@ if(/[?&]dev\b/.test(location.search))(function(){
   if(!idle)return say('Only between jars (hub or shop).');
   if(a==='go'){RUN.depth=clampN(+v('#dvD')||1,1,99);RUN.jar=+v('#dvJ');RG.boss(RUN);G.g.wipe();RUN.shop=RG.stock(RUN);RUN.at='hub';}
   else if(a==='boss'){RG.boss(RUN);RUN.bs[RUN.depth-1]=v('#dvB');}
-  else if(a==='charm'){const id=v('#dvC');if(RG.has(RUN,id))return say('Already owned.');if(RUN.ch.length>=SLOTS)RUN.ch.shift();RUN.ch.push({id});}
-  else if(a==='tool'){const id=v('#dvT');if(RUN.tl.some(t=>t.id===id))return say('Already owned.');if(RUN.tl.length>=RG.ts(RUN))RUN.tl.shift();RUN.tl.push(RG.tool(id));}
-  else if(a==='up'){const id=v('#dvU');if(id==='scrub')G.g.scrub();else RUN.up[id]++;}
+  else if(a==='charm'){const id=v('#dvC');if(RG.has(RUN,id))return say('Already owned.');if(RUN.ch.length>=RG.slots(RUN))RUN.ch.shift();RUN.ch.push({id});}
+  else if(a==='tool'){const id=v('#dvT');if(RUN.tl.some(t=>t.id===id))return say('Already owned.');if(RUN.tl.length>=RG.ts(RUN))RUN.tl.shift();RUN.tl.push(RG.tool(id,RUN));}
+  else if(a==='up'){const id=v('#dvU');if(!RG.upOk(RUN,id)&&id!=='scrub')return say('Not available now.');if(id==='scrub')G.g.scrub();else if(id==='bribe')RG.bribe(RUN);else RUN.up[id]++;}
+  else if(a==='seed')RUN.sd[+v('#dvS')]++;
   RUN.dev=1;redraw();say('Done. This run no longer counts.');});})();
 
 PF.load();setSnd();setBest();menu();G.raf=requestAnimationFrame(loop);
