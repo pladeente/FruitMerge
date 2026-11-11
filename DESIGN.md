@@ -95,7 +95,7 @@ Pairs that could become fusions later: Small Fry + Pet Caterpillar, Prospector +
 
 ## Charm feedback
 
-When a charm takes part in a score, its header slot does one shared hop (`rgPulse`). Planned: a unique animation per charm that triggers (about 30), in the header slot and, for charms tied to a spot, in the jar too (Pet Caterpillar is the model). Always-on charms get a gentle idle wobble instead. Gameplay first, so this follows the new charms.
+Every charm has its own trigger animation (`ANIM` in `index.html`): a move on its header icon (spin, slam, jiggle, swing...) and pixel particles of its own colour thrown from the slot. Charms tied to a spot also play an effect in the jar where the merge happened (`jfx` in `makeGame`): rings for Bullseye and Sweet Spot, clover bursts, petals off the wall for Wallflower, a flat ripple for Low Tide, dust and a shake for Heavyweight, bubbles for Small Fry, leaves for Sprout. Charms that add to every merge (Juicer, Hot Streak, Magpie, Pip Collector...) get a soft move and few particles, and nothing in the jar, so the screen does not fill up. Any new charm needs an `ANIM` entry, and a `jfx` effect if it is tied to a spot.
 
 ## Things to avoid
 

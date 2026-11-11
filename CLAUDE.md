@@ -31,6 +31,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 - UI screens are HTML strings passed to `show(html)`, which fills `#ui .msg`. Buttons carry `data-a="action"`, dispatched in one click listener (`rgAct` for Rogue actions, all prefixed `r`).
 - Icons: `ic('name')` returns `<i class="px px-name">`. `fr0` to `fr10` are pictures of the fruit sizes, drawn at load from `drawFruit` (seeds use them). A charm, boss or upgrade uses the grid named after its id unless `ICN` maps it to another. Every new item needs a grid in `icons.js` or an `ICN` entry.
 - Canvas text goes through `T()`, score pop-ups through `dmg()`, plain floating text through `floatTxt()`.
+- Charm animations: `rgPulse(ids)` plays the charm's entry in `ANIM` (a CSS move `m-<name>` on the header icon, plus particles from `slotFx`). In the jar, `jfx(ids, merge)` in `makeGame` plays spot effects using `ring()` and `spray()`. Every new charm needs an `ANIM` entry.
 - Sounds are synthesised in `SFX`, played with `snd('name')`.
 - Font is Jersey 15, embedded as base64 in `index.html`. Do not open that line in an editor view if avoidable, it is huge.
 - In-game text is short, plain and literal. A description must say exactly what the item does, with numbers.
