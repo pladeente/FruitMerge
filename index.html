@@ -123,8 +123,8 @@ tr.me td{background:#35c2b42a}
 .slot.hit{animation:hit .3s ease-out}.slot.off{opacity:.35;filter:grayscale(1)}
 .rule i{color:var(--muted);font-style:normal}
 @keyframes hit{30%{transform:translateY(-4px) scale(1.22);filter:brightness(1.2)}}
-#hd .t.ch{display:flex;justify-content:center;gap:4px;padding-left:clamp(0px,calc(100% - 50px - var(--n,5)*38px),50px);overflow:visible;cursor:pointer;min-width:0}#hd:has(#pauseB:not([hidden])) .t.ch{padding-left:clamp(0px,calc(100% - 100px - var(--n,5)*38px),100px)}
-#hd .t.ch .slot{flex:0 1 34px;min-width:0;height:auto;aspect-ratio:1;max-height:34px}
+#hd .t.ch{display:flex;gap:4px;overflow:visible;cursor:pointer;min-width:0}#hd .t.ch .slot{flex:0 1 34px;min-width:0;height:auto;aspect-ratio:1;max-height:34px}
+#hd .t.ch .px{margin:0}
 .chip{font:800 13px var(--body);text-transform:uppercase;letter-spacing:.5px;padding:1px 6px;border-radius:6px;background:#ffffff1c;color:var(--muted);white-space:nowrap}
 .chip.r1{background:#35c2b440;color:#8ff0e6}.chip.r2{background:#f4bb4a40;color:var(--brass)}.chip.r3{background:#ff4d8d45;color:#ffb3cf}
 .sec{margin:14px 0 0;text-align:left}
@@ -582,7 +582,7 @@ const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id
 const chip=r=>`<small class="chip r${r}">${RAR[r]}</small>`;
 function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
 /* during a run the header shows the five charm slots. Tap one to inspect or sell it */
-function rgHead(){const t=$('#hd .t');t.className='t ch';t.style.setProperty('--n',RG.slots(RUN));let h='';for(let i=0;i<RG.slots(RUN);i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}${i<(RUN.off||0)?' off':''}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
+function rgHead(){const t=$('#hd .t');t.className='t ch';let h='';for(let i=0;i<RG.slots(RUN);i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}${i<(RUN.off||0)?' off':''}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
  t.innerHTML=h;$('#lbB').hidden=true;G.chKey=chKey();}
 const chKey=()=>RUN.ch.map(c=>c.id).join()+'|'+RG.slots(RUN)+'|'+(RUN.off||0);
 function rgPulse(ids){if(!RUN||G.chKey==null)return;const t=$('#hd .t');for(const id of ids){const el=t.children[RUN.ch.findIndex(c=>c.id===id)];if(el){el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit');}}}
