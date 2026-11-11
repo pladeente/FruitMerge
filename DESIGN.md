@@ -118,7 +118,7 @@ Every charm has its own trigger animation (`ANIM` in `index.html`): a move on it
 
 ## Prototypes
 
-Slingshot (throw fruit by flicking) and Trick Shot (a thrown fruit that banks off a wall into its match scores ×3) are in the shop and crates as uncommons for testing. Trick Shot has `req:'sling'`, so it only turns up once Slingshot is held and is never a dead pick. Questions to settle by playing: does an accidental flick happen too often (threshold 300·K px/s), is the throw too strong (cap 900·K, ×0.7 of the flick), is ×3 right for a bank shot. If they ship: Slingshot uncommon, Trick Shot uncommon, both in a new Throwing build, and re-measure balance, since throwing makes merges easier.
+Slingshot (throw fruit by flicking) and Trick Shot (a thrown fruit that banks off a wall into its match scores ×3) are in the shop and crates as uncommons for testing. Trick Shot has `req:'sling'`, so it only turns up once Slingshot is held and is never a dead pick. Questions to settle by playing: does an accidental flick happen too often (threshold 300·K px/s), is the throw too strong (first playtest: yes, halved to ×0.35 of the flick, cap 450·K), is ×3 right for a bank shot. If they ship: Slingshot uncommon, Trick Shot uncommon, both in a new Throwing build, and re-measure balance, since throwing makes merges easier.
 
 ## Things to avoid
 

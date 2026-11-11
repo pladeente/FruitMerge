@@ -426,7 +426,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  up(x,y,vx){if(over||(ro&&(!J||done)))return;
   if(arm){if(x==null||y==null)return;const f=pick(x,y),t=ro.tools.find(t=>t.id===arm);if(!t){arm=null;return;}if(!f||!okTg(arm,f)){floatTxt(f?'Not that one':'Tap a fruit',W/2,line+48,'#1f9c90',18);snd('nope');return;}tool(arm,f);arm=null;spent(t);return;}
   if(cool>0||(ro&&dl<=0&&free<=0))return;if(x!=null)cx=mx(x);ck=0;const r=rad(cur),o={x:clampN(cx,L+r,Rw-r),y:line-r-6,vx:0,vy:60*K,l:cur,age:0,sp:curSp};add(o);drops++;
-   if(ro&&vx&&ro.has('sling')&&Math.abs(vx)>300*K){o.vx=clampN((B.mirror?-vx:vx)*.7,-900*K,900*K);o.thr=1;}
+   if(ro&&vx&&ro.has('sling')&&Math.abs(vx)>300*K){o.vx=clampN((B.mirror?-vx:vx)*.35,-450*K,450*K);o.thr=1;}
    if(ro&&o.sp!=='stone'){const gk=jd===0&&ro.has('leaf')?'leaf':ro.has('hunter')&&Math.random()<ro.luck()/6?'hunter':ro.has('prosp')&&Math.random()<ro.luck()/10?'prosp':'';if(gk){o.gold=1;ro.fx([gk]);burst(o.x,o.y,'#ffd43b',12);floatTxt('Gold!',o.x,o.y-r-8,'#e09600',16);snd('coin');}}
   if(ro){const fd=free>0;if(fd)free--;else dl--;lastF={f:o,l:cur,sp:curSp,free:fd};ro.ev('drop',{l:cur,sp:curSp});if(ro.has('dynamo')){chg(1);ro.fx(['dynamo']);}}cur=nxt;curSp=nxtSp;
   if(ro){deal();jd++;lastD=time;
