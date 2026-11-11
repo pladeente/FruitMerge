@@ -123,7 +123,8 @@ tr.me td{background:#35c2b42a}
 .slot.hit{animation:hit .3s ease-out}.slot.off{opacity:.35;filter:grayscale(1)}
 .rule i{color:var(--muted);font-style:normal}
 @keyframes hit{30%{transform:translateY(-4px) scale(1.22);filter:brightness(1.2)}}
-#hd .t.ch{display:flex;gap:4px;overflow:visible;cursor:pointer;min-width:0}#hd .t.ch .slot{flex:0 1 34px;min-width:0;height:auto;aspect-ratio:1;max-height:34px}
+#hd .t.ch{display:flex;justify-content:center;gap:4px;padding-left:clamp(0px,calc(100% - 50px - var(--n,5)*38px),50px);overflow:visible;cursor:pointer;min-width:0}#hd:has(#pauseB:not([hidden])) .t.ch{padding-left:clamp(0px,calc(100% - 100px - var(--n,5)*38px),100px)}
+#hd .t.ch .slot{flex:0 1 34px;min-width:0;height:auto;aspect-ratio:1;max-height:34px}
 .chip{font:800 13px var(--body);text-transform:uppercase;letter-spacing:.5px;padding:1px 6px;border-radius:6px;background:#ffffff1c;color:var(--muted);white-space:nowrap}
 .chip.r1{background:#35c2b440;color:#8ff0e6}.chip.r2{background:#f4bb4a40;color:var(--brass)}.chip.r3{background:#ff4d8d45;color:#ffb3cf}
 .sec{margin:14px 0 0;text-align:left}
@@ -456,7 +457,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   if(J){const sj=String(Math.floor(js)),qt='/ '+J.quota;c.font=`700 ${24*FS}px ${FD}`;const w1=c.measureText(sj).width;c.font=`800 ${13*FS}px ${FB}`;const bw=Math.max(138,w1+6+c.measureText(qt).width,c.measureText(J.tag).width),m=sc(0,rc(-1)).m,p=clampN(js/J.quota,0,1);
    c.fillStyle='#fff3e6dd';rr(c,6,6,bw+18,76,12);c.fill();T(c,J.tag,15,19,12,'#3b2346aa','left');T(c,sj,15,38,24,'#3b2346','left',FD);T(c,qt,21+w1,41,13,'#3b2346aa','left');
    c.fillStyle='#3b234626';rr(c,15,53,bw,7,3.5);c.fill();if(p>0){c.fillStyle=done?'#38b000':'#ff4d8d';rr(c,15,53,Math.max(7,bw*p),7,3.5);c.fill();}if(J.p2&&ph<2){c.fillStyle='#3b2346';c.fillRect(14+bw*.5,50,2,13);}
-   T(c,'Drops '+dl+(free?'+'+free:''),15,71,13,dl<=5&&!free&&!done?'#e63946':'#3b2346','left');const tag=[ph>1?'Phase 2':'',B.collect?(gotC?'Fruit collected':'Make a size '+(B.collect>1?8:7)):'',B.audit?'Mult cap ×'+(B.audit>1?4:6):'',dd?'Next merge ×4':'',cyc>0?'Merges ×2 for '+Math.ceil(cyc)+'s':''].filter(t=>t).join(' · ');if(tag){c.font=`800 ${13*FS}px ${FB}`;c.fillStyle='#fff3e6dd';rr(c,6,86,c.measureText(tag).width+18,22,8);c.fill();T(c,tag,15,101,13,'#ff4d8d','left');}T(c,'Mult ×'+(m<10?m.toFixed(1):Math.round(m)),15+bw,71,13,'#8e44ec','right');}
+   T(c,'Drops '+dl+(free?'+'+free:''),15,72,16,dl<=5&&!free&&!done?'#e63946':'#2a1838','left',FB,900);const tag=[ph>1?'Phase 2':'',B.collect?(gotC?'Fruit collected':'Make a size '+(B.collect>1?8:7)):'',B.audit?'Mult cap ×'+(B.audit>1?4:6):'',dd?'Next merge ×4':'',cyc>0?'Merges ×2 for '+Math.ceil(cyc)+'s':''].filter(t=>t).join(' · ');if(tag){c.font=`800 ${13*FS}px ${FB}`;c.fillStyle='#fff3e6dd';rr(c,6,86,c.measureText(tag).width+18,22,8);c.fill();T(c,tag,15,101,13,'#ff4d8d','left');}T(c,'Mult ×'+(m<10?m.toFixed(1):Math.round(m)),15+bw,72,16,'#7a2fe0','right',FB,900);}
   else if(!ro){const bs='Best '+Math.max(best(),score);c.font=`700 ${26*FS}px ${FD}`;let sw=c.measureText(String(score)).width;c.font=`800 ${14*FS}px ${FB}`;sw=Math.max(sw,c.measureText(bs).width);
    c.fillStyle='#fff3e6cc';rr(c,6,8,sw+22,58,12);c.fill();
    T(c,String(score),16,28,26,'#3b2346','left',FD);T(c,bs,16,53,14,'#3b2346aa','left');}
@@ -581,7 +582,7 @@ const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id
 const chip=r=>`<small class="chip r${r}">${RAR[r]}</small>`;
 function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
 /* during a run the header shows the five charm slots. Tap one to inspect or sell it */
-function rgHead(){const t=$('#hd .t');t.className='t ch';let h='';for(let i=0;i<RG.slots(RUN);i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}${i<(RUN.off||0)?' off':''}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
+function rgHead(){const t=$('#hd .t');t.className='t ch';t.style.setProperty('--n',RG.slots(RUN));let h='';for(let i=0;i<RG.slots(RUN);i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}${i<(RUN.off||0)?' off':''}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}
  t.innerHTML=h;$('#lbB').hidden=true;G.chKey=chKey();}
 const chKey=()=>RUN.ch.map(c=>c.id).join()+'|'+RG.slots(RUN)+'|'+(RUN.off||0);
 function rgPulse(ids){if(!RUN||G.chKey==null)return;const t=$('#hd .t');for(const id of ids){const el=t.children[RUN.ch.findIndex(c=>c.id===id)];if(el){el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit');}}}
