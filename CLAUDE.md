@@ -9,7 +9,7 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 | File | What it holds |
 |---|---|
 | `index.html` | CSS, HTML shell, engine (`makeGame`), Classic and Wild, all screens including the Rogue ones, the dev panel. About 580 very long lines. |
-| `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `TL`, seeds, crates (`CRT`), `RG`, balance tables), the player profile (`PF`, `mergeProfile`) and run events (`rgEv`). Loaded before the main script. No DOM access. |
+| `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `TL`, seeds, crates (`CRT`), `RG`, balance tables), the player profile (`PF`, `mergeProfile`), run events (`rgEv`) and awards (`ACH`, `LOCK`). Loaded before the main script. No DOM access. |
 | `icons.js` | Pixel art. `PXD` = 12x12 letter grids, `PXP` = palette, `PXF`/`PXFB` = score pop-up font. |
 | `sw.js` | Service worker, network first, cache fallback. Bump `CACHE` and update `CORE` whenever a file is added or renamed. |
 | `database.rules.json` | Firebase Realtime Database rules for the leaderboard (pasted into the console by hand). |
@@ -21,7 +21,7 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - No test suite. Verify changes by driving the page with Playwright (preinstalled in cloud sessions): load, start a Rogue run, drop fruit, open the shop, check the console for errors. Keep throwaway scripts out of the repo.
 - Syntax check quickly by loading the page headless and failing on any `pageerror`.
 - The engine can be stepped by hand in a test: `G.g.up(x)` drops, `G.g.update(.016)` advances one frame, so a whole jar plays in milliseconds. `G.g.peek()` returns the engine's hidden state (drops left, held fruit, armed tool), `G.g.snap()` the pile, `G.g.load(pile)` sets it. A drop is ignored while `cool>0` (the first 0.4s of a jar, 0.55s after each drop), so step between drops. Top-level `const`s (`G`, `RUN`, `RG`, `PF`) are reachable from `page.evaluate`.
-- **Dev panel**: open the page with `?dev`. Jump to any depth and jar, set the boss, add charms (fusions included), tools, upgrades and seed levels, open a crate of any tier, add coins, clear the jar being played, log or reset the profile. Any run it touches gets `R.dev=1`: no stats, no glossary marks, no score boards. Add new item types to it as they land.
+- **Dev panel**: open the page with `?dev`. Jump to any depth and jar, set the boss, add charms (fusions included), tools, upgrades and seed levels, open a crate of any tier, add coins, clear the jar being played, log or reset the profile, unlock everything. Any run it touches gets `R.dev=1`: no stats, no glossary marks, no score boards. Add new item types to it as they land.
 
 ## Code conventions
 
@@ -43,21 +43,23 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - Tools in the engine: `use(id)` fires a tool or arms a targeted one (`TL[id].tg`), `up(x,y)` then picks the fruit under the tap. `okTg(id,f)` says what a tool may target, `tool(id,f)` does the effect and returns false when there is nothing to do (no charge is spent), `spent(t)` empties the charge and runs every on-use charm. `power(p)` holds the four physics effects shared with Wild. Wild still uses coin prices and cooldowns (`PRICE`, `COOL`), Rogue never does.
 - Tool bar: `#pw` holds Wild's four fixed buttons and `#tb`, the Rogue bar. The class `rg` on `#pw` switches between them. `syncTb` builds one button per slot and updates charge, Ready, Locked and armed states each frame.
 - `PF` (`rogue.js`): the profile, one object under one storage key: `{v, rev, at, seen, unlocked, ach, stats, stakes}`. `seen`/`unlocked`/`ach` map namespaced ids (`ch.juicer`, `boss.fog`, `up.fert`) to the time first reached. `stats` is flat counters and records that only go up (`PF.inc`, `PF.max`). `PF.save()` writes only when dirty and is called from `rgSave`, `rgEnd`, tab hide and page hide. `mergeProfile(a,b)` joins two copies (earliest time, highest number) and is the whole sync story for sign-in. All meta progress must live in the profile.
-- `rgEv(R, name, data)` (`rogue.js`): the single place things get counted, into `R.st` (run), `R.jst` (current jar, reset by the `start` event) and `PF.d.stats` (lifetime). The engine fires `drop`, `merge`, `tool`, `kill`, `net` through `ro.ev`. Screens fire `run`, `start`, `jar`, `end`, `buy`, `sell`, `up`, `seed`, `roll`, `skip`, `crate`, `take`, `fuse`. Achievements (Stage 5) hook in at the end of it. New mechanics must fire an event here.
-- `rgSee(kind, ids)`: marks things as met for the glossary. Called when the shop or hub shows them.
+- `rgEv(R, name, data)` (`rogue.js`): the single place things get counted, into `R.st` (run), `R.jst` (current jar, reset by the `start` event) and `PF.d.stats` (lifetime). The engine fires `drop`, `merge`, `tool`, `kill`, `net` through `ro.ev`. Screens fire `run`, `start`, `jar`, `end`, `buy`, `sell`, `up`, `seed`, `roll`, `skip`, `crate`, `take`, `fuse`. `achCheck` runs at the end of it. New mechanics must fire an event here. The engine also fires `gold` and `melons`.
+- `rgSee(kind, ids)`: marks things as met for the Almanac. Called when the shop, hub or a crate shows them. Kinds: `ch`, `tl`, `fu`, `up`, `sd`, `boss`.
+- Awards (`ACH` in `rogue.js`): `on` = the events that can earn it, `t(R, d, S)` = the test, `un` = the lock key it opens (`ch.id`, `tl.id`, `up.id`, `fu.id`, `jar.id`), `secret` hides the text until earned. `LOCK` maps each key back to its award. `PF.lk(key)` is true while a thing is locked, and `RG.stock`, `RG.crate`, `RG.fusable` and `RG.upOk` all respect it. Earned awards go to `PF.d.ach` and `PF.d.unlocked`, to `R.got` (run over screen) and to `ACHQ` (the toast, shown by `toastTick`). Tests that need locked content must unlock it first: `for(const k in LOCK)PF.d.unlocked[k]=1`.
+- Almanac: `almanac(tab)` with `alRows(kind)` building the entries. Locked entries show the award's text, unmet ones a silhouette, met ones the full text and lifetime stats. Opened from the menu, the Rogue intro and the pause screen (`G.alFrom` says where Back goes).
 - Rogue UI: `rgIntro`, `rgStart`, `rgHub`, `rgGo`, `rgClear`, `rgCrate`, `rgShop`, `rgInfo`, `rgCharm`, `rgTool`, `rgEnd`, shared pieces `rgOwn` (owned charms and tools as tiles), `rgFuNote`, `rgSkipB`, header charm slots in `rgHead`, charm flash in `rgPulse`.
 - Leaderboard: `lbTop`/`lbSubmit`, Firebase REST, no SDK. Modes `classic`, `wild`, `rogue`.
 
-### Run object (save version `RV`, now 7)
+### Run object (save version `RV`, now 8)
 
-`{v, depth, jar, coins, total, ch:[{id, v?}], tl:[{id, c}] (tools, `c` = charge held), up:{one count per `UPG` key}, sd:[11 seed levels, index = tier made], bs:[boss ids per depth], ms:{depth: mini boss id}, bq:{depth: [two rule ids] for The Orchard Queen}, off (charms switched off by The Thief, only non-zero mid-jar), shop:{ch,tl,up,sd,cr,rr} (`cr` = kind of the crate on sale), crate:{tier,then,kind,opts}|null, pile:[snapshot], at:'hub'|'shop'|'crate', won, cfg, st:{run stats}, jst:{jar stats}, dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
+`{v, depth, jar, coins, total, ch:[{id, v?}], tl:[{id, c}] (tools, `c` = charge held), up:{one count per `UPG` key}, sd:[11 seed levels, index = tier made], bs:[boss ids per depth], ms:{depth: mini boss id}, bq:{depth: [two rule ids] for The Orchard Queen}, off (charms switched off by The Thief, only non-zero mid-jar), shop:{ch,tl,up,sd,cr,rr} (`cr` = kind of the crate on sale), crate:{tier,then,kind,opts}|null, pile:[snapshot], at:'hub'|'shop'|'crate', won, cfg, st:{run stats}, jst:{jar stats}, got:[awards earned this run], dsk (jars skipped this depth), dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
 
 ## Rogue mode as it stands
 
 - 8 depths, 3 jars each, the third is a boss. Beat depth 8 to win, then optional endless depths (targets ×`RSCX`=2 per depth).
 - Each jar: reach `quota` points within `drops` drops. Overflow (pile above the line for 2.2s) or running dry ends the run. The pile carries between jars and is wiped at each new depth.
 - Scoring per merge: `(tri(l) + flat points) × Mult`, where `tri(l)=(l+1)(l+2)/2` for the fruit made, `Mult = (1 + sum of add) × product of x`. Charm order does not matter. Seeds add to both the points and the add part for their own size. After that, one-off multipliers stack on the result: gold fruit (×2, or ×3 from Golden Hand), Double Down (×4), Cyclone (×2).
-- Charms (`CH`, 39 plus 10 fusions): passive items, rarity 0 to 2, fusions are rarity 3. 5 slots (`SLOTS`), 6 with Charm Pouch. Hooks `chip`, `add`, `x` receive context `c` (see the comment above `CH`). Charms with no hook are special-cased in `makeGame` or `RG`.
+- Charms (`CH`, 44 plus 10 fusions): passive items, rarity 0 to 2, fusions are rarity 3. Six are award rewards (Snake Eyes, Magpie, Ashes, Sweet Spot, Abacus, Full House). 5 slots (`SLOTS`), 6 with Charm Pouch. Hooks `chip`, `add`, `x` receive context `c` (see the comment above `CH`). Charms with no hook are special-cased in `makeGame` or `RG`.
 - Tools (`TL`, 16 plus 3 fusions): abilities tapped during a jar. A run starts with Swap and Shake in 2 slots (`TS0`), up to 4 (`TSLOTS`) through the Tool Belt upgrade. Each tool needs `ch` charge and gains 1 per merge. Charge carries between jars, a bought tool arrives full. No coin cost, no cooldown. Targeted tools (Ripen, Twin, Midas, Anchor) arm first, then the player taps a fruit. Tool charms: Juggler, Spark Plug, Showman, Overdrive, Crowd Pleaser, Encore, Battery, Dynamo. The Padlock boss locks tools.
 - Fruit states added by tools: `gold` (Midas, ×2 and 2 coins when it merges, saved in the pile), `anch` (Anchor, stuck until the next jar starts). Jar states: `free` (Free Sample drops), `dd` (Double Down), `stash` (the Next fruit Rewind pushed back).
 - Fusions: an entry in `CH` or `TL` with `fu:[a,b]`. Charm fusions take two charms, tool fusions take a tool then a charm. Never sold, never a random crate pick. `RG.fusable(R)` lists the ones the run holds both halves of, `RG.fuse` makes one: it takes the first half's place, frees the other slot, and a charm fusion keeps the halves' grown value. Recipes: Four-Leaf Clover (Lucky Clover + Horseshoe), Golden Goose (Piggy Bank + Savings Account), Volcano (Fireworks + Compost), Headliner (Showman + Encore), Smoothie (Juicer + Honey Pot), Marathon (Early Bird + Photo Finish), Wildfire (Hot Streak + Chain Reaction), Melon Mania (Heavyweight + Melon Fever), The Mint (Scratch Card + Golden Touch), Sharpshooter (Bullseye + Lodestone), Cyclone (Whirl + Metronome), Sleight of Hand (Swap + Juggler), Golden Hand (Midas + Fat Wallet). Recipes are not shown before the player holds both halves (the user removed combo hints on purpose). The hub and shop then say "Fusion ready".
@@ -109,11 +111,10 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - Targets retuned from `[1,2.3,4,6.5,9.5,13,17,22]` to `[1,2.6,6,13,27,55,100,180]`. On the old curve the greedy bot won half its runs.
 - Icons redrawn to match the original set (chunky, outlined, shaded). Check any new icon against the old ones on a contact sheet before shipping it.
 
-### Stage 5: Achievements, unlocks, Almanac — planned
-- About 30 achievements, mostly multi-condition (clear a boss with no tool use, score 3× a target, win with 3 charms or fewer, two watermelons in one jar, every fruit size in one jar). Each unlocks a named charm, tool, fusion recipe or starting jar. Some are secret.
-- All 35 current charms stay unlocked. Roughly a third of the new content is locked.
-- **Almanac**: glossary with tabs for Charms, Tools, Fusions, Upgrades and Seeds, Bosses, Achievements. Unseen entries are silhouettes, locked entries show their unlock condition, seen entries show full text and stats. Open from the menu and the pause screen.
-- Unlock toasts in play and a summary on the run over screen.
+### Stage 5: Awards, unlocks, Almanac — done
+- 29 awards, 26 of them unlock something: 5 tools (Twin, Rewind, Double Down, Cash Out, Midas), 2 charms from earlier stages (Overdrive, Dynamo), 6 new reward charms, 3 upgrades (Charm Pouch, Crowbar, Whetstone), 5 fusion recipes (Golden Hand, Wildfire, Sharpshooter, Cyclone, Melon Mania) and 5 starting jars. Three are secret. The three with no unlock are for stakes and meeting every boss.
+- None of the charms from before the expansion is locked.
+- Almanac with tabs Charms, Tools, Fusions, Upgrades (seeds included), Bosses, Awards. Award toasts in play, awards listed on the run over screen.
 
 ### Stage 6: Stakes and starting jars — planned
 - **Stakes**: 8 stacking difficulty levels, each unlocked by winning the one below (lower payouts, faster targets, fewer drops, dearer shop, mid-bosses from depth 5, perishable charms, phase 2 from the start, double-rule final boss).
@@ -125,10 +126,10 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - Sign-in and cloud save (user will ask). Plan: Firebase Auth, `users/$uid/profile`, merge with `mergeProfile`. The run save can sync too.
 - Charm editions, daily seeded run, more fusions.
 
-## Open decisions (defaults will be used unless the user says otherwise)
+## Standing decisions
 
-1. Charm order stays irrelevant to scoring.
-2. Existing charms stay unlocked.
+1. Charm order is irrelevant to scoring. The Thief is the one exception: it switches off the oldest charms.
+2. Charms from before the expansion are never locked.
 
 ## Working rules
 

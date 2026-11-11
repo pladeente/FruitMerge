@@ -113,6 +113,11 @@ tr.me td{background:#35c2b42a}
 .tile.up{box-shadow:inset 0 0 0 3px #b388eb}.tile.tl{box-shadow:inset 0 0 0 3px #4cc9f0}.tile.sd{box-shadow:inset 0 0 0 3px #7bc950}.tile.boss{box-shadow:inset 0 0 0 3px var(--coral)}.slot.boss{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--coral)}
 .tile.e,.slot.e{background:#ffffff10;box-shadow:inset 0 0 0 2px var(--line)}
 .tile.big{width:64px;height:64px;border-radius:12px;margin-top:8px}.tile.big .px{width:48px;height:48px}
+.tabs.al{flex-wrap:wrap}.tabs.al button{padding:5px 9px;font-size:16px}
+.tile.un .px{filter:brightness(0);opacity:.3}.it li.un b,.it li.lk b{color:var(--muted)}.it small.st{color:var(--muted);font-size:14px}
+#toast{position:absolute;left:8px;right:8px;bottom:8px;z-index:5;padding:8px 10px;border-radius:12px;background:#2f1e47f7;box-shadow:0 0 0 2px var(--brass),0 6px 18px #0008;display:flex;gap:10px;align-items:center;text-align:left;font-size:16px;line-height:1.15;pointer-events:none;animation:toast 4s ease both}
+#toast[hidden]{display:none}#toast b{display:block;font:700 20px var(--display);color:var(--brass)}
+@keyframes toast{0%{transform:translateY(130%)}7%,90%{transform:none;opacity:1}100%{transform:translateY(130%);opacity:0}}
 .slot.hit{animation:hit .3s ease-out}.slot.off{opacity:.35;filter:grayscale(1)}
 .rule i{color:var(--muted);font-style:normal}
 @keyframes hit{30%{transform:translateY(-4px) scale(1.22);filter:brightness(1.2)}}
@@ -147,7 +152,7 @@ tr.me td{background:#35c2b42a}
   <button class="ib" id="sndB" aria-label="Toggle sound"></button>
   <button class="ib" id="pauseB" aria-label="Pause" hidden>II</button>
  </div>
- <div id="stage"><canvas id="cv"></canvas><div id="ui"></div></div>
+ <div id="stage"><canvas id="cv"></canvas><div id="ui"></div><div id="toast" hidden></div></div>
  <div id="pw" hidden>
   <div class="coins" id="coins" title="Coins"><i class="coin"></i><span id="coinN">0</span></div>
   <button class="pwb" data-p="swap" title="Swap your fruit with the next one (key 1)"><b><i class="px px-swap"></i></b>Swap<em><i class="coin"></i><span class="pc">5</span></em></button>
@@ -283,13 +288,13 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  /* bosses: ph = phase (2 from half the target), vz = how far The Vise has closed, ck = The Clock's timer, gotC = The Collector's fruit was made */
  let ph=1,vz=0,ck=0,gotC=0;
  const hiY=()=>line+(bot-line)*.3;
- const rc=(l,o)=>Object.assign({l,combo:0,bull:false,n:fr.length,jd,dl,jm,pu:Object.keys(pu).length,tu,high:ptop<hiY()},o);
+ const rc=(l,o)=>Object.assign({l,combo:0,bull:false,n:fr.length,jd,dl,jm,pu:Object.keys(pu).length,tu,gold:fr.reduce((a,f)=>a+(f.gold&&!f.dead?1:0),0),high:ptop<hiY()},o);
  const gain=p=>{js+=p;ro.total+=p;score=ro.total;};
  /* every score goes through sc so The Auditor can cap Mult, every charge through chg so The Miser can slow it */
  const sc=(b,c)=>{const r=ro.score(b,c),cap=B.audit?(B.audit>1?4:6):0;if(cap&&r.m>cap){r.p=Math.ceil(r.chips*cap-1e-9);r.m=cap;}return r;};
  const chg=(n,skip)=>{if(B.miser>1)return;ro.charge(B.miser?n/2:n,skip);};
  const mx=x=>B.mirror?W-x:x;
- const died=n=>{if(n>0)ro.ev('kill',{n});const k=ro.kill(n);if(k)ro.fx([k]);};
+ const died=n=>{if(n>0)ro.ev('kill',{n});const k=ro.kill(n);if(k)ro.fx([k]);if(n>0&&ro.has('ash')){const r=sc(15*n,rc(-1));gain(r.p);pop(r.p,W/2,line+100);ro.fx(['ash']);}};
  const pop=(p,x,y,m=1)=>dmg(p,x,y,p>=J.quota*.25?2:p>=J.quota*.1?1:0,m>=1.5?'×'+(m<10?+m.toFixed(1):Math.round(m)):'');
  const genT=()=>(B.swarm?rint(B.swarm>1?1:2):B.gamble?rint(B.gamble>1?7:6):Math.random()<.05?4:rint(4))+(ro.has('soil')?1:0);
  const genSp=()=>{seq++;return B.slick?'slip':B.sticky&&seq%(B.sticky>1?2:3)===0?'sticky':B.ice&&seq%(B.ice>1?3:4)===0?'ice':B.stone&&seq%(B.stone>1?3:5)===0?'stone':ro.has('volcano')&&seq%5===3?'bomb':ro.has('boom')&&seq%6===4?'bomb':ro.has('sharp')&&seq%4===2?'magnet':ro.has('lode')&&seq%5===2?'magnet':null;};
@@ -411,7 +416,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if(merge.length){fr=fr.filter(f=>!f.dead);let melon=false,top=0;combo=time-lastM<(ro?(ro.has('metro')?2.5:1)+ro.up('drum')*.5:1)?combo+1:0;lastM=time;
     for(const m of merge){add({x:m.x,y:m.y,vx:(Math.random()-.5)*80*K,vy:-160*K,l:m.l,age:1,a:0,landed:1});top=Math.max(top,m.l);
      if(ro){jm++;let p=0,mm=1;const xm=(m.gold?m.gold+1:1)*(dd?4:1)*(cyc>0?2:1);if(!(B.prune&&m.l<=(B.prune>1?4:3))){const r=sc(tri(m.l),rc(m.l,{combo,bull:m.bull,enc}));p=Math.ceil(r.p*xm);mm=r.m*xm;enc=0;ro.fx(r.hit);}
-      if(dd){dd=0;floatTxt('Double Down ×4',m.x,m.y-76,'#ff4d8d',18);}if(m.gold){ro.coins+=m.gold*2;floatTxt('Gold! +'+m.gold*2+' coin',m.x,m.y-60,'#e09600',16);}gain(p);pop(p,m.x,m.y,mm);chg(1);
+      if(dd){dd=0;floatTxt('Double Down ×4',m.x,m.y-76,'#ff4d8d',18);}if(m.gold){ro.ev('gold');ro.coins+=m.gold*2;floatTxt('Gold! +'+m.gold*2+' coin',m.x,m.y-60,'#e09600',16);}gain(p);pop(p,m.x,m.y,mm);chg(1);
       if(B.twins&&m.l>=2)for(let q=0;q<B.twins;q++){const r0=rad(0);add({x:L+r0+Math.random()*(Rw-L-r0*2),y:line+r0+4,vx:0,vy:0,l:0,age:0,a:0});}
       if(B.vise&&m.l>=5&&vz>0){vz=0;floatTxt('The walls open!',W/2,line+50,'#1f9c90',20);}
       if(B.collect&&m.l>=(B.collect>1?7:6)&&!gotC){gotC=1;floatTxt('Collected!',W/2,line+50,'#38b000',24);snd('fly');}
@@ -419,7 +424,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
       ro.ev('merge',{l:m.l,p,m:mm,combo,bull:m.bull});
       const ev=ro.made(m.l);if(ev.length){ro.fx(ev);const cn=ev.filter(e=>e!=='fever'&&e!=='mania').length;if(cn)floatTxt('+'+cn+' coin',m.x,m.y-28,'#e09600',16);if(ev.includes('fever'))floatTxt('Fever +1.5',m.x,m.y-44,'#38862a',16);if(ev.includes('mania'))floatTxt('Mania +2',m.x,m.y-44,'#38862a',16);}}
      else{score+=tri(m.l);earn(Math.ceil(m.l/2));dmg(tri(m.l),m.x,m.y,m.l>=7?2:m.l>=4?1:0);}
-     if(m.l===10){melon=true;earn(10);floatTxt('WATERMELON!',W/2,line+40,'#38b000',30);}burst(m.x,m.y,FRUIT[m.l][0]);}merge.length=0;
+     if(m.l===10){melon=true;earn(10);if(ro){const nm=fr.reduce((a,f)=>a+(f.l===10&&!f.dead?1:0),0);if(nm>1)ro.ev('melons',{n:nm});}floatTxt('WATERMELON!',W/2,line+40,'#38b000',30);}burst(m.x,m.y,FRUIT[m.l][0]);}merge.length=0;
     if(combo>=2)floatTxt('combo x'+(combo+1),W/2,line+18,'#8e44ec',16);snd(melon?'melon':'merge',top,combo);}}
   for(const f of fr){if(f.dead)continue;
    if(f.fuse!=null){f.fuse-=dt;if(f.fuse<=0){f.fuse=null;explode(f);continue;}}
@@ -499,7 +504,7 @@ function syncTb(){const g=G.g,on=G.state==='play'&&!!g,lk=on&&g.locked,n=Math.ma
 function syncPw(){if(pw.hidden)return;if(RUN)return syncTb();const g=G.g,on=G.state==='play'&&!!g,c=g?g.coins:0,cd=g?g.cd:{},lk=!!(g&&g.locked),pr=p=>g?g.price(p):PRICE[p],key=on+'|'+c+'|'+lk+'|'+pwBtns.map(b=>Math.ceil((cd[b.dataset.p]||0)*10)+':'+pr(b.dataset.p)).join(',');if(key===G.pwKey)return;G.pwKey=key;syncCoins(c);
  for(const b of pwBtns){const p=b.dataset.p,left=cd[p]||0,cooling=on&&left>0;b.disabled=!on||cooling||lk||c<pr(p);b.querySelector('.pc').textContent=pr(p);b.classList.toggle('cool',cooling);b.style.setProperty('--cd',cooling?left/COOL[p]:0);b.querySelector('.cdn').textContent=cooling?Math.ceil(left):'';}}
 function loop(t){G.raf=requestAnimationFrame(loop);const dt=G.last?Math.min(.05,(t-G.last)/1000):.016;G.last=t;
- if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();if(RUN&&G.chKey!=null&&G.chKey!==chKey())rgHead();}
+ if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();if(RUN&&G.chKey!=null&&G.chKey!==chKey())rgHead();if(ACHQ.length)toastTick();}
 function drawIdle(){ctx.fillStyle='#fff3e6';ctx.fillRect(0,0,G.W,G.H);const r=G.W*.09;for(let i=0;i<7;i++){const l=(i*3)%11;drawFruit(ctx,(i+.5)*G.W/7,G.H-r*1.1-(i%2)*r*.9,r*(.55+l*.05),l)}}
 function show(html){let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');m.className='msg';ui.appendChild(m)}m.innerHTML=html;m.scrollTop=0;return m}
 function hide(){ui.innerHTML=''}
@@ -513,7 +518,7 @@ function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loa
  .catch(()=>{if(el.isConnected)el.innerHTML='<p class="none">Couldn\'t reach the world leaderboard.</p>'});}
 
 function menu(){G.state='menu';G.g=null;RUN=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;rgTitle('melon','Fruit Merge');fit();setBest();
- const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><div class="modes"><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild</button><button class="go rogue" data-a="rogue">Rogue</button></div><button class="go alt sm" data-a="scores">Leaderboard</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><span id="instSlot">${installBtn()}</span>${matchMedia('(pointer:coarse)').matches?'':`<p style="font-size:15px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`}`);
+ const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><div class="modes"><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild</button><button class="go rogue" data-a="rogue">Rogue</button></div><button class="go alt sm" data-a="scores">Leaderboard</button><button class="go alt sm" data-a="almanac" data-f="menu">Almanac</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><span id="instSlot">${installBtn()}</span>${matchMedia('(pointer:coarse)').matches?'':`<p style="font-size:15px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`}`);
  chain(m);}
 function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.devicePixelRatio||1),h=nums?60:44;ch.style.height=h+'px';const w=ch.clientWidth;ch.width=w*dpr;ch.height=h*dpr;const c=ch.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
@@ -534,7 +539,7 @@ function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Spec
 function showScores(m=G.mode){G.tab=m;if(G.state==='rogue')$('#pauseB').hidden=true;const w=LB&&G.scope==='world',n=SC[m].length;const el=show(`<h3>Leaderboard</h3><div class="tabs"><button data-a="tab" data-m="classic" class="${m==='classic'?'on':''}">Classic</button><button data-a="tab" data-m="wild" class="${m==='wild'?'on':''}">Wild</button><button data-a="tab" data-m="rogue" class="${m==='rogue'?'on':''}">Rogue</button></div>${LB?`<div class="tabs"><button data-a="scope" data-s="world" class="${w?'on':''}">World</button><button data-a="scope" data-s="local" class="${w?'':'on'}">This device</button></div>`:''}${w?'<div id="bd"></div>':table(m)}<button class="go${GOC[m]}" data-a="play" data-m="${m}">Play ${MNAME[m]}</button><button class="go alt" data-a="${{pause:'paused',rogue:'rback'}[G.lbFrom]||'menu'}">Back</button>${n&&!w?`<br><button class="go lnk" data-a="reset">Clear ${MNAME[m]} scores</button>`:''}`);if(w)worldBoard(el.querySelector('#bd'),m,lastName)}
 function play(mode=G.mode){if(mode==='rogue')return rgIntro();RUN=null;G.mode=mode;store.set('mode',mode);setBest();rgTitle(mode==='wild'?'cat':'melon',mode==='wild'?'Wild Merge':'Fruit Merge');hide();FLOAT.length=0;G.g=null;pw.hidden=mode!=='wild';pw.classList.remove('rg');G.pwKey='';G.lastCoins=0;fit();G.W=G.cssW;G.H=G.cssH;fit();G.g=makeGame(G.W,G.H,mode==='wild',gameOver);G.state='play';G.last=0;$('#pauseB').hidden=false;}
 function pause(){if(G.state!=='play')return;G.state='pause';$('#pauseB').hidden=true;pauseMsg()}
-function pauseMsg(){show(G.mode==='rogue'&&RUN?'<h3>Paused</h3><button class="go" data-a="resume">Keep playing</button><button class="go alt" data-a="rinfo">Run info</button><p style="font-size:15px;color:var(--muted)">Tap a charm at the top to inspect or sell it.</p><button class="go lnk" data-a="rquit">Abandon run</button>':'<h3>Paused</h3><button class="go" data-a="resume">Keep playing</button><button class="go alt" data-a="quit">Quit</button>')}
+function pauseMsg(){show(G.mode==='rogue'&&RUN?'<h3>Paused</h3><button class="go" data-a="resume">Keep playing</button><button class="go alt" data-a="rinfo">Run info</button><button class="go alt" data-a="almanac" data-f="pause">Almanac</button><p style="font-size:15px;color:var(--muted)">Tap a charm at the top to inspect or sell it.</p><button class="go lnk" data-a="rquit">Abandon run</button>':'<h3>Paused</h3><button class="go" data-a="resume">Keep playing</button><button class="go alt" data-a="quit">Quit</button>')}
 function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode,loc=qualifies(s,m);
  if(loc||(LB&&s>0&&!lastName)){snd(loc?'hi':'over');const rank=SC[m].filter(r=>r.s>=s).length+1;
   const el=show(`<div class="mode">${MNAME[m]}</div>${loc?`<span class="new">${rank===1?'New best!':'High score #'+rank}</span>`:''}${loc&&m!=='rogue'?'':ovH()}<div class="big">${s}</div><p>Put your name on the board:</p><form class="nm"><input id="nmI" maxlength="12" autocomplete="off" placeholder="Your name" value="${esc(lastName)}"><button class="go" type="submit">Save</button></form><button class="go alt" data-a="skip">Skip</button>`);
@@ -544,6 +549,24 @@ function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode,loc=
  else{snd('over');showOver(s,-1,LB&&s>0?lbSubmit(m,lastName,s):null)}}
 function saveScore(n,s,m,loc=true){let hi=-1;if(loc){const rec={n,s,d:fmtD(Date.now()),t:Date.now()};SC[m].push(rec);SC[m].sort((a,b)=>b.s-a.s||a.t-b.t);SC[m]=SC[m].slice(0,MAXS);store.set(SKEY[m],SC[m]);setBest();hi=SC[m].indexOf(rec);}G.pending=null;showOver(s,hi,LB?lbSubmit(m,n,s):null)}
 function showOver(s,hi,sub){const m=G.mode,w=!!LB;const el=show(`<div class="mode">${MNAME[m]}</div>${ovH()}<div class="big">${s}</div>${hi<0&&best()?`<p class="tg">Best: ${best()}</p>`:''}${w?`${hi>=0?`<p class="tg">#${hi+1} on this device</p>`:''}<h4>World top ${MAXS}</h4><div id="bd"></div>`:table(m,hi)}<button class="go${GOC[m]}" data-a="play" data-m="${m}">Play again</button><button class="go alt" data-a="menu">Menu</button>`);if(w)worldBoard(el.querySelector('#bd'),m,sub?lastName:null,sub)}
+
+/* ---------- almanac: everything met so far, and the awards ---------- */
+const ALT=[['ch','Charms'],['tl','Tools'],['fu','Fusions'],['up','Upgrades'],['boss','Bosses'],['ach','Awards']];
+/* one entry per thing: key = its name in the profile, ic = icon, cls = tile style, st = a line of lifetime stats */
+function alRows(k){const S=PF.d.stats,nx=(n,w)=>n?`${w} ${n} time${n>1?'s':''}`:'',j=a=>a.filter(x=>x).join(' · ');
+ if(k==='ch')return Object.keys(CH).filter(id=>!CH[id].fu).sort((a,b)=>CH[a].r-CH[b].r).map(id=>({key:'ch.'+id,ic:id,n:CH[id].n,d:CH[id].d,cls:'r'+CH[id].r,tag:RAR[CH[id].r],st:nx(S['ch.'+id+'.buy'],'Bought')}));
+ if(k==='tl')return Object.keys(TL).filter(id=>!TL[id].fu).map(id=>({key:'tl.'+id,ic:id,n:TL[id].n,d:TL[id].d,cls:'tl',tag:'Charge '+TL[id].ch,st:j([nx(S['tool.'+id],'Used'),nx(S['tl.'+id+'.buy'],'Bought')])}));
+ if(k==='fu')return [...Object.keys(CH),...Object.keys(TL)].filter(id=>(CH[id]||TL[id]).fu).map(id=>{const d=CH[id]||TL[id];return{key:'fu.'+id,ic:id,n:d.n,d:`<b>${(CH[id]?CH:TL)[d.fu[0]].n} + ${CH[d.fu[1]].n}.</b> ${d.d}`,cls:'r3',tag:CH[id]?'Charm':'Tool',st:nx(S['fu.'+id+'.made'],'Made')};});
+ if(k==='up')return [...Object.keys(UPG).map(id=>({key:'up.'+id,ic:id,n:UPG[id].n,d:UPG[id].d,cls:'up',tag:UPG[id].now?'Instant':UPG[id].max?'Up to '+UPG[id].max:'No limit',st:nx(S['up.'+id+'.buy'],'Bought')})),...[1,2,3,4,5,6,7,8,9,10].map(l=>({key:'sd.'+l,ic:'fr'+l,n:`Size ${l+1} Seed`,d:sdD(l),cls:'sd',tag:'Seed',st:nx(S['sd.'+l+'.buy'],'Bought')}))];
+ return Object.keys(BOSS).map(id=>({key:'boss.'+id,ic:id,n:BOSS[id].n,d:BOSS[id].d+' <i>At half the target:</i> '+BOSS[id].d2,cls:'boss',tag:BOSS[id].fin?'Final boss':'From depth '+BOSS[id].min,st:j([nx(S['boss.'+id+'.win'],'Beaten'),nx(S['boss.'+id+'.loss'],'Lost to it')])}));}
+function almanac(tab){G.alTab=tab||G.alTab||'ch';const k=G.alTab,isA=k==='ach',rows=isA?Object.keys(ACH):alRows(k),done=isA?rows.filter(id=>PF.d.ach[id]).length:rows.filter(e=>!PF.lk(e.key)&&PF.d.seen[e.key]).length;
+ const row=e=>{if(PF.lk(e.key)){const a=ACH[LOCK[e.key]];return `<li class="lk">${tile('lock','e')}<div><b>Locked</b><br>${a.secret?'A secret award unlocks this.':'Award: '+a.d}</div></li>`;}
+  if(!PF.d.seen[e.key])return `<li class="un">${tile(e.ic,'un '+e.cls)}<div><b>???</b><br>Not met yet.</div></li>`;
+  return `<li>${tile(e.ic,e.cls)}<div><b>${e.n}</b> <small class="chip">${e.tag}</small><br>${e.d}${e.st?`<br><small class="st">${e.st}</small>`:''}</div></li>`;};
+ const award=id=>{const a=ACH[id],got=PF.d.ach[id];return `<li class="${got?'':'un'}">${tile(got?'trophy':'lock',got?'r2':'e')}<div><b>${a.n}</b>${got?' <small class="chip r2">Earned</small>':''}<br>${a.secret&&!got?'Secret.':a.d}${a.un?`<br><small class="st">${got?'Unlocked: '+unName(a.un):'Unlocks '+unKind(a.un)+'.'}</small>`:''}</div></li>`;};
+ show(`<h3>Almanac</h3><div class="tabs al">${ALT.map(([t,n])=>`<button data-a="altab" data-t="${t}"${t===k?' class="on"':''}>${n}</button>`).join('')}</div><p class="tg">${done} of ${rows.length} ${isA?'earned':'met'}</p><div class="sec"><ul class="it">${rows.map(isA?award:row).join('')}</ul></div><button class="go alt" data-a="alback">Back</button>`);}
+/* awards pop up one at a time at the bottom of the jar */
+function toastTick(){if((G.toastT||0)>Date.now())return;const id=ACHQ.shift(),a=ACH[id],el=$('#toast');el.innerHTML=`${tile('trophy','r2')}<div><b>Award: ${a.n}</b>${a.un?'Unlocked: '+unName(a.un):a.d}</div>`;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';G.toastT=Date.now()+4100;snd('hi');setTimeout(()=>{if(!ACHQ.length)el.hidden=true;},4150);}
 
 /* ---------- rogue mode: screens ---------- */
 let RUN=null;
@@ -575,7 +598,7 @@ function rgIntro(){if(G.state!=='menu'||RUN)menu();G.mode='rogue';store.set('mod
 <li><span>${ic('shake')}</span><div><b>Tools</b> sit under the jar. Tap one to use it. They <b>charge as you merge</b>, so use them often.</div></li>
 <li><span>${ic('gold')}</span><div>A merge scores its points times your <b>Mult</b>. Charms push both up, and the right pairs <b>combo</b>.</div></li></ul>
 <canvas id="chain"></canvas><p style="font-size:15px;color:var(--muted);margin:0">Fruit sizes, as charms and bosses call them.</p>
-${ok?`<button class="go rogue" data-a="rcont">Continue (depth ${sv.depth}, jar ${sv.jar+1})</button><br>`:''}<button class="go${ok?' alt':' rogue'}" data-a="rnew">New run</button><button class="go alt" data-a="menu">Back</button>`);chain(m,1);}
+${ok?`<button class="go rogue" data-a="rcont">Continue (depth ${sv.depth}, jar ${sv.jar+1})</button><br>`:''}<button class="go${ok?' alt':' rogue'}" data-a="rnew">New run</button><br><button class="go alt sm" data-a="almanac" data-f="intro">Almanac</button><button class="go alt sm" data-a="menu">Back</button>`);chain(m,1);}
 function rgStart(R){RUN=R;R.off=0;G.mode='rogue';store.set('mode','rogue');setBest();hide();FLOAT.length=0;G.g=null;pw.hidden=false;pw.classList.add('rg');G.pwKey=G.tbKey='';G.lastCoins=R.coins;G.over=null;rgHead();syncTb();fit();G.W=G.cssW;G.H=G.cssH;fit();
  G.g=makeGame(G.W,G.H,false,null,RG.ro(R,rgClear,rgEnd,rgPulse));if(R.pile&&R.pile.length)G.g.load(R.pile);G.last=0;if(R.at==='crate'&&R.crate)rgCrate();else if(R.at==='shop'&&R.shop)rgShop();else rgHub();}
 const rgFuNote=()=>RG.fusable(RUN).map(f=>`<p class="nxt">Fusion ready: <b>${f.a}</b> + <b>${f.b}</b>. The next boss crate will offer it.</p>`).join('');
@@ -631,9 +654,9 @@ ${cr}<button class="go alt sm" data-a="rroll"${RUN.coins<rr?' disabled':''}>Rero
 ${rgOwn()}
 <div class="sec"><h5>Up next</h5>${rgTrack()}</div><button class="go rogue" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go lnk" data-a="menu">Save &amp; quit</button>`);m.scrollTop=sy;}
 function rgEnd(why){rgEv(RUN,'end',{why,boss:(why==='over'||why==='drops')&&RUN.cfg?RUN.cfg.boss:null});PF.save();store.set('run',null);if(RUN.dev){G.state='over';setTimeout(menu,0);return;} /* dev runs never reach the score boards */
- G.over={why,d:RUN.depth,j:RUN.jar};gameOver(RUN.total);}
-function ovH(){const o=G.over;if(G.mode!=='rogue'||!o)return '<h3>Game over!</h3>';if(o.why==='win')return `<h3>Run complete!</h3><p class="tg">You beat ${o.d>DEPTHS+1?o.d-1:'all '+DEPTHS} depths.</p>`;
- return `<h3>Run over!</h3><p class="tg">${o.why==='over'?'The pile overflowed':o.why==='drops'?'Out of drops':'Ended'} on depth ${o.d}, ${o.j===2?'the boss':'jar '+(o.j+1)}.</p>`;}
+ G.over={why,d:RUN.depth,j:RUN.jar,got:RUN.got||[]};gameOver(RUN.total);}
+function ovH(){const o=G.over;if(G.mode!=='rogue'||!o)return '<h3>Game over!</h3>';const got=o.got&&o.got.length?`<p class="nxt">Awards this run: ${o.got.map(id=>`<b>${ACH[id].n}</b>`).join(', ')}</p>`:'';if(o.why==='win')return `<h3>Run complete!</h3><p class="tg">You beat ${o.d>DEPTHS+1?o.d-1:'all '+DEPTHS} depths.</p>${got}`;
+ return `<h3>Run over!</h3><p class="tg">${o.why==='over'?'The pile overflowed':o.why==='drops'?'Out of drops':'Ended'} on depth ${o.d}, ${o.j===2?'the boss':'jar '+(o.j+1)}.</p>${got}`;}
 function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;b.dataset.sure=1;b.textContent=t;return false;},back=()=>{if(G.state==='pause')pauseMsg();else if(RUN.at==='crate')rgCrate();else if(RUN.at==='shop')rgShop(1);else rgHub();},after=()=>{if(RUN.at==='shop'&&RUN.shop)rgShop();else rgHub();};
  if(a==='rogue')rgIntro();
  else if(a==='rnew'){if(!RG.saved()||sure('Tap again to drop your saved run')){const R=RG.new();rgEv(R,'run');rgStart(R);}}
@@ -648,7 +671,7 @@ function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;
  else if(a==='rcr')rgCrate();
  else if(a==='rtake'){const o=RG.take(RUN,i);if(o){rgEv(RUN,'take',{k:o.k,id:o.id});if(o.k==='fu')rgEv(RUN,'fuse',{id:o.id});snd(o.k==='fu'?'hi':'coin');after();}}
  else if(a==='rleave'){if(RG.leave(RUN)){rgEv(RUN,'take',{k:'out'});snd('coin');after();}}
- else if(a==='rcbuy'){if(RG.buyCr(RUN)){rgEv(RUN,'crate',{tier:'wood'});snd('coin');rgCrate();}}
+ else if(a==='rcbuy'){const k=RUN.shop.cr;if(RG.buyCr(RUN)){rgEv(RUN,'buy',{id:k,k:'cr'});rgEv(RUN,'crate',{tier:'wood'});snd('coin');rgCrate();}}
  else if(a==='rskip'){if(sure('Tap again: no coins, no shop')&&RG.skip(RUN)){rgEv(RUN,'skip');rgEv(RUN,'crate',{tier:'wood'});rgCrate();}}
  else if(a==='rsd'){const l=RG.buySd(RUN,i);if(l){rgEv(RUN,'seed',{l});snd('coin');rgShop(1);}}
  else if(a==='rup'){const id=RG.buyUp(RUN,i);if(id){rgEv(RUN,'up',{id});if(id==='scrub'){const n=G.g.scrub();if(n)rgEv(RUN,'kill',{n});const k=RG.kill(RUN,n);if(k)rgPulse([k]);}snd('coin');rgShop(1);}}
@@ -659,7 +682,8 @@ function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;
 $('#hd .t').onclick=e=>{if(!RUN||G.state==='over')return;const s=e.target.closest('.slot');if(G.state==='play')pause();if(G.state!=='pause'&&G.state!=='rogue')return;snd('ui');if(s&&s.dataset.i!=null)rgCharm(+s.dataset.i);else rgInfo();};
 
 ui.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;snd('ui');if(rgAct(a,b))return;
- if(a==='play')play(b.dataset.m||G.mode);else if(a==='scores'){G.lbFrom='menu';showScores()}else if(a==='paused')pauseMsg();else if(a==='tab')showScores(b.dataset.m);else if(a==='scope'){G.scope=b.dataset.s;showScores(G.tab||G.mode)}else if(a==='wildinfo')wildInfo();else if(a==='install')install();else if(a==='menu'||a==='quit')menu();
+ if(a==='almanac'){G.alFrom=b.dataset.f;almanac();}else if(a==='altab')almanac(b.dataset.t);else if(a==='alback'){if(G.alFrom==='pause')pauseMsg();else if(G.alFrom==='intro')rgIntro();else menu();}
+ else if(a==='play')play(b.dataset.m||G.mode);else if(a==='scores'){G.lbFrom='menu';showScores()}else if(a==='paused')pauseMsg();else if(a==='tab')showScores(b.dataset.m);else if(a==='scope'){G.scope=b.dataset.s;showScores(G.tab||G.mode)}else if(a==='wildinfo')wildInfo();else if(a==='install')install();else if(a==='menu'||a==='quit')menu();
  else if(a==='resume'){hide();G.state='play';G.last=0;$('#pauseB').hidden=false}
  else if(a==='skip')showOver(G.pending,-1);
  else if(a==='reset'){const m=G.tab||G.mode;if(b.dataset.sure){SC[m]=[];store.set(SKEY[m],[]);setBest();showScores(m)}else{b.dataset.sure=1;b.textContent='Tap again to clear '+MNAME[m]+' scores'}}});
@@ -695,12 +719,13 @@ if(/[?&]dev\b/.test(location.search))(function(){
 <label>Upgrade <select id="dvU">${opt(UPG)}</select></label><button data-d="up">Add</button><br>
 <label>Seed <select id="dvS">${[1,2,3,4,5,6,7,8,9,10].map(l=>`<option value="${l}">Size ${l+1}</option>`).join('')}</select></label><button data-d="seed">+1 level</button><br>
 <label>Crate <select id="dvK">${opt(CRT)}</select></label><button data-d="crate">Open</button><br>
-<button data-d="new">New dev run</button><button data-d="coins">+20 coins</button><button data-d="win">Clear jar</button><br><button data-d="pf">Log profile</button><button data-d="pfx">Reset profile</button><p id="dvM"></p>`;
+<button data-d="new">New dev run</button><button data-d="coins">+20 coins</button><button data-d="win">Clear jar</button><br><button data-d="pf">Log profile</button><button data-d="pfu">Unlock all</button><button data-d="pfx">Reset profile</button><p id="dvM"></p>`;
  document.body.appendChild(el);
  const say=t=>{el.querySelector('#dvM').textContent=t;},v=id=>el.querySelector(id).value,redraw=()=>{rgHead();if(RUN.at==='crate')rgCrate();else if(RUN.at==='shop')rgShop(1);else rgHub();};
  el.addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(!b)return;const a=b.dataset.d,idle=RUN&&G.state==='rogue';
   if(a==='pf'){console.log(JSON.stringify(PF.d,null,1));return say('Profile is in the console.');}
   if(a==='pfx'){PF.d=PF.blank();PF.dirty=1;PF.save();return say('Profile reset.');}
+  if(a==='pfu'){for(const k in LOCK)PF.d.unlocked[k]=PF.d.unlocked[k]||Date.now();PF.dirty=1;PF.save();return say('Everything unlocked. Awards are not marked as earned.');}
   if(a==='new'){const R=RG.new();R.dev=1;rgStart(R);return say('Dev run started.');}
   if(!RUN)return say('Start a Rogue run first.');
   if(a==='win'){if(G.state!=='play')return say('Only while a jar is being played.');RUN.dev=1;G.g.cheat();return say('Target filled.');}
