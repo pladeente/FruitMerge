@@ -433,6 +433,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if(B.storm&&jd%(B.storm>1?4:6)===0){whirl=1.1;wdir=Math.random()<.5?1:-1;overT=0;grace=3.6;snd('whirl');}
    if(B.slick>1&&jd%6===0)power('shake');
    if(B.tax&&jd%(B.tax>1?2:4)===0&&ro.coins>0){ro.coins--;floatTxt('Tax!',W/2,line+30,'#a96f16',20);snd('nope');}
+   if(!done&&!free&&(dl===5||dl===3||dl===1)){floatTxt(dl===1?'Last drop!':dl+' drops left!',W/2,line+60,'#e63946',22);snd('nope');}
    if(B.dark&&--dkN<=0){dkT=B.dark>1?.9:1.5;dkN=B.dark>1?4+rint(3):3+rint(3);}
    if(B.vise)vz=Math.min(W*.15,vz+W*(B.vise>1?.024:.012));
    if(B.wilt&&jd%(B.wilt>1?3:4)===0){let b=null;for(const f of fr)if(!f.dead&&f.l>=1&&f.l<10&&f.sp!=='stone'&&(!b||f.l>b.l))b=f;if(b){b.l--;burst(b.x,b.y,'#8a9a5b',14);floatTxt('Wilted!',b.x,b.y-rad(b.l),'#5e7d24',18);snd('crack');}}
@@ -498,9 +499,11 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    const lf=lastF&&lastF.f;if(lf&&!lf.dead&&!lf.landed&&fr.includes(lf)){const r=rad(lf.l);c.save();c.translate(lf.x,lf.y);c.rotate(lf.a||0);if(lf.sp==='stone')drawStone(c,0,0,r);else drawFruit(c,0,0,r,lf.l);c.restore();}}
   if(arm){c.fillStyle='#2f1e4748';c.fillRect(L,line,Rw-L,bot-line);c.strokeStyle='#35c2b4';c.lineWidth=3+Math.sin(time*8)*1.5;for(const f of fr)if(okTg(arm,f)){c.beginPath();c.arc(f.x,f.y,rad(f.l)+3,0,7);c.stroke();}T(c,TL[arm].n+': tap a fruit',W/2,line+24,18,'#1f9c90','center',FD);}
   if(J){const sj=String(Math.floor(js)),qt='/ '+J.quota;c.font=`700 ${24*FS}px ${FD}`;const w1=c.measureText(sj).width;c.font=`800 ${13*FS}px ${FB}`;const bw=Math.max(138,w1+6+c.measureText(qt).width,c.measureText(J.tag).width),m=sc(0,rc(-1)).m,p=clampN(js/J.quota,0,1);
-   c.fillStyle='#fff3e6dd';rr(c,6,6,bw+18,76,12);c.fill();T(c,J.tag,15,19,12,'#3b2346aa','left');T(c,sj,15,38,24,'#3b2346','left',FD);T(c,qt,21+w1,41,13,'#3b2346aa','left');
+   c.fillStyle='#fff3e6dd';rr(c,6,6,bw+18,96,12);c.fill();T(c,J.tag,15,19,12,'#3b2346aa','left');T(c,sj,15,38,24,'#3b2346','left',FD);T(c,qt,21+w1,41,13,'#3b2346aa','left');
    c.fillStyle='#3b234626';rr(c,15,53,bw,7,3.5);c.fill();if(p>0){c.fillStyle=done?'#38b000':'#ff4d8d';rr(c,15,53,Math.max(7,bw*p),7,3.5);c.fill();}if(J.p2&&ph<2){c.fillStyle='#3b2346';c.fillRect(14+bw*.5,50,2,13);}
-   T(c,'Drops '+dl+(free?'+'+free:''),15,72,16,dl<=5&&!free&&!done?'#e63946':'#2a1838','left',FB,900);const tag=[ph>1?'Phase 2':'',B.collect?(gotC?'Fruit collected':'Make a size '+(B.collect>1?8:7)):'',B.audit?'Mult cap ×'+(B.audit>1?4:6):'',dd?'Next merge ×4':'',cyc>0?'Merges ×2 for '+Math.ceil(cyc)+'s':''].filter(t=>t).join(' · ');if(tag){c.font=`800 ${13*FS}px ${FB}`;c.fillStyle='#fff3e6dd';rr(c,6,86,c.measureText(tag).width+18,22,8);c.fill();T(c,tag,15,101,13,'#ff4d8d','left');}T(c,'Mult ×'+(m<10?m.toFixed(1):Math.round(m)),15+bw,72,16,'#7a2fe0','right',FB,900);}
+   {const dm=Math.max(J.drops,dl),dq=clampN(dl/dm,0,1),lo=dl<=5&&!free&&!done,dc=done?'#38b000':dl<=5?'#e63946':dl<=8?'#fb8500':'#1f9c90'; /* drops bar: drains as drops are used, orange at 8, red and pulsing at 5 */
+     c.fillStyle='#3b2346cc';rr(c,15,64,bw,17,5);c.fill();if(dq>0){c.globalAlpha=lo?.65+.35*Math.sin(time*9):1;c.fillStyle=dc;rr(c,15,64,Math.max(10,bw*dq),17,5);c.fill();c.globalAlpha=1;}if(lo){c.strokeStyle='#e63946';c.lineWidth=2;rr(c,14,63,bw+2,19,6);c.stroke();}
+     T(c,(dl===1?'1 drop':dl+' drops')+(free?' +'+free+' free':''),21,73,14,'#fff','left',FB,900);}const tag=[ph>1?'Phase 2':'',B.collect?(gotC?'Fruit collected':'Make a size '+(B.collect>1?8:7)):'',B.audit?'Mult cap ×'+(B.audit>1?4:6):'',dd?'Next merge ×4':'',cyc>0?'Merges ×2 for '+Math.ceil(cyc)+'s':''].filter(t=>t).join(' · ');if(tag){c.font=`800 ${13*FS}px ${FB}`;c.fillStyle='#fff3e6dd';rr(c,6,106,c.measureText(tag).width+18,22,8);c.fill();T(c,tag,15,121,13,'#ff4d8d','left');}T(c,'Mult ×'+(m<10?m.toFixed(1):Math.round(m)),15,92,16,'#7a2fe0','left',FB,900);}
   else if(!ro){const bs='Best '+Math.max(best(),score);c.font=`700 ${26*FS}px ${FD}`;let sw=c.measureText(String(score)).width;c.font=`800 ${14*FS}px ${FB}`;sw=Math.max(sw,c.measureText(bs).width);
    c.fillStyle='#fff3e6cc';rr(c,6,8,sw+22,58,12);c.fill();
    T(c,String(score),16,28,26,'#3b2346','left',FD);T(c,bs,16,53,14,'#3b2346aa','left');}
