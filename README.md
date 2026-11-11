@@ -6,17 +6,17 @@ Drop fruit, merge matching ones, make a watermelon. The game lives in `index.htm
 
 - **Classic**: the plain game.
 - **Wild**: special fruit, mould, a caterpillar, and coin powers.
-- **Rogue**: a run of 8 depths. Each depth is 3 jars with a score target and a drop limit, and the third jar is a boss with its own rule. The pile carries over between jars and is emptied at each new depth. Cleared jars pay coins for the shop, which sells charms (passive items, 5 slots) and permanent upgrades. Coins also pay for powers mid-jar. A run is saved between jars, so it can be continued later. Beating depth 8 wins, after which the run can continue into endless depths.
+- **Rogue**: a run of 8 depths. Each depth is 3 jars with a score target and a drop limit, and the third jar is a boss with its own rule. The pile carries over between jars and is emptied at each new depth. Cleared jars pay coins for the shop, which sells charms (passive items, 5 slots), tools and permanent upgrades. Tools are abilities you tap during a jar (2 slots to start, up to 4). They charge as you merge and cost nothing to use. A run is saved between jars, so it can be continued later. Beating depth 8 wins, after which the run can continue into endless depths.
 
-Rogue rules live in `rogue.js`: `CH` (charms), `BOSS`, `UPG` (upgrades), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RPAY` (coins per jar) and `RPRICE` (power prices).
+Rogue rules live in `rogue.js`: `CH` (charms), `TL` (tools), `BOSS`, `UPG` (upgrades), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth) and `RPAY` (coins per jar).
 
 Progress that outlives a run (stats, things met) is kept in one `profile` object on the device, ready to sync once sign-in exists.
 
-For testing, open the page with `?dev` on the end of the address. A panel lets you jump to any depth, pick the boss and hand yourself charms. Runs it touches do not count for scores or stats.
+For testing, open the page with `?dev` on the end of the address. A panel lets you jump to any depth, pick the boss and hand yourself charms and tools. Runs it touches do not count for scores or stats.
 
 ## Icons
 
-No image files. Every icon is a 12x12 grid of letters in `icons.js`, one letter per pixel, drawn at load time. To change an icon, edit its letters. To add one, add a grid and use it as `<i class="px px-NAME"></i>`. A charm, boss or upgrade uses the grid with the same name as its id, unless `ICN` in `index.html` points it at another one. The score pop-up font is in the same file.
+No image files. Every icon is a 12x12 grid of letters in `icons.js`, one letter per pixel, drawn at load time. To change an icon, edit its letters. To add one, add a grid and use it as `<i class="px px-NAME"></i>`. A charm, tool, boss or upgrade uses the grid with the same name as its id, unless `ICN` in `index.html` points it at another one. The score pop-up font is in the same file.
 
 The text font is [Jersey 15](https://github.com/scfried/soft-type-jersey) (SIL Open Font License 1.1), embedded in `index.html`.
 

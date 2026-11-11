@@ -9,7 +9,7 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 | File | What it holds |
 |---|---|
 | `index.html` | CSS, HTML shell, engine (`makeGame`), Classic and Wild, all screens including the Rogue ones, the dev panel. About 580 very long lines. |
-| `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `RG`, balance tables), the player profile (`PF`, `mergeProfile`) and run events (`rgEv`). Loaded before the main script. No DOM access. |
+| `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `TL`, `RG`, balance tables), the player profile (`PF`, `mergeProfile`) and run events (`rgEv`). Loaded before the main script. No DOM access. |
 | `icons.js` | Pixel art. `PXD` = 12x12 letter grids, `PXP` = palette, `PXF`/`PXFB` = score pop-up font. |
 | `sw.js` | Service worker, network first, cache fallback. Bump `CACHE` and update `CORE` whenever a file is added or renamed. |
 | `database.rules.json` | Firebase Realtime Database rules for the leaderboard (pasted into the console by hand). |
@@ -20,8 +20,8 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - Run: `python3 -m http.server 8000` in the repo root, open `http://localhost:8000`. Opening the file directly also works, minus the service worker.
 - No test suite. Verify changes by driving the page with Playwright (preinstalled in cloud sessions): load, start a Rogue run, drop fruit, open the shop, check the console for errors. Keep throwaway scripts out of the repo.
 - Syntax check quickly by loading the page headless and failing on any `pageerror`.
-- The engine can be stepped by hand in a test: `G.g.up(x)` drops, `G.g.update(.016)` advances one frame, so a whole jar plays in milliseconds. Top-level `const`s (`G`, `RUN`, `RG`, `PF`) are reachable from `page.evaluate`.
-- **Dev panel**: open the page with `?dev`. Jump to any depth and jar, set the boss, add charms and upgrades, add coins, clear the jar being played, log or reset the profile. Any run it touches gets `R.dev=1`: no stats, no glossary marks, no score boards. Add new item types to it as they land.
+- The engine can be stepped by hand in a test: `G.g.up(x)` drops, `G.g.update(.016)` advances one frame, so a whole jar plays in milliseconds. `G.g.peek()` returns the engine's hidden state (drops left, held fruit, armed tool), `G.g.snap()` the pile, `G.g.load(pile)` sets it. A drop is ignored while `cool>0` (the first 0.4s of a jar, 0.55s after each drop), so step between drops. Top-level `const`s (`G`, `RUN`, `RG`, `PF`) are reachable from `page.evaluate`.
+- **Dev panel**: open the page with `?dev`. Jump to any depth and jar, set the boss, add charms, tools and upgrades, add coins, clear the jar being played, log or reset the profile. Any run it touches gets `R.dev=1`: no stats, no glossary marks, no score boards. Add new item types to it as they land.
 
 ## Code conventions
 
@@ -39,28 +39,31 @@ The active work is turning **Rogue mode** into a deep roguelite. Classic and Wil
 - `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress).
 - `G`: app state. `G.state` is one of `menu`, `play`, `pause`, `over`, `rogue` (any Rogue screen between jars). `G.g` is the live game, `RUN` the live Rogue run.
 - `makeGame(W,H,wild,onOver,ro)`: the engine (physics, merging, specials, powers, drawing). Returns `{update, draw, up, use, jar, wipe, snap, load, scrub, ...}`. `ro` is null in Classic and Wild. In Rogue it is the hook object from `RG.ro(R, clear, fail, fx)`, the only way the engine talks to run state.
-- `RG` (`rogue.js`): pure Rogue rules over a run object `R`: `new`, `saved`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`.
+- `RG` (`rogue.js`): pure Rogue rules over a run object `R`: `new`, `saved`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`, and for tools `tool`, `ts` (slots), `charge`, `fill`, `buyTl`, `sellTl`.
+- Tools in the engine: `use(id)` fires a tool or arms a targeted one (`TL[id].tg`), `up(x,y)` then picks the fruit under the tap. `okTg(id,f)` says what a tool may target, `tool(id,f)` does the effect and returns false when there is nothing to do (no charge is spent), `spent(t)` empties the charge and runs every on-use charm. `power(p)` holds the four physics effects shared with Wild. Wild still uses coin prices and cooldowns (`PRICE`, `COOL`), Rogue never does.
+- Tool bar: `#pw` holds Wild's four fixed buttons and `#tb`, the Rogue bar. The class `rg` on `#pw` switches between them. `syncTb` builds one button per slot and updates charge, Ready, Locked and armed states each frame.
 - `PF` (`rogue.js`): the profile, one object under one storage key: `{v, rev, at, seen, unlocked, ach, stats, stakes}`. `seen`/`unlocked`/`ach` map namespaced ids (`ch.juicer`, `boss.fog`, `up.fert`) to the time first reached. `stats` is flat counters and records that only go up (`PF.inc`, `PF.max`). `PF.save()` writes only when dirty and is called from `rgSave`, `rgEnd`, tab hide and page hide. `mergeProfile(a,b)` joins two copies (earliest time, highest number) and is the whole sync story for sign-in. All meta progress must live in the profile.
 - `rgEv(R, name, data)` (`rogue.js`): the single place things get counted, into `R.st` (run), `R.jst` (current jar, reset by the `start` event) and `PF.d.stats` (lifetime). The engine fires `drop`, `merge`, `tool`, `kill`, `net` through `ro.ev`. Screens fire `run`, `start`, `jar`, `end`, `buy`, `sell`, `up`, `roll`. Achievements (Stage 5) hook in at the end of it. New mechanics must fire an event here.
 - `rgSee(kind, ids)`: marks things as met for the glossary. Called when the shop or hub shows them.
 - Rogue UI: `rgIntro`, `rgStart`, `rgHub`, `rgGo`, `rgClear`, `rgShop`, `rgInfo`, `rgCharm`, `rgEnd`, header charm slots in `rgHead`, charm flash in `rgPulse`.
 - Leaderboard: `lbTop`/`lbSubmit`, Firebase REST, no SDK. Modes `classic`, `wild`, `rogue`.
 
-### Run object (save version `RV`, now 3)
+### Run object (save version `RV`, now 4)
 
-`{v, depth, jar, coins, total, ch:[{id, v?}], up:{fert,sauce,can,scrub}, bs:[boss ids per depth], shop:{ch,up,rr}, pile:[snapshot], at:'hub'|'shop', won, cfg, st:{run stats}, jst:{jar stats}, dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
+`{v, depth, jar, coins, total, ch:[{id, v?}], tl:[{id, c}] (tools, `c` = charge held), up:{fert,sauce,can,scrub,belt}, bs:[boss ids per depth], shop:{ch,tl,up,rr}, pile:[snapshot], at:'hub'|'shop', won, cfg, st:{run stats}, jst:{jar stats}, dev?}`. Saved between jars only, never mid-jar. Any change to this shape needs a version bump and either a migration or dropping old saves. `RG.saved()` is the only reader and drops any save whose `v` is not `RV`.
 
 ## Rogue mode as it stands
 
 - 8 depths, 3 jars each, the third is a boss. Beat depth 8 to win, then optional endless depths (targets ×1.6 per depth).
 - Each jar: reach `quota` points within `drops` drops. Overflow (pile above the line for 2.2s) or running dry ends the run. The pile carries between jars and is wiped at each new depth.
 - Scoring per merge: `(tri(l) + flat points) × Mult`, where `tri(l)=(l+1)(l+2)/2` for the fruit made, `Mult = (1 + sum of add) × product of x`. Charm order does not matter.
-- Charms (`CH`, 35 of them, rarity 0 to 2): passive items, 5 slots (`SLOTS`). Hooks `chip`, `add`, `x` receive context `c` (see the comment above `CH`). Charms with no hook are special-cased in `makeGame` or `RG`.
-- Powers: `swap`, `shake`, `whirl`, `rumble`. Fixed set of four, cost coins (`RPRICE`), have cooldowns (`COOL`).
+- Charms (`CH`, 39 of them, rarity 0 to 2): passive items, 5 slots (`SLOTS`). Hooks `chip`, `add`, `x` receive context `c` (see the comment above `CH`). Charms with no hook are special-cased in `makeGame` or `RG`.
+- Tools (`TL`, 16): abilities tapped during a jar. A run starts with Swap and Shake in 2 slots (`TS0`), up to 4 (`TSLOTS`) through the Tool Belt upgrade. Each tool needs `ch` charge and gains 1 per merge. Charge carries between jars, a bought tool arrives full. No coin cost, no cooldown. Targeted tools (Ripen, Twin, Midas, Anchor) arm first, then the player taps a fruit. Tool charms: Juggler, Spark Plug, Showman, Overdrive, Crowd Pleaser, Encore, Battery, Dynamo. The Padlock boss locks tools.
+- Fruit states added by tools: `gold` (Midas, ×2 and 2 coins when it merges, saved in the pile), `anch` (Anchor, stuck until the next jar starts). Jar states: `free` (Free Sample drops), `dd` (Double Down), `stash` (the Next fruit Rewind pushed back).
 - Bosses (`BOSS`, 15): one static rule each, chosen per depth at run start, `min` = first depth it can appear. Depth 8 is always `melon`.
-- Upgrades (`UPG`, 4): `fert`, `sauce`, `can` stack with rising price, `scrub` is instant.
-- Economy: jar payout `RPAY`, unused drops bonus, interest 1 per 5 coins (cap 4), shop of 3 charms and 2 upgrades, reroll from 2 coins, sell for half price.
-- Balance tables: `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RDROPS`, `RPAY`, `RPRICE`.
+- Upgrades (`UPG`, 5): `fert`, `sauce`, `can` stack with rising price, `scrub` is instant, `belt` adds a tool slot.
+- Economy: jar payout `RPAY`, unused drops bonus, interest 1 per 5 coins (cap 4), shop of 3 charms, 2 tools and 2 upgrades, reroll from 2 coins, sell for half price. Coins are spent in the shop only.
+- Balance tables: `RQ` (depth 1 targets), `RSC` (target multiplier per depth), `RDROPS`, `RPAY`, and `c`/`ch` on each tool.
 
 ## Design pillars for the Rogue expansion
 
@@ -83,15 +86,13 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - Rogue rules moved to `rogue.js`. Profile save with `mergeProfile`. Event hook `rgEv` / `ro.ev`. Run save `v:3`, older runs dropped. `?dev` panel. See Architecture above.
 - No gameplay change. Stats and glossary marks are recorded from here on, with no screen to show them until Stage 5.
 
-### Stage 1: Tools (clickable abilities) — planned
-- Powers become **Tools**: a loadout of slots (start 2, max 4) filled from shop and crates. Start with Swap and Shake.
-- Tools **charge from merges** instead of costing coins. Coins become shop-only. Charge ring on each button, pulse and sound when ready, keys 1 to 4.
-- Targeted tools: arming one makes the next tap pick a fruit instead of dropping.
-- New tools (about 12): Ripen (tap a fruit, +1 size), Twin (copy a tapped fruit into your hand), Blender (smallest size in the jar merges in pairs), Free Sample (next 2 drops are free), Cherry Bomb (held fruit becomes Boom), Lodestar (held fruit becomes Magnet), Midas (tapped fruit turns gold, pays coins when merged), Rewind (undo last drop), Double Down (next merge ×4, costs 2 drops), Sieve (clears size 1 fruit), Anchor (tapped fruit cannot move for the jar), Cash Out (turn charge into coins).
-- Existing power charms (`show`, `encore`, `battery`, `juggle`) are reworked for charges. New charms that key off tool use.
+### Stage 1: Tools (clickable abilities) — done
+- Powers became Tools: 16 of them, loadout of 2 to 4 slots, charged by merges, sold in the shop. Targeting mode, charge bar with Ready pulse, use flash. See "Rogue mode as it stands".
+- 4 new charms (Spark Plug, Overdrive, Crowd Pleaser, Dynamo), Juggler and Battery reworded for charges, Tool Belt upgrade brought forward from Stage 2.
+- Not balanced yet. Players are richer (no coin spend mid-jar) and stronger. The retune is Stage 4.
 
 ### Stage 2: Upgrades and Seeds — planned
-- Upgrades grow from 4 to about 16, most with two tiers: +1 charm slot, +1 tool slot, 4th shop charm, cheaper rerolls, higher interest cap, boss reroll, extra crate choice, better rarity odds, full sell value, starting tool charge, and the existing four.
+- Upgrades grow from 5 to about 16, most with two tiers: +1 charm slot, 4th shop charm, cheaper rerolls, higher interest cap, boss reroll, extra crate choice, better rarity odds, full sell value, starting tool charge, and the existing four.
 - **Seeds**: level up one fruit size for the run (more base points and a little Mult when that size is made). 11 sizes, so builds can specialise. Balatro's planet cards, in fruit form.
 - Shop layout: Charms, Tools, Upgrades, Seeds, Crates.
 
@@ -124,9 +125,8 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 
 ## Open decisions (defaults will be used unless the user says otherwise)
 
-1. Tools charge from merges, coins are shop-only.
-2. Charm order stays irrelevant to scoring.
-3. Existing charms stay unlocked.
+1. Charm order stays irrelevant to scoring.
+2. Existing charms stay unlocked.
 
 ## Working rules
 
