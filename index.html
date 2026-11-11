@@ -93,6 +93,8 @@ tr.me td{background:#35c2b42a}
 .wl b{color:var(--brass)}
 .mode{font:800 16px var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .go.rogue{background:#b388eb;box-shadow:0 4px 0 #6b3fb0}
+.go.st{min-width:min(78%,320px);padding:14px 40px;font-size:30px}
+.go.skip{background:var(--coral);color:var(--ink);box-shadow:0 4px 0 #a8402f}
 .modes{display:flex;flex-wrap:wrap;justify-content:center;gap:0 8px}
 .modes .go{margin:10px 0 0;padding:10px 15px}
 .go:disabled{opacity:.45;cursor:default}
@@ -611,7 +613,7 @@ const rgWho=(R=RUN)=>`${JARS[R.jarId||'classic'].n} · Stake ${R.stake||1}`;
 function rgStart(R){RUN=R;R.off=0;G.mode='rogue';store.set('mode','rogue');setBest();hide();FLOAT.length=0;G.g=null;pw.hidden=false;pw.classList.add('rg');G.pwKey=G.tbKey='';G.lastCoins=R.coins;G.over=null;rgHead();syncTb();fit();G.W=G.cssW;G.H=G.cssH;fit();
  G.g=makeGame(G.W,G.H,false,null,RG.ro(R,rgClear,rgEnd,rgPulse));if(R.pile&&R.pile.length)G.g.load(R.pile);G.last=0;if(R.at==='crate'&&R.crate)rgCrate();else if(R.at==='shop'&&R.shop)rgShop();else rgHub();}
 const rgFuNote=()=>RG.fusable(RUN).map(f=>`<p class="nxt">Fusion ready: <b>${f.a}</b> + <b>${f.b}</b>. The next boss crate will offer it.</p>`).join('');
-const rgSkipB=()=>RUN.jar<2&&!RG.jarCfg(RUN).boss?'<button class="go alt sm" data-a="rskip">Skip jar for a crate</button>':'';
+const rgSkipB=()=>RUN.jar<2&&!RG.jarCfg(RUN).boss?'<button class="go skip sm" data-a="rskip">Skip jar for a crate</button>':'';
 /* the player's charms and tools as tappable tiles, for the shop and the crate screen */
 function rgOwn(){const cs=RG.slots(RUN),ts=RG.ts(RUN);let a='',b='';for(let i=0;i<cs;i++){const c=RUN.ch[i];a+=c?tile(c.id,'r'+CH[c.id].r,'button',` data-a="rch" data-i="${i}" aria-label="${CH[c.id].n}"`):'<i class="tile e"></i>';}
  for(let i=0;i<ts;i++){const t=RUN.tl[i];b+=t?tile(t.id,TL[t.id].fu?'r3':'tl','button',` data-a="rtl" data-i="${i}" aria-label="${TL[t.id].n}"`):'<i class="tile e"></i>';}
@@ -628,7 +630,7 @@ function rgCrate(){const C=RUN.crate;if(!C)return RUN.at==='shop'&&RUN.shop?rgSh
  show(`<div class="mode">${jn()}</div>${tile('crate_'+C.tier,'big cr')}<h3>${C.kind?CRN[C.kind]:T.n}</h3><p class="tg">Pick one. It is free.</p><div class="sec">${C.opts.length?`<ul class="it">${C.opts.map(row).join('')}</ul>`:'<p class="none">Empty.</p>'}</div>
 <button class="go alt sm" data-a="rleave">Leave it for <i class="coin"></i>${T.out}</button>${rgOwn()}`);}
 function rgHub(){G.state='rogue';$('#pauseB').hidden=true;RUN.at='hub';rgSee('boss',[RG.boss(RUN),RG.mid(RUN)]);rgSee('tl',RUN.tl.map(t=>t.id));rgSave();
- show(`<div class="mode">${rgWho()}</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}${rgFuNote()}<button class="go rogue" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
+ show(`<div class="mode">${rgWho()}</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}${rgFuNote()}<button class="go rogue st" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
 function rgInfo(){const nb=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,ups=Object.keys(UPG).filter(k=>!UPG[k].now&&RUN.up[k]),sds=RUN.sd.map((v,l)=>v?l:0).filter(l=>l);
  show(`<div class="mode">${jn()} · jar ${RUN.jar+1} of 3</div><h3>Run info</h3>${rgBar()}<div class="sec"><h5>Your charms (${RUN.ch.length}/${RG.slots(RUN)}) <small>Tap one to inspect or sell it.</small></h5>${RUN.ch.length?`<ul class="it">${RUN.ch.map((c,i)=>`<li data-a="rch" data-i="${i}">${tile(c.id,'r'+CH[c.id].r)}<div><b>${CH[c.id].n}</b> ${chip(CH[c.id].r)}<br>${chD(c)}</div></li>`).join('')}</ul>`:'<p class="none">None yet. Buy some in the shop.</p>'}</div>
 <div class="sec"><h5>Your tools (${RUN.tl.length}/${RG.ts(RUN)}) <small>Tap one to inspect or sell it. They charge 1 for every merge.</small></h5>${RUN.tl.length?`<ul class="it">${RUN.tl.map((t,i)=>`<li data-a="rtl" data-i="${i}">${tile(t.id,TL[t.id].fu?'r3':'tl')}<div><b>${TL[t.id].n}</b> <small class="chip">Charge ${t.c}/${RG.need(RUN,t.id)}</small><br>${TL[t.id].d}</div></li>`).join('')}</ul>`:'<p class="none">None. Buy some in the shop.</p>'}</div>
@@ -662,12 +664,12 @@ function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgS
 <div class="sec"><h5>Seeds <small>A seed levels up one fruit size for the rest of the run. Levels stack.</small></h5>${sd?`<ul class="it">${sd}</ul>`:'<p class="none">Sold out.</p>'}</div>
 ${cr}<button class="go alt sm" data-a="rroll"${RUN.coins<rr?' disabled':''}>Reroll shop ${rr?'<i class="coin"></i>'+rr:'free'}</button>
 ${rgOwn()}
-<div class="sec"><h5>Up next</h5>${rgTrack()}</div><button class="go rogue" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go lnk" data-a="menu">Save &amp; quit</button>`);m.scrollTop=sy;}
+<div class="sec"><h5>Up next</h5>${rgTrack()}</div><button class="go rogue st" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go lnk" data-a="menu">Save &amp; quit</button>`);m.scrollTop=sy;}
 function rgEnd(why){rgEv(RUN,'end',{why,boss:(why==='over'||why==='drops')&&RUN.cfg?RUN.cfg.boss:null});PF.save();store.set('run',null);if(RUN.dev){G.state='over';setTimeout(menu,0);return;} /* dev runs never reach the score boards */
  G.over={why,d:RUN.depth,j:RUN.jar,got:RUN.got||[],k:RUN.stake||1};gameOver(RUN.total);}
 function ovH(){const o=G.over;if(G.mode!=='rogue'||!o)return '<h3>Game over!</h3>';const got=o.got&&o.got.length?`<p class="nxt">Awards this run: ${o.got.map(id=>`<b>${ACH[id].n}</b>`).join(', ')}</p>`:'';if(o.why==='win')return `<h3>Run complete!</h3><p class="tg">You beat ${o.d>DEPTHS+1?o.d-1:'all '+DEPTHS} depths.</p>${got}`;
  return `<h3>Run over!</h3><p class="tg">${o.why==='over'?'The pile overflowed':o.why==='drops'?'Out of drops':'Ended'} on depth ${o.d}, ${o.j===2?'the boss':'jar '+(o.j+1)}.</p>${got}`;}
-function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;b.dataset.sure=1;b.textContent=t;return false;},back=()=>{if(G.state==='pause')pauseMsg();else if(RUN.at==='crate')rgCrate();else if(RUN.at==='shop')rgShop(1);else rgHub();},after=()=>{if(RUN.at==='shop'&&RUN.shop)rgShop();else rgHub();};
+function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;b.dataset.sure=1;b.textContent=t;return false;},back=()=>{if(G.state==='pause')return pauseMsg();if(RUN.at==='crate')rgCrate();else if(RUN.at==='shop')rgShop(1);else rgHub();const m=ui.querySelector('.msg');if(m)m.scrollTop=G.sy||0;},after=()=>{if(RUN.at==='shop'&&RUN.shop)rgShop();else rgHub();};
  if(a==='rogue')rgIntro();
  else if(a==='rnew'){if(!RG.saved()||sure('Tap again to drop your saved run'))rgSetup();}
  else if(a==='rjar'){G.su.jar=b.dataset.j;rgSetup();}
@@ -675,7 +677,7 @@ function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;
  else if(a==='rbegin'){store.set('jar',G.su.jar);store.set('stake',G.su.stake);const R=RG.new(G.su.jar,G.su.stake);rgEv(R,'run');rgStart(R);}
  else if(a==='rcont'){const sv=RG.saved();if(sv)rgStart(sv);else rgIntro();}
  else if(!RUN||a[0]!=='r')return false;
- else if(a==='rgo')rgGo();else if(a==='rhub')rgHub();else if(a==='rshop')rgShop();else if(a==='rinfo')rgInfo();else if(a==='rch')rgCharm(i);else if(a==='rtl')rgTool(i);else if(a==='rback')back();
+ else if(a==='rgo')rgGo();else if(a==='rhub')rgHub();else if(a==='rshop')rgShop();else if(a==='rinfo'||a==='rch'||a==='rtl'){const m=ui.querySelector('.msg');if(G.state!=='pause')G.sy=m?m.scrollTop:0;a==='rinfo'?rgInfo():a==='rch'?rgCharm(i):rgTool(i);}else if(a==='rback')back();
  else if(a==='rbank')rgEnd('win');
  else if(a==='rquit'){if(sure('Tap again to end the run'))rgEnd('quit');}
  else if(a==='rbuy'){const id=RUN.shop.ch[i];if(RG.buy(RUN,i)){rgEv(RUN,'buy',{id});snd('coin');rgShop(1);}}
