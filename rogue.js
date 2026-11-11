@@ -7,7 +7,7 @@ const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2; /* target multiplier per depth, the
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused'];
 /* Charms. r = rarity, c = price, d = description. Scoring hooks get a context c:
    l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar,
-   pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
+   first = the first time this size is made this jar, wall = a merging fruit touched a wall, low = the merge was in the bottom third of the jar, pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
    chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG.
    fu = [a, b]: a fusion, made from those two charms. Fusions are rarity 3, never sold, and only come out of boss crates. */
 const CH={
@@ -55,6 +55,18 @@ const CH={
  wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.3 Mult more for every charm you own, this one included.',x:c=>1+.3*c.nc},
  fever:{n:'Melon Fever',r:2,c:9,d:'Gains +1.5 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,live:1},
+ /* thin builds (see DESIGN.md): small fruit, seeds, gold, position */
+ fry:{n:'Small Fry',r:0,c:4,d:'Merges that make a size 4 fruit or smaller score ×2.',x:c=>c.l>=1&&c.l<=3?2:1},
+ pip:{n:'Pip Collector',r:1,c:6,d:'Gains +0.03 Mult every time you make a size 3 fruit or smaller.',add:c=>c.ch.v||0,live:1},
+ bite:{n:'Bite Size',r:1,c:6,d:'Fruit you drop are never bigger than size 3. Every merge scores +4 points.',chip:()=>4},
+ gard:{n:'Gardener',r:0,c:4,d:'Every boss you beat (mini bosses too) gives a random seed 1 level.'},
+ packet:{n:'Seed Packet',r:0,c:4,d:'Seeds cost 1 coin less.'},
+ sprout:{n:'Sprout',r:1,c:6,d:'The first time you make each fruit size in a jar, its seed counts double.'},
+ leaf:{n:'Gold Leaf',r:0,c:4,d:'The first fruit you drop in each jar is gold.'},
+ prosp:{n:'Prospector',r:1,c:6,d:'1 in 10 fruit you drop are gold.'},
+ alch:{n:'Alchemy',r:1,c:6,d:'1 in 3 times a gold fruit merges, the fruit it makes is gold too.'},
+ wall:{n:'Wallflower',r:0,c:4,d:'Merges touching a wall score +20 points.',chip:c=>c.wall?20:0},
+ low:{n:'Low Tide',r:1,c:7,d:'Merges in the bottom third of the jar score ×2.',x:c=>c.low?2:1},
  fourleaf:{n:'Four-Leaf Clover',r:3,c:12,fu:['lucky','shoe'],d:'1 in 2 merges score ×3. Every other "1 in" chance comes up twice as often.',x:c=>c.l>=0&&Math.random()<.5?3:1},
  goose:{n:'Golden Goose',r:3,c:12,fu:['piggy','bank'],d:'+4 coins every time you clear a jar. Interest can pay up to 10 coins per jar.'},
  volcano:{n:'Volcano',r:3,c:12,fu:['boom','compost'],d:'Every 5th drop is a Boom fruit. Each fruit it blows up scores 40 points. Gains +0.1 Mult every time a fruit is destroyed.',add:c=>c.ch.v||0,live:1},
@@ -201,19 +213,21 @@ const RG={
   return{quota,drops,boss:b,rules,p2:j===2,p2s:j===2&&R.stake>=8,crate:j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;if(sd){chips+=sd*sdP(c.l);a+=sd*SDM;}
-  for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0){chips+=d.chip(c);on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;const sp=sd&&c.first&&RG.has(R,'sprout')?2:1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push('sprout');
+  for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* a fruit of tier l was made: returns the charms that paid out */
  made(R,l){const ev=[],f=RG.has(R,'fever'),m=RG.has(R,'mania'),lk=RG.luck(R);if(l>=5&&RG.has(R,'gold')){R.coins++;ev.push('gold');}if(RG.has(R,'scratch')&&Math.random()<lk/6){R.coins++;ev.push('scratch');}
-  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}return ev;},
+  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const pp=l<=2&&RG.has(R,'pip');if(pp){pp.v=+((pp.v||0)+.03).toFixed(2);ev.push('pip');}return ev;},
  /* n fruit were destroyed: returns the charm that grew from it, if any */
+ /* Gardener: a boss was beaten. Returns the seed tier that gained a level, or 0 */
+ garden(R){if(!RG.has(R,'gard'))return 0;const a=RG.sizes(R),l=a[rint(a.length)];R.sd[l]++;return l;},
  kill(R,n){const c=RG.has(R,'compost')||RG.has(R,'volcano');if(!c||!(n>0))return false;c.v=+((c.v||0)+(c.id==='volcano'?.1:.05)*n).toFixed(2);return c.id;},
  net(R){const i=R.ch.findIndex(c=>c.id==='net');if(i<(R.off||0))return false;R.ch.splice(i,1);return true;},
  cost:(R,c)=>Math.max(1,c-(RG.has(R,'coupon')?1:0)+(R.stake>=5?1:0)),
  upCost:(R,id)=>RG.cost(R,UPG[id].c+(UPG[id].now?0:R.up[id]*2)),
  upOk:(R,k)=>PF.lk('up.'+k)?false:k==='scrub'?R.jar!==0:k==='bribe'?!BOSS[RG.boss(R)].fin:k==='belt'?RG.ts(R)<RG.tsMax(R):!UPG[k].max||R.up[k]<UPG[k].max,
- sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]),
+ sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]-(RG.has(R,'packet')?1:0)),
  sellV:(R,c)=>R.up.haggle?c:Math.floor(c/2),
  rrCost:R=>R.up.dice?(R.shop.rr?RG.cost(R,1+R.shop.rr):0):RG.cost(R,2+R.shop.rr),
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],u=Math.min(3,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/5));
@@ -257,7 +271,7 @@ const RG={
  sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=RG.sellV(R,TL[t.id].c);R.tl.splice(i,1);return true;},
  sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c);R.ch.splice(i,1);return true;},
  reroll(R){const p=RG.rrCost(R);if(R.coins<p)return false;R.coins-=p;const s=RG.stock(R);s.rr=R.shop.rr+1;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
- ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
+ ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),luck:()=>RG.luck(R),score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
 /* ---------- player profile: everything that outlives a run ---------- */
@@ -286,7 +300,7 @@ function mergeProfile(a,b){a=PF.fix(a);b=PF.fix(b);const o=PF.blank(),first=(x,y
 /* Everything worth counting goes through here: the engine through ro.ev, the screens by calling rgEv.
    R.st counts over the whole run, R.jst over the jar being played (reset by the 'start' event), the profile over a lifetime.
    Engine events: drop {l,sp}, merge {l,p,m,combo,bull}, tool {id}, kill {n}, net, gold, melons {n}.
-   Screen events: run, start, jar {depth,jar,boss,left,score,quota,win}, end {why,boss}, buy {id,k}, sell {id,k}, up {id}, seed {l}, roll, skip, crate {tier}, take {k,id} (k = out when the crate was left), fuse {id}. k is the kind (ch or tl).
+   Screen events: run, start, jar {depth,jar,boss,left,score,quota,win}, end {why,boss}, buy {id,k}, sell {id,k}, up {id}, seed {l}, grow {l} (a seed level from Gardener), roll, skip, crate {tier}, take {k,id} (k = out when the crate was left), fuse {id}. k is the kind (ch or tl).
    Runs touched by the dev panel (R.dev) count for nothing. */
 function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R.st={}),inc=(k,v=1)=>{PF.inc(k,v);rs[k]=(rs[k]||0)+v;if(R.jst)R.jst[k]=(R.jst[k]||0)+v;},top=(k,v)=>{PF.max(k,v);if(!(rs[k]>=v))rs[k]=v;};
  if(n==='run')PF.inc('runs');
@@ -304,6 +318,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='sell')inc('sells');
  else if(n==='up'){inc('ups');PF.inc('up.'+d.id+'.buy');}
  else if(n==='seed'){inc('seeds');PF.inc('sd.'+d.l+'.buy');}
+ else if(n==='grow')inc('grown');
  else if(n==='roll')inc('rolls');
  else if(n==='skip'){inc('skips');R.dsk=(R.dsk||0)+1;}
  else if(n==='crate'){inc('crates');PF.inc('crate.'+d.tier);}
@@ -322,7 +337,7 @@ const ACH={
  rich:{n:'Nest Egg',d:'Hold 40 coins at once.',on:'jar sell take start',t:R=>R.coins>=40,un:'tl.cash'},
  roller:{n:'High Roller',d:'Reroll the same shop 4 times.',on:'roll',t:R=>R.shop.rr>=4,un:'up.crowbar'},
  fuse1:{n:'Alchemist',d:'Make a fusion.',on:'fuse',t:()=>true,un:'fu.ghand'},
- seed5:{n:'Green Fingers',d:'Raise one seed to level 5.',on:'seed take',t:R=>Math.max(...R.sd)>=5,un:'ch.abacus'},
+ seed5:{n:'Green Fingers',d:'Raise one seed to level 5.',on:'seed take grow',t:R=>Math.max(...R.sd)>=5,un:'ch.abacus'},
  salad:{n:'Fruit Salad',d:'Make every size from 2 to 8 in a single jar.',on:'merge',t:R=>[1,2,3,4,5,6,7].every(l=>R.jst['made.'+l]),un:'ch.snake'},
  combo:{n:'Chain Gang',d:'Reach a combo of 10.',on:'merge',t:(R,d)=>d.combo>=9,un:'fu.wildfire'},
  bull5:{n:'Dead Eye',d:'Land 5 merges in one jar where the dropped fruit touched nothing else first.',on:'merge',t:R=>R.jst.bulls>=5,un:'fu.sharp'},

@@ -15,13 +15,15 @@ Shop stock (`RG.stock`): 3 charms per visit, rarity rolled 60% common, 30% uncom
 
 | Rarity | Charms in pool | Offers per run | Times each one is seen |
 |---|---|---|---|
-| Common | 15 | ~43 | ~2.9 |
-| Uncommon | 21 | ~22 | ~1.0 |
+| Common | 20 | ~43 | ~2.2 |
+| Uncommon | 27 | ~22 | ~0.8 |
 | Rare | 8 | ~7 | ~0.9 |
 
+(Before the thin-build charms: 15 commons seen ~2.9 times each, 21 uncommons ~1.0.)
+
 What this means:
-- Any two-common combo is near certain each run. That covers the halves of most fusions (Lucky Clover, Juicer, Honey Pot, Early Bird, Photo Finish, Bullseye, Lodestone, Scratch Card, Piggy Bank are all common).
-- Each rare is seen about as often as each uncommon, because the rare pool is so small. Rare means "rare slot", not "rare charm".
+- Any two-common combo was near certain each run, and is still likely. That covers the halves of most fusions (Lucky Clover, Juicer, Honey Pot, Early Bird, Photo Finish, Bullseye, Lodestone, Scratch Card, Piggy Bank are all common).
+- Each rare is now seen slightly more often than each uncommon, because the rare pool is so small. Rare means "rare slot", not "rare charm".
 - Adding a charm to a rarity lowers how often every other charm of that rarity shows up. That is the main lever for point 2 above, without touching any numbers.
 
 ## Power budget by rarity
@@ -51,43 +53,49 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Destruction | Fireworks, Pet Caterpillar, Compost, Ashes, Volcano, Safety Net | Cherry Bomb, Sieve | Scrub | Fine |
 | Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin | | Fine |
 | Full jar | Hoarder, High Wire | Anchor | Slow Fuse | Thin |
-| **Small fruit** | Pet Caterpillar (eats them), Hoarder (counts them) | Sieve (clears them) | Scrub | **Thin, no payoff for making sizes 1 to 4** |
-| **Seeds** | Abacus | | Seed Bag | **Thin, one payoff** |
-| **Gold fruit** | Magpie | Midas, Golden Hand | | **Thin, one way to make gold** |
-| **Physics and position** | Bullseye, Clean Plate, High Wire | Shake, Whirl, Rumble | | **Thin, and the most "this game" build** |
+| Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder | Sieve | Scrub | Filled, needs play |
+| Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Filled, needs play |
+| Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | | Filled, needs play |
+| Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
 
 Long-run growers today are all +Mult: Vintage (per jar), Hot Streak (per merge, resets each jar), Melon Fever (per size 8+), Compost (per fruit destroyed), Fat Wallet (coins held), Abacus (seed levels).
 
 ## Priorities
 
-1. **Thin builds first, at common and uncommon.** Small fruit, seeds, gold, physics and position. Roughly 8 to 12 charms. Each one should link to an existing build so it is not a dead pick (gold to chance and economy, small fruit to destruction, seeds to economy, position to aim).
+1. **Thin builds first, at common and uncommon.** Done: 11 charms (see below). Small fruit, seeds, gold, physics and position. Each one should link to an existing build so it is not a dead pick (gold to chance and economy, small fruit to destruction, seeds to economy, position to aim).
 2. **Fusions that join the new pieces to old ones,** 2 or 3, once the new charms have been played.
 3. **Re-measure** with the bot (see `RSC` notes in `CLAUDE.md`). Target stays at the greedy bot winning about 1 run in 12.
 4. **Then higher-powered cards:** one or two rares with ×Mult that grows over the run, so late depths have a goal. Only after 1 to 3, because a bigger pool is what keeps these from turning up every run.
 
 Open question: rares are seen as often as uncommons. Fix by adding rares (step 4) or lowering the rare weight, not both.
 
-## Candidate charms for thin builds (proposed, not built)
+## Thin-build charms (built)
 
-None of these is in the game. They are a starting list for the user to pick from, priced against the budget above.
+All in `CH` except Trick Shot. Numbers changed from the first proposal where noted.
 
 | Build | Name | Rarity | Effect | Links to |
 |---|---|---|---|---|
 | Small fruit | Small Fry | Common | Merges that make a size 4 fruit or smaller score ×2. | Opposite of Heavyweight, so the two compete for a run |
 | Small fruit | Pip Collector | Uncommon | Gains +0.03 Mult every time you make a size 3 fruit or smaller. | Combo, Blender |
 | Small fruit | Bite Size | Uncommon | Fruit you drop are never bigger than size 3. +4 points a merge. | Pet Caterpillar, Sieve. Clashes with Rich Soil |
-| Seeds | Gardener | Common | +1 level to a random seed every time you beat a boss. | Abacus, slow scaling |
+| Seeds | Gardener | Common | +1 level to a random seed every time you beat a boss, mini bosses included (about 9 levels a run). | Abacus, slow scaling |
 | Seeds | Seed Packet | Common | Seeds in the shop cost 1 coin less. | Economy |
 | Seeds | Sprout | Uncommon | The first time you make each size in a jar, its seed counts double. | Rewards spreading levels over many sizes |
 | Gold | Gold Leaf | Common | The first fruit you drop in each jar is gold. | Magpie, Midas |
-| Gold | Prospector | Uncommon | 1 in 8 fruit you drop is gold. | Chance (Horseshoe doubles it), Magpie |
-| Gold | Alchemy | Uncommon | When a gold fruit merges, the fruit it makes is gold too. | Magpie, Golden Touch. Watch: can chain ×2 every merge |
-| Position | Wallflower | Common | Merges touching a wall score +12 points. | Aim |
+| Gold | Prospector | Uncommon | 1 in 10 fruit you drop are gold (was 1 in 8: each gold fruit pays 2 coins, so 1 in 8 out-earned Scratch Card by a lot). | Chance (Horseshoe doubles it), Magpie |
+| Gold | Alchemy | Uncommon | 1 in 3 times a gold fruit merges, the fruit it makes is gold too (was always: a gold fruit would then pay ×2 and 2 coins at every size up to a melon). | Magpie, chance. With Horseshoe it is 2 in 3, watch it |
+| Position | Wallflower | Common | Merges touching a wall score +20 points (was +12: only some merges touch a wall, and Honey Pot gives +8 to all). | Aim |
 | Position | Low Tide | Uncommon | Merges in the bottom third of the jar score ×2. | Opposite of High Wire |
-| Position | Trick Shot | Uncommon | A dropped fruit that hits a wall and then merges scores ×2.5. | Bullseye, aim. Needs wall-contact tracking in the engine |
+| Position | Trick Shot | Uncommon | Not built. A fruit dropped at the edge slides down the wall, so "hits a wall" is free and it would just be "drop at the edge ×2.5". Needs a real bank-shot test first. | Bullseye, aim |
+
+Gardener's level fires the `grow` event, which also counts for Green Fingers. Not re-measured with the bot yet: that waits for the fusions (step 3).
 
 Pairs that could become fusions later: Small Fry + Pet Caterpillar, Prospector + Magpie, Gardener + Abacus, Low Tide + Clean Plate.
+
+## Charm feedback
+
+When a charm takes part in a score, its header slot does one shared hop (`rgPulse`). Planned: a unique animation per charm that triggers (about 30), in the header slot and, for charms tied to a spot, in the jar too (Pet Caterpillar is the model). Always-on charms get a gentle idle wobble instead. Gameplay first, so this follows the new charms.
 
 ## Things to avoid
 
