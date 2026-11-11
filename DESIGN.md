@@ -97,6 +97,10 @@ Pairs that could become fusions later: Small Fry + Pet Caterpillar, Prospector +
 
 Every charm has its own trigger animation (`ANIM` in `index.html`): a move on its header icon (spin, slam, jiggle, swing...) and pixel particles of its own colour thrown from the slot. Charms tied to a spot also play an effect in the jar where the merge happened (`jfx` in `makeGame`): rings for Bullseye and Sweet Spot, clover bursts, petals off the wall for Wallflower, a flat ripple for Low Tide, dust and a shake for Heavyweight, bubbles for Small Fry, leaves for Sprout. Charms that add to every merge (Juicer, Hot Streak, Magpie, Pip Collector...) get a soft move and few particles, and nothing in the jar, so the screen does not fill up. Any new charm needs an `ANIM` entry, and a `jfx` effect if it is tied to a spot.
 
+## Prototypes
+
+Slingshot (throw fruit by flicking) and Trick Shot (a thrown fruit that banks off a wall into its match scores ×3) are in `CH` with `dev:1`, so only the dev panel hands them out. Questions to settle by playing: does an accidental flick happen too often (threshold 300·K px/s), is the throw too strong (cap 900·K, ×0.7 of the flick), is ×3 right for a bank shot. If they ship: Slingshot uncommon, Trick Shot uncommon, both in a new Throwing build, and re-measure balance, since throwing makes merges easier.
+
 ## Things to avoid
 
 - A charm that is a straight upgrade of another (Juicer +1 Mult, then "Big Juicer" +2 Mult at the same rarity).
