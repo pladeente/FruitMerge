@@ -6,9 +6,9 @@ Drop fruit, merge matching ones, make a watermelon. The game lives in `index.htm
 
 - **Classic**: the plain game.
 - **Wild**: special fruit, mould, a caterpillar, and coin powers.
-- **Rogue**: a run of 8 depths. Each depth is 3 jars with a score target and a drop limit, and the third jar is a boss with its own rule. The pile carries over between jars and is emptied at each new depth. Cleared jars pay coins for the shop, which sells charms (passive items, 5 slots), tools, upgrades and seeds. A seed levels up one fruit size for the rest of the run. Tools are abilities you tap during a jar (2 slots to start, up to 4). They charge as you merge and cost nothing to use. A run is saved between jars, so it can be continued later. Beating depth 8 wins, after which the run can continue into endless depths.
+- **Rogue**: a run of 8 depths. Each depth is 3 jars with a score target and a drop limit, and the third jar is a boss with its own rule. The pile carries over between jars and is emptied at each new depth. Cleared jars pay coins for the shop, which sells charms (passive items, 5 slots), tools, upgrades and seeds. A seed levels up one fruit size for the rest of the run. Every boss drops a crate (pick 1 thing, free), and holding the right two items lets a boss crate fuse them into one. Jar 1 or 2 of a depth can be skipped for a smaller crate. Tools are abilities you tap during a jar (2 slots to start, up to 4). They charge as you merge and cost nothing to use. A run is saved between jars, so it can be continued later. Beating depth 8 wins, after which the run can continue into endless depths.
 
-Rogue rules live in `rogue.js`: `CH` (charms), `TL` (tools), `BOSS`, `UPG` (upgrades), the seed numbers (`SDC`, `SDM`, `sdP`), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth) and `RPAY` (coins per jar).
+Rogue rules live in `rogue.js`: `CH` (charms), `TL` (tools), `BOSS`, `UPG` (upgrades), the seed numbers (`SDC`, `SDM`, `sdP`), crates (`CRT`, `CRP`), fusions (entries with `fu` in `CH` and `TL`), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth) and `RPAY` (coins per jar).
 
 Progress that outlives a run (stats, things met) is kept in one `profile` object on the device, ready to sync once sign-in exists.
 
