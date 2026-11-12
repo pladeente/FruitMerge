@@ -56,7 +56,7 @@ const CH={
  crew:{n:'Full House',r:2,c:9,d:'×2 Mult while every charm slot is filled.',x:c=>c.full?2:1},
  soil:{n:'Rich Soil',r:2,c:9,d:'Every fruit you drop is one size bigger.'},
  wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
- ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.3 Mult more for every charm you own, this one included.',x:c=>1+.3*c.nc},
+ ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.2 Mult more for every charm you own, this one included.',x:c=>1+.2*c.nc},
  /* rares whose ×Mult grows over the run (DESIGN.md priority 4). live:'x' = the grown value is a ×, shown as ×(1+v) */
  snow:{n:'Snowball',r:2,c:9,d:'Gains ×0.1 Mult every time you clear a jar with 5 or more drops left. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  oak:{n:'Old Oak',r:2,c:9,d:'Gains ×0.04 Mult every time you make a size 7 fruit or bigger. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
