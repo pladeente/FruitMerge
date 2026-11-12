@@ -149,7 +149,7 @@ const BOSS={
  audit:{n:'The Auditor',d:'Mult can not go above ×6.',d2:'Mult can not go above ×4.',min:4,q:.45},
  vise:{n:'The Vise',d:'The walls close in with every drop. Making a size 6 fruit or bigger opens them again.',d2:'They close twice as fast.',min:4},
  vamp:{n:'The Leech',d:'Your jar score drains away: 0.5% of the target every second.',d2:'It drains twice as fast.',min:5,q:.7},
- melon:{n:'The Melon King',d:'A watermelon drops into your jar and stays. Keep the pile low.',d2:'A big rock drops in as well.',fin:1,q:1.1},
+ melon:{n:'The Melon King',d:'A watermelon drops into your jar and stays. Keep the pile low.',d2:'A big rock drops into the lowest gap as well. The rock itself never counts as over the line.',fin:1,q:1.1},
  queen:{n:'The Orchard Queen',d:'Two bosses at once.',d2:'Both step up.',fin:1},
  reaper:{n:'The Reaper',d:'Half the drops. Merges that make a size 4 fruit or bigger give 1 drop back.',d2:'Only a size 6 fruit or bigger gives a drop back.',fin:1,q:.9}
 };
