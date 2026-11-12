@@ -366,7 +366,8 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   if(ro.has('crowd')){const r=sc(25,rc(-1));gain(r.p);pop(r.p,W/2,line+100);ro.fx(['crowd']);}}
  /* phase 2: every rule flag goes to 2, plus the one-off hits */
  function phase2(){ph=2;for(const k in B)B[k]=2;if(B.lock)for(const t of ro.tools)t.c=0;if(B.hour)dl=Math.max(1,dl-2);if(B.mirror)B.fog=B.fog||1;if(B.thief)ro.off(2);
-  if(B.melon){const r=rad(6);add({x:W/2+(Math.random()-.5)*W*.3,y:line+r+4,vx:0,vy:0,l:6,age:0,a:0,sp:'stone',lit:1});}ban={t:3.6,a:'Phase 2',b:J.rule2,ic:J.ic};shake=.35;snd('warn');snd('boom');}
+  if(B.melon){const r=rad(6);let bx=W/2,bh=1e9;for(let i=0;i<13;i++){const x=L+r+(Rw-L-2*r)*i/12;let h=bot;for(const f of fr)if(!f.dead&&Math.abs(f.x-x)<rad(f.l)+r*.8)h=Math.min(h,f.y-rad(f.l));if(bot-h<bh){bh=bot-h;bx=x;}}
+    add({x:bx,y:line+r+4,vx:0,vy:0,l:6,age:0,a:0,sp:'stone',lit:1,safe:1});grace=Math.max(grace,3);} /* The Melon King's rock: into the lowest gap, the pile gets 3s to settle, and the rock itself never counts as over the line */ban={t:3.6,a:'Phase 2',b:J.rule2,ic:J.ic};shake=.35;snd('warn');snd('boom');}
  function bossTick(dt){const jh=bot-line0;line=line0+jh*((B.lid?(B.lid>1?.22:.14):0)+(B.tide?(B.tide>1?.24:.13)*(.5-.5*Math.cos(time*.8)):0));
   const tl=L0+vz;if(Math.abs(L-tl)>.2){L+=(tl-L)*Math.min(1,dt*5);Rw=W-L;}else{L=tl;Rw=W-L;}
   if(!J||done||over)return;if(J.p2&&ph<2&&js>=J.quota*.5)phase2();
@@ -521,7 +522,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if((wild||B.rot)&&!(f.frz>0)&&!f.rot&&f.l<=MOLD_MAX&&f.sp!=='stone'){const r=rad(f.l);if(f.y+r>=bot-3&&Math.abs(f.vy)<60*K)f.bt=(f.bt||0)+dt;else f.bt=Math.max(0,(f.bt||0)-dt*.5);f.mold=clampN(((f.bt||0)-(B.rot?5/B.rot:20))/(B.rot?7/B.rot:20),0,1);if(f.mold>=1){f.rot=1;floatTxt('Mouldy!',f.x,f.y-r,'#5e7d24',16);}}}
   if(wild||ro)updCat(dt);if(ro)updPets(dt);
   fr=fr.filter(f=>!f.dead);
-  let danger=false;ptop=bot;for(const f of fr){f.age+=dt;const ty=f.y-rad(f.l);if(f.age>1.5&&ty<ptop)ptop=ty;if(grace<=0&&f.age>1.5&&ty<line&&Math.abs(f.vy)<120*K)danger=true;}
+  let danger=false;ptop=bot;for(const f of fr){f.age+=dt;const ty=f.y-rad(f.l);if(f.age>1.5&&ty<ptop)ptop=ty;if(grace<=0&&f.age>1.5&&ty<line&&Math.abs(f.vy)<120*K&&!f.safe)danger=true;}
   const pT=overT;overT=danger&&!done?overT+dt:0;if(overT>0&&Math.floor(overT*2.5)!==Math.floor(pT*2.5))snd('warn');
   if(overT>2.2+(ro?ro.up('fuse'):0)&&!over){if(ro&&ro.net()){const cut=line+(bot-line)*.5;let n=0;for(const f of fr)if(f.y<cut){f.dead=1;n++;burst(f.x,f.y,FRUIT[f.l][0],6);}fr=fr.filter(f=>!f.dead);died(n);ro.ev('net');overT=0;grace=3;shake=.4;floatTxt('Safety Net!',W/2,line+40,'#1f9c90',26);snd('shake');}
    else{over=true;ro?ro.fail('over'):onOver(score);}}
@@ -621,6 +622,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.8.2',d:'12 Nov 2026',t:'Fix',i:['The Melon King\'s rock drops into the lowest gap, the pile gets 3 seconds to settle, and the rock itself never counts as over the line. It could end a run on its own before.']},
  {v:'1.8.1',d:'12 Nov 2026',t:'Fix',i:['A charm or tool taken from a crate is no longer still for sale in the shop, so you can not end up with two of the same.']},
  {v:'1.8',d:'12 Nov 2026',t:'Late-game rares',i:['Blue Ribbon gives ×0.2 Mult per charm you own (was ×0.3).','Snowball (rare): gains ×0.1 Mult every time you clear a jar with 5 or more drops left.','Old Oak (rare): gains ×0.04 Mult every time you make a size 7 fruit or bigger.']},
  {v:'1.7.1',d:'12 Nov 2026',t:'Fix',i:['The jar no longer flickers in Rogue mode.']},
