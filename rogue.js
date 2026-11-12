@@ -7,7 +7,7 @@ const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2; /* target multiplier per depth, the
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused'];
 /* Charms. r = rarity, c = price, d = description. Scoring hooks get a context c:
    l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar,
-   first = the first time this size is made this jar, wall = a merging fruit touched a wall, low = the merge was in the bottom third of the jar, trick = a thrown fruit hit a wall and then merged before touching anything else, pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
+   first = the first time this size is made this jar, wall = a merging fruit touched a wall, low = the merge was in the bottom third of the jar, trick = a thrown fruit hit a wall and then merged before touching anything else, pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, rk = rocks in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
    chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG.
    dev = a prototype: only in the dev panel, never in the shop, crates or Almanac. req = only offered while the run holds that charm.
    fu = [a, b]: a fusion, made from those two charms. Fusions are rarity 3, never sold, and only come out of boss crates. */
@@ -55,6 +55,7 @@ const CH={
  abacus:{n:'Abacus',r:2,c:8,d:'+0.5 Mult for every seed level you hold.',add:c=>c.sdl*.5},
  crew:{n:'Full House',r:2,c:9,d:'×2 Mult while every charm slot is filled.',x:c=>c.full?2:1},
  soil:{n:'Rich Soil',r:2,c:9,d:'Every fruit you drop is one size bigger.'},
+ garg:{n:'Gargoyle',r:1,c:6,d:'Rocks never count as over the line. +0.5 Mult for every rock in the jar.',add:c=>(c.rk||0)*.5},
  wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.2 Mult more for every charm you own, this one included.',x:c=>1+.2*c.nc},
  /* rares whose ×Mult grows over the run (DESIGN.md priority 4). live:'x' = the grown value is a ×, shown as ×(1+v) */
@@ -196,12 +197,15 @@ const TL={
  rewind:{n:'Rewind',c:4,ch:5,d:'Take back your last drop, if that fruit has not merged.'},
  ddown:{n:'Double Down',s:'Double',c:5,ch:6,d:'Costs 2 drops. Your next merge scores ×4.'},
  sieve:{n:'Sieve',c:4,ch:7,d:'Clears every size 1 fruit out of the jar.'},
- anchor:{n:'Anchor',c:4,ch:6,tg:1,d:'Tap a fruit. It cannot move until the jar ends.'},
+ anchor:{n:'Anchor',c:4,ch:6,tg:1,d:'Tap a fruit. It cannot move until the jar ends, but it still merges.'},
+ petrify:{n:'Petrify',c:5,ch:8,tg:1,d:'Tap a fruit. It turns to stone: it can not move or merge, and never counts as over the line. It crumbles away when the next jar starts.'},
+ shatter:{n:'Shatter',c:4,ch:6,tg:1,d:'Tap a rock. It turns into a fruit of the same size.'},
  cash:{n:'Cash Out',c:5,ch:8,d:'Pays 2 coins.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
  bloom:{n:'Bloom',c:12,ch:10,tg:1,fu:['ripen','sprout'],d:'Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level.'},
  mesh:{n:'Fine Mesh',c:12,ch:7,fu:['sieve','pip'],d:'Clears every size 1 and size 2 fruit out of the jar. Each one cleared scores 15 points.'},
+ medusa:{n:'Medusa',c:12,ch:8,tg:1,fu:['petrify','wire'],d:'Tap a fruit. It and every fruit touching it turn to stone: they can not move or merge, and never count as over the line. They crumble away when the next jar starts.'},
  whistle:{n:'Whistle',c:5,ch:6,tg:1,req:CAT,d:'Tap a fruit (size 3 or less). Your caterpillar comes out now and eats it.'},
  ghand:{n:'Golden Hand',s:'Gold Hand',c:12,ch:8,tg:1,fu:['midas','wallet'],d:'Tap a fruit. It turns gold. When it merges it scores ×3 and pays 4 coins.'}
 };
