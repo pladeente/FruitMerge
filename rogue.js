@@ -178,7 +178,7 @@ const UPG={
 /* Seeds level up one fruit size for the run. R.sd[l] = level for the fruit of tier l (1 to 10, shown to the player as size l+1).
    Each level: making that fruit scores sdP(l) more points and +SDM Mult. A seed costs SDC plus 1 per level already held. */
 const SDC=3,SDM=.5,sdP=l=>4+2*l,sdD=l=>`Making a size ${l+1} fruit scores +${sdP(l)} points and +${SDM} Mult.`;
-/* Tools: abilities the player taps during a jar. c = price, ch = charge needed (1 per merge), tg = the player then taps a fruit.
+/* Tools: abilities the player taps during a jar. c = price, ch = charge needed (1 per merge), tg = the player then taps a fruit, s = short name for the tool bar.
    What each one does is in tool() in makeGame, which fruit it can target in okTg().
    fu = [tool, charm]: a fusion. It takes the tool's slot and uses up the charm. */
 const TL={
@@ -189,21 +189,21 @@ const TL={
  ripen:{n:'Ripen',c:6,ch:10,tg:1,d:'Tap a fruit. It grows one size.'},
  twin:{n:'Twin',c:5,ch:8,tg:1,d:'Tap a fruit of size 6 or smaller. Your fruit becomes a copy of it.'},
  blend:{n:'Blender',c:6,ch:9,d:'The smallest fruits that can pair up all merge at once.'},
- sample:{n:'Free Sample',c:5,ch:8,d:'Your next 2 drops do not use up drops.'},
- cbomb:{n:'Cherry Bomb',c:5,ch:7,d:'Your fruit becomes a Boom fruit.'},
+ sample:{n:'Free Sample',s:'Sample',c:5,ch:8,d:'Your next 2 drops do not use up drops.'},
+ cbomb:{n:'Cherry Bomb',s:'Bomb',c:5,ch:7,d:'Your fruit becomes a Boom fruit.'},
  lodestar:{n:'Lodestar',c:4,ch:5,d:'Your fruit becomes a Magnet that pulls its matches in.'},
  midas:{n:'Midas',c:6,ch:9,tg:1,d:'Tap a fruit. It turns gold. When it merges it scores ×2 and pays 2 coins.'},
  rewind:{n:'Rewind',c:4,ch:5,d:'Take back your last drop, if that fruit has not merged.'},
- ddown:{n:'Double Down',c:5,ch:6,d:'Costs 2 drops. Your next merge scores ×4.'},
+ ddown:{n:'Double Down',s:'Double',c:5,ch:6,d:'Costs 2 drops. Your next merge scores ×4.'},
  sieve:{n:'Sieve',c:4,ch:7,d:'Clears every size 1 fruit out of the jar.'},
  anchor:{n:'Anchor',c:4,ch:6,tg:1,d:'Tap a fruit. It cannot move until the jar ends.'},
  cash:{n:'Cash Out',c:5,ch:8,d:'Pays 2 coins.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
- sleight:{n:'Sleight of Hand',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
+ sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
  bloom:{n:'Bloom',c:12,ch:10,tg:1,fu:['ripen','sprout'],d:'Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level.'},
  mesh:{n:'Fine Mesh',c:12,ch:7,fu:['sieve','pip'],d:'Clears every size 1 and size 2 fruit out of the jar. Each one cleared scores 15 points.'},
  whistle:{n:'Whistle',c:5,ch:6,tg:1,req:CAT,d:'Tap a fruit (size 3 or less). Your caterpillar comes out now and eats it.'},
- ghand:{n:'Golden Hand',c:12,ch:8,tg:1,fu:['midas','wallet'],d:'Tap a fruit. It turns gold. When it merges it scores ×3 and pays 4 coins.'}
+ ghand:{n:'Golden Hand',s:'Gold Hand',c:12,ch:8,tg:1,fu:['midas','wallet'],d:'Tap a fruit. It turns gold. When it merges it scores ×3 and pays 4 coins.'}
 };
 /* Crates: pick one thing out of a few, for free. r = charm rarity odds, sd = seed levels in one pick, coin = the coin pick, out = coins for leaving it.
    Bosses drop gold (melon every 4th depth), skipping a jar gives wood, the shop sells wood crates of one kind (CRP = price). */
