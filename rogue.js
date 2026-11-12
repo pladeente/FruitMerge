@@ -16,7 +16,7 @@ const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo'],PETS=['pet','frenzy
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
- chain:{n:'Chain Reaction',r:0,c:5,d:'In a combo, each merge after the first gets +1 Mult more than the one before (up to +8).',add:c=>Math.min(8,c.combo)},
+ chain:{n:'Chain Reaction',r:0,c:5,d:'In a combo, each merge after the first gets +0.5 Mult more than the one before (up to +4).',add:c=>Math.min(4,c.combo*.5)},
  bull:{n:'Bullseye',r:0,c:5,d:'A dropped fruit that merges before it touches anything else scores ×2.',x:c=>c.bull?2:1},
  early:{n:'Early Bird',r:0,c:4,d:'×2 Mult for your first 6 drops of each jar.',x:c=>c.jd<=6?2:1},
  clutch:{n:'Photo Finish',r:0,c:4,d:'×2.5 Mult for your last 5 drops of each jar.',x:c=>c.dl<5?2.5:1},
@@ -88,9 +88,13 @@ const CH={
  headline:{n:'Headliner',r:3,c:12,fu:['show','encore'],d:'Every tool use gives +1 Mult until the jar ends, and makes your next merge score ×3.',add:c=>c.tu,x:c=>c.enc&&c.l>=0?3:1},
  smoothie:{n:'Smoothie',r:3,c:12,fu:['juicer','honey'],d:'+2 Mult. Every merge scores +20 points.',add:()=>2,chip:()=>20},
  marathon:{n:'Marathon',r:3,c:12,fu:['early','clutch'],d:'×2 Mult. ×3 instead for your first 6 and last 5 drops of each jar.',x:c=>c.jd<=6||c.dl<5?3:2},
- wildfire:{n:'Wildfire',r:3,c:12,fu:['hot','chain'],d:'+0.3 Mult for every merge you have made this jar. In a combo, each merge gets +2 Mult more than the one before (up to +16).',add:c=>c.jm*.3+Math.min(16,c.combo*2)},
+ wildfire:{n:'Wildfire',r:3,c:12,fu:['hot','chain'],d:'+0.3 Mult for every merge you have made this jar. In a combo, each merge gets +1 Mult more than the one before (up to +8).',add:c=>c.jm*.3+Math.min(8,c.combo)},
  mania:{n:'Melon Mania',r:3,c:14,fu:['heavy','fever'],d:'Merges that make a size 6 fruit or bigger score ×3. Gains +2 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,x:c=>c.l>=5?3:1,live:1},
  mint:{n:'The Mint',r:3,c:12,fu:['scratch','gold'],d:'1 in 4 merges pays 1 coin. Earn 2 coins whenever you make a size 6 fruit or bigger.'},
+ snack:{n:'Snack Pack',r:3,c:12,fu:['bite','hoard'],d:'Fruit you drop are never bigger than size 3. +0.25 Mult for every fruit in the jar. Every merge scores +6 points.',add:c=>c.n*.25,chip:()=>6},
+ svault:{n:'Seed Vault',r:3,c:12,fu:['sprout','packet'],d:'Seeds cost 2 coins less. The first time you make each fruit size in a jar, its seed counts triple.'},
+ phil:{n:"Philosopher's Stone",r:3,c:12,fu:['leaf','alch'],d:'The first 2 fruit you drop in each jar are gold. 1 in 2 times a gold fruit merges, the fruit it makes is gold too (Horseshoe does not change this).'},
+ keep:{n:'Keepsake',r:3,c:12,fu:['pip','vintage'],d:'Gains +0.05 Mult every time you make a size 3 fruit or smaller, and +0.6 every time you clear a jar.',add:c=>c.ch.v||0,live:1},
  bfly:{n:'Butterfly Garden',r:3,c:12,fu:['chrys','bee'],d:'Every 3rd fruit your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run. Every 3 drops a bee pollinates a fruit, and pollinated fruit score ×4 when they merge.',add:c=>c.ch.v||0,live:1},
  zoo:{n:'Menagerie',r:3,c:12,fu:['bowl','mole'],d:'+0.5 Mult for every fruit your pets have eaten this jar. Every 5 drops a mole eats a fruit on the floor (size 4 or less) for 60 points.',add:c=>(c.ml||0)*.5},
  sharp:{n:'Sharpshooter',r:3,c:12,fu:['bull','lode'],d:'Every 4th drop is a Magnet. A dropped fruit that merges before it touches anything else scores ×4.',x:c=>c.bull?4:1},
@@ -194,6 +198,7 @@ const TL={
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
  bloom:{n:'Bloom',c:12,ch:10,tg:1,fu:['ripen','sprout'],d:'Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level.'},
+ mesh:{n:'Fine Mesh',c:12,ch:7,fu:['sieve','pip'],d:'Clears every size 1 and size 2 fruit out of the jar. Each one cleared scores 15 points.'},
  whistle:{n:'Whistle',c:5,ch:6,tg:1,req:CAT,d:'Tap a fruit (size 3 or less). Your caterpillar comes out now and eats it.'},
  ghand:{n:'Golden Hand',c:12,ch:8,tg:1,fu:['midas','wallet'],d:'Tap a fruit. It turns gold. When it merges it scores ×3 and pays 4 coins.'}
 };
@@ -243,12 +248,12 @@ const RG={
   return{quota,drops,boss:b,rules,p2:j===2,p2s:j===2&&R.stake>=8,crate:j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;const sp=sd&&c.first&&RG.has(R,'sprout')?2:1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push('sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* a fruit of tier l was made: returns the charms that paid out */
  made(R,l){const ev=[],f=RG.has(R,'fever'),m=RG.has(R,'mania'),lk=RG.luck(R);if(l>=5&&RG.has(R,'gold')){R.coins++;ev.push('gold');}if(RG.has(R,'scratch')&&Math.random()<lk/6){R.coins++;ev.push('scratch');}
-  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const pp=l<=2&&RG.has(R,'pip');if(pp){pp.v=+((pp.v||0)+.03).toFixed(2);ev.push('pip');}return ev;},
+  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.05:.03)).toFixed(2);ev.push(pp.id);}return ev;},
  /* n fruit were destroyed: returns the charm that grew from it, if any */
  /* Gardener (1 level) or Greenhouse (2): a boss was beaten. Returns the seed tiers that gained a level */
  garden(R){const n=RG.has(R,'green')?2:RG.has(R,'gard')?1:0,a=RG.sizes(R),o=[];for(let i=0;i<n;i++){const l=a[rint(a.length)];R.sd[l]++;o.push(l);}return o;},
@@ -257,13 +262,13 @@ const RG={
  cost:(R,c)=>Math.max(1,c-(RG.has(R,'coupon')?1:0)+(R.stake>=5?1:0)),
  upCost:(R,id)=>RG.cost(R,UPG[id].c+(UPG[id].now?0:R.up[id]*2)),
  upOk:(R,k)=>PF.lk('up.'+k)?false:k==='scrub'?R.jar!==0:k==='bribe'?!BOSS[RG.boss(R)].fin:k==='belt'?RG.ts(R)<RG.tsMax(R):!UPG[k].max||R.up[k]<UPG[k].max,
- sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]-(RG.has(R,'packet')?1:0)),
+ sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]-(RG.has(R,'svault')?2:RG.has(R,'packet')?1:0)),
  sellV:(R,c)=>R.up.haggle?c:Math.floor(c/2),
  rrCost:R=>R.up.dice?(R.shop.rr?RG.cost(R,1+R.shop.rr):0):RG.cost(R,2+R.shop.rr),
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],u=Math.min(3,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/5));
   if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push(['Interest (1 per 5 coins held)',i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
- advance(R,sum){R.coins+=sum;const v=RG.has(R,'vintage');if(v)v.v=+((v.v||0)+.4).toFixed(1);let win=false;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}R.shop=RG.stock(R);R.at='shop';return win;},
+ advance(R,sum){R.coins+=sum;const v=RG.has(R,'keep')||RG.has(R,'vintage');if(v)v.v=+((v.v||0)+(v.id==='keep'?.6:.4)).toFixed(2);let win=false;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}R.shop=RG.stock(R);R.at='shop';return win;},
  stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste;for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.6-.15*tt?0:r<.9-.075*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(from[rint(from.length)]);}
   const take=RG.pick,sizes=RG.sizes(R);
   return{ch,cr:Object.keys(CRP)[rint(3)],tl:take(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2),up:take(Object.keys(UPG).filter(k=>RG.upOk(R,k)),3),sd:take(sizes,2+R.up.seedbag),rr:0};},
@@ -386,6 +391,14 @@ const ACH={
  overkill:{n:'Overkill',d:'Finish a jar with 3 times its target.',on:'jar',t:(R,d)=>d.score>=d.quota*3,un:'tl.ddown',secret:1},
  twomelon:{n:'Double Melon',d:'Have 2 watermelons in the jar at once.',on:'melons',t:()=>true,un:'fu.mania',secret:1},
  noshop:{n:'Window Shopper',d:'Beat the depth 3 boss having bought nothing in any shop.',on:'jar',t:(R,d)=>d.jar===2&&d.depth>=3&&!R.st.buys&&!R.st.ups&&!R.st.seeds,un:'jar.bare',secret:1},
+ pets40:{n:'Picky Eaters',d:'Your pets eat 40 fruit (over all your runs).',on:'pet',t:(R,d,S)=>(S['pet.cat']||0)+(S['pet.mole']||0)>=40,un:'ch.appetite'},
+ pollen:{n:'Pollinator',d:'Your bees pollinate 30 fruit (over all your runs).',on:'pet',t:(R,d,S)=>(S['pet.bee']||0)>=30,un:'fu.bfly'},
+ zoo3:{n:'Petting Zoo',d:'Hold 3 pets at once.',on:'buy take fuse',t:R=>PETS.filter(id=>RG.has(R,id)).length>=3,un:'fu.zoo'},
+ gold6:{n:'Treasure Trove',d:'Merge 6 gold fruit in one jar.',on:'gold',t:R=>R.jst.golds>=6,un:'fu.phil'},
+ small15:{n:'Small Wonders',d:'Make 15 fruit of size 2 or 3 in one jar.',on:'merge',t:R=>(R.jst['made.1']||0)+(R.jst['made.2']||0)>=15,un:'fu.snack'},
+ seeds15:{n:'Orchard',d:'Hold 15 seed levels at once.',on:'seed take grow',t:R=>R.sd.reduce((a,b)=>a+b,0)>=15,un:'fu.svault'},
+ dark:{n:'Night Owl',d:'Beat The Blackout.',on:'jar',t:(R,d)=>d.boss==='dark'},
+ bank:{n:'Bank Shot',d:'Score a Trick Shot.',on:'merge',t:(R,d)=>d.trick,secret:1},
  win:{n:'To the Bottom',d:'Win a run.',on:'jar',t:(R,d)=>d.win,un:'jar.piggy'},
  endless:{n:'Still Going',d:'Beat the depth 10 boss.',on:'jar',t:(R,d)=>d.jar===2&&d.depth>=10,un:'jar.wide'},
  slayer:{n:'Giant Slayer',d:'Beat 15 different bosses.',on:'jar',t:(R,d,S)=>Object.keys(S).filter(k=>/^boss\..*\.win$/.test(k)).length>=15,un:'jar.kit'},
