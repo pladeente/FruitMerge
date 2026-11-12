@@ -57,6 +57,9 @@ const CH={
  soil:{n:'Rich Soil',r:2,c:9,d:'Every fruit you drop is one size bigger.'},
  wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.3 Mult more for every charm you own, this one included.',x:c=>1+.3*c.nc},
+ /* rares whose ×Mult grows over the run (DESIGN.md priority 4). live:'x' = the grown value is a ×, shown as ×(1+v) */
+ snow:{n:'Snowball',r:2,c:9,d:'Gains ×0.1 Mult every time you clear a jar with 5 or more drops left. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
+ oak:{n:'Old Oak',r:2,c:9,d:'Gains ×0.04 Mult every time you make a size 7 fruit or bigger. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  fever:{n:'Melon Fever',r:2,c:9,d:'Gains +1.5 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,live:1},
  /* thin builds (see DESIGN.md): small fruit, seeds, gold, position */
  fry:{n:'Small Fry',r:0,c:4,d:'Merges that make a size 4 fruit or smaller score ×2.',x:c=>c.l>=1&&c.l<=3?2:1},
@@ -253,8 +256,10 @@ const RG={
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* a fruit of tier l was made: returns the charms that paid out */
  made(R,l){const ev=[],f=RG.has(R,'fever'),m=RG.has(R,'mania'),lk=RG.luck(R);if(l>=5&&RG.has(R,'gold')){R.coins++;ev.push('gold');}if(RG.has(R,'scratch')&&Math.random()<lk/6){R.coins++;ev.push('scratch');}
-  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.05:.03)).toFixed(2);ev.push(pp.id);}return ev;},
+  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const ok=l>=6&&RG.has(R,'oak');if(ok){ok.v=+((ok.v||0)+.04).toFixed(2);ev.push('oak');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.05:.03)).toFixed(2);ev.push(pp.id);}return ev;},
  /* n fruit were destroyed: returns the charm that grew from it, if any */
+ /* Snowball: a jar was cleared with `left` drops unused. Returns true when it grew */
+ snow(R,left){const s=RG.has(R,'snow');if(!s||left<5)return false;s.v=+((s.v||0)+.1).toFixed(1);return true;},
  /* Gardener (1 level) or Greenhouse (2): a boss was beaten. Returns the seed tiers that gained a level */
  garden(R){const n=RG.has(R,'green')?2:RG.has(R,'gard')?1:0,a=RG.sizes(R),o=[];for(let i=0;i<n;i++){const l=a[rint(a.length)];R.sd[l]++;o.push(l);}return o;},
  kill(R,n){const c=RG.has(R,'compost')||RG.has(R,'volcano');if(!c||!(n>0))return false;c.v=+((c.v||0)+(c.id==='volcano'?.1:.05)*n).toFixed(2);return c.id;},

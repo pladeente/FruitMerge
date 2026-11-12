@@ -66,7 +66,7 @@ Long-run growers today are all +Mult: Vintage (per jar), Hot Streak (per merge, 
 1. **Thin builds first, at common and uncommon.** Done: 11 charms (see below). Small fruit, seeds, gold, physics and position. Each one should link to an existing build so it is not a dead pick (gold to chance and economy, small fruit to destruction, seeds to economy, position to aim).
 2. **Fusions that join the new pieces to old ones.** Done: 6 built (see below).
 3. **Re-measure** with the bot (see `RSC` notes in `CLAUDE.md`). Target stays at the greedy bot winning about 1 run in 12.
-4. **Then higher-powered cards:** one or two rares with ×Mult that grows over the run, so late depths have a goal. Only after 1 to 3, because a bigger pool is what keeps these from turning up every run.
+4. **Then higher-powered cards:** one or two rares with ×Mult that grows over the run, so late depths have a goal. Only after 1 to 3, because a bigger pool is what keeps these from turning up every run. Done: Snowball and Old Oak (see Balance measurement).
 
 Open question: rares are seen as often as uncommons. Fix by adding rares (step 4) or lowering the rare weight, not both.
 
@@ -177,6 +177,21 @@ One jar at depth 7 with a fixed loadout, no tools, average of 25 to 40 jars. ×N
 | Small fruit (Small Fry, Pip, Bite, Hoarder) | ~780 |
 | Chance (Lucky, Snake Eyes, Horseshoe, Scratch) | ~760 |
 | Gold (Gold Leaf, Prospector, Alchemy, Magpie) | ~400 (aim-dependent) |
+
+Runs started with one charm, then greedy buying, 200 runs each (average depth reached, 9 = won):
+
+| Starting charm | Avg depth | Wins |
+|---|---|---|
+| None | 3.69 | 1 |
+| Old Oak (new rare) | 3.93 | 1 |
+| Sweet Spot (rare) | 3.98 | 2 |
+| Snowball (new rare) | 4.24 | 5 |
+| Juicer | 4.33 | 1 |
+| Melon Fever (rare) | 4.36 | 1 |
+| Hot Streak | 4.58 | 0 |
+| Blue Ribbon (rare) | 5.08 | 10 |
+
+The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm owned) is the strongest charm by this measure: worth a look, like Chain Reaction was.
 
 Pets land with small fruit and chance: real builds, not the strongest. Their extra value (clearing fruit, so fewer overflows) does not show in a single-jar score. Chain Reaction is a common that scores like a rare: worth a look on its own.
 
