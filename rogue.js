@@ -299,15 +299,16 @@ const RG={
  /* why a pick can not be taken right now, or '' */
  blocked:(R,o)=>o.k==='ch'&&R.ch.length>=RG.slots(R)?'Charms full':o.k==='tl'&&R.tl.length>=RG.ts(R)?'Tools full':'',
  take(R,i){const o=R.crate&&R.crate.opts[i];if(!o||RG.blocked(R,o))return null;if(o.k==='ch')R.ch.push({id:o.id});else if(o.k==='tl')R.tl.push(RG.tool(o.id,R));else if(o.k==='sd')R.sd[o.id]+=o.n;else if(o.k==='coin')R.coins+=o.n;else if(!RG.fuse(R,o.id))return null;
+  if(R.shop&&(o.k==='ch'||o.k==='tl'))R.shop[o.k]=R.shop[o.k].map(x=>x===o.id?null:x); /* the shop was stocked before the crate opened: take that item off its shelf */
   R.at=R.crate.then;R.crate=null;return o;},
  leave(R){const c=R.crate;if(!c)return 0;const n=CRT[c.tier].out;R.coins+=n;R.at=c.then;R.crate=null;return n;},
  buyCr(R){const k=R.shop.cr,p=k&&RG.cost(R,CRP[k]);if(!k||R.coins<p)return false;R.coins-=p;R.shop.cr=null;R.crate=RG.crate(R,'wood','shop',k);R.at='crate';return true;},
  /* skip jar 1 or 2 of a depth: no payout, no shop, a wooden crate instead */
  skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.jar++;R.crate=RG.crate(R,'wood','hub');R.at='crate';return true;},
- buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
+ buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
  buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},
  buySd(R,i){const l=R.shop.sd[i],p=l&&RG.sdCost(R,l);if(!l||R.coins<p)return 0;R.coins-=p;R.sd[l]++;R.shop.sd[i]=null;return l;},
- buyTl(R,i){const id=R.shop.tl[i],p=id&&RG.cost(R,TL[id].c);if(!id||R.coins<p||R.tl.length>=RG.ts(R))return false;R.coins-=p;R.tl.push(RG.tool(id,R));R.shop.tl[i]=null;return true;},
+ buyTl(R,i){const id=R.shop.tl[i],p=id&&RG.cost(R,TL[id].c);if(!id||R.coins<p||R.tl.length>=RG.ts(R)||R.tl.some(t=>t.id===id))return false;R.coins-=p;R.tl.push(RG.tool(id,R));R.shop.tl[i]=null;return true;},
  sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=RG.sellV(R,TL[t.id].c);R.tl.splice(i,1);return true;},
  sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c);R.ch.splice(i,1);return true;},
  reroll(R){const p=RG.rrCost(R);if(R.coins<p)return false;R.coins-=p;const s=RG.stock(R);s.rr=R.shop.rr+1;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
