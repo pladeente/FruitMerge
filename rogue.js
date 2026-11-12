@@ -12,7 +12,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused'];
    dev = a prototype: only in the dev panel, never in the shop, crates or Almanac. req = only offered while the run holds that charm.
    fu = [a, b]: a fusion, made from those two charms. Fusions are rarity 3, never sold, and only come out of boss crates. */
 /* pet groups for req: CAT = brings the caterpillar, EAT = a pet that eats fruit, PETS = any pet */
-const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo'],PETS=['pet','frenzy','mole','zoo','bee','bfly','hog','lady'];
+const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','hog','lady'];
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
@@ -76,12 +76,12 @@ const CH={
  /* pets (DESIGN.md): creatures in the jar, handled in makeGame. Pet combos need a pet (req) */
  bee:{n:'Busy Bee',r:1,c:6,d:'Every 4 drops a bee pollinates a fruit (up to 3 at a time). A pollinated fruit scores ×3 when it merges.'},
  mole:{n:'Mole',r:1,c:6,d:'Every 6 drops a mole eats a fruit on the floor (size 4 or less) for 40 points.'},
- hog:{n:'Hedgehog',r:1,c:6,d:'Every 6 drops a hedgehog rolls across the floor, bumping fruit. Merges score ×2 while it is out and for 1 second after.'},
+ hog:{n:'Hedgehog',r:1,c:6,d:'When the pile reaches the gold line near the top of the jar, a hedgehog climbs up and eats the highest fruit (size 6 or less) for 50 points. At most once every 3 drops.'},
  lady:{n:'Ladybird',r:0,c:4,d:'A ladybird rides one fruit. When that fruit merges, the merge scores ×2 and she moves to the new fruit.'},
  bowl:{n:'Pet Bowl',r:0,c:4,req:EAT,d:'+0.3 Mult for every fruit your pets have eaten this jar.',add:c=>(c.ml||0)*.3},
  treats:{n:'Pet Treats',r:0,c:4,req:EAT,d:'Every fruit your pets eat scores 30 more points.'},
  chrys:{n:'Chrysalis',r:1,c:6,req:CAT,d:'Every 4th fruit your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run.',add:c=>c.ch.v||0,live:1},
- appetite:{n:'Big Appetite',r:1,c:6,req:EAT,d:'Your pets can eat fruit up to size 5. Eating a size 4 or 5 fruit scores 3 times as much.'},
+ appetite:{n:'Big Appetite',r:1,c:6,req:EAT,d:'Your pets can eat bigger fruit: the caterpillar and mole up to size 5, the hedgehog up to size 7. Eating a size 4 or bigger fruit scores 3 times as much.'},
  /* throwing fruit (being tested) */
  sling:{n:'Slingshot',r:1,c:6,d:'Flick as you let go to throw your fruit sideways. The faster the flick, the harder the throw.'},
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else scores ×3.',x:c=>c.trick?3:1},
@@ -341,7 +341,7 @@ function mergeProfile(a,b){a=PF.fix(a);b=PF.fix(b);const o=PF.blank(),first=(x,y
 /* Everything worth counting goes through here: the engine through ro.ev, the screens by calling rgEv.
    R.st counts over the whole run, R.jst over the jar being played (reset by the 'start' event), the profile over a lifetime.
    Engine events: drop {l,sp}, merge {l,p,m,combo,bull}, tool {id}, kill {n}, net, gold, melons {n}.
-   Screen events: run, start, jar {depth,jar,boss,left,score,quota,win}, end {why,boss}, buy {id,k}, sell {id,k}, up {id}, seed {l}, grow {l} (a seed level from Gardener), pet {k} (a pet acted: cat, mole, bee), roll, skip, crate {tier}, take {k,id} (k = out when the crate was left), fuse {id}. k is the kind (ch or tl).
+   Screen events: run, start, jar {depth,jar,boss,left,score,quota,win}, end {why,boss}, buy {id,k}, sell {id,k}, up {id}, seed {l}, grow {l} (a seed level from Gardener), pet {k} (a pet acted: cat, mole, bee, hog), roll, skip, crate {tier}, take {k,id} (k = out when the crate was left), fuse {id}. k is the kind (ch or tl).
    Runs touched by the dev panel (R.dev) count for nothing. */
 function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R.st={}),inc=(k,v=1)=>{PF.inc(k,v);rs[k]=(rs[k]||0)+v;if(R.jst)R.jst[k]=(R.jst[k]||0)+v;},top=(k,v)=>{PF.max(k,v);if(!(rs[k]>=v))rs[k]=v;};
  if(n==='run')PF.inc('runs');
@@ -397,7 +397,7 @@ const ACH={
  overkill:{n:'Overkill',d:'Finish a jar with 3 times its target.',on:'jar',t:(R,d)=>d.score>=d.quota*3,un:'tl.ddown',secret:1},
  twomelon:{n:'Double Melon',d:'Have 2 watermelons in the jar at once.',on:'melons',t:()=>true,un:'fu.mania',secret:1},
  noshop:{n:'Window Shopper',d:'Beat the depth 3 boss having bought nothing in any shop.',on:'jar',t:(R,d)=>d.jar===2&&d.depth>=3&&!R.st.buys&&!R.st.ups&&!R.st.seeds,un:'jar.bare',secret:1},
- pets40:{n:'Picky Eaters',d:'Your pets eat 40 fruit (over all your runs).',on:'pet',t:(R,d,S)=>(S['pet.cat']||0)+(S['pet.mole']||0)>=40,un:'ch.appetite'},
+ pets40:{n:'Picky Eaters',d:'Your pets eat 40 fruit (over all your runs).',on:'pet',t:(R,d,S)=>(S['pet.cat']||0)+(S['pet.mole']||0)+(S['pet.hog']||0)>=40,un:'ch.appetite'},
  pollen:{n:'Pollinator',d:'Your bees pollinate 30 fruit (over all your runs).',on:'pet',t:(R,d,S)=>(S['pet.bee']||0)>=30,un:'fu.bfly'},
  zoo3:{n:'Petting Zoo',d:'Hold 3 pets at once.',on:'buy take fuse',t:R=>PETS.filter(id=>RG.has(R,id)).length>=3,un:'fu.zoo'},
  gold6:{n:'Treasure Trove',d:'Merge 6 gold fruit in one jar.',on:'gold',t:R=>R.jst.golds>=6,un:'fu.phil'},
