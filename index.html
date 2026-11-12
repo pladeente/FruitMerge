@@ -61,6 +61,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-o
 .tlb:not(:disabled):active{transform:translateY(2px);box-shadow:0 1px 0 #1b1029,inset 0 0 0 2px var(--teal)}
 .tlb.e{background:#ffffff0c;box-shadow:inset 0 0 0 2px var(--line);color:var(--line);min-height:74px}
 .msg{pointer-events:auto;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--plum);border:3px solid var(--line);border-radius:18px;padding:16px 18px;width:94%;max-width:380px;text-align:center;box-shadow:0 10px 40px #0008;max-height:94%;overflow-y:auto;box-sizing:border-box}
+.xb{position:sticky;top:0;float:right;z-index:2;margin:-6px -8px 0 6px;width:38px;height:38px;padding:0;border:0;border-radius:10px;background:var(--panel);color:var(--cream);font:700 28px/38px var(--display);box-shadow:0 3px 0 #1b1029;cursor:pointer}.xb:active{transform:translateY(2px);box-shadow:0 1px 0 #1b1029}
 .msg h3{margin:0 0 6px;font:700 37px var(--display);color:var(--brass)}
 .msg h4{margin:12px 0 0;font:700 23px var(--display);color:var(--teal)}
 .msg p{margin:6px 0;font-size:18px}
@@ -594,7 +595,7 @@ const PXC={};
 (function(){let css='';for(const k in PXD){const cv=document.createElement('canvas');cv.width=cv.height=12;const c=cv.getContext('2d');PXD[k].trim().split('\n').forEach((r,y)=>{for(let x=0;x<12;x++)if(PXP[r[x]]){c.fillStyle=PXP[r[x]];c.fillRect(x,y,1,1);}});PXC[k]=cv;css+=`.px-${k}${k==='coin'?',.coin':''}{background-image:url(${cv.toDataURL()})}`;}
  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);})();
 /* a small picture of each fruit size, as px-fr0 to px-fr10 (seeds use them) */
-function frIcons(){let css='.px[class*=px-fr]{image-rendering:auto}';for(let l=0;l<11;l++){const cv=document.createElement('canvas');cv.width=cv.height=48;drawFruit(cv.getContext('2d'),24,24,22,l);PXC['fr'+l]=cv;css+=`.px-fr${l}{background-image:url(${cv.toDataURL()})}`;}let st=document.getElementById('frcss');if(!st){st=document.createElement('style');st.id='frcss';document.head.appendChild(st);}st.textContent=css;}frIcons();artLoad();
+function frIcons(){let css=[...Array(11).keys()].map(l=>'.px.px-fr'+l).join()+'{image-rendering:auto}'; /* listed one by one: a [class*=px-fr] match also caught px-fry and px-frenzy and blurred them */for(let l=0;l<11;l++){const cv=document.createElement('canvas');cv.width=cv.height=48;drawFruit(cv.getContext('2d'),24,24,22,l);PXC['fr'+l]=cv;css+=`.px-fr${l}{background-image:url(${cv.toDataURL()})}`;}let st=document.getElementById('frcss');if(!st){st=document.createElement('style');st.id='frcss';document.head.appendChild(st);}st.textContent=css;}frIcons();artLoad();
 const ic=(n,big)=>`<i class="px${big?' x3':''} px-${n}"></i>`;
 const cv=$('#cv'),st=$('#stage'),ui=$('#ui'),pw=$('#pw');let ctx=cv.getContext('2d');
 const pwBtns=[...pw.querySelectorAll('[data-p]')],tb=$('#tb');
@@ -655,7 +656,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.16',d:'12 Nov 2026',t:'Pixel coins',i:['Coins are pixel art now, to match the rest of the game.']},
+ {v:'1.16',d:'12 Nov 2026',t:'Pixel coins',i:['Coins are pixel art now, to match the rest of the game.','Small Fry and Feeding Frenzy icons are sharp again.','What\'s new has a close button at the top.']},
  {v:'1.15',d:'12 Nov 2026',t:'Fixes',i:['Fruit no longer spin on the spot once the pile has settled. They only roll when they really move.','Beta fruit art: fruit now touch each other instead of leaving a small gap.']},
  {v:'1.14',d:'12 Nov 2026',t:'Beta fruit art',i:['New Options screen on the menu.','Beta fruit art: turn it on in Options or the pause screen to play with hand-drawn fruit. Mouldy fruit turn green and leak spores. Still a work in progress.']},
  {v:'1.13',d:'12 Nov 2026',t:'New menu',i:['Rogue is now the big button at the top of the menu, with What\'s new next to it. Classic and Wild sit underneath.']},
@@ -675,7 +676,7 @@ const LOG=[
  {v:'1.3',d:'10 Nov 2026',t:'Rogue mode',i:['Rogue mode: depths, bosses, charms and a shop.','Pixel icons and a pixel font.','Install the game to your home screen.','A new watermelon. Mould and the caterpillar are easier in Wild.']},
  {v:'1.0',d:'9 Nov 2026',t:'Launch',i:['Classic and Wild modes.','Online leaderboard.','Wild powers: Swap, Shake, Whirlpool and Rumble.']}];
 function opts(){const m=show(`<h3>Options</h3><canvas id="chain"></canvas><p>Beta fruit art: hand-drawn fruit in place of the drawn ones. Still a work in progress.</p><button class="go${ART?'':' alt'}" data-a="art">Beta fruit art: ${ART?'On':'Off'}</button><br><button class="go alt" data-a="menu">Back</button>`);chain(m);}
-function news(){store.set('seenLog',LOG[0].v);show(`<h3>What's new</h3>${LOG.map(e=>`<div class="sec"><h5>${e.t} <small class="chip">v${e.v} · ${e.d}</small></h5><ul class="wl">${e.i.map(t=>`<li><div>${t}</div></li>`).join('')}</ul></div>`).join('')}<button class="go alt" data-a="menu">Back</button>`);}
+function news(){store.set('seenLog',LOG[0].v);show(`<button class="xb" data-a="menu" aria-label="Close">×</button><h3>What's new</h3>${LOG.map(e=>`<div class="sec"><h5>${e.t} <small class="chip">v${e.v} · ${e.d}</small></h5><ul class="wl">${e.i.map(t=>`<li><div>${t}</div></li>`).join('')}</ul></div>`).join('')}<button class="go alt" data-a="menu">Back</button>`);}
 function wildInfo(){show(`<h3>Wild mode</h3><p>Normal fruit plus surprises. Specials show up in the <b>Next</b> box.</p><ul class="wl">
 <li><span>${ic('sticky')}</span><div><b>Sticky</b>: stays exactly where it lands. Still merges.</div></li>
 <li><span>${ic('drop')}</span><div><b>Slippery</b>: slides and bounces all over the place.</div></li>
