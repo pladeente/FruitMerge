@@ -91,7 +91,7 @@ All in `CH` except Trick Shot. Numbers changed from the first proposal where not
 
 Gardener's level fires the `grow` event, which also counts for Green Fingers. Not re-measured with the bot yet: that waits for the fusions (step 3).
 
-## Fusions for the thin-build charms
+## Fusions for the thin-build charms (built)
 
 Rules followed: a fusion is about both halves together plus a bit (budget table above). Every half used here is not in any existing recipe, so no charm is pulled two ways. Recipes stay hidden until the player holds both halves.
 
@@ -110,7 +110,9 @@ Rules followed: a fusion is about both halves together plus a bit (budget table 
 | Keepsake | Pip Collector + Vintage | Gains +0.05 Mult every time you make a size 3 fruit or smaller, and +0.6 every time you clear a jar. | +0.03, +0.4 | Pure grower, keeps both halves' value. Competes with Fine Mesh for Pip |
 | (after testing) | Slingshot + Trick Shot | Throws go further, bank shots score ×4 and refund 1 drop. | throw, ×3 | Only once the throwing feel is settled |
 
-Built: Feeding Frenzy, Greenhouse, Treasure Hunter, Still Water, Climbing Ivy and Bloom (tool), as in the table. Still drafts: Snack Pack, Fine Mesh, Seed Vault, Philosopher's Stone, Keepsake, and the throwing fusion. Next: re-measure with the bot.
+All built except the throwing fusion. Changes from the table: Fine Mesh scores 15 points per fruit cleared instead of growing Mult (a tool has nowhere to keep a grown value), Philosopher's Stone's 1 in 2 ignores Horseshoe. Snack Pack, Seed Vault and Philosopher's Stone are locked behind awards, with Big Appetite, Butterfly Garden and Menagerie.
+
+Chain Reaction retuned: +0.5 Mult per combo step up to +4 (was +1 up to +8), Wildfire +1 up to +8 (was +2 up to +16). Solo it measured ×2.9 a jar, a common scoring like a rare. Now ×1.9, level with Juicer (×2.0).
 
 ## Pets (built)
 
@@ -150,6 +152,7 @@ Full greedy runs, 400 each:
 | Before this session's charms (thin builds, throwing, pets and their fusions removed) | 0 / 400 | depth 3 to 4 |
 | Current pool, before the pet retune | 2 / 400 | depth 3 to 4 |
 | Current pool, final (pets retuned) | 2 / 400 | depth 3 to 4 |
+| Current pool, Chain Reaction nerfed, 5 more fusions | 1 / 400 | depth 3 to 4 |
 
 The win rate is lower than the documented 1 in 12 because this bot aims worse, but the two pools match, so the new items did not make runs easier for a player who picks without thinking.
 
