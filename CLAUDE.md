@@ -11,6 +11,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 | `index.html` | CSS, HTML shell, engine (`makeGame`), Classic and Wild, all screens including the Rogue ones, the dev panel. About 580 very long lines. |
 | `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `TL`, seeds, crates (`CRT`), `RG`, balance tables), the player profile (`PF`, `mergeProfile`), run events (`rgEv`) and awards (`ACH`, `LOCK`). Loaded before the main script. No DOM access. |
 | `icons.js` | Pixel art. `PXD` = 12x12 letter grids, `PXP` = palette, `PXF`/`PXFB` = score pop-up font. |
+| `fruits.png` | Beta fruit art: one strip of 11 square pixel sprites (widths in `ARW`), the user's drawings. Off by default, switched on in Options. |
 | `sw.js` | Service worker, network first, cache fallback. Bump `CACHE` and update `CORE` whenever a file is added or renamed. |
 | `database.rules.json` | Firebase Realtime Database rules for the leaderboard (pasted into the console by hand). |
 | `README.md` | Player/host facing notes, including Firebase setup. |
@@ -39,7 +40,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 
 ## Architecture
 
-- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress), `jar` and `stake` (the last picks on the new-run screen, a device preference), `seenLog` (newest What's new version opened).
+- `store`: localStorage wrapper, keys prefixed `fruitMerge.v1.`. Keys in use: `mode`, `name`, `snd2`, `scores2`, `scoresWild2`, `scoresRogue`, `run` (the saved Rogue run), `profile` (all meta progress), `jar` and `stake` (the last picks on the new-run screen, a device preference), `seenLog` (newest What's new version opened), `art` (beta fruit art on, from the Options screen `opts()`).
 - `G`: app state. `G.state` is one of `menu`, `play`, `pause`, `over`, `rogue` (any Rogue screen between jars). `G.g` is the live game, `RUN` the live Rogue run.
 - `makeGame(W,H,wild,onOver,ro)`: the engine (physics, merging, specials, powers, drawing). Returns `{update, draw, up, use, jar, wipe, snap, load, scrub, ...}`. `ro` is null in Classic and Wild. In Rogue it is the hook object from `RG.ro(R, clear, fail, fx)`, the only way the engine talks to run state.
 - `RG` (`rogue.js`): pure Rogue rules over a run object `R`: `new`, `saved`, `jarCfg`, `score`, `made`, `kill`, `payout`, `advance`, `stock`, `buy`, `sell`, `reroll`, and for tools `tool`, `ts` (slots), `need`, `charge`, `fill`, `buyTl`, `sellTl`. Read limits and prices through the helpers, never the raw tables: `slots` (charm slots), `ts`, `need` (charge a tool needs), `sellV`, `rrCost`, `upCost`, `upOk`, `sdCost`. Upgrades change all of them.
@@ -128,7 +129,7 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - `database.rules.json` now accepts the optional stake field `k` on Rogue scores. Until the user re-publishes the rules in the Firebase console, scores still post, without their stake.
 
 ### Later
-- Fruit art: the user is drawing fruit sprites. Fruit are drawn in code today (`drawFruit`, `drawMelon`). Each fruit is a circle in the physics and rotates, so art should be a square image filled edge to edge, and the face (including the X-eyed mouldy one) is drawn by the game.
+- Fruit art: the user's first sprites are in as an Options toggle (beta fruit art, `ART`). `artLoad` scales each sprite 8x without smoothing once (`SPR`), `drawFruit` draws it in place of the coded fruit and `frIcons` rebuilds the `fr0`-`fr10` icons. The sprites carry their own faces, so the game draws none on them. Mouldy sprite fruit get a green tint (`drawMold`) and rising spores (`spores`) instead of the X face. Known art notes for the next pass: pear reads as a potato, watermelon lips, pale peach and melon, grape plain. Coded fruit stay the default until the art is final.
 - Human playtesting of the difficulty curve, stakes and the newer bosses. Everything so far was tuned against a bot.
 - Sign-in and cloud save (user will ask). Plan: Firebase Auth, `users/$uid/profile`, merge with `mergeProfile`. The run save can sync too.
 - Charm editions, daily seeded run, more fusions.
