@@ -217,7 +217,7 @@ const RG={
   const tl=[RG.tool('swap')];if(jar!=='wide')tl.push(RG.tool('shake'));if(jar==='kit'){const k=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&k!=='swap'&&k!=='shake');tl.push(RG.tool(k[rint(k.length)]));}
   return{v:RV,jarId:jar,stake,depth:1,jar:0,coins:jar==='piggy'?12:4,total:0,ch:[],tl,up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,ms:{},bq:{},bx:{},off:0,shop:null,crate:null,pile:[],at:'hub',won:0,st:{},jst:{}};},
  /* the highest stake the player may pick: one above the best they have won on, with any jar */
- stakeMax:()=>Math.min(STAKES.length,1+Math.max(0,...Object.values((PF.d||PF.load()).stakes))),
+ stakeMax:(jar='classic')=>Math.min(STAKES.length,1+((PF.d||PF.load()).stakes[jar]||0)), /* per jar: one above the best Ripeness won with that jar */
  fin(){const f=Object.keys(BOSS).filter(k=>BOSS[k].fin);return f[rint(f.length)];},
  /* a saved run that this version can load, or null */
  saved(){const sv=store.get('run',null);if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
@@ -409,8 +409,8 @@ const ACH={
  endless:{n:'Still Going',d:'Beat the depth 10 boss.',on:'jar',t:(R,d)=>d.jar===2&&d.depth>=10,un:'jar.wide'},
  slayer:{n:'Giant Slayer',d:'Beat 15 different bosses.',on:'jar',t:(R,d,S)=>Object.keys(S).filter(k=>/^boss\..*\.win$/.test(k)).length>=15,un:'jar.kit'},
  almanac:{n:'Know-It-All',d:'Meet every boss.',on:'start jar',t:()=>Object.keys(BOSS).every(k=>PF.d.seen['boss.'+k])},
- stake4:{n:'Seasoned',d:'Win a run on stake 4 or higher.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4},
- stake8:{n:'Juiced',d:'Win a run on stake 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8}
+ stake4:{n:'Seasoned',d:'Win a run on Ripeness 4 or higher.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4},
+ stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8}
 };
 const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
 const ACHQ=[]; /* awards earned and not yet shown */
