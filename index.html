@@ -622,6 +622,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.9.1',d:'12 Nov 2026',t:'Fix',i:['Small Fry has a clearer icon.']},
  {v:'1.9',d:'12 Nov 2026',t:'Ripeness',i:['Stakes are now called Ripeness.','Each starting jar opens its own Ripeness levels: win on Ripeness 3 with a jar to open Ripeness 4 for that jar. Wins you already have still count for the jar you won them with.']},
  {v:'1.8.2',d:'12 Nov 2026',t:'Fix',i:['The Melon King\'s rock drops into the lowest gap, the pile gets 3 seconds to settle, and the rock itself never counts as over the line. It could end a run on its own before.']},
  {v:'1.8.1',d:'12 Nov 2026',t:'Fix',i:['A charm or tool taken from a crate is no longer still for sale in the shop, so you can not end up with two of the same.']},
