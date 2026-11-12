@@ -197,6 +197,19 @@ The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm 
 
 Pets land with small fruit and chance: real builds, not the strongest. Their extra value (clearing fruit, so fewer overflows) does not show in a single-jar score. Chain Reaction is a common that scores like a rare: worth a look on its own.
 
+## Stone (built)
+
+For the play-near-the-top build (High Wire, Climbing Ivy), which had nothing to make it safer.
+
+| Item | Kind | Effect |
+|---|---|---|
+| Petrify | Tool, 5, charge 8 | Tap a fruit: stone, can not move or merge, never counts as over the line, crumbles when the next jar starts (counts as destroyed for Compost and Ashes) |
+| Shatter | Tool, 4, charge 6 | Tap a rock: it becomes a fruit of the same size. An answer to The Quarry and Melon King's rock |
+| Gargoyle | Charm, uncommon, 6 | Rocks never count as over the line. +0.5 Mult per rock in the jar |
+| Medusa | Fusion, Petrify + High Wire | Petrifies the tapped fruit and every fruit touching it |
+
+Fruit resting on stone still counts for overflow, so stone props a pile up but does not make the top free. Not measured with the bot (it uses no tools).
+
 ## Charm feedback
 
 Every charm has its own trigger animation (`ANIM` in `index.html`): a move on its header icon (spin, slam, jiggle, swing...) and pixel particles of its own colour thrown from the slot. Charms tied to a spot also play an effect in the jar where the merge happened (`jfx` in `makeGame`): rings for Bullseye and Sweet Spot, clover bursts, petals off the wall for Wallflower, a flat ripple for Low Tide, dust and a shake for Heavyweight, bubbles for Small Fry, leaves for Sprout. Charms that add to every merge (Juicer, Hot Streak, Magpie, Pip Collector...) get a soft move and few particles, and nothing in the jar, so the screen does not fill up. Any new charm needs an `ANIM` entry, and a `jfx` effect if it is tied to a spot.
