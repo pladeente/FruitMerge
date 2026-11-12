@@ -123,7 +123,7 @@ Creatures that live in the jar and act every few drops, plus charms that pay off
 | Pet Caterpillar | Uncommon, 6 | Every 5 drops eats a small fruit (size 3 or less) for 45 points (was 30) |
 | Busy Bee | Uncommon, 6 | Every 4 drops pollinates a fruit (up to 3). Pollinated fruit score ×3 when they merge |
 | Mole | Uncommon, 6 | Every 6 drops eats a fruit on the floor (size 4 or less) for 40 points, from below |
-| Hedgehog | Uncommon, 6 | Every 6 drops rolls across the floor bumping fruit. Merges ×2 while it is out and 1s after |
+| Hedgehog | Uncommon, 6 | When the pile reaches the gold line, climbs up and eats the highest fruit (size 6 or less) for 50, at most every 3 drops. Was: rolled across the floor every 6 drops with a ×2 window, which players found disruptive and badly timed |
 | Ladybird | Common, 4 | Rides one fruit. Its merges score ×2 and she moves to the new fruit |
 | Pet Bowl | Common, 4 (eaters) | +0.3 Mult per fruit pets ate this jar |
 | Pet Treats | Common, 4 (eaters) | Every fruit pets eat scores 30 more points |
@@ -138,6 +138,8 @@ Changes made while measuring:
 - **Caterpillar fix.** It ate 0.6 fruit a jar, not the ~5 the first draft assumed: it walked slowly, the player merged its target on the way, and a visit with no target at that moment was lost. Now a pet caterpillar walks and eats faster, waits for a target, and a call while it is out is queued. It eats about 2 a jar, which is the real ceiling, since it needs small fruit that sit still. The same queueing applies to the bee and the mole.
 - **Pet Treats** was "pets come 1 drop sooner". Measured: no gain at all, because pets are limited by targets, not by how often they are called. Now +30 points per meal.
 - Caterpillar 30 → 45, Feeding Frenzy 60 → 90, Bee ×2 → ×3, Butterfly Garden ×2.5 → ×4, Ladybird ×1.5 → ×2. The bot never aims at pollinated fruit or the ladybird, so these two read low in the numbers below and a player who aims gets more.
+
+The new Hedgehog cannot be measured with the bot: the bot ends 119 of 120 runs out of drops and almost never overflows, so a pet that guards against overflow shows no gain for it (runs started with it: average depth 3.4, against 3.7 with nothing, the cost of the slot). Judge it by play.
 
 Watch: screen clutter with several pets (timers are spread out), Volcano/Compost/Ashes with eaters, and the Glutton boss (its caterpillar and a pet one take turns, the boss one keeps its old speed).
 
