@@ -191,7 +191,7 @@ Runs started with one charm, then greedy buying, 200 runs each (average depth re
 | Hot Streak | 4.58 | 0 |
 | Blue Ribbon (rare) | 5.08 | 10 |
 
-The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm owned) is the strongest charm by this measure: worth a look, like Chain Reaction was.
+The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm owned) was the strongest charm by this measure, so it now gives ×0.2 per charm: 400 runs, average depth 4.68, 2% wins. Still the best rare, no longer far ahead.
 
 Pets land with small fruit and chance: real builds, not the strongest. Their extra value (clearing fruit, so fewer overflows) does not show in a single-jar score. Chain Reaction is a common that scores like a rare: worth a look on its own.
 
