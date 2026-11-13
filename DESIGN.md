@@ -294,6 +294,26 @@ Fixed loadouts after the fix (base ~256):
 
 Seeds are still the best place for spare coins (Hot Sauce ×5 for 40 coins is ×2.2), on purpose: they are a build with its own charms. Watch in play whether they still feel required.
 
+### Ripeness check (after the fix)
+
+Everything above is Ripeness 1, Classic Jar. A smarter buyer was added for this: ×Mult charms plus Abacus, Sprout and Big Basket, seeds for sizes 4 to 7, Charm Pouch, Seed Bag, cheap Watering Can and Hot Sauce, up to 3 rerolls while it holds 14 coins or more, and the best crate pick (fusion, ×Mult charm, seed, coins). Still no tools and the same aim. 400 runs each:
+
+| Ripeness | Numbers | Wins | Avg depth |
+|---|---|---|---|
+| 1 | old | 214 (53.5%) | 7.81 |
+| 1 | v1.22 | 77 (19%) | 6.91 |
+| 2 | v1.22 | 50 (12.5%) | 6.26 |
+| 3 | v1.22 | 26 (6.5%) | 5.09 |
+| 4 | v1.22 | 10 (2.5%) | 3.42 |
+| 5 | v1.22 | 4 (1%) | 2.75 |
+| 8 | old | 2 (0.5%) | 3.13 |
+| 8 | v1.22 | 2 (0.5%) | 2.58 |
+
+- Ripeness 8 is beatable with the v1.22 numbers, by a bot that uses no tools. The simpler buyer (×Mult charms + seeds, no rerolls) also won it 1 time in 300, and 0 in 300 on the old numbers.
+- From Ripeness 4 (3 fewer drops) about a quarter of bot runs die on depth 1 with no items, because it scores ~220 in 21 drops against targets of 125 to 200. That is the bot's aim, not a build problem, and it is why the high Ripeness rates say little about builds.
+- With the old numbers a careful buyer won over half its Ripeness 1 runs, so the fix was needed more than the first tables showed.
+- There is no cap on seed levels, before or after.
+
 **To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
 
 ## Stone (built)
