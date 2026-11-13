@@ -138,6 +138,8 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - Human playtesting of the difficulty curve, stakes and the newer bosses. Everything so far was tuned against a bot.
 - Charm editions, daily seeded run, more fusions.
 - Cosmetic rewards backlog in `DESIGN.md` (jar skins, backgrounds, fruit skins, Almanac stamps, sound sets) for future awards. Fruit names, the 17 hard awards and titles are built (v1.19).
+- Shop crate (planned, not started): move the crate (`RUN.shop.cr`, a Charm, Tool or Seed Crate) to the top of the shop, give each kind its own colour or look, and add items found only in crates (never in the shop) so buying one is worth it. Open questions before building: which items, how many, whether they show in the Almanac before being found, and whether gold and melon crates can give them too.
+- Rarity and fusion odds (on hold, the user is undecided): the pool is 23 common, 35 uncommon, 10 rare, shop 70/26/4. Fusions made of two uncommons have both halves offered in only ~20% of runs, two commons ~85%. Pushing commons further would not help the uncommon ones. A hidden weight towards the second half was proposed and turned down (too easy). Making the weak rares stronger (Sweet Spot, Old Oak, Melon Fever) is separate and still open.
 - Accounts are built (v1.21, email/password). Possible next: Google sign-in (Firebase links it to the same email), changing a username, email verification, a report/hide option for names.
 
 ## Standing decisions
