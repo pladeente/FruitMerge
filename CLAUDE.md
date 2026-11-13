@@ -134,6 +134,7 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 - Human playtesting of the difficulty curve, stakes and the newer bosses. Everything so far was tuned against a bot.
 - Sign-in and cloud save (user will ask). Plan: Firebase Auth, `users/$uid/profile`, merge with `mergeProfile`. The run save can sync too.
 - Charm editions, daily seeded run, more fusions.
+- Fruit names (Mandarin (4), Rockmelon (10), ...), 17 new awards with titles for the hard ones, and a cosmetic rewards backlog: all agreed with the user, planned in `DESIGN.md`, not built yet. A big bugtest follows the awards.
 
 ## Standing decisions
 
