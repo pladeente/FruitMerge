@@ -24,6 +24,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-o
 .pill:active{transform:translateY(1px)}
 .ib{min-width:44px;height:44px;padding:0 10px;border-radius:22px;background:var(--panel);font:800 18px var(--body)}
 #stage{position:relative;overflow:hidden;border-radius:14px;flex:none}
+#bossB{position:absolute;top:50px;right:8px;z-index:2;padding:3px;border-radius:10px;background:#fff3e6dd;border:0;box-shadow:inset 0 0 0 2px var(--coral);line-height:0;cursor:pointer}#bossB .px{width:34px;height:34px;margin:0}#bossB::after{content:'?';position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;border-radius:50%;background:var(--coral);color:#fff;font:800 13px/16px var(--body);text-align:center}
 #cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
 #ui{position:absolute;inset:0;pointer-events:none}
 #pw{width:100%;display:flex;gap:6px;align-items:stretch;flex:none}
@@ -104,6 +105,7 @@ tr.me td{background:#35c2b42a}
 .ttl{font-size:.82em;color:var(--brass);font-weight:800}.tls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.tls .go{margin:0}
 .nmE{color:var(--coral);margin:6px 0 0;font-weight:800}.nmE.ok{color:var(--teal)}
 .acf{display:flex;flex-direction:column;gap:8px;text-align:left;margin-top:6px}.acf label{display:flex;flex-direction:column;gap:3px;font-weight:800;color:var(--muted);font-size:16px}.acf input{padding:9px 12px;border-radius:10px;border:2px solid var(--line);background:var(--ink);color:var(--cream);font-size:19px;-webkit-user-select:text;user-select:text}.acf .go{margin:6px 0 0}.acf .st{margin:0}
+.jsum{display:flex;gap:6px;margin:8px 0 4px}.jsum>div{flex:1;background:var(--ink);border-radius:10px;padding:6px 4px;text-align:center}.jsum small{display:block;color:var(--muted);font-size:14px;line-height:1.1}.jsum b{display:block;font:700 28px/1.1 var(--display);color:var(--cream)}.jsum b i{font-style:normal;font-size:16px;color:var(--muted)}.jst{font-size:15px;color:var(--muted);margin:2px 0 6px}
 .fq{color:var(--muted)}
 .acf .pwr{display:flex;gap:6px}.acf .pwr input{flex:1;min-width:0}.acf .pwv{margin:0;flex:none;width:auto;padding:0 12px}
 .nwb .dot{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8e1f22}
@@ -155,6 +157,7 @@ tr.me td{background:#35c2b42a}
 .chip.new{background:var(--coral);color:var(--ink)}
 #hd .t.ch .slot{position:relative;overflow:visible}.cnt{position:absolute;right:-4px;bottom:-4px;min-width:15px;height:15px;padding:0 3px;box-sizing:border-box;border-radius:8px;background:#2a1a3a;color:var(--cream);font:800 11px/15px var(--body);text-align:center;box-shadow:0 0 0 1.5px var(--brass);pointer-events:none}.cnt.hot{background:var(--coral);color:var(--ink);animation:cntp .7s ease-in-out infinite}@keyframes cntp{50%{transform:scale(1.25)}}
 .rp{display:inline-block;min-width:20px;padding:0 4px;border-radius:6px;color:#2a1a3a;font:800 14px var(--body);text-align:center;vertical-align:1px;box-shadow:0 0 0 1px #2a1a3a55}.rpn{font-size:13px;color:var(--muted);margin:6px 0 0}
+.rph{margin:10px 0 2px;font:800 17px var(--body);color:var(--cream);text-align:left}.rph .rp{margin-right:4px}
 .tip{position:fixed;z-index:30;box-sizing:border-box;background:#2f1e47fa;border-radius:14px;box-shadow:0 0 0 2px var(--brass),0 10px 28px #000b;padding:10px 12px;color:var(--cream);text-align:left;font-size:16px;line-height:1.2;animation:tipin .12s ease-out}.tip .th{display:flex;gap:10px;align-items:center}.tip .th b{font:700 22px var(--display);color:var(--brass)}.tip p{margin:8px 0 0}.tip .tb{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.tip .tb .go{margin:0}.tip .tb .go:disabled{opacity:.35}.tip .tg{font-size:13px;color:var(--muted)}.tip .sw{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.swb{display:flex;flex-direction:column;align-items:center;gap:2px;width:78px;padding:6px 2px;border-radius:10px;background:var(--panel);color:var(--cream);box-shadow:inset 0 0 0 2px var(--line);font:800 12px var(--body);line-height:1.1}.swb small{font-size:12px}.swb:disabled{opacity:.4}
 @keyframes tipin{from{transform:scale(.92);opacity:0}}
 .sec h5 .chip{display:inline-block;width:auto;vertical-align:4px;margin-left:6px}
@@ -188,7 +191,7 @@ tr.me td{background:#35c2b42a}
   <button class="ib" id="sndB" aria-label="Toggle sound"></button>
   <button class="ib" id="pauseB" aria-label="Pause" hidden>II</button>
  </div>
- <div id="stage"><canvas id="cv"></canvas><div id="ui"></div><div id="toast" hidden></div></div>
+ <div id="stage"><canvas id="cv"></canvas><button id="bossB" hidden aria-label="Boss rules"></button><div id="ui"></div><div id="toast" hidden></div></div>
  <div id="pw" hidden>
   <div class="coins" id="coins" title="Coins"><i class="coin"></i><span id="coinN">0</span></div>
   <button class="pwb" data-p="swap" title="Swap your fruit with the next one (key 1)"><b><i class="px px-swap"></i></b>Swap<em><i class="coin"></i><span class="pc">5</span></em></button>
@@ -228,8 +231,8 @@ const LB_URL='https://fruitmerge-cd4d4-default-rtdb.firebaseio.com'; /* e.g. 'ht
 const LB=LB_URL.replace(/\/+$/,''),LBC={};
 function lbReq(path,opt={}){const ab=new AbortController(),to=setTimeout(()=>ab.abort(),7000);return fetch(LB+path,{...opt,signal:ab.signal}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).finally(()=>clearTimeout(to));}
 function lbTop(m,fresh){const c=LBC[m];if(!fresh&&c&&Date.now()-c.at<20000)return Promise.resolve(c.list);
- return lbReq(`/scores/${m}.json?orderBy=%22s%22&limitToLast=100`).then(o=>{const by={};for(const r of Object.values(o||{})){if(!r||typeof r.s!=='number'||typeof r.n!=='string')continue;const k=r.n.toLowerCase();if(!by[k]||r.s>by[k].s)by[k]={n:r.n,s:r.s,t:r.t||0,k:r.k,ti:typeof r.ti==='string'?r.ti.slice(0,16):''};}
-  const list=Object.values(by).sort((a,b)=>b.s-a.s||a.t-b.t).slice(0,MAXS);LBC[m]={at:Date.now(),list};return list;});}
+ return lbReq(`/scores/${m}.json?orderBy=%22s%22&limitToLast=${m==='rogue'?500:100}`).then(o=>{const by={};for(const r of Object.values(o||{})){if(!r||typeof r.s!=='number'||typeof r.n!=='string')continue;const k=r.n.toLowerCase()+(m==='rogue'?'|'+(+r.k||1):'');if(!by[k]||r.s>by[k].s)by[k]={n:r.n,s:r.s,t:r.t||0,k:r.k,ti:typeof r.ti==='string'?r.ti.slice(0,16):''};}
+  const list=scKeep(m,Object.values(by));LBC[m]={at:Date.now(),list};return list;});}
 /* k = the Rogue stake, sent only above stake 1. If the database rules are older than that field the write is refused, so it is sent again without it */
 /* ti = the player's title. Rules older than a field refuse the write, so it falls back to fewer fields: k and ti, then k, then neither */
 function lbSubmit(m,n,s,k,ti=curTitle(),tok){if(AU&&AU.name&&tok===undefined)return idTok().catch(()=>null).then(t=>lbSubmit(m,AU.name,s,k,ti,t||null));delete LBC[m];n=nameClean(n)||'Player';if(nameBad(n))return Promise.reject('name');const post=o=>lbReq(`/scores/${m}.json`+(tok?'?auth='+tok:''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}),o={n,s,t:{'.sv':'timestamp'}},ok=k>1?{...o,k}:o,tries=[ti?{...ok,ti}:null,ok,k>1?o:null].filter(Boolean);return tries.slice(1).reduce((p,t)=>p.catch(()=>post(t)),post(tries[0]));}
@@ -251,7 +254,7 @@ function authOut(){AU=null;store.set('auth',null);clearTimeout(cpT);}
 const unKey=n=>nameClean(n).toLowerCase(),unOk=n=>{n=nameClean(n);if(n.length<3)throw new Error('SHORT');if(nameBad(n))throw new Error('NAME');return n;};
 function unFree(n){return lbReq(`/usernames/${encodeURIComponent(unKey(n))}.json`).then(v=>{if(v&&(!AU||v!==AU.uid))throw new Error('TAKEN');});}
 function claimName(n){n=unOk(n);const k=unKey(n);return unFree(n).then(idTok).then(t=>lbReq(`/.json?auth=${t}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({['usernames/'+k]:AU.uid,['users/'+AU.uid+'/name']:n})})).then(()=>{AU.name=n;store.set('auth',AU);lastName=n;store.set('name',n);});}
-function scMerge(o){for(const m in SKEY){const all=[...SC[m],...(o&&Array.isArray(o[m])?o[m]:[])],seen=new Set();SC[m]=all.filter(r=>r&&typeof r.s==='number'&&!seen.has(r.t+'|'+r.s)&&seen.add(r.t+'|'+r.s)).sort((a,b)=>b.s-a.s||a.t-b.t).slice(0,MAXS);store.set(SKEY[m],SC[m]);}setBest();}
+function scMerge(o){for(const m in SKEY){const all=[...SC[m],...(o&&Array.isArray(o[m])?o[m]:[])],seen=new Set();SC[m]=all.filter(r=>r&&typeof r.s==='number'&&!seen.has(r.t+'|'+r.s)&&seen.add(r.t+'|'+r.s));SC[m]=scKeep(m,SC[m]);store.set(SKEY[m],SC[m]);}setBest();}
 function cloudPull(){return idTok().then(t=>lbReq(`/users/${AU.uid}.json?auth=${t}`)).then(u=>{u=u||{};const J=x=>{try{return JSON.parse(x)}catch(e){return null}};
  if(u.name){AU.name=u.name;store.set('auth',AU);lastName=u.name;store.set('name',u.name);}
  const p=J(u.p);if(p){PF.d=mergeProfile(PF.d,p);PF.dirty=1;PF.save();}
@@ -680,19 +683,22 @@ function syncTb(){const g=G.g,on=G.state==='play'&&!!g,lk=on&&g.locked,n=Math.ma
 function syncPw(){if(pw.hidden)return;if(RUN)return syncTb();const g=G.g,on=G.state==='play'&&!!g,c=g?g.coins:0,cd=g?g.cd:{},lk=!!(g&&g.locked),pr=p=>g?g.price(p):PRICE[p],key=on+'|'+c+'|'+lk+'|'+pwBtns.map(b=>Math.ceil((cd[b.dataset.p]||0)*10)+':'+pr(b.dataset.p)).join(',');if(key===G.pwKey)return;G.pwKey=key;syncCoins(c);
  for(const b of pwBtns){const p=b.dataset.p,left=cd[p]||0,cooling=on&&left>0;b.disabled=!on||cooling||lk||c<pr(p);b.querySelector('.pc').textContent=pr(p);b.classList.toggle('cool',cooling);b.style.setProperty('--cd',cooling?left/COOL[p]:0);b.querySelector('.cdn').textContent=cooling?Math.ceil(left):'';}}
 function loop(t){G.raf=requestAnimationFrame(loop);const dt=G.last?Math.min(.05,(t-G.last)/1000):.016;G.last=t;
- if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();if(RUN&&G.chKey!=null&&G.chKey!==chKey())rgHead();if(RUN&&G.g&&G.chKey!=null)syncCnt();if(ACHQ.length)toastTick();}
+ if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();syncBoss();if(RUN&&G.chKey!=null&&G.chKey!==chKey())rgHead();if(RUN&&G.g&&G.chKey!=null)syncCnt();if(ACHQ.length)toastTick();}
+/* boss jar: a tappable boss icon under Next, pauses and shows the rules (bossMsg) */
+function syncBoss(){const c=G.mode==='rogue'&&RUN&&RUN.cfg,on=!!(G.g&&G.state==='play'&&c&&c.boss),k=on?c.boss:'';if(k===G.bbK)return;G.bbK=k;const b=$('#bossB');b.hidden=!on;if(on)b.innerHTML=ic(icn(c.boss),1);}
+function bossMsg(){const c=RUN.cfg,p2=G.g.peek().ph>1;show(`<div class="mode">${c.p2?'Boss':'Mini boss'} · Depth ${RUN.depth}</div>${tile(c.boss,'big boss')}<h3>${BOSS[c.boss].n}</h3><p class="rule">${c.rule}</p>${c.p2?`<p class="rule"><i>${p2?'Phase 2 is on:':'At half the target:'}</i> ${c.rule2}</p>`:''}<button class="go" data-a="resume">Keep playing</button>`);}
 function drawIdle(){ctx.fillStyle='#fff3e6';ctx.fillRect(0,0,G.W,G.H);const r=G.W*.09;for(let i=0;i<7;i++){const l=(i*3)%11;drawFruit(ctx,(i+.5)*G.W/7,G.H-r*1.1-(i%2)*r*.9,r*(.55+l*.05),l)}}
 function show(html){const tp=$('#tip');if(tp){tp.remove();G.tipEl=null;}let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');m.className='msg';ui.appendChild(m)}m.innerHTML=html;m.scrollTop=0;return m}
 function hide(){ui.innerHTML=''}
 function setBest(){$('#best').textContent=best()}
 /* RPC = one colour per Ripeness level, green (unripe) to deep red */
-const RPN='<p class="rpn">The coloured number is the Ripeness the score was set on.</p>',RPC=['#7bc950','#b5e48c','#f9e076','#ffb703','#fb8500','#ff4d6d','#e63946','#a3202c'],rpB=k=>{k=clampN(+k||1,1,8);return `<small class="rp" style="background:${RPC[k-1]}${k>=6?';color:#fff2d8':''}" title="Ripeness ${k}">${k}</small>`;};
+const RPC=['#7bc950','#b5e48c','#f9e076','#ffb703','#fb8500','#ff4d6d','#e63946','#a3202c'],rpB=k=>{k=clampN(+k||1,1,8);return `<small class="rp" style="background:${RPC[k-1]}${k>=6?';color:#fff2d8':''}" title="Ripeness ${k}">${k}</small>`;};
 const rows=(L,me,m)=>'<table>'+L.map((r,i)=>`<tr${me(r,i)?' class="me"':''}><td>${i+1}</td><td>${m==='rogue'?rpB(r.k)+' ':''}${r.ti?`<small class="ttl">${esc(r.ti)}</small> `:''}${esc(r.n)}</td><td>${r.s}</td><td>${esc(r.d)}</td></tr>`).join('')+'</table>';
-function table(m,hi=-1){const L=SC[m];if(!L.length)return '<p class="none">No scores yet. Be the first!</p>';return rows(L,(r,i)=>i===hi,m)+(m==='rogue'?RPN:'')}
+function table(m,hi=-1){const L=SC[m];if(!L.length)return '<p class="none">No scores yet. Be the first!</p>';return m==='rogue'?rpRows(L,r=>r===L[hi]):rows(L,(r,i)=>i===hi,m)}
 const fmtD=t=>t?new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short'}):'';
 function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loading world scores…</p>';
  (sub?sub.then(()=>'',()=>'<p class="none">Couldn\'t send your score.</p>'):Promise.resolve('')).then(note=>lbTop(m,!!sub).then(L=>{if(!el.isConnected)return;const k=me&&me.toLowerCase();
-  el.innerHTML=note+(L.length?rows(L.map(r=>({...r,d:fmtD(r.t)})),r=>k&&r.n.toLowerCase()===k,m)+(m==='rogue'?RPN:''):'<p class="none">No world scores yet. Be the first!</p>');}))
+  el.innerHTML=note+(L.length?(m==='rogue'?rpRows:(a,f)=>rows(a,f,m))(L.map(r=>({...r,d:fmtD(r.t)})),r=>k&&r.n.toLowerCase()===k):'<p class="none">No world scores yet. Be the first!</p>');}))
  .catch(()=>{if(el.isConnected)el.innerHTML='<p class="none">Couldn\'t reach the world leaderboard.</p>'});}
 
 function menu(){G.state='menu';G.g=null;RUN=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;rgTitle('melon','Fruit Merge');fit();setBest();
@@ -702,6 +708,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.22',d:'13 Nov 2026',t:'Jar summary',i:['Rogue leaderboard: the best 5 scores of each Ripeness, highest Ripeness at the top.','Boss jars show the boss in the corner of the jar. Tap it to pause and read what it does.','Jar cleared now shows your score against the target, the drops you had left, and stats for that jar: merges, biggest fruit, best merge, best combo, tools used and pet meals.']},
  {v:'1.21',d:'13 Nov 2026',t:'Accounts',i:['Almanac: a new Fruit tab lists every size in order, and the rock, with a few words about each one.','Show button to see your password as you type it. Creating an account asks for the password twice.','Sign in from the menu, next to Options.','Fixed: the account screens closed as soon as the phone keyboard opened.','Create an account in Options to keep your progress safe online and play on other devices. It is optional.','Your username is yours on the leaderboard: nobody else can post scores under it.','Names with slurs or swears can not be used.']},
  {v:'1.20',d:'13 Nov 2026',t:'Rare is rare',i:['Rare charms turn up far less often: 4 in 100 shop slots (was 10), and fewer in gold crates. Good Taste still raises the odds.','A rare charm on offer now shines and plays a sound, so you notice it.']},
  {v:'1.19',d:'13 Nov 2026',t:'Fruit names and titles',i:['Fruit have names now: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11).','17 new Rogue awards, and they are hard. Most give a title.','Titles: pick one in Options and it shows before your name on the leaderboard.']},
@@ -773,8 +780,11 @@ function gameOver(s){G.state='over';$('#pauseB').hidden=true;const m=G.mode,loc=
   el.querySelector('form').onsubmit=e=>{e.preventDefault();const n=nameClean(inp.value)||'Player';if(nameBad(n)){el.querySelector('.nmE').hidden=false;snd('nope');return;}lastName=n;store.set('name',n);saveScore(n,s,m,loc)};
   G.pending=s;}
  else{snd('over');showOver(s,-1,LB&&s>0?lbSubmit(m,lastName,s):null)}}
-function saveScore(n,s,m,loc=true){let hi=-1;const k=m==='rogue'&&G.over?G.over.k||1:1;if(loc){const rec={n,s,d:fmtD(Date.now()),t:Date.now()},ti=curTitle();if(k>1)rec.k=k;if(ti)rec.ti=ti;SC[m].push(rec);SC[m].sort((a,b)=>b.s-a.s||a.t-b.t);SC[m]=SC[m].slice(0,MAXS);store.set(SKEY[m],SC[m]);setBest();hi=SC[m].indexOf(rec);cloudPush();}G.pending=null;showOver(s,hi,LB?lbSubmit(m,n,s,k):null)}
-function showOver(s,hi,sub){const m=G.mode,w=!!LB;const el=show(`<div class="mode">${MNAME[m]}</div>${ovH()}<div class="big">${s}</div>${hi<0&&best()?`<p class="tg">Best: ${best()}</p>`:''}${w?`${hi>=0?`<p class="tg">#${hi+1} on this device</p>`:''}<h4>World top ${MAXS}</h4><div id="bd"></div>`:table(m,hi)}<button class="go${GOC[m]}" data-a="play" data-m="${m}">Play again</button><button class="go alt" data-a="menu">Menu</button>`);if(w)worldBoard(el.querySelector('#bd'),m,sub?lastName:null,sub)}
+/* Rogue boards: best 5 of each Ripeness, highest Ripeness first (RPT per group). Other modes: top MAXS */
+const RPT=5,scKeep=(m,L)=>{L=L.sort((a,b)=>b.s-a.s||a.t-b.t);if(m!=='rogue')return L.slice(0,MAXS);const n={};return L.filter(r=>(n[r.k||1]=(n[r.k||1]||0)+1)<=RPT);};
+const rpRows=(L,me)=>{const g={};for(const r of L)(g[r.k||1]=g[r.k||1]||[]).push(r);return Object.keys(g).sort((a,b)=>b-a).map(k=>`<h5 class="rph">${rpB(k)} Ripeness ${k}</h5>`+rows(g[k].sort((a,b)=>b.s-a.s||a.t-b.t).slice(0,RPT),me,'')).join('');};
+function saveScore(n,s,m,loc=true){let hi=-1;const k=m==='rogue'&&G.over?G.over.k||1:1;if(loc){const rec={n,s,d:fmtD(Date.now()),t:Date.now()},ti=curTitle();if(k>1)rec.k=k;if(ti)rec.ti=ti;SC[m].push(rec);SC[m]=scKeep(m,SC[m]);store.set(SKEY[m],SC[m]);setBest();hi=SC[m].indexOf(rec);cloudPush();}G.pending=null;showOver(s,hi,LB?lbSubmit(m,n,s,k):null)}
+function showOver(s,hi,sub){const m=G.mode,w=!!LB;const el=show(`<div class="mode">${MNAME[m]}</div>${ovH()}<div class="big">${s}</div>${hi<0&&best()?`<p class="tg">Best: ${best()}</p>`:''}${w?`${hi>=0?`<p class="tg">#${hi+1} on this device</p>`:''}<h4>${m==='rogue'?'World best by Ripeness':'World top '+MAXS}</h4><div id="bd"></div>`:table(m,hi)}<button class="go${GOC[m]}" data-a="play" data-m="${m}">Play again</button><button class="go alt" data-a="menu">Menu</button>`);if(w)worldBoard(el.querySelector('#bd'),m,sub?lastName:null,sub)}
 
 /* ---------- almanac: everything met so far, and the awards ---------- */
 const ALT=[['fr','Fruit'],['ch','Charms'],['tl','Tools'],['fu','Fusions'],['up','Upgrades'],['boss','Bosses'],['ach','Awards']];
@@ -892,13 +902,16 @@ document.addEventListener('pointerdown',e=>{const t=$('#tip');if(!t||t.contains(
 function rgTool(i){const t=RUN.tl[i];if(!t)return rgInfo();const d=TL[t.id];
  show(`<div class="mode">Tool ${i+1} of ${RUN.tl.length}</div>${tile(t.id,'big '+(d.fu?'r3':'tl'))}<h3>${d.n}</h3><p><small class="chip">Charge ${t.c}/${RG.need(RUN,t.id)}</small></p><p>${d.d}</p><p class="tg">Gains 1 charge for every merge.</p><button class="go alt" data-a="rtsell" data-i="${i}">Sell for <i class="coin"></i>${RG.sellV(RUN,d.c)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
 function rgGo(){const c=RG.jarCfg(RUN);RUN.cfg=c;rgEv(RUN,'start');hide();FLOAT.length=0;G.g.jar(c);G.state='play';G.last=0;$('#pauseB').hidden=false;}
+/* jar cleared: score against the target, drops left, then this jar's stats from R.jst (empty in dev runs) */
+function jarSum(c,left){const s=G.g.jarScore,j=RUN.jst||{},big=Math.max(-1,...Object.keys(j).filter(k=>k.startsWith('made.')).map(k=>+k.slice(5))),st=[j.merges&&`${j.merges} merge${j.merges>1?'s':''}`,big>=0&&`Biggest: ${fnm(big)}`,j.bm&&`Best merge ${j.bm}`,j.bc>1&&`Best combo ${j.bc}`,j.tools&&`${j.tools} tool${j.tools>1?'s':''} used`,j.pets&&`Pets ate ${j.pets}`].filter(x=>x);
+ return `<div class="jsum"><div><small>Score</small><b>${s}</b><small>${Math.round(s/c.quota*100)}% of target</small></div><div><small>Target</small><b>${c.quota}</b></div><div><small>Drops left</small><b>${left}<i> / ${c.drops}</i></b></div></div>${st.length?`<p class="jst">${st.join(' · ')}</p>`:''}`;}
 function rgClear(left){RUN.off=0;const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=`Depth ${RUN.depth} · ${c.boss?BOSS[c.boss].n:'Jar '+(RUN.jar+1)}`;let sum=0;for(const r of rows)sum+=r[1];
  const ev={depth:RUN.depth,jar:RUN.jar,boss:c.boss,left,score:G.g.jarScore,quota:c.quota,win:RUN.depth===DEPTHS&&RUN.jar===2&&!RUN.won};rgEv(RUN,'jar',ev);const gl=c.boss?RG.garden(RUN):[];for(const l of gl)rgEv(RUN,'grow',{l});const sw=RG.snow(RUN,left);
  const win=RG.advance(RUN,sum),tier=c.crate||'';if(tier){RUN.crate=RG.crate(RUN,tier,'shop');RUN.at='crate';rgEv(RUN,'crate',{tier});}
  FLOAT.length=0;if(RUN.jar===0)G.g.wipe();G.state='rogue';$('#pauseB').hidden=true;rgSave();if(sw)rgPulse(['snow']);if(gl.length)rgPulse([RG.has(RUN,'green')?'green':'gard']);const drop=(sw?`<p class="nxt">Snowball grows: now ×${num(1+RG.has(RUN,'snow').v)}.</p>`:'')+(gl.length?`<p class="nxt">${RG.has(RUN,'green')?'Greenhouse':'Gardener'}: ${gl.map(l=>`${fnm(l)} seed is now level ${RUN.sd[l]}`).join(', ')}.</p>`:'')+(tier?`<p class="nxt">${c.boss?'The boss':'The jar'} dropped a <b>${CRT[tier].n.toLowerCase()}</b>.</p>`:''),nxt=tier?'<button class="go rogue" data-a="rcr">Open the crate</button>':'<button class="go rogue" data-a="rshop">Shop</button>';
  const pay=`<ul class="wl">${rows.map(r=>`<li><div>${r[0]}</div><em><i class="coin"></i>+${r[1]}</em></li>`).join('')}<li><div><b>Total</b></div><em><i class="coin"></i>+${sum}</em></li></ul>`;
- if(win){snd('hi');show(`<div class="mode">${was}</div>${tile(c.boss,'big boss')}<h3>You win!</h3><p>${BOSS[c.boss].n} is beaten. Run score:</p><div class="big">${RUN.total}</div>${pay}${drop}<p>Bank this score, or go deeper for a bigger one.</p><button class="go rogue" data-a="rcr">Open the crate and go deeper</button><button class="go alt" data-a="rbank">Bank score</button>`);}
- else show(`<div class="mode">${was}</div><h3>Jar cleared!</h3>${pay}<p class="tg">You now have ${cn(RUN.coins)}</p>${drop}${nxt}`);}
+ if(win){snd('hi');show(`<div class="mode">${was}</div>${tile(c.boss,'big boss')}<h3>You win!</h3>${jarSum(c,left)}<p>${BOSS[c.boss].n} is beaten. Run score:</p><div class="big">${RUN.total}</div>${pay}${drop}<p>Bank this score, or go deeper for a bigger one.</p><button class="go rogue" data-a="rcr">Open the crate and go deeper</button><button class="go alt" data-a="rbank">Bank score</button>`);}
+ else show(`<div class="mode">${was}</div><h3>Jar cleared!</h3>${jarSum(c,left)}${pay}<p class="tg">You now have ${cn(RUN.coins)}</p>${drop}${nxt}`);}
 function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgSee('ch',RUN.shop.ch);rgSee('tl',RUN.shop.tl);rgSee('up',RUN.shop.up);rgSee('sd',RUN.shop.sd);rgSee('boss',RG.boss(RUN));rgSave();rareCue(RUN.shop.ch);const S=RUN.shop,cs=RG.slots(RUN),full=RUN.ch.length>=cs,ts=RG.ts(RUN),tfull=RUN.tl.length>=ts,rr=RG.rrCost(RUN),old=ui.querySelector('.msg'),sy=keep&&old?old.scrollTop:0;
  const swp=(k,p)=>RUN.coins+Math.max(0,...(k==='ch'?RUN.ch.map(c=>RG.sellV(RUN,CH[c.id].c)):RUN.tl.map(t=>RG.sellV(RUN,TL[t.id].c))))>=p,buy=(a,i,p,no)=>no?`<button class="go sm" data-a="rswap" data-k="${a==='rbuy'?'ch':'tl'}" data-i="${i}"${swp(a==='rbuy'?'ch':'tl',p)?'':' disabled'}>Swap <i class="coin"></i>${p}</button>`:`<button class="go sm" data-a="${a}" data-i="${i}"${RUN.coins<p?' disabled':''}><i class="coin"></i>${p}</button>`;
  const it=S.ch.map((id,i)=>{if(!id)return'';const d=CH[id];return `<li>${tile(id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}</div>${buy('rbuy',i,RG.cost(RUN,d.c),full)}</li>`}).join('');
@@ -955,7 +968,7 @@ ui.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)retur
  else if(a==='resume'){hide();G.state='play';G.last=0;$('#pauseB').hidden=false}
  else if(a==='skip')showOver(G.pending,-1);
  else if(a==='reset'){const m=G.tab||G.mode;if(b.dataset.sure){SC[m]=[];store.set(SKEY[m],[]);setBest();showScores(m)}else{b.dataset.sure=1;b.textContent='Tap again to clear '+MNAME[m]+' scores'}}});
-$('#pauseB').onclick=pause;
+$('#pauseB').onclick=pause;$('#bossB').onclick=()=>{if(G.state!=='play')return;G.state='pause';$('#pauseB').hidden=true;bossMsg();};
 /* ---------- install to home screen ---------- */
 let instPrompt=null;
 const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
