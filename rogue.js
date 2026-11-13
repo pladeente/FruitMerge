@@ -353,7 +353,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  if(n==='run')PF.inc('runs');
  else if(n==='start'){R.jst={};}
  else if(n==='drop'){inc('drops');if(d.rt)inc('rdrops');}
- else if(n==='merge'){inc('merges');inc('made.'+d.l);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);}
+ else if(n==='merge'){inc('merges');inc('made.'+d.l);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);if(R.jst){if(!(R.jst.bm>=d.p))R.jst.bm=d.p;if(!(R.jst.bc>=d.combo))R.jst.bc=d.combo;}}
  else if(n==='tool'){inc('tools');inc('tool.'+d.id);}
  else if(n==='kill')inc('kills',d.n);
  else if(n==='net')inc('nets');

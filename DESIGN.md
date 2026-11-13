@@ -56,7 +56,7 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin | | Fine |
 | Full jar | Hoarder, High Wire | Anchor | Slow Fuse | Thin |
 | Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder | Sieve | Scrub | Filled, needs play |
-| Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.22, see Seeds measurement. Needs play |
+| Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
 | Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | | Filled, needs play |
 | Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
@@ -199,7 +199,7 @@ The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm 
 
 Pets land with small fruit and chance: real builds, not the strongest. Their extra value (clearing fruit, so fewer overflows) does not show in a single-jar score. Chain Reaction is a common that scores like a rare: worth a look on its own.
 
-## Seeds measurement (13 Nov, fixed in v1.22)
+## Seeds measurement (13 Nov, fixed in v1.23)
 
 Question asked: is one build far ahead and easy to get. Answer: seeds. Earlier bots never bought a seed, so `RSC` was tuned without them.
 
@@ -263,7 +263,7 @@ Options at the time (what was built is in the next part):
 
 Not judged: tool, pet, gold and aim builds (the bot uses no tools and aims simply).
 
-### The fix (v1.22)
+### The fix (v1.23)
 
 - **Seeds:** +0.25 Mult a level (`SDM`, was 0.5), price 3 plus 2 per level held (`SDS`, was 1). Points unchanged. Two other tunings were tried over 200 runs each: Mult halved alone left ×Mult charms + seeds at 9 wins, points only (no Mult) dropped it to 4 with seeds-only at depth 2.7, below charms-only. The one built puts seeds-only level with charms-only, so `RSC` was left alone.
 - **Smoothie:** +1.5 Mult and +12 points (was +2 and +20).
@@ -301,22 +301,22 @@ Everything above is Ripeness 1, Classic Jar. A smarter buyer was added for this:
 | Ripeness | Numbers | Wins | Avg depth |
 |---|---|---|---|
 | 1 | old | 214 (53.5%) | 7.81 |
-| 1 | v1.22 | 77 (19%) | 6.91 |
-| 2 | v1.22 | 50 (12.5%) | 6.26 |
-| 3 | v1.22 | 26 (6.5%) | 5.09 |
-| 4 | v1.22 | 10 (2.5%) | 3.42 |
-| 5 | v1.22 | 4 (1%) | 2.75 |
+| 1 | v1.23 | 77 (19%) | 6.91 |
+| 2 | v1.23 | 50 (12.5%) | 6.26 |
+| 3 | v1.23 | 26 (6.5%) | 5.09 |
+| 4 | v1.23 | 10 (2.5%) | 3.42 |
+| 5 | v1.23 | 4 (1%) | 2.75 |
 | 8 | old | 2 (0.5%) | 3.13 |
-| 8 | v1.22 | 2 (0.5%) | 2.58 |
+| 8 | v1.23 | 2 (0.5%) | 2.58 |
 
-- Ripeness 8 is beatable with the v1.22 numbers, by a bot that uses no tools. The simpler buyer (×Mult charms + seeds, no rerolls) also won it 1 time in 300, and 0 in 300 on the old numbers.
+- Ripeness 8 is beatable with the v1.23 numbers, by a bot that uses no tools. The simpler buyer (×Mult charms + seeds, no rerolls) also won it 1 time in 300, and 0 in 300 on the old numbers.
 - From Ripeness 4 (3 fewer drops) about a quarter of bot runs die on depth 1 with no items, because it scores ~220 in 21 drops against targets of 125 to 200. That is the bot's aim, not a build problem, and it is why the high Ripeness rates say little about builds.
 - With the old numbers a careful buyer won over half its Ripeness 1 runs, so the fix was needed more than the first tables showed.
 - There is no cap on seed levels, before or after.
 
 ### +Mult against ×Mult (finding, 13 Nov)
 
-Question: are ×Mult charms close to required. Five-charm loadouts, score per jar against no items (~250), v1.22 numbers, seeds = level 3 on Orange, Apple, Pear:
+Question: are ×Mult charms close to required. Five-charm loadouts, score per jar against no items (~250), v1.23 numbers, seeds = level 3 on Orange, Apple, Pear:
 
 | Charms | No seeds | With seeds |
 |---|---|---|
@@ -325,7 +325,7 @@ Question: are ×Mult charms close to required. Five-charm loadouts, score per ja
 | Mixed: Juicer, Hot Streak, Heavyweight, Lucky Clover, Snake Eyes | 13.5 | 42 |
 
 - A mix wins by a wide margin. Neither kind alone is enough, and no single kind is required.
-- On the old seed numbers ×Mult led +Mult by ×47 to ×27 with seeds. The v1.22 seed cut closed most of that gap, because seeds were supplying the +Mult for free.
+- On the old seed numbers ×Mult led +Mult by ×47 to ×27 with seeds. The v1.23 seed cut closed most of that gap, because seeds were supplying the +Mult for free.
 - Mult is (1 + all +Mult) × every ×Mult, so +Mult charms dilute each other and ×Mult charms never do. With targets rising ×180, every winning build needs a few ×Mult pieces (pillar 2, on purpose).
 
 The real gap: some builds have no ×Mult of their own below rare or fusion, so they borrow the generic ones (Lucky Clover, Snake Eyes, Heavyweight, Early Bird, Photo Finish) and end up alike.
@@ -340,7 +340,7 @@ The real gap: some builds have no ×Mult of their own below rare or fusion, so t
 | Tools | Encore only |
 | Aim, timing, chance, big fruit, small fruit, position, pets | have one or more |
 
-**Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.22) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
+**Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.23) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
 
 **To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
 
