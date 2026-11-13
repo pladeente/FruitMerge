@@ -487,12 +487,13 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   /* pets: pv = how many drops between visits, petFx = what a pollinated / ladybird / hedgehog merge shows */
   const pv=n=>n;
   function petFx(m,lb){if(m.pol){spray(m.x,m.y,['#ffd43b','#fff2a8'],8,{sp:220,t:.5,s:4});ro.fx([ro.has('bfly')?'bfly':'bee']);}if(lb){spray(m.x,m.y,['#e63946','#2a1a3a'],6,{sp:200,t:.5,s:4});ro.fx(['lady']);}}
-  function petBee(){if(fr.filter(f=>f.pol&&!f.dead).length>=3)return;const c=fr.filter(f=>!f.dead&&!f.pol&&f.sp!=='stone'&&f.l<10&&f.age>1);if(!c.length)return;beeQ=0;const fromL=Math.random()<.5;bee={x:fromL?-20:W+20,y:line-40,t:c[rint(c.length)],st:'go',ph:0,h:0};snd('buzz');}
+  function petBee(){if(fr.filter(f=>f.pol&&!f.dead).length>=3)return;const c=fr.filter(f=>!f.dead&&!f.pol&&f.sp!=='stone'&&f.l<10&&f.age>1);if(!c.length)return;beeQ=0;const fromL=Math.random()<.5;const tg=c[rint(c.length)];bee={x:fromL?-20:W+20,y:line-40,t:tg,tx:tg.x,ty:tg.y,st:'go',ph:0,h:0};snd('buzz');}
   function petMole(){const c=fr.filter(f=>!f.dead&&f.l<=(ro.has('appetite')?4:3)&&!isSt(f)&&f.sp!=='stone'&&f.age>1&&f.y+rad(f.l)>=bot-4);if(!c.length)return;moleQ=0;const t=c[rint(c.length)];mole={t,x:t.x,st:'dig',k:0,e:1,ph:0};snd('dig');}
   /* Hedgehog: when the pile reaches the gold line (at most once every 3 drops, hogD = drop of the last visit) he climbs up and eats the highest fruit he can */
   const hogTg=()=>{let b=null;const mx=ro.has('appetite')?6:5;for(const f of fr){if(f.dead||f.l>mx||isSt(f)||f.sp==='stone'||f.age<1)continue;if(!b||f.y-rad(f.l)<b.y-rad(b.l))b=f;}return b;};
   function updPets(dt){const alive=t=>t&&!t.dead&&fr.includes(t);hogT=Math.max(0,hogT-dt);if((petT-=dt)<=0){petT=.3;if(beeQ&&!bee)petBee();if(moleQ&&!mole)petMole();}
-   if(bee){const b=bee,t=b.t;b.ph+=dt;if(b.st!=='out'&&!alive(t))b.st='out';
+   if(bee){const b=bee;b.ph+=dt;if(alive(b.t)){b.tx=b.t.x;b.ty=b.t.y;}else if(b.st!=='out'){let n=null,nd=1e9;for(const f of fr){if(f.dead||f.pol||f.sp==='stone'||f.l>=10)continue;const d=Math.hypot(f.x-b.tx,f.y-b.ty);if(d<nd){nd=d;n=f;}}if(n){b.t=n;b.st='go';}else b.st='out';} /* target merged or eaten: take the nearest fruit to where it was, usually the one the merge made */
+    const t=b.t;
     if(b.st==='go'){const ty=t.y-rad(t.l)-8*K,dx=t.x-b.x,dy=ty-b.y,d=Math.hypot(dx,dy),s=Math.min(d,280*K*dt);if(d>1){b.x+=dx/d*s;b.y+=dy/d*s;}if(d<6){b.st='sit';b.h=.6;}}
     else if(b.st==='sit'){b.x=t.x;b.y=t.y-rad(t.l)-8*K;b.h-=dt;if(b.h<=0){t.pol=ro.has('bfly')?4:3;spray(t.x,t.y,['#ffd43b','#fff2a8'],8,{sp:160,t:.5,s:4});ro.fx([ro.has('bfly')?'bfly':'bee']);ro.ev('pet',{k:'bee'});snd('pollen');b.st='out';}}
     else{b.y-=420*K*dt;b.x+=Math.sin(b.ph*6)*90*K*dt;if(b.y<-30)bee=null;}}
@@ -518,6 +519,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if(B.sticky){const n=spIn(B.sticky>1?2:3,0,'sticky');t.push(n?'Sticky in '+n:'Sticky now');}if(B.ice){const n=spIn(B.ice>1?3:4,0,'ice');t.push(n?'Frozen in '+n:'Frozen now');}if(B.stone){const n=spIn(B.stone>1?3:5,0,'stone');t.push(n?'Rock in '+n:'Rock now');}return t.join(' · ');}
   function drawLady(c,x,y){const s=W*.017;dot(c,x,y-s*.75,s*.62,'#fff2d8');dot(c,x,y,s+1.8,'#fff2d8');dot(c,x,y-s*.75,s*.5,'#2a1a3a');dot(c,x,y,s,'#e63946');c.fillStyle='#2a1a3a';c.fillRect(x-.6,y-s,1.2,s*2);dot(c,x-s*.45,y-s*.1,s*.22);dot(c,x+s*.45,y+s*.3,s*.22);}
   function drawPets(c){
+   if(bee&&bee.st!=='out'&&bee.t&&!bee.t.dead){const t=bee.t,rr=rad(t.l)+5*K+Math.sin(bee.ph*8)*2*K;c.save();c.strokeStyle='#ffd43b';c.lineWidth=3*K;c.setLineDash([6*K,5*K]);c.lineDashOffset=-bee.ph*40*K;c.beginPath();c.arc(t.x,t.y,rr,0,7);c.stroke();c.restore();} /* the bee's target, marked from the moment it is called */
    if(bee){const b=bee,s=W*.018,fl=Math.abs(Math.sin(b.ph*30));c.fillStyle='#ffffffcc';c.beginPath();c.ellipse(b.x-s*.4,b.y-s*.9,s*.5,s*.8*fl+.5,-.4,0,7);c.ellipse(b.x+s*.4,b.y-s*.9,s*.5,s*.8*fl+.5,.4,0,7);c.fill();
     c.fillStyle='#ffd43b';c.beginPath();c.ellipse(b.x,b.y,s*1.2,s*.85,0,0,7);c.fill();c.fillStyle='#2a1a3a';c.fillRect(b.x-s*.3,b.y-s*.8,s*.3,s*1.6);c.fillRect(b.x+s*.35,b.y-s*.75,s*.3,s*1.5);dot(c,b.x-s*.85,b.y-s*.15,s*.18);}
    if(mole){const m=mole,s=W*.03,k=Math.max(0,m.k);c.fillStyle='#8a5a2b';c.beginPath();c.ellipse(m.x,bot,s*1.7,s*1.1*k+.1,0,Math.PI,Math.PI*2);c.fill();
@@ -541,7 +543,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   bossTick(0);cur=genT();curSp=genSp();deal();if(B.melon)add({x:W/2,y:rad(10)+2,vx:0,vy:0,l:10,age:0,a:0});ban={t:3.2,a:j.name,b:j.rule,ic:j.ic};if(j.p2s){phase2();ban={t:4.2,a:j.name,b:j.rule+' '+j.rule2,ic:j.ic};}},
  wipe(){fr=[];cat=null;bee=mole=hog=null;hogT=0;parts=[];line=line0;L=L0;Rw=R0;vz=0;B={};J=null;},
  cheat(f=1){if(J&&!done){js=J.quota*f;if(f>=1)gotC=1;}}, /* dev panel: fill the jar's target (or a share of it) */
- cnt,peek(){return{dl,free,dd,cyc,jd,jm,tu,cur,curSp,nxt,nxtSp,arm,n:fr.length,ph,B:{...B},line,L,Rw,js,gotC,vz,dk,dkN,pets:{bee:!!bee,mole:!!mole,hog:!!hog,cat:!!cat},last:lastF&&{vx:lastF.f.vx,thr:!!lastF.f.thr}};}, /* for tests and the dev panel */
+ cnt,peek(){return{dl,free,dd,cyc,jd,jm,tu,cur,curSp,nxt,nxtSp,arm,n:fr.length,ph,bee,B:{...B},line,L,Rw,js,gotC,vz,dk,dkN,pets:{bee:!!bee,mole:!!mole,hog:!!hog,cat:!!cat},last:lastF&&{vx:lastF.f.vx,thr:!!lastF.f.thr}};}, /* for tests and the dev panel */
  scrub(){const n=fr.length;fr=fr.filter(f=>f.l>1||f.sp==='stone');return n-fr.length;},
  snap(){return fr.filter(f=>!f.dead&&!f.pet).map(f=>[+((f.x-L0)/(R0-L0)).toFixed(4),+((bot-f.y)/W).toFixed(4),f.l,f.sp||0,f.rot?1:0,f.gold||0,f.pol||0,f.lb?1:0]);},
  load(a){fr=[];for(const[x,y,l,sp,rot,gd,pl,lb]of a)add({gold:gd||0,pol:pl||0,lb:lb||0,x:L0+x*(R0-L0),y:bot-y*W,vx:0,vy:0,l,age:9,a:0,landed:1,sp:sp||null,lit:sp&&sp!=='bomb'&&sp!=='ice'?1:0,stuck:sp==='sticky'?1:0,rot:rot?1:0,mold:rot?1:0});},
@@ -715,7 +717,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.25',d:'13 Nov 2026',t:'Almanac in the shop',i:['The shop and the jar screen between rounds have an Almanac button. Check a fusion recipe you have found before without leaving the shop.']},
+ {v:'1.25',d:'13 Nov 2026',t:'Almanac in the shop',i:['Busy Bee: its target fruit is ringed as soon as the bee appears. If that fruit merges first, the bee goes to the nearest fruit instead of flying off.','The shop and the jar screen between rounds have an Almanac button. Check a fusion recipe you have found before without leaving the shop.']},
  {v:'1.24',d:'13 Nov 2026',t:'Crates',i:['Crates now shake and burst open before showing what is inside. Tap to skip.','Boss crates offer fewer rare charms: gold crates 10 in 100 (was 15), melon crates 30 in 100 (was 70). Melon crates still never offer common charms.']},
  {v:'1.23',d:'13 Nov 2026',t:'Seeds cut back',i:['Seeds were far stronger than anything else in the shop. Each level now gives +0.25 Mult (was +0.5), and a seed costs 2 coins more for every level you hold of it (was 1). The points are unchanged.','Smoothie: +1.5 Mult and +12 points a merge (was +2 and +20).','Marathon: ×3 Mult for your first 7 and last 6 drops of each jar. It no longer gives ×2 for the rest of the jar.']},
  {v:'1.22',d:'13 Nov 2026',t:'Jar summary',i:['Rogue leaderboard: the best 5 scores of each Ripeness, highest Ripeness at the top.','Boss jars show the boss in the corner of the jar. Tap it to pause and read what it does.','Jar cleared now shows your score against the target, the drops you had left, and stats for that jar: merges, biggest fruit, best merge, best combo, tools used and pet meals.']},
