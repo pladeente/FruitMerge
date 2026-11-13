@@ -314,6 +314,34 @@ Everything above is Ripeness 1, Classic Jar. A smarter buyer was added for this:
 - With the old numbers a careful buyer won over half its Ripeness 1 runs, so the fix was needed more than the first tables showed.
 - There is no cap on seed levels, before or after.
 
+### +Mult against ×Mult (finding, 13 Nov)
+
+Question: are ×Mult charms close to required. Five-charm loadouts, score per jar against no items (~250), v1.22 numbers, seeds = level 3 on Orange, Apple, Pear:
+
+| Charms | No seeds | With seeds |
+|---|---|---|
+| +Mult and points: Juicer, Honey Pot, Hot Streak, Chain Reaction, Vintage at +2 | 10.8 | 22.5 |
+| ×Mult: Heavyweight, Early Bird, Photo Finish, Lucky Clover, Snake Eyes | 5.5 | 24 |
+| Mixed: Juicer, Hot Streak, Heavyweight, Lucky Clover, Snake Eyes | 13.5 | 42 |
+
+- A mix wins by a wide margin. Neither kind alone is enough, and no single kind is required.
+- On the old seed numbers ×Mult led +Mult by ×47 to ×27 with seeds. The v1.22 seed cut closed most of that gap, because seeds were supplying the +Mult for free.
+- Mult is (1 + all +Mult) × every ×Mult, so +Mult charms dilute each other and ×Mult charms never do. With targets rising ×180, every winning build needs a few ×Mult pieces (pillar 2, on purpose).
+
+The real gap: some builds have no ×Mult of their own below rare or fusion, so they borrow the generic ones (Lucky Clover, Snake Eyes, Heavyweight, Early Bird, Photo Finish) and end up alike.
+
+| Build | Its own ×Mult today |
+|---|---|
+| Combo | none (Chain Reaction, Hot Streak are +Mult. Cyclone is a tool fusion) |
+| Destruction | none (Compost is +Mult, the rest flat points) |
+| Economy | none (Fat Wallet is +Mult) |
+| Seeds | none (Abacus is +Mult) |
+| Gold | none as a charm (gold fruit ×2 is a one-off, Magpie is +Mult) |
+| Tools | Encore only |
+| Aim, timing, chance, big fruit, small fruit, position, pets | have one or more |
+
+**Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.22) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
+
 **To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
 
 ## Stone (built)
