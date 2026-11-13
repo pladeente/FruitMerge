@@ -56,7 +56,7 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin | | Fine |
 | Full jar | Hoarder, High Wire | Anchor | Slow Fuse | Thin |
 | Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder | Sieve | Scrub | Filled, needs play |
-| Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Filled, needs play |
+| Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
 | Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | | Filled, needs play |
 | Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
@@ -198,6 +198,151 @@ Runs started with one charm, then greedy buying, 200 runs each (average depth re
 The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm owned) was the strongest charm by this measure, so it now gives ×0.2 per charm: 400 runs, average depth 4.68, 2% wins. Still the best rare, no longer far ahead.
 
 Pets land with small fruit and chance: real builds, not the strongest. Their extra value (clearing fruit, so fewer overflows) does not show in a single-jar score. Chain Reaction is a common that scores like a rare: worth a look on its own.
+
+## Seeds measurement (13 Nov, fixed in v1.23)
+
+Question asked: is one build far ahead and easy to get. Answer: seeds. Earlier bots never bought a seed, so `RSC` was tuned without them.
+
+Bot as above (no tools, no rerolls), rebuilt, Ripeness 1, Classic Jar, everything unlocked. It scores ~250 a jar with no items, measured over a whole depth (3 jars, pile carried), so ×N here is not comparable with the single-jar tables above.
+
+Full runs, 200 per buying policy (9 = won):
+
+| Policy | Wins | Avg depth |
+|---|---|---|
+| Any charm, no seeds | 0 | 3.16 |
+| Only ×Mult charms, no seeds | 1 | 3.42 |
+| Any charm + Hot Sauce, Fertiliser, Watering Can | 3 | 3.83 |
+| Seeds only, no charms bought | 0 | 4.34 |
+| Any charm + seeds for sizes 4 to 7 | 3 | 5.11 |
+| Any charm + every seed offered | 4 | 5.44 |
+| Any charm + every seed + those upgrades | 9 | 5.80 |
+| Only ×Mult charms + seeds for sizes 4 to 7 | 25 | 6.27 |
+
+A run that buys no charms gets deeper than one that buys only charms. Rows with 0 to 4 wins are within noise of each other, the 25 is not.
+
+Fixed loadouts, score per jar against no items:
+
+| Loadout | Coins | Slots | ×N |
+|---|---|---|---|
+| Juicer | 5 | 1 | 1.9 |
+| Fertiliser ×5 | 35 | 0 | 1.8 |
+| Hot Sauce ×5 | 40 | 0 | 2.2 |
+| Seed level 3 on Apple (6) | 12 | 0 | 2.4 |
+| Seeds level 2 on Orange, Apple, Pear | 21 | 0 | 3.4 |
+| Seeds level 4 on the same three | 54 | 0 | 7.5 |
+| Seeds level 6 on the same three | 99 | 0 | 13.6 |
+| Juicer, Honey Pot, Hot Streak, Heavyweight | 23 | 4 | 9.1 |
+| Those four + Blue Ribbon | 32 | 5 | 18 |
+| Those four + the level 4 seeds | 77 | 4 | 31 |
+| Heavyweight, Early Bird, Photo Finish, Lucky Clover, Snake Eyes | 22 | 5 | 6.0 |
+| Those five + the level 4 seeds | 76 | 5 | 47 |
+| Marathon, Heavyweight, Lucky Clover, Snake Eyes + the level 4 seeds | | 4 | 72 |
+| Abacus + the level 4 seeds | 62 | 1 | 24 |
+
+Why seeds lead:
+- Each level adds points and Mult to the same merge, so a size's value grows with the level squared while its price rises 1 coin a level.
+- The Mult they add is multiplied by every ×Mult charm, and many ×Mult charms are common.
+- No slot, no unlock, two offered in every shop, so RNG never denies the build (goal 2 above).
+
+Fusions against their two halves held together:
+
+| Fusion | Alone | Halves together | Ratio |
+|---|---|---|---|
+| Smoothie | 7.7 | 3.3 | 2.35 |
+| Wildfire | 6.0 | 3.6 | 1.66 |
+| Marathon | 2.35 | 1.53 | 1.53 |
+
+Smoothie + Marathon in two slots: ×19, more than any five-charm loadout measured without seeds. Both halves offered (real stock code, 3000 runs, no rerolls) by shop 6 / 9 / 15 / 24: two commons (Smoothie, Marathon, Sharpshooter) 22 / 37 / 62 / 85%, common + uncommon 6 / 12 / 24 / 42%, two uncommons 2 / 4 / 10 / 19%, common + rare 3 / 6 / 13 / 23%.
+
+Fat Wallet alone: ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100. The strongest single charm that is not a fusion, and interest already pays for holding coins.
+
+Options at the time (what was built is in the next part):
+1. Seeds, one of: points only with Mult cut to 0.25 a level, a price that rises 2 a level, or a cap of about 5 levels per size.
+2. Re-measure `RSC` with a bot that buys seeds. The two are coupled: without seeds the best loadout measured scores about 4,600 a jar against depth 7 targets of 10,000 to 16,000, so a seed nerf alone makes late depths very hard.
+3. Smoothie to about +1.5 Mult and +12 points. Marathon is an unconditional ×2 below rare (see Things to avoid).
+
+Not judged: tool, pet, gold and aim builds (the bot uses no tools and aims simply).
+
+### The fix (v1.23)
+
+- **Seeds:** +0.25 Mult a level (`SDM`, was 0.5), price 3 plus 2 per level held (`SDS`, was 1). Points unchanged. Two other tunings were tried over 200 runs each: Mult halved alone left ×Mult charms + seeds at 9 wins, points only (no Mult) dropped it to 4 with seeds-only at depth 2.7, below charms-only. The one built puts seeds-only level with charms-only, so `RSC` was left alone.
+- **Smoothie:** +1.5 Mult and +12 points (was +2 and +20).
+- **Marathon:** ×3 for the first 7 and last 6 drops, nothing in between (was ×2 always, ×3 for the first 6 and last 5).
+
+Full runs after the fix, 400 each (before: 200 each):
+
+| Policy | Before | After |
+|---|---|---|
+| Any charm, no seeds | 0 wins, depth 3.16 | 1 win, depth 3.18 |
+| Seeds only, no charms bought | 0, 4.34 | 0, 3.46 |
+| Any charm + every seed offered | 4 (2%), 5.44 | 4 (1%), 4.57 |
+| Only ×Mult charms + seeds for sizes 4 to 7 | 25 (12.5%), 6.27 | 13 (3.25%), 5.55 |
+
+Fixed loadouts after the fix (base ~256):
+
+| Loadout | Coins | ×N |
+|---|---|---|
+| Seeds level 2 on Orange, Apple, Pear | 24 | 2.6 |
+| Seeds level 3 on the same three | 45 | 3.9 |
+| Seeds level 5 on the same three | 105 | 6.7 |
+| Juicer, Honey Pot, Hot Streak, Heavyweight + the level 3 seeds | 68 | 21 |
+| Heavyweight, Early Bird, Photo Finish, Lucky Clover, Snake Eyes + the level 3 seeds | 67 | 24 |
+| Abacus + the level 3 seeds | 53 | 14 |
+| Smoothie (halves together 3.2) | | 4.9 |
+| Marathon (halves together 1.5) | | 2.0 |
+| Smoothie + Marathon | | 9.9 |
+
+Seeds are still the best place for spare coins (Hot Sauce ×5 for 40 coins is ×2.2), on purpose: they are a build with its own charms. Watch in play whether they still feel required.
+
+### Ripeness check (after the fix)
+
+Everything above is Ripeness 1, Classic Jar. A smarter buyer was added for this: ×Mult charms plus Abacus, Sprout and Big Basket, seeds for sizes 4 to 7, Charm Pouch, Seed Bag, cheap Watering Can and Hot Sauce, up to 3 rerolls while it holds 14 coins or more, and the best crate pick (fusion, ×Mult charm, seed, coins). Still no tools and the same aim. 400 runs each:
+
+| Ripeness | Numbers | Wins | Avg depth |
+|---|---|---|---|
+| 1 | old | 214 (53.5%) | 7.81 |
+| 1 | v1.23 | 77 (19%) | 6.91 |
+| 2 | v1.23 | 50 (12.5%) | 6.26 |
+| 3 | v1.23 | 26 (6.5%) | 5.09 |
+| 4 | v1.23 | 10 (2.5%) | 3.42 |
+| 5 | v1.23 | 4 (1%) | 2.75 |
+| 8 | old | 2 (0.5%) | 3.13 |
+| 8 | v1.23 | 2 (0.5%) | 2.58 |
+
+- Ripeness 8 is beatable with the v1.23 numbers, by a bot that uses no tools. The simpler buyer (×Mult charms + seeds, no rerolls) also won it 1 time in 300, and 0 in 300 on the old numbers.
+- From Ripeness 4 (3 fewer drops) about a quarter of bot runs die on depth 1 with no items, because it scores ~220 in 21 drops against targets of 125 to 200. That is the bot's aim, not a build problem, and it is why the high Ripeness rates say little about builds.
+- With the old numbers a careful buyer won over half its Ripeness 1 runs, so the fix was needed more than the first tables showed.
+- There is no cap on seed levels, before or after.
+
+### +Mult against ×Mult (finding, 13 Nov)
+
+Question: are ×Mult charms close to required. Five-charm loadouts, score per jar against no items (~250), v1.23 numbers, seeds = level 3 on Orange, Apple, Pear:
+
+| Charms | No seeds | With seeds |
+|---|---|---|
+| +Mult and points: Juicer, Honey Pot, Hot Streak, Chain Reaction, Vintage at +2 | 10.8 | 22.5 |
+| ×Mult: Heavyweight, Early Bird, Photo Finish, Lucky Clover, Snake Eyes | 5.5 | 24 |
+| Mixed: Juicer, Hot Streak, Heavyweight, Lucky Clover, Snake Eyes | 13.5 | 42 |
+
+- A mix wins by a wide margin. Neither kind alone is enough, and no single kind is required.
+- On the old seed numbers ×Mult led +Mult by ×47 to ×27 with seeds. The v1.23 seed cut closed most of that gap, because seeds were supplying the +Mult for free.
+- Mult is (1 + all +Mult) × every ×Mult, so +Mult charms dilute each other and ×Mult charms never do. With targets rising ×180, every winning build needs a few ×Mult pieces (pillar 2, on purpose).
+
+The real gap: some builds have no ×Mult of their own below rare or fusion, so they borrow the generic ones (Lucky Clover, Snake Eyes, Heavyweight, Early Bird, Photo Finish) and end up alike.
+
+| Build | Its own ×Mult today |
+|---|---|
+| Combo | none (Chain Reaction, Hot Streak are +Mult. Cyclone is a tool fusion) |
+| Destruction | none (Compost is +Mult, the rest flat points) |
+| Economy | none (Fat Wallet is +Mult) |
+| Seeds | none (Abacus is +Mult) |
+| Gold | none as a charm (gold fruit ×2 is a one-off, Magpie is +Mult) |
+| Tools | Encore only |
+| Aim, timing, chance, big fruit, small fruit, position, pets | have one or more |
+
+**Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.23) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
+
+**To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
 
 ## Stone (built)
 
