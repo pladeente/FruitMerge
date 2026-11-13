@@ -700,7 +700,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.21',d:'13 Nov 2026',t:'Accounts',i:['Create an account in Options to keep your progress safe online and play on other devices. It is optional.','Your username is yours on the leaderboard: nobody else can post scores under it.','Names with slurs or swears can not be used.']},
+ {v:'1.21',d:'13 Nov 2026',t:'Accounts',i:['Fixed: the account screens closed as soon as the phone keyboard opened.','Create an account in Options to keep your progress safe online and play on other devices. It is optional.','Your username is yours on the leaderboard: nobody else can post scores under it.','Names with slurs or swears can not be used.']},
  {v:'1.20',d:'13 Nov 2026',t:'Rare is rare',i:['Rare charms turn up far less often: 4 in 100 shop slots (was 10), and fewer in gold crates. Good Taste still raises the odds.','A rare charm on offer now shines and plays a sound, so you notice it.']},
  {v:'1.19',d:'13 Nov 2026',t:'Fruit names and titles',i:['Fruit have names now: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11).','17 new Rogue awards, and they are hard. Most give a title.','Titles: pick one in Options and it shows before your name on the leaderboard.']},
  {v:'1.18',d:'13 Nov 2026',t:'Pixel fruit',i:['New Install as app button on the menu: put the game on your home screen and play it full screen.','The hand-drawn pixel fruit are now the default. The original drawn fruit are still in Options and the pause screen.','New pear, a new watermelon face and touch-ups to the smaller fruit.','Run info and the Almanac have a close button at the top, no more scrolling to the bottom to get back to the game.']},
@@ -738,7 +738,7 @@ function acct(md,msg='',ok=0){const f={in:['Sign in','em pw','Sign in'],up:['Cre
    else p=authReq('sendOobCode',{requestType:'PASSWORD_RESET',email:v('em')}).then(()=>acct('in','If that email has an account, a reset link is on its way. Check your spam folder too.',1));}
   catch(x){p=Promise.reject(x);}
   p.catch(x=>{if(x==='shown')return;bt.disabled=false;bt.textContent=f[2];er.textContent=aerr(x);er.hidden=false;snd('nope');});};
- setTimeout(()=>{try{fm.querySelector('input').focus()}catch(_){}},50);}
+ if(!matchMedia('(pointer:coarse)').matches)setTimeout(()=>{try{fm.querySelector('input').focus()}catch(_){}},50);} /* no auto focus on phones: the keyboard would cover the form */
 /* titles: earned from the hard awards (ACH ti), one worn at a time, shown before the name on score boards. Store key title (a device preference) */
 const titles=()=>{if(!PF.d)PF.load();return Object.keys(ACH).filter(id=>ACH[id].ti&&PF.d.ach[id]).map(id=>ACH[id].ti);},curTitle=()=>{const t=store.get('title','');return t&&titles().includes(t)?t:'';};
 function opts(){const ts=titles(),ct=curTitle(),m=show(`<h3>Options</h3><canvas id="chain"></canvas><p>Pixel: the new hand-drawn pixel fruit. Drawn: the original look.</p><button class="go${ART?'':' alt'}" data-a="art">Fruit art: ${ART?'Pixel':'Drawn'}</button>${accB()}<div class="sec"><h5>Title</h5>${ts.length?`<p>Shown before your name on the leaderboard${lastName?`: <small class="ttl">${esc(ct)}</small> ${esc(lastName)}`:''}.</p><div class="tls">${['',...ts].map(t=>`<button class="go sm${t===ct?'':' alt'}" data-a="ttl" data-t="${esc(t)}">${t?esc(t):'None'}</button>`).join('')}</div>`:'<p class="none">Hard awards in Rogue give titles. Earn one to wear it before your name on the leaderboard.</p>'}</div><button class="go alt" data-a="menu">Back</button>`);chain(m);}
@@ -970,7 +970,7 @@ function setSnd(){$('#sndB').innerHTML=ic(sndOn?'snd_on':'snd_off');$('#sndB').s
 $('#sndB').onclick=()=>{sndOn=!sndOn;store.set('snd2',sndOn);setSnd();snd('ui')};
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();PF.save();cloudPush(1);}});
 window.addEventListener('pagehide',()=>PF.save());
-window.addEventListener('resize',()=>{fit();if(G.state==='menu')menu()});
+window.addEventListener('resize',()=>{fit();if(G.state==='menu'&&$('#ui .top .rogue'))menu()}) /* only the main menu redraws: Options, forms and other menu screens stay, or a phone keyboard opening would close them */;
 /* ---------- dev panel: open the page with ?dev. For balance testing. A run it touches is marked R.dev and counts for nothing ---------- */
 if(/[?&]dev\b/.test(location.search))(function(){
  const el=document.createElement('details'),opt=o=>Object.keys(o).map(k=>`<option value="${k}">${o[k].n}</option>`).join('');el.id='dev';
