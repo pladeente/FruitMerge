@@ -100,6 +100,7 @@ tr.me td{background:#35c2b42a}
 .modes .go{margin:10px 0 0;padding:10px 15px}
 .top{display:flex;gap:8px;margin-top:10px}.top .go{margin:0}.top .rogue{flex:3;padding:16px 10px;font-size:36px}.top .nwb{flex:1;position:relative;padding:6px 4px;font:700 18px/1 var(--display);background:#e03b3b;color:#fff;box-shadow:0 4px 0 #8e1f22;animation:nwp 1.6s ease-in-out infinite}.top .nwb:active{animation:none}
 .top+.modes{flex-wrap:nowrap}.top+.modes .go{flex:1}
+.go.inst{display:block;width:100%;box-sizing:border-box;margin:10px 0 0;padding:9px 10px;background:var(--teal);color:var(--ink);font-size:21px;box-shadow:0 4px 0 #1d7f76}
 .nwb .dot{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8e1f22}
 @keyframes nwp{50%{transform:scale(1.06)}}@media (prefers-reduced-motion:reduce){.top .nwb{animation:none}}
 .go:disabled{opacity:.45;cursor:default}
@@ -650,13 +651,13 @@ function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loa
  .catch(()=>{if(el.isConnected)el.innerHTML='<p class="none">Couldn\'t reach the world leaderboard.</p>'});}
 
 function menu(){G.state='menu';G.g=null;RUN=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;rgTitle('melon','Fruit Merge');fit();setBest();
- const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><div class="top"><button class="go rogue" data-a="rogue">Rogue</button><button class="go nwb" data-a="news">What's new${store.get('seenLog','')===LOG[0].v?'':'<i class="dot"></i>'}</button></div><div class="modes"><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild</button></div><button class="go alt sm" data-a="scores">Leaderboard</button><button class="go alt sm" data-a="almanac" data-f="menu">Almanac</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><button class="go alt sm" data-a="opts">Options</button><span id="instSlot">${installBtn()}</span>${matchMedia('(pointer:coarse)').matches?'':`<p style="font-size:15px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`}`);
+ const m=show(`<h3>Fruit Merge</h3><p>Tap or drag to aim, let go to drop. Two matching fruits merge into a bigger one. Make a watermelon!</p><canvas id="chain"></canvas><p class="tg">Don't let the pile stay over the dotted line.</p><div class="top"><button class="go rogue" data-a="rogue">Rogue</button><button class="go nwb" data-a="news">What's new${store.get('seenLog','')===LOG[0].v?'':'<i class="dot"></i>'}</button></div><div class="modes"><button class="go" data-a="play" data-m="classic">Classic</button><button class="go wild" data-a="play" data-m="wild">Wild</button></div><span id="instSlot">${installBtn()}</span><button class="go alt sm" data-a="scores">Leaderboard</button><button class="go alt sm" data-a="almanac" data-f="menu">Almanac</button><button class="go alt sm" data-a="wildinfo">What's Wild?</button><button class="go alt sm" data-a="opts">Options</button>${matchMedia('(pointer:coarse)').matches?'':`<p style="font-size:15px;color:var(--muted);margin-top:10px">Keyboard: ← → aim, Space drop, P pause, 1–4 powers</p>`}`);
  chain(m);}
 function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.devicePixelRatio||1),h=nums?60:44;ch.style.height=h+'px';const w=ch.clientWidth;ch.width=w*dpr;ch.height=h*dpr;const c=ch.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.18',d:'13 Nov 2026',t:'Pixel fruit',i:['The hand-drawn pixel fruit are now the default. The original drawn fruit are still in Options and the pause screen.','New pear, a new watermelon face and touch-ups to the smaller fruit.','Run info and the Almanac have a close button at the top, no more scrolling to the bottom to get back to the game.']},
+ {v:'1.18',d:'13 Nov 2026',t:'Pixel fruit',i:['New Install as app button on the menu: put the game on your home screen and play it full screen.','The hand-drawn pixel fruit are now the default. The original drawn fruit are still in Options and the pause screen.','New pear, a new watermelon face and touch-ups to the smaller fruit.','Run info and the Almanac have a close button at the top, no more scrolling to the bottom to get back to the game.']},
  {v:'1.17',d:'13 Nov 2026',t:'Pixel rocks',i:['Beta fruit art now has a pixel art rock too, for every rock in the jar.']},
  {v:'1.16',d:'12 Nov 2026',t:'Pixel coins',i:['Coins are pixel art now, to match the rest of the game.','Small Fry and Feeding Frenzy icons are sharp again.','What\'s new has a close button at the top.']},
  {v:'1.15',d:'12 Nov 2026',t:'Fixes',i:['Fruit no longer spin on the spot once the pile has settled. They only roll when they really move.','Beta fruit art: fruit now touch each other instead of leaving a small gap.']},
@@ -889,7 +890,7 @@ $('#pauseB').onclick=pause;
 let instPrompt=null;
 const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-function installBtn(){return !standalone()&&(instPrompt||matchMedia('(pointer:coarse)').matches)?'<button class="go alt sm" data-a="install">Install app</button>':''}
+function installBtn(){return standalone()?'':'<button class="go inst" data-a="install">Install as app</button>'} /* every device until it runs installed: the browser's own prompt when it has one, else the steps */
 function syncInstall(){const s=$('#instSlot');if(s)s.innerHTML=installBtn()}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instPrompt=e;syncInstall()});
 window.addEventListener('appinstalled',()=>{instPrompt=null;syncInstall()});
