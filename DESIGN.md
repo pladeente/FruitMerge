@@ -136,6 +136,7 @@ Creatures that live in the jar and act every few drops, plus charms that pay off
 | Whistle (tool) | 5, charge 6 (caterpillar) | Tap a fruit (size 3 or less), the caterpillar comes now and eats it |
 | Butterfly Garden | Chrysalis + Busy Bee | Butterfly every 3rd meal. Bee every 3 drops, pollen ×4 |
 | Menagerie | Pet Bowl + Mole | +0.5 Mult per meal this jar. Mole every 5 drops for 60 |
+| Nectar | Busy Bee + Pet Treats | Bee as Busy Bee. Pets eat pollinated fruit first and a pollinated meal scores ×3 (its pollen). +30 per meal. Without it, pets leave pollinated fruit alone (v1.26: they used to eat it and waste the pollen) |
 | Feeding Frenzy | Small Fry + Pet Caterpillar | Small merges ×3, caterpillar every 4 drops for 90 (was 60) |
 
 Changes made while measuring:

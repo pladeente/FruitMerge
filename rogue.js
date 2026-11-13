@@ -14,7 +14,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused'];
    dev = a prototype: only in the dev panel, never in the shop, crates or Almanac. req = only offered while the run holds that charm.
    fu = [a, b]: a fusion, made from those two charms. Fusions are rarity 3, never sold, and only come out of boss crates. */
 /* pet groups for req: CAT = brings the caterpillar, EAT = a pet that eats fruit, PETS = any pet */
-const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','hog','lady'];
+const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'];
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
@@ -77,7 +77,7 @@ const CH={
  wall:{n:'Wallflower',r:0,c:4,d:'Merges touching a wall score +20 points.',chip:c=>c.wall?20:0},
  low:{n:'Low Tide',r:1,c:7,d:'Merges in the bottom third of the jar score ×2.',x:c=>c.low?2:1},
  /* pets (DESIGN.md): creatures in the jar, handled in makeGame. Pet combos need a pet (req) */
- bee:{n:'Busy Bee',r:1,c:6,d:'Every 4 drops a bee pollinates a fruit (up to 3 at a time). A pollinated fruit scores ×3 when it merges.'},
+ bee:{n:'Busy Bee',r:1,c:6,d:'Every 4 drops a bee pollinates a fruit (up to 3 at a time). A pollinated fruit scores ×3 when it merges. Your pets leave pollinated fruit alone.'},
  mole:{n:'Mole',r:1,c:6,d:'Every 6 drops a mole eats a fruit on the floor (size 4 or less) for 40 points.'},
  hog:{n:'Hedgehog',r:1,c:6,d:'When the pile reaches the gold line near the top of the jar, a hedgehog climbs up and eats the highest fruit (size 6 or less) for 50 points. At most once every 3 drops.'},
  lady:{n:'Ladybird',r:0,c:4,d:'A ladybird rides one fruit. When that fruit merges, the merge scores ×2 and she moves to the new fruit.'},
@@ -102,6 +102,7 @@ const CH={
  phil:{n:"Philosopher's Stone",r:3,c:12,fu:['leaf','alch'],d:'The first 2 fruit you drop in each jar are gold. 1 in 2 times a gold fruit merges, the fruit it makes is gold too (Horseshoe does not change this).'},
  keep:{n:'Keepsake',r:3,c:12,fu:['pip','vintage'],d:'Gains +0.05 Mult every time you make a size 3 fruit or smaller, and +0.6 every time you clear a jar.',add:c=>c.ch.v||0,live:1},
  bfly:{n:'Butterfly Garden',r:3,c:12,fu:['chrys','bee'],d:'Every 3rd fruit your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run. Every 3 drops a bee pollinates a fruit, and pollinated fruit score ×4 when they merge.',add:c=>c.ch.v||0,live:1},
+ nectar:{n:'Nectar',r:3,c:12,fu:['bee','treats'],d:'Every 4 drops a bee pollinates a fruit (up to 3 at a time). A pollinated fruit scores ×3 when it merges. Pets eat pollinated fruit first, and a pollinated meal scores ×3 too. Every fruit your pets eat scores 30 more points.'},
  zoo:{n:'Menagerie',r:3,c:12,fu:['bowl','mole'],d:'+0.5 Mult for every fruit your pets have eaten this jar. Every 5 drops a mole eats a fruit on the floor (size 4 or less) for 60 points.',add:c=>(c.ml||0)*.5},
  sharp:{n:'Sharpshooter',r:3,c:12,fu:['bull','lode'],d:'Every 4th drop is a Magnet. A dropped fruit that merges before it touches anything else scores ×4.',x:c=>c.bull?4:1},
  /* fusions for the thin-build charms (DESIGN.md) */
@@ -422,7 +423,7 @@ const ACH={
  stake4:{n:'Seasoned',d:'Win a run on Ripeness 4 or higher.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4},
  stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8},
  /* hard and obscure ones (ti = the title they give, shown before the player's name) */
- bugtest:{n:'Bugtest',d:'Hold Pet Caterpillar, Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. Their fusions count.',on:'buy take fuse',t:R=>[['pet','frenzy'],['bowl','zoo'],['treats'],['chrys','bfly'],['appetite']].every(g=>g.some(id=>RG.has(R,id))),ti:'Bugtester'},
+ bugtest:{n:'Bugtest',d:'Hold Pet Caterpillar, Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. Their fusions count.',on:'buy take fuse',t:R=>[['pet','frenzy'],['bowl','zoo'],['treats','nectar'],['chrys','bfly'],['appetite']].every(g=>g.some(id=>RG.has(R,id))),ti:'Bugtester'},
  bfly5:{n:'Butterfly Effect',d:'Chrysalis reaches +5 Mult in one run.',on:'pet jar fuse',t:R=>R.ch.some(c=>(c.id==='chrys'||c.id==='bfly')&&(c.v||0)>=5),ti:'Lepidopterist'},
  rainbow:{n:'Rainbow Jar',d:'Have one of every fruit from Cherry (1) to Rockmelon (10) in the jar at once.',on:'rainbow',t:()=>true,ti:'Rainbow'},
  gmelon:{n:'Golden Melon',d:'Make a Watermelon out of a gold Rockmelon (10).',on:'merge',t:(R,d)=>d.l===10&&d.gold,ti:'Golden'},
