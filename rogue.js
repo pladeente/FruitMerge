@@ -8,7 +8,7 @@ const RQ=[100,130,160]; /* depth 1 score targets: jar 1, jar 2, boss */
 const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2; /* target multiplier per depth, then ×RSCX for every endless depth */
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused'];
 /* Charms. r = rarity, c = price, d = description. Scoring hooks get a context c:
-   l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar,
+   l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar, sm = merges this jar that made a size 4 fruit or smaller,
    first = the first time this size is made this jar, wall = a merging fruit touched a wall, low = the merge was in the bottom third of the jar, trick = a thrown fruit hit a wall and then merged before touching anything else, pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, rk = rocks in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
    chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG.
    dev = a prototype: only in the dev panel, never in the shop, crates or Almanac. req = only offered while the run holds that charm.
@@ -31,6 +31,7 @@ const CH={
  spark:{n:'Spark Plug',r:0,c:5,d:'Every tool starts each jar fully charged.'},
  coupon:{n:'Coupon',r:0,c:4,d:'Everything in the shop costs 1 coin less.'},
  heavy:{n:'Heavyweight',r:1,c:7,d:'Merges that make a size 6 fruit or bigger score ×2.5.',x:c=>c.l>=5?2.5:1},
+ crumbs:{n:'Crumbs',r:1,c:6,d:'Every merge that makes a size 4 fruit or smaller adds +2 points to every merge for the rest of the jar.',chip:c=>c.l>=0?(c.sm||0)*2:0},
  hot:{n:'Hot Streak',r:1,c:6,d:'+0.15 Mult for every merge you have made this jar.',add:c=>c.jm*.15},
  vintage:{n:'Vintage',r:1,c:7,d:'Gains +0.4 Mult every time you clear a jar.',add:c=>c.ch.v||0,live:1},
  hoard:{n:'Hoarder',r:1,c:6,d:'+0.15 Mult for every fruit in the jar.',add:c=>c.n*.15},
