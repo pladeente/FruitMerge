@@ -92,8 +92,8 @@ const CH={
  goose:{n:'Golden Goose',r:3,c:12,fu:['piggy','bank'],d:'+4 coins every time you clear a jar. Interest can pay up to 10 coins per jar.'},
  volcano:{n:'Volcano',r:3,c:12,fu:['boom','compost'],d:'Every 5th drop is a Boom fruit. Each fruit it blows up scores 40 points. Gains +0.1 Mult every time a fruit is destroyed.',add:c=>c.ch.v||0,live:1},
  headline:{n:'Headliner',r:3,c:12,fu:['show','encore'],d:'Every tool use gives +1 Mult until the jar ends, and makes your next merge score ×3.',add:c=>c.tu,x:c=>c.enc&&c.l>=0?3:1},
- smoothie:{n:'Smoothie',r:3,c:12,fu:['juicer','honey'],d:'+2 Mult. Every merge scores +20 points.',add:()=>2,chip:()=>20},
- marathon:{n:'Marathon',r:3,c:12,fu:['early','clutch'],d:'×2 Mult. ×3 instead for your first 6 and last 5 drops of each jar.',x:c=>c.jd<=6||c.dl<5?3:2},
+ smoothie:{n:'Smoothie',r:3,c:12,fu:['juicer','honey'],d:'+1.5 Mult. Every merge scores +12 points.',add:()=>1.5,chip:()=>12},
+ marathon:{n:'Marathon',r:3,c:12,fu:['early','clutch'],d:'×3 Mult for your first 7 and last 6 drops of each jar.',x:c=>c.jd<=7||c.dl<6?3:1},
  wildfire:{n:'Wildfire',r:3,c:12,fu:['hot','chain'],d:'+0.3 Mult for every merge you have made this jar. In a combo, each merge gets +1 Mult more than the one before (up to +8).',add:c=>c.jm*.3+Math.min(8,c.combo)},
  mania:{n:'Melon Mania',r:3,c:14,fu:['heavy','fever'],d:'Merges that make a size 6 fruit or bigger score ×3. Gains +2 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,x:c=>c.l>=5?3:1,live:1},
  mint:{n:'The Mint',r:3,c:12,fu:['scratch','gold'],d:'1 in 4 merges pays 1 coin. Earn 2 coins whenever you make a size 6 fruit or bigger.'},
@@ -179,8 +179,8 @@ const UPG={
  crowbar:{n:'Crowbar',c:5,max:1,d:'Every crate offers 1 more choice.'}
 };
 /* Seeds level up one fruit size for the run. R.sd[l] = level for the fruit of tier l (1 to 10, shown to the player as size l+1).
-   Each level: making that fruit scores sdP(l) more points and +SDM Mult. A seed costs SDC plus 1 per level already held. */
-const SDC=3,SDM=.5,sdP=l=>4+2*l,sdD=l=>`Making ${fna(l)} scores +${sdP(l)} points and +${SDM} Mult.`;
+   Each level: making that fruit scores sdP(l) more points and +SDM Mult. A seed costs SDC plus SDS per level already held. */
+const SDC=3,SDS=2,SDM=.25,sdP=l=>4+2*l,sdD=l=>`Making ${fna(l)} scores +${sdP(l)} points and +${SDM} Mult.`;
 /* Tools: abilities the player taps during a jar. c = price, ch = charge needed (1 per merge), tg = the player then taps a fruit, s = short name for the tool bar.
    What each one does is in tool() in makeGame, which fruit it can target in okTg().
    fu = [tool, charm]: a fusion. It takes the tool's slot and uses up the charm. */
@@ -273,7 +273,7 @@ const RG={
  cost:(R,c)=>Math.max(1,c-(RG.has(R,'coupon')?1:0)+(R.stake>=5?1:0)),
  upCost:(R,id)=>RG.cost(R,UPG[id].c+(UPG[id].now?0:R.up[id]*2)),
  upOk:(R,k)=>PF.lk('up.'+k)?false:k==='scrub'?R.jar!==0:k==='bribe'?!BOSS[RG.boss(R)].fin:k==='belt'?RG.ts(R)<RG.tsMax(R):!UPG[k].max||R.up[k]<UPG[k].max,
- sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]-(RG.has(R,'svault')?2:RG.has(R,'packet')?1:0)),
+ sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]*SDS-(RG.has(R,'svault')?2:RG.has(R,'packet')?1:0)),
  sellV:(R,c)=>R.up.haggle?c:Math.floor(c/2),
  rrCost:R=>R.up.dice?(R.shop.rr?RG.cost(R,1+R.shop.rr):0):RG.cost(R,2+R.shop.rr),
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],u=Math.min(3,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/5));
