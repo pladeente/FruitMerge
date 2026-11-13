@@ -250,7 +250,7 @@ Hard or obscure, not earned by accident. The hard ones give a **title** shown be
 14. Empty Pockets: beat a final boss holding 0 coins (before the payout). (Pauper)
 15. Not Interested: leave 5 crates unopened in one run. Badge.
 16. Pear-Shaped (secret): lose a run with a Pear (7) as the fruit over the line. (Pear-Shaped)
-17. Fruit Fly: keep a fruit in the air for 3 seconds (Shake or a throw). (Fruit Fly)
+17. Fruit Fly: keep a fruit in the air for 2.5 seconds without touching anything. Measured: 3s never happened in 60 Whirl uses, 2.5s about 1 in 20, Shake under 1s. (Fruit Fly)
 
 Tracking added for them: drop side, airtime, pile over the line this jar, the fruit over the line at game over, sizes made in the current combo (see `CLAUDE.md`, Awards).
 

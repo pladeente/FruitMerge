@@ -180,7 +180,7 @@ const UPG={
 };
 /* Seeds level up one fruit size for the run. R.sd[l] = level for the fruit of tier l (1 to 10, shown to the player as size l+1).
    Each level: making that fruit scores sdP(l) more points and +SDM Mult. A seed costs SDC plus 1 per level already held. */
-const SDC=3,SDM=.5,sdP=l=>4+2*l,sdD=l=>`Making a size ${l+1} fruit scores +${sdP(l)} points and +${SDM} Mult.`;
+const SDC=3,SDM=.5,sdP=l=>4+2*l,sdD=l=>`Making ${fna(l)} scores +${sdP(l)} points and +${SDM} Mult.`;
 /* Tools: abilities the player taps during a jar. c = price, ch = charge needed (1 per merge), tg = the player then taps a fruit, s = short name for the tool bar.
    What each one does is in tool() in makeGame, which fruit it can target in okTg().
    fu = [tool, charm]: a fusion. It takes the tool's slot and uses up the charm. */
@@ -438,7 +438,7 @@ const ACH={
  broke:{n:'Empty Pockets',d:'Beat a final boss holding 0 coins.',on:'jar',t:(R,d)=>d.jar===2&&d.boss&&BOSS[d.boss].fin&&R.coins===0,ti:'Pauper'},
  noint:{n:'Not Interested',d:'Leave 5 crates unopened in one run.',on:'leave',t:R=>(R.st.leaves||0)>=5},
  pear:{n:'Pear-Shaped',d:'Lose a run with a Pear (7) over the line.',on:'overf',t:(R,d)=>d.l===6,secret:1,ti:'Pear-Shaped'},
- fly:{n:'Fruit Fly',d:'Keep a fruit in the air for 3 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly'}
+ fly:{n:'Fruit Fly',d:'Keep a fruit in the air for 2.5 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly'}
 };
 const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
 const ACHQ=[]; /* awards earned and not yet shown */
