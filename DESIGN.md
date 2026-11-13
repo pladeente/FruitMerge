@@ -11,7 +11,9 @@ The design view of Rogue mode: which build each item feeds, where the gaps are, 
 
 ## How often things turn up
 
-Shop stock (`RG.stock`): 3 charms per visit, rarity rolled 60% common, 30% uncommon, 10% rare (Good Taste shifts it), then a random charm of that rarity the run does not own. About 24 shops per full run (one after every jar), so roughly 72 charm offers before rerolls, crates and Bigger Shelf.
+Since v1.20 rares are rarer, on the user's call that a rare did not feel rare: shop rolls 70% common, 26% uncommon, 4% rare (Good Taste: 10% at one level, 16% at two), wooden crates 70/26/4, gold crates 30/55/15 (was 20/50/30), melon crates unchanged. Measured with the real stock and crate code over 400 runs (24 shops, 8 boss crates, no rerolls or wooden crates): rares offered per run went from 11.1 (shop 7.2, crates 3.8) to 5.7 (shop 2.8, crates 2.9), so each of the 10 rares now turns up about once every two runs. A rare on offer shines (`.tile.r2::after`) and plays `snd('rare')` once (`rareCue`). The greedy bot was not re-run: its numbers below show several rares score about like no charm, so the win rate barely depends on them. Weak rares (Sweet Spot, Old Oak, Melon Fever) are the next thing to look at if rares should also feel stronger.
+
+Before v1.20: shop stock (`RG.stock`): 3 charms per visit, rarity rolled 60% common, 30% uncommon, 10% rare (Good Taste shifts it), then a random charm of that rarity the run does not own. About 24 shops per full run (one after every jar), so roughly 72 charm offers before rerolls, crates and Bigger Shelf.
 
 | Rarity | Charms in pool | Offers per run | Times each one is seen |
 |---|---|---|---|

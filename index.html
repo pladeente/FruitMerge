@@ -117,7 +117,7 @@ tr.me td{background:#35c2b42a}
 .tile,.slot{display:inline-flex;align-items:center;justify-content:center;flex:none;padding:0;background:#f1e2c6;box-shadow:inset 0 0 0 3px #8f8a99}
 .tile{width:46px;height:46px;border-radius:9px}
 .slot{width:34px;height:34px;border-radius:8px;box-shadow:inset 0 0 0 2px #8f8a99}
-.tile.r1{box-shadow:inset 0 0 0 3px var(--teal)}.tile.r2{box-shadow:inset 0 0 0 3px var(--brass)}.tile.r3{box-shadow:inset 0 0 0 3px #ff4d8d,0 0 10px #ff4d8d90}.slot.r3{box-shadow:inset 0 0 0 2px #ff4d8d}.tile.cr{box-shadow:inset 0 0 0 3px #a9713a}
+.tile.r1{box-shadow:inset 0 0 0 3px var(--teal)}.tile.r2{box-shadow:inset 0 0 0 3px var(--brass);position:relative;overflow:hidden}.tile.r2::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 38%,#fff9 50%,transparent 62%);background-size:260% 100%;animation:shine 2.6s linear infinite}@keyframes shine{0%{background-position:160% 0}55%,100%{background-position:-60% 0}}@media (prefers-reduced-motion:reduce){.tile.r2::after{animation:none}}.tile.r3{box-shadow:inset 0 0 0 3px #ff4d8d,0 0 10px #ff4d8d90}.slot.r3{box-shadow:inset 0 0 0 2px #ff4d8d}.tile.cr{box-shadow:inset 0 0 0 3px #a9713a}
 .slot.r1{box-shadow:inset 0 0 0 2px var(--teal)}.slot.r2{box-shadow:inset 0 0 0 2px var(--brass)}
 .tile.up{box-shadow:inset 0 0 0 3px #b388eb}.tile.tl{box-shadow:inset 0 0 0 3px #4cc9f0}.tile.sd{box-shadow:inset 0 0 0 3px #7bc950}.tile.boss{box-shadow:inset 0 0 0 3px var(--coral)}.slot.boss{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--coral)}
 .tile.e,.slot.e{background:#ffffff10;box-shadow:inset 0 0 0 2px var(--line)}
@@ -230,6 +230,7 @@ function noise(d,o={}){const{vol=.3,type='lowpass',f=1000,f2=0,q=1,at=0}=o;const
 const PENTA=[262,294,330,392,440,523,587,659,784,880,1047];
 const SFX={
  ui(){tone(700,.06,{vol:.12,slide:1.3})},
+ rare(){[1319,1568,1976,2637].forEach((f,i)=>{tone(f,.2,{type:'triangle',vol:.1,at:i*.07})});noise(.35,{vol:.04,type:'highpass',f:6000,at:.12})}, /* a rare charm turns up in the shop or a crate */
  land(l){const f=200-l*12;tone(f,.14,{vol:.22,slide:.55});noise(.05,{vol:.07,f:500+l*40})},
  merge(l,combo){const f=PENTA[Math.min(10,l)]*Math.pow(1.122,Math.min(combo,6));tone(f*.75,.16,{type:'sine',vol:.3,slide:1.45});tone(f*1.5,.12,{type:'triangle',vol:.08,at:.04});noise(.04,{vol:.05,type:'highpass',f:3000})},
  melon(){[523,659,784,1047,1319].forEach((f,i)=>{tone(f,.35,{type:'triangle',vol:.14,at:i*.08});tone(f*2,.2,{vol:.05,at:i*.08+.02})});noise(.6,{vol:.06,type:'highpass',f:5000,at:.3})},
@@ -660,6 +661,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.20',d:'13 Nov 2026',t:'Rare is rare',i:['Rare charms turn up far less often: 4 in 100 shop slots (was 10), and fewer in gold crates. Good Taste still raises the odds.','A rare charm on offer now shines and plays a sound, so you notice it.']},
  {v:'1.19',d:'13 Nov 2026',t:'Fruit names and titles',i:['Fruit have names now: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11).','17 new Rogue awards, and they are hard. Most give a title.','Titles: pick one in Options and it shows before your name on the leaderboard.']},
  {v:'1.18',d:'13 Nov 2026',t:'Pixel fruit',i:['New Install as app button on the menu: put the game on your home screen and play it full screen.','The hand-drawn pixel fruit are now the default. The original drawn fruit are still in Options and the pause screen.','New pear, a new watermelon face and touch-ups to the smaller fruit.','Run info and the Almanac have a close button at the top, no more scrolling to the bottom to get back to the game.']},
  {v:'1.17',d:'13 Nov 2026',t:'Pixel rocks',i:['Beta fruit art now has a pixel art rock too, for every rock in the jar.']},
@@ -739,6 +741,8 @@ const cn=n=>`<u class="cn"><i class="coin"></i>${n}</u>`;
 const jn=(R=RUN)=>`Depth ${R.depth}${R.depth>DEPTHS?' (endless)':' of '+DEPTHS}`;
 const num=v=>String(+(+v).toFixed(2));
 const chD=c=>CH[c.id].d+(CH[c.id].live==='x'?` <b>Now ×${num(1+(c.v||0))}.</b>`:CH[c.id].live?` <b>Now +${num(c.v||0)}.</b>`:'');
+/* the rare sound plays once for each rare charm newly on offer, not on every redraw of the screen */
+const rareCue=ids=>{const n=ids.filter(id=>CH[id]&&CH[id].r===2&&!(G.rare||[]).includes(id));G.rare=ids.slice();if(n.length)snd('rare');};
 const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id),1)}</${tag}>`;
 const chip=r=>`<small class="chip r${r}">${RAR[r]}</small>`;
 function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
@@ -793,7 +797,7 @@ function rgOwn(){const cs=RG.slots(RUN),ts=RG.ts(RUN);let a='',b='';for(let i=0;
  return `<div class="sec"><h5>Your charms (${RUN.ch.length}/${cs}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${a}</div></div>
 <div class="sec"><h5>Your tools (${RUN.tl.length}/${ts}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${b}</div></div>`;}
 function rgCrate(){const C=RUN.crate;if(!C)return RUN.at==='shop'&&RUN.shop?rgShop():rgHub();G.state='rogue';$('#pauseB').hidden=true;RUN.at='crate';const T=CRT[C.tier];
- for(const o of C.opts){if(o.k==='fu'){rgSee('fu',o.id);rgSee(CH[o.id]?'ch':'tl',o.id);}else if(o.k!=='coin')rgSee(o.k,o.id);}rgSave();
+ rareCue(C.opts.filter(o=>o.k==='ch').map(o=>o.id));for(const o of C.opts){if(o.k==='fu'){rgSee('fu',o.id);rgSee(CH[o.id]?'ch':'tl',o.id);}else if(o.k!=='coin')rgSee(o.k,o.id);}rgSave();
  const row=(o,i)=>{const no=RG.blocked(RUN,o),btn=`<button class="go sm" data-a="rtake" data-i="${i}"${no?' disabled':''}>${no||'Take'}</button>`;
   if(o.k==='ch'){const d=CH[o.id];return `<li>${tile(o.id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}</div>${btn}</li>`;}
   if(o.k==='tl'){const d=TL[o.id];return `<li>${tile(o.id,'tl')}<div><b>${d.n}</b> <small class="chip">Tool · charge ${RG.need(RUN,o.id)}</small><br>${d.d}</div>${btn}</li>`;}
@@ -835,7 +839,7 @@ function rgClear(left){RUN.off=0;const c=RUN.cfg,rows=RG.payout(RUN,c,left),was=
  const pay=`<ul class="wl">${rows.map(r=>`<li><div>${r[0]}</div><em><i class="coin"></i>+${r[1]}</em></li>`).join('')}<li><div><b>Total</b></div><em><i class="coin"></i>+${sum}</em></li></ul>`;
  if(win){snd('hi');show(`<div class="mode">${was}</div>${tile(c.boss,'big boss')}<h3>You win!</h3><p>${BOSS[c.boss].n} is beaten. Run score:</p><div class="big">${RUN.total}</div>${pay}${drop}<p>Bank this score, or go deeper for a bigger one.</p><button class="go rogue" data-a="rcr">Open the crate and go deeper</button><button class="go alt" data-a="rbank">Bank score</button>`);}
  else show(`<div class="mode">${was}</div><h3>Jar cleared!</h3>${pay}<p class="tg">You now have ${cn(RUN.coins)}</p>${drop}${nxt}`);}
-function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgSee('ch',RUN.shop.ch);rgSee('tl',RUN.shop.tl);rgSee('up',RUN.shop.up);rgSee('sd',RUN.shop.sd);rgSee('boss',RG.boss(RUN));rgSave();const S=RUN.shop,cs=RG.slots(RUN),full=RUN.ch.length>=cs,ts=RG.ts(RUN),tfull=RUN.tl.length>=ts,rr=RG.rrCost(RUN),old=ui.querySelector('.msg'),sy=keep&&old?old.scrollTop:0;
+function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgSee('ch',RUN.shop.ch);rgSee('tl',RUN.shop.tl);rgSee('up',RUN.shop.up);rgSee('sd',RUN.shop.sd);rgSee('boss',RG.boss(RUN));rgSave();rareCue(RUN.shop.ch);const S=RUN.shop,cs=RG.slots(RUN),full=RUN.ch.length>=cs,ts=RG.ts(RUN),tfull=RUN.tl.length>=ts,rr=RG.rrCost(RUN),old=ui.querySelector('.msg'),sy=keep&&old?old.scrollTop:0;
  const swp=(k,p)=>RUN.coins+Math.max(0,...(k==='ch'?RUN.ch.map(c=>RG.sellV(RUN,CH[c.id].c)):RUN.tl.map(t=>RG.sellV(RUN,TL[t.id].c))))>=p,buy=(a,i,p,no)=>no?`<button class="go sm" data-a="rswap" data-k="${a==='rbuy'?'ch':'tl'}" data-i="${i}"${swp(a==='rbuy'?'ch':'tl',p)?'':' disabled'}>Swap <i class="coin"></i>${p}</button>`:`<button class="go sm" data-a="${a}" data-i="${i}"${RUN.coins<p?' disabled':''}><i class="coin"></i>${p}</button>`;
  const it=S.ch.map((id,i)=>{if(!id)return'';const d=CH[id];return `<li>${tile(id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}</div>${buy('rbuy',i,RG.cost(RUN,d.c),full)}</li>`}).join('');
  const tl=S.tl.map((id,i)=>{if(!id)return'';const d=TL[id];return `<li>${tile(id,'tl')}<div><b>${d.n}</b> <small class="chip">Charge ${RG.need(RUN,id)}</small><br>${d.d}</div>${buy('rtbuy',i,RG.cost(RUN,d.c),tfull)}</li>`}).join('');
