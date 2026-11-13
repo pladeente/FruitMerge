@@ -24,6 +24,9 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-o
 .pill:active{transform:translateY(1px)}
 .ib{min-width:44px;height:44px;padding:0 10px;border-radius:22px;background:var(--panel);font:800 18px var(--body)}
 #stage{position:relative;overflow:hidden;border-radius:14px;flex:none}
+.crfx{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;background:#1b1029d9;transition:opacity .4s;cursor:pointer}.crfx.out{opacity:0;pointer-events:none}.crfx canvas{width:min(80%,320px);aspect-ratio:1;image-rendering:pixelated}
+.msg.crin .it li,.msg.crin .tile.big{animation:crin .35s both}.msg.crin .it li:nth-child(2){animation-delay:.08s}.msg.crin .it li:nth-child(3){animation-delay:.16s}.msg.crin .it li:nth-child(4){animation-delay:.24s}@keyframes crin{from{opacity:0;transform:translateY(12px) scale(.95)}}
+@media (prefers-reduced-motion:reduce){.msg.crin .it li,.msg.crin .tile.big{animation:none}}
 #bossB{position:absolute;top:50px;right:8px;z-index:2;padding:3px;border-radius:10px;background:#fff3e6dd;border:0;box-shadow:inset 0 0 0 2px var(--coral);line-height:0;cursor:pointer}#bossB .px{width:34px;height:34px;margin:0}#bossB::after{content:'?';position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;border-radius:50%;background:var(--coral);color:#fff;font:800 13px/16px var(--body);text-align:center}
 #cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
 #ui{position:absolute;inset:0;pointer-events:none}
@@ -275,6 +278,8 @@ const PENTA=[262,294,330,392,440,523,587,659,784,880,1047];
 const SFX={
  ui(){tone(700,.06,{vol:.12,slide:1.3})},
  rare(){[1319,1568,1976,2637].forEach((f,i)=>{tone(f,.2,{type:'triangle',vol:.1,at:i*.07})});noise(.35,{vol:.04,type:'highpass',f:6000,at:.12})}, /* a rare charm turns up in the shop or a crate */
+ crsh(i){tone(240+i*60,.05,{type:'square',vol:.05});noise(.04,{vol:.05,f:900})}, /* crate shake knock, rising */
+ crpop(){noise(.35,{vol:.22,f:2600});tone(220,.3,{vol:.2,slide:.4});[784,988,1319].forEach((f,i)=>tone(f,.18,{type:'triangle',vol:.08,at:.05+i*.05}))}, /* crate bursts open */
  land(l){const f=200-l*12;tone(f,.14,{vol:.22,slide:.55});noise(.05,{vol:.07,f:500+l*40})},
  merge(l,combo){const f=PENTA[Math.min(10,l)]*Math.pow(1.122,Math.min(combo,6));tone(f*.75,.16,{type:'sine',vol:.3,slide:1.45});tone(f*1.5,.12,{type:'triangle',vol:.08,at:.04});noise(.04,{vol:.05,type:'highpass',f:3000})},
  melon(){[523,659,784,1047,1319].forEach((f,i)=>{tone(f,.35,{type:'triangle',vol:.14,at:i*.08});tone(f*2,.2,{vol:.05,at:i*.08+.02})});noise(.6,{vol:.06,type:'highpass',f:5000,at:.3})},
@@ -708,7 +713,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.23',d:'13 Nov 2026',t:'Fewer rares in crates',i:['Boss crates offer fewer rare charms: gold crates 10 in 100 (was 15), melon crates 30 in 100 (was 70). Melon crates still never offer common charms.']},
+ {v:'1.23',d:'13 Nov 2026',t:'Fewer rares in crates',i:['Crates now shake and burst open before showing what is inside. Tap to skip.','Boss crates offer fewer rare charms: gold crates 10 in 100 (was 15), melon crates 30 in 100 (was 70). Melon crates still never offer common charms.']},
  {v:'1.23',d:'13 Nov 2026',t:'Seeds cut back',i:['Seeds were far stronger than anything else in the shop. Each level now gives +0.25 Mult (was +0.5), and a seed costs 2 coins more for every level you hold of it (was 1). The points are unchanged.','Smoothie: +1.5 Mult and +12 points a merge (was +2 and +20).','Marathon: ×3 Mult for your first 7 and last 6 drops of each jar. It no longer gives ×2 for the rest of the jar.']},
  {v:'1.22',d:'13 Nov 2026',t:'Jar summary',i:['Rogue leaderboard: the best 5 scores of each Ripeness, highest Ripeness at the top.','Boss jars show the boss in the corner of the jar. Tap it to pause and read what it does.','Jar cleared now shows your score against the target, the drops you had left, and stats for that jar: merges, biggest fruit, best merge, best combo, tools used and pet meals.']},
  {v:'1.21',d:'13 Nov 2026',t:'Accounts',i:['Almanac: a new Fruit tab lists every size in order, and the rock, with a few words about each one.','Show button to see your password as you type it. Creating an account asks for the password twice.','Sign in from the menu, next to Options.','Fixed: the account screens closed as soon as the phone keyboard opened.','Create an account in Options to keep your progress safe online and play on other devices. It is optional.','Your username is yours on the leaderboard: nobody else can post scores under it.','Names with slurs or swears can not be used.']},
@@ -869,7 +874,7 @@ function rgOwn(){const cs=RG.slots(RUN),ts=RG.ts(RUN);let a='',b='';for(let i=0;
  return `<div class="sec"><h5>Your charms (${RUN.ch.length}/${cs}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${a}</div></div>
 <div class="sec"><h5>Your tools (${RUN.tl.length}/${ts}) <small>Tap one to inspect or sell it.</small></h5><div class="own">${b}</div></div>`;}
 function rgCrate(){const C=RUN.crate;if(!C)return RUN.at==='shop'&&RUN.shop?rgShop():rgHub();G.state='rogue';$('#pauseB').hidden=true;RUN.at='crate';const T=CRT[C.tier];
- rareCue(C.opts.filter(o=>o.k==='ch').map(o=>o.id));for(const o of C.opts){if(o.k==='fu'){rgSee('fu',o.id);rgSee(CH[o.id]?'ch':'tl',o.id);}else if(o.k!=='coin')rgSee(o.k,o.id);}rgSave();
+ const fx=G.crA!==C&&!matchMedia('(prefers-reduced-motion:reduce)').matches,cue=()=>rareCue(C.opts.filter(o=>o.k==='ch').map(o=>o.id));G.crA=C;if(!fx)cue();for(const o of C.opts){if(o.k==='fu'){rgSee('fu',o.id);rgSee(CH[o.id]?'ch':'tl',o.id);}else if(o.k!=='coin')rgSee(o.k,o.id);}rgSave();
  const row=(o,i)=>{const no=RG.blocked(RUN,o),btn=`<button class="go sm" data-a="rtake" data-i="${i}"${no?' disabled':''}>${no||'Take'}</button>`;
   if(o.k==='ch'){const d=CH[o.id];return `<li>${tile(o.id,'r'+d.r)}<div><b>${d.n}</b> ${chip(d.r)}<br>${d.d}</div>${btn}</li>`;}
   if(o.k==='tl'){const d=TL[o.id];return `<li>${tile(o.id,'tl')}<div><b>${d.n}</b> <small class="chip">Tool · charge ${RG.need(RUN,o.id)}</small><br>${d.d}</div>${btn}</li>`;}
@@ -877,7 +882,23 @@ function rgCrate(){const C=RUN.crate;if(!C)return RUN.at==='shop'&&RUN.shop?rgSh
   if(o.k==='coin')return `<li>${tile('wallet','up')}<div><b>${o.n} coins</b><br>Paid right now.</div>${btn}</li>`;
   const d=CH[o.id]||TL[o.id],an=(CH[o.id]?CH:TL)[d.fu[0]].n,bn=CH[d.fu[1]].n;return `<li>${tile(o.id,'r3')}<div><b>${d.n}</b> ${chip(3)}<br>Fuses <b>${an}</b> and <b>${bn}</b> into one ${CH[o.id]?'charm':'tool'}. ${d.d}</div>${btn}</li>`;};
  show(`<div class="mode">${jn()}</div>${tile('crate_'+C.tier,'big cr')}<h3>${C.kind?CRN[C.kind]:T.n}</h3><p class="tg">Pick one. It is free.</p><div class="sec">${C.opts.length?`<ul class="it">${C.opts.map(row).join('')}</ul>`:'<p class="none">Empty.</p>'}</div>
-<button class="go alt sm" data-a="rleave">Leave it for <i class="coin"></i>${T.out}</button>${rgOwn()}`);}
+<button class="go alt sm" data-a="rleave">Leave it for <i class="coin"></i>${T.out}</button>${rgOwn()}`);if(fx)crateFx(C.tier,()=>{const m=ui.querySelector('.msg');if(m)m.classList.add('crin');cue();});}
+/* crate opening: drawn on a 72x72 canvas from the crate's icon grid and scaled up without smoothing, so every piece stays on the pixel grid. Drops in, shakes harder and harder with light leaking out, bursts (lid and two planks fly off in quarter turns, pixel confetti, a flash ring), then fades to the pick list (done). Tap to skip */
+const CRFX={wood:['#a9713a','#6e4420','#ffd43b','#fff2d8'],gold:['#ffd43b','#e09600','#fff2d8','#ffffff'],melon:['#7bc950','#38862a','#ff4d8d','#ffffff']};
+function crateFx(tier,done){const ov=document.createElement('div'),cv=document.createElement('canvas');ov.className='crfx';cv.width=cv.height=72;ov.appendChild(cv);$('#stage').appendChild(ov);const c=cv.getContext('2d'),g=(PXD['crate_'+tier]||PXD.crate_wood).trim().split('\n'),P=CRFX[tier]||CRFX.wood,S=3,X=21,Y=26;
+ const pc=(r0,r1,c0,c1)=>{const k=document.createElement('canvas');k.width=(c1-c0+1)*S;k.height=(r1-r0+1)*S;const x=k.getContext('2d');for(let y=r0;y<=r1;y++)for(let i=c0;i<=c1;i++){const q=PXP[(g[y]||'')[i]];if(q){x.fillStyle=q;x.fillRect((i-c0)*S,(y-r0)*S,S,S);}}return k;},whole=pc(1,10,1,10),parts=[[pc(1,3,1,10),0,0,6,-75,7],[pc(4,10,1,5),0,6,-42,-38,-6],[pc(4,10,6,10),10,6,42,-38,6]];
+ const px=(x,y,w,col)=>{c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),w,w);},bits=[],t0=performance.now();let rev=0,end=0,kn=0,burst=0;
+ const fin=()=>{if(end)return;end=1;if(!rev){rev=1;done();}ov.classList.add('out');setTimeout(()=>ov.remove(),420);};ov.onclick=fin;
+ const fr=()=>{if(end)return;const t=(performance.now()-t0)/1000;c.clearRect(0,0,72,72);
+  if(t<1.1){let x=X,y=Y;if(t<.3){const e=t/.3;y=Y-(1-e*e)*60;}else{if(!kn){kn=1;snd('land',4);}const k=(t-.3)/.8,n=Math.floor((t-.3)/.12);if(n>=kn){kn=n+1;snd('crsh',n);}x+=Math.round(Math.sin(t*70)*k*3);if(n%2&&k>.3)y-=Math.round(k*2);
+    for(let i=0;i<k*4;i++)if(Math.random()<k)px(X+Math.random()*30,Y+9+(Math.random()<.5?-1:0),1,Math.random()<.5?'#fff':P[2]);if(Math.random()<k*.6)bits.push({x:X+3+Math.random()*24,y:Y+30,vx:(Math.random()-.5)*20,vy:-8-Math.random()*8,l:.35,s:1,col:'#c9c3d4',gr:40});}
+   if(t<.3||t>.38)c.drawImage(whole,x,y);else c.drawImage(whole,x-2,y+3,34,27);}
+  else{if(!burst){burst=1;snd('crpop');for(const q of parts)q.push(0,0);for(let i=0;i<46;i++){const a=Math.random()*6.283,v=35+Math.random()*60;bits.push({x:36,y:41,vx:Math.cos(a)*v,vy:Math.sin(a)*v-25,l:.7+Math.random()*.6,s:Math.random()<.3?2:1,col:P[i%4],gr:90});}}
+   const b=t-1.1;if(b<.18){const rr=4+b*190;for(let i=0;i<40;i++){const a=i/40*6.283;px(36+Math.cos(a)*rr,41+Math.sin(a)*rr,2,b<.08?'#fff':P[2]);}if(b<.06){c.fillStyle='#ffffffaa';c.fillRect(0,0,72,72);}}
+   for(const [k,ox,oy,vx,vy,sp] of parts){const x=X+ox*S+vx*b,y=Y+oy*S+vy*b+80*b*b,q=((Math.floor(b*Math.abs(sp))%4)+4)%4;c.save();c.translate(Math.round(x+k.width/2),Math.round(y+k.height/2));c.rotate(q*Math.PI/2*Math.sign(sp));c.drawImage(k,-k.width/2|0,-k.height/2|0);c.restore();}
+   if(b>.25&&!rev){rev=1;done();}if(b>.75)return fin();}
+  const dt=1/60;for(let i=bits.length-1;i>=0;i--){const q=bits[i];q.l-=dt;if(q.l<=0){bits.splice(i,1);continue;}q.vy+=q.gr*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;px(q.x,q.y,q.s,q.col);}
+  requestAnimationFrame(fr);};requestAnimationFrame(fr);}
 function rgHub(){G.state='rogue';$('#pauseB').hidden=true;RUN.at='hub';rgSee('boss',[RG.boss(RUN),RG.mid(RUN)]);rgSee('tl',RUN.tl.map(t=>t.id));rgSave();
  show(`<div class="mode">${rgWho()}</div><h3>${jn()}</h3>${rgTrack()}${rgBar()}${rgFuNote()}<button class="go rogue st" data-a="rgo">Start jar</button><br>${rgSkipB()}<button class="go alt sm" data-a="rinfo">Run info</button><button class="go alt sm" data-a="menu">Save &amp; quit</button>`);}
 function rgInfo(){const nb=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,ups=Object.keys(UPG).filter(k=>!UPG[k].now&&RUN.up[k]),sds=RUN.sd.map((v,l)=>v?l:0).filter(l=>l);
