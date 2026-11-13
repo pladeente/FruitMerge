@@ -11,7 +11,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 | `index.html` | CSS, HTML shell, engine (`makeGame`), Classic and Wild, all screens including the Rogue ones, the dev panel. About 580 very long lines. |
 | `rogue.js` | Rogue rules and data (`CH`, `BOSS`, `UPG`, `TL`, seeds, crates (`CRT`), `RG`, balance tables), the player profile (`PF`, `mergeProfile`), run events (`rgEv`) and awards (`ACH`, `LOCK`). Loaded before the main script. No DOM access. |
 | `icons.js` | Pixel art. `PXD` = 12x12 letter grids, `PXP` = palette, `PXF`/`PXFB` = score pop-up font. |
-| `fruits.png` | Beta fruit art: one strip of 11 square pixel sprites (widths in `ARW`), the user's drawings. Off by default, switched on in Options or the pause screen (`artB`). |
+| `fruits.png` | Beta fruit art: one strip of square pixel sprites (widths in `ARW`): the 11 fruit (the user's drawings), then the rock (`SPR[11]`, drawn by `drawStone`). Off by default, switched on in Options or the pause screen (`artB`). |
 | `sw.js` | Service worker, network first, cache fallback. Bump `CACHE` and update `CORE` whenever a file is added or renamed. |
 | `database.rules.json` | Firebase Realtime Database rules for the leaderboard (pasted into the console by hand). |
 | `README.md` | Player/host facing notes, including Firebase setup. |
