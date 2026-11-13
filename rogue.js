@@ -2,6 +2,8 @@
    Nothing here touches the page. It uses rint and store from index.html, but only inside functions, so load order is fine. */
 /* ---------- rogue mode: rules (charms, bosses, shop, scoring) ---------- */
 const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=9; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
+/* fruit names by tier: a single size is written 'Orange (5)' (fnm), ranges stay numeric ('size 3 or smaller'). Mandarin and Rockmelon are the Australian names */
+const FN=['Cherry','Strawberry','Grape','Mandarin','Orange','Apple','Pear','Pineapple','Peach','Rockmelon','Watermelon'],fnm=l=>FN[l]+' ('+(l+1)+')',fna=l=>(/^[AEIOU]/.test(FN[l])?'an ':'a ')+fnm(l);
 const RQ=[100,130,160]; /* depth 1 score targets: jar 1, jar 2, boss */
 const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2; /* target multiplier per depth, then ×RSCX for every endless depth */
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused'];
@@ -134,17 +136,17 @@ const BOSS={
  tax:{n:'The Taxman',d:'Takes a coin every 4 drops.',d2:'Takes a coin every 2 drops.',min:2},
  clock:{n:'The Clock',d:'Your fruit drops by itself after 3 seconds.',d2:'It drops after 2 seconds.',min:2},
  gamble:{n:'The Gambler',d:'Every fruit is a random size from 1 to 6.',d2:'Sizes go up to 7.',min:2},
- twins:{n:'The Twins',d:'Every merge that makes a size 3 fruit or bigger drops a size 1 fruit into the jar.',d2:'It drops 2 of them.',min:2},
+ twins:{n:'The Twins',d:'Every merge that makes a size 3 fruit or bigger drops a Cherry (1) into the jar.',d2:'It drops 2 of them.',min:2},
  miser:{n:'The Miser',d:'Tools charge at half speed.',d2:'Tools stop charging.',min:2},
  ice:{n:'Cold Snap',d:'Every 4th fruit is Frozen. It freezes its neighbours, then they shrink a size.',d2:'Every 3rd fruit is Frozen.',min:3},
  stone:{n:'The Quarry',d:'Every 5th drop is a rock that never merges.',d2:'Every 3rd drop is a rock.',min:3},
- prune:{n:'The Pruner',d:'Merges that make a size 4 fruit or smaller score nothing.',d2:'Size 5 scores nothing either.',min:3},
+ prune:{n:'The Pruner',d:'Merges that make a size 4 fruit or smaller score nothing.',d2:'Oranges (5) score nothing either.',min:3},
  storm:{n:'The Storm',d:'A whirlpool hits every 6 drops.',d2:'A whirlpool hits every 4 drops.',min:3},
  thief:{n:'The Thief',d:'Your first charm does nothing.',d2:'Your first 2 charms do nothing.',min:3},
  tide:{n:'The Tide',d:'The line moves up and down.',d2:'It swings further down.',min:3},
  wilt:{n:'The Wilt',d:'Every 4 drops your biggest fruit shrinks one size.',d2:'It shrinks every 3 drops.',min:3},
  dark:{n:'The Blackout',d:'The lights go out. They come back on for a moment every 3 to 5 drops. You can still see the fruit you drop.',d2:'They come on every 4 to 6 drops, for less time.',min:3},
- collect:{n:'The Collector',d:'The jar only clears once you have also made a size 7 fruit.',d2:'If you have not made it yet, it must now be a size 8.',min:3},
+ collect:{n:'The Collector',d:'The jar only clears once you have also made a Pear (7).',d2:'If you have not made it yet, it must now be a Pineapple (8).',min:3},
  slick:{n:'The Slick',d:'Every fruit is Slippery.',d2:'The jar also shakes every 6 drops.',min:4},
  lid:{n:'The Lid',d:'The line sits lower in the jar.',d2:'The line drops lower still.',min:4},
  audit:{n:'The Auditor',d:'Mult can not go above ×6.',d2:'Mult can not go above ×4.',min:4,q:.45},
@@ -160,7 +162,7 @@ const UPG={
  fert:{n:'Fertiliser',c:3,d:'Every merge scores +2 points for the rest of the run.'},
  sauce:{n:'Hot Sauce',c:4,d:'+0.25 Mult for the rest of the run.'},
  can:{n:'Watering Can',c:3,d:'+2 drops in every jar for the rest of the run.'},
- scrub:{n:'Scrub',c:3,now:1,d:'Right now: clears every size 1 and size 2 fruit out of the jar.'},
+ scrub:{n:'Scrub',c:3,now:1,d:'Right now: clears every Cherry (1) and Strawberry (2) out of the jar.'},
  bribe:{n:'Bribe',c:4,now:1,d:'Right now: swaps the next boss for a different one.'},
  belt:{n:'Tool Belt',c:6,max:2,d:'+1 tool slot (up to 4).'},
  pouch:{n:'Charm Pouch',c:10,max:1,d:'+1 charm slot.'},
@@ -196,7 +198,7 @@ const TL={
  midas:{n:'Midas',c:6,ch:9,tg:1,d:'Tap a fruit. It turns gold. When it merges it scores ×2 and pays 2 coins.'},
  rewind:{n:'Rewind',c:4,ch:5,d:'Take back your last drop, if that fruit has not merged.'},
  ddown:{n:'Double Down',s:'Double',c:5,ch:6,d:'Costs 2 drops. Your next merge scores ×4.'},
- sieve:{n:'Sieve',c:4,ch:7,d:'Clears every size 1 fruit out of the jar.'},
+ sieve:{n:'Sieve',c:4,ch:7,d:'Clears every Cherry (1) out of the jar.'},
  anchor:{n:'Anchor',c:4,ch:6,tg:1,d:'Tap a fruit. It cannot move until the jar ends, but it still merges.'},
  petrify:{n:'Petrify',c:5,ch:8,tg:1,d:'Tap a fruit. It turns to stone: it can not move or merge, and never counts as over the line. It crumbles away when the next jar starts.'},
  shatter:{n:'Shatter',c:4,ch:6,tg:1,d:'Tap a rock. It turns into a fruit of the same size.'},
@@ -204,7 +206,7 @@ const TL={
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
  bloom:{n:'Bloom',c:12,ch:10,tg:1,fu:['ripen','sprout'],d:'Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level.'},
- mesh:{n:'Fine Mesh',c:12,ch:7,fu:['sieve','pip'],d:'Clears every size 1 and size 2 fruit out of the jar. Each one cleared scores 15 points.'},
+ mesh:{n:'Fine Mesh',c:12,ch:7,fu:['sieve','pip'],d:'Clears every Cherry (1) and Strawberry (2) out of the jar. Each one cleared scores 15 points.'},
  medusa:{n:'Medusa',c:12,ch:8,tg:1,fu:['petrify','wire'],d:'Tap a fruit. It and every fruit touching it turn to stone: they can not move or merge, and never count as over the line. They crumble away when the next jar starts.'},
  whistle:{n:'Whistle',c:5,ch:6,tg:1,req:CAT,d:'Tap a fruit (size 3 or less). Your caterpillar comes out now and eats it.'},
  ghand:{n:'Golden Hand',s:'Gold Hand',c:12,ch:8,tg:1,fu:['midas','wallet'],d:'Tap a fruit. It turns gold. When it merges it scores ×3 and pays 4 coins.'}
@@ -350,7 +352,7 @@ function mergeProfile(a,b){a=PF.fix(a);b=PF.fix(b);const o=PF.blank(),first=(x,y
 function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R.st={}),inc=(k,v=1)=>{PF.inc(k,v);rs[k]=(rs[k]||0)+v;if(R.jst)R.jst[k]=(R.jst[k]||0)+v;},top=(k,v)=>{PF.max(k,v);if(!(rs[k]>=v))rs[k]=v;};
  if(n==='run')PF.inc('runs');
  else if(n==='start'){R.jst={};}
- else if(n==='drop')inc('drops');
+ else if(n==='drop'){inc('drops');if(d.rt)inc('rdrops');}
  else if(n==='merge'){inc('merges');inc('made.'+d.l);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);}
  else if(n==='tool'){inc('tools');inc('tool.'+d.id);}
  else if(n==='kill')inc('kills',d.n);
@@ -360,7 +362,11 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='jar'){inc('jars');top('bestDepth',d.depth);top('bestJar',d.score);if(d.boss){inc('bosses');PF.inc('boss.'+d.boss+'.win');}if(d.win){PF.inc('wins');const j=R.jarId||'classic';PF.d.stakes[j]=Math.max(PF.d.stakes[j]||0,R.stake||1);PF.dirty=1;}}
  else if(n==='end'){PF.inc('end.'+d.why);if(d.why!=='win'&&d.why!=='quit'&&d.boss)PF.inc('boss.'+d.boss+'.loss');PF.max('bestScore',R.total);top('bestCoins',R.coins);}
  else if(n==='buy'){inc('buys');PF.inc((d.k||'ch')+'.'+d.id+'.buy');}
- else if(n==='sell')inc('sells');
+ else if(n==='sell'){inc('sells');if(R.jst&&(d.k||'ch')==='ch')R.jst['sold.'+d.id]=1;}
+ else if(n==='leave')inc('leaves');
+ else if(n==='petr')inc('petr.'+d.l);
+ else if(n==='mould')inc('moulds');
+ else if(n==='overln')inc('overlns');
  else if(n==='up'){inc('ups');PF.inc('up.'+d.id+'.buy');}
  else if(n==='seed'){inc('seeds');PF.inc('sd.'+d.l+'.buy');}
  else if(n==='grow')inc('grown');
@@ -405,7 +411,7 @@ const ACH={
  pollen:{n:'Pollinator',d:'Your bees pollinate 30 fruit (over all your runs).',on:'pet',t:(R,d,S)=>(S['pet.bee']||0)>=30,un:'fu.bfly'},
  zoo3:{n:'Petting Zoo',d:'Hold 3 pets at once.',on:'buy take fuse',t:R=>PETS.filter(id=>RG.has(R,id)).length>=3,un:'fu.zoo'},
  gold6:{n:'Treasure Trove',d:'Merge 6 gold fruit in one jar.',on:'gold',t:R=>R.jst.golds>=6,un:'fu.phil'},
- small15:{n:'Small Wonders',d:'Make 15 fruit of size 2 or 3 in one jar.',on:'merge',t:R=>(R.jst['made.1']||0)+(R.jst['made.2']||0)>=15,un:'fu.snack'},
+ small15:{n:'Small Wonders',d:'Make 15 Strawberries (2) or Grapes (3) in one jar.',on:'merge',t:R=>(R.jst['made.1']||0)+(R.jst['made.2']||0)>=15,un:'fu.snack'},
  seeds15:{n:'Orchard',d:'Hold 15 seed levels at once.',on:'seed take grow',t:R=>R.sd.reduce((a,b)=>a+b,0)>=15,un:'fu.svault'},
  dark:{n:'Night Owl',d:'Beat The Blackout.',on:'jar',t:(R,d)=>d.boss==='dark'},
  bank:{n:'Bank Shot',d:'Score a Trick Shot.',on:'merge',t:(R,d)=>d.trick,secret:1},
@@ -414,7 +420,25 @@ const ACH={
  slayer:{n:'Giant Slayer',d:'Beat 15 different bosses.',on:'jar',t:(R,d,S)=>Object.keys(S).filter(k=>/^boss\..*\.win$/.test(k)).length>=15,un:'jar.kit'},
  almanac:{n:'Know-It-All',d:'Meet every boss.',on:'start jar',t:()=>Object.keys(BOSS).every(k=>PF.d.seen['boss.'+k])},
  stake4:{n:'Seasoned',d:'Win a run on Ripeness 4 or higher.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4},
- stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8}
+ stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8},
+ /* hard and obscure ones (ti = the title they give, shown before the player's name) */
+ bugtest:{n:'Bugtest',d:'Hold Pet Caterpillar, Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. Their fusions count.',on:'buy take fuse',t:R=>[['pet','frenzy'],['bowl','zoo'],['treats'],['chrys','bfly'],['appetite']].every(g=>g.some(id=>RG.has(R,id))),ti:'Bugtester'},
+ bfly5:{n:'Butterfly Effect',d:'Chrysalis reaches +5 Mult in one run.',on:'pet jar fuse',t:R=>R.ch.some(c=>(c.id==='chrys'||c.id==='bfly')&&(c.v||0)>=5),ti:'Lepidopterist'},
+ rainbow:{n:'Rainbow Jar',d:'Have one of every fruit from Cherry (1) to Rockmelon (10) in the jar at once.',on:'rainbow',t:()=>true,ti:'Rainbow'},
+ gmelon:{n:'Golden Melon',d:'Make a Watermelon out of a gold Rockmelon (10).',on:'merge',t:(R,d)=>d.l===10&&d.gold,ti:'Golden'},
+ exact:{n:'Exact Change',d:'Reach a jar\'s target exactly, not a point over.',on:'exact',t:()=>true,ti:'Accountant'},
+ shave:{n:'Close Shave',d:'Clear a jar while the pile is over the line.',on:'shave',t:()=>true,ti:'Daredevil'},
+ south:{n:'Southpaw',d:'Clear a jar of 10 or more drops with every fruit dropped in the left half.',on:'jar',t:R=>R.jst.drops>=10&&!R.jst.rdrops,ti:'Southpaw'},
+ ladder:{n:'Full Ladder',d:'Make every fruit from Strawberry (2) to Watermelon (11) in one combo.',on:'ladder',t:()=>true,ti:'Climber'},
+ untouch:{n:'Untouchable',d:'Beat a boss at depth 5 or deeper without the pile ever going over the line.',on:'jar',t:(R,d)=>d.boss&&d.jar===2&&d.depth>=5&&!R.jst.overlns,ti:'Untouchable'},
+ medusa:{n:'Medusa\'s Garden',d:'Petrify 5 Oranges (5) in one run.',on:'petr',t:R=>(R.st['petr.4']||0)>=5,ti:'Medusa'},
+ rocks:{n:'Rock Bottom',d:'Have 6 rocks in the jar at once.',on:'rocks6',t:()=>true,ti:'Geologist'},
+ mouldy:{n:'Mouldy Oldie',d:'Let 3 fruit go mouldy in one jar and still clear it.',on:'jar',t:R=>(R.jst.moulds||0)>=3},
+ remorse:{n:'Seller\'s Remorse',d:'Sell a charm, then buy the same charm back before the next jar.',on:'buy',t:(R,d)=>(!d.k||d.k==='ch')&&!!(R.jst&&R.jst['sold.'+d.id])},
+ broke:{n:'Empty Pockets',d:'Beat a final boss holding 0 coins.',on:'jar',t:(R,d)=>d.jar===2&&d.boss&&BOSS[d.boss].fin&&R.coins===0,ti:'Pauper'},
+ noint:{n:'Not Interested',d:'Leave 5 crates unopened in one run.',on:'leave',t:R=>(R.st.leaves||0)>=5},
+ pear:{n:'Pear-Shaped',d:'Lose a run with a Pear (7) over the line.',on:'overf',t:(R,d)=>d.l===6,secret:1,ti:'Pear-Shaped'},
+ fly:{n:'Fruit Fly',d:'Keep a fruit in the air for 3 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly'}
 };
 const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
 const ACHQ=[]; /* awards earned and not yet shown */

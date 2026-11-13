@@ -38,6 +38,8 @@ Scores are stored under `scores/classic`, `scores/wild` and `scores/rogue`. The 
 
 If the database was set up before Rogue mode existed, paste `database.rules.json` into the Rules tab again and publish. Until then the Rogue world board says it can't be reached, and Rogue scores stay on the device.
 
+Titles work the same way: the rules allow an optional `ti` (the player's title, up to 16 characters) on every score. Until the rules are re-published, scores post without it.
+
 The same goes for stakes: the rules now allow an optional `k` (the Ripeness level, called stake in the code, 2 to 8) on Rogue scores. Paste `database.rules.json` into the Rules tab again and publish. Until then Rogue scores still reach the world board, but without their stake.
 
 Note: any browser game that submits its own score can be cheated by someone who edits the request. The rules stop junk data and overwrites, not a determined cheater.

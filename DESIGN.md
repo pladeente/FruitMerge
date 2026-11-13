@@ -226,33 +226,33 @@ Slingshot (throw fruit by flicking) and Trick Shot (a thrown fruit that banks of
 - Showing fusion recipes before the player holds both halves (the user removed hints on purpose).
 - Permanent power in the profile (pillar 7).
 
-## Fruit names (planned)
+## Fruit names (built, v1.19)
 
 Sizes get names, with the number kept: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11). Mandarin and Rockmelon are the Australian names, on purpose. A single size is written "Orange (5)", a range stays numeric ("size 3 or smaller"). Touches item texts, seed labels and the Almanac. Keep names short where cards are small.
 
-## New awards (planned, all approved by the user)
+## Hard awards (built, v1.19)
 
-Hard or obscure, not earned by accident. The hard ones give a **title** shown before the player's name ("Bugtester (name)"), the rest are badges. Titles need a field on leaderboard scores, so `database.rules.json` changes and the user re-publishes it by hand. Proposed titles in brackets, not final.
+Hard or obscure, not earned by accident. The hard ones give a **title** shown before the player's name ("Bugtester (name)"), the rest are badges. Titles need a field on leaderboard scores, so `database.rules.json` changes and the user re-publishes it by hand. Titles in brackets.
 
 1. Bugtest: hold Pet Caterpillar (or Feeding Frenzy), Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. All 5 slots, so Ripeness 7 needs the Charm Jar or Charm Pouch. (Bugtester)
-2. Butterfly Effect: Chrysalis reaches +5 Mult (10 butterflies) in one run. (Lepidopterist)
+2. Butterfly Effect: Chrysalis (or Butterfly Garden) reaches +5 Mult (10 butterflies) in one run. (Lepidopterist)
 3. Rainbow Jar: one fruit of every size from Cherry (1) to Rockmelon (10) in the jar at once. (Rainbow)
-4. Golden Melon: make a gold Watermelon. (Golden)
+4. Golden Melon: make a Watermelon out of a gold Rockmelon (10). (Golden)
 5. Exact Change: reach a jar's target exactly with the last merge. (Accountant)
 6. Close Shave: clear a jar while the pile is over the line and the overflow timer runs. (Daredevil)
-7. Southpaw: clear a jar dropping every fruit in the left half. (Southpaw)
+7. Southpaw: clear a jar of 10 or more drops dropping every fruit in the left half. (Southpaw)
 8. Full Ladder: one combo that makes every size from Strawberry (2) to Watermelon (11). (Climber)
-9. Untouchable: beat a boss without the pile ever reaching the gold line. (Untouchable)
+9. Untouchable: beat a boss at depth 5 or deeper without the pile ever going over the line. The gold line idea was dropped: it is only drawn with High Wire or Climbing Ivy. (Untouchable)
 10. Medusa's Garden: petrify 5 Oranges (5) in one run. (Medusa)
 11. Rock Bottom: 6 rocks in the jar at once. (Geologist)
 12. Mouldy Oldie: let 3 fruit go mouldy in one jar and still clear it (The Rot). Badge.
-13. Seller's Remorse: sell a charm and buy the same charm back in the same shop. Badge.
-14. Empty Pockets: beat the final boss holding 0 coins. (Pauper)
+13. Seller's Remorse: sell a charm and buy the same charm back before the next jar. Badge.
+14. Empty Pockets: beat a final boss holding 0 coins (before the payout). (Pauper)
 15. Not Interested: leave 5 crates unopened in one run. Badge.
 16. Pear-Shaped (secret): lose a run with a Pear (7) as the fruit over the line. (Pear-Shaped)
 17. Fruit Fly: keep a fruit in the air for 3 seconds (Shake or a throw). (Fruit Fly)
 
-New tracking needed for some: drop side (Southpaw), airtime (Fruit Fly), gold line touched this jar (Untouchable), the fruit over the line at game over (Pear-Shaped), combo sizes (Full Ladder).
+Tracking added for them: drop side, airtime, pile over the line this jar, the fruit over the line at game over, sizes made in the current combo (see `CLAUDE.md`, Awards).
 
 ## Cosmetic rewards (backlog)
 
