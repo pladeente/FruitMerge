@@ -8,10 +8,44 @@
         ],
         "$id": {
           ".write": "($mode === 'classic' || $mode === 'wild' || $mode === 'rogue') && !data.exists()",
-          ".validate": "newData.hasChildren(['n', 's', 't']) && newData.child('n').isString() && newData.child('n').val().length >= 1 && newData.child('n').val().length <= 12 && newData.child('s').isNumber() && newData.child('s').val() > 0 && (newData.child('s').val() < 1000000 || ($mode === 'rogue' && newData.child('s').val() < 1000000000)) && newData.child('t').val() === now && (!newData.hasChild('k') || ($mode === 'rogue' && newData.child('k').isNumber() && newData.child('k').val() >= 2 && newData.child('k').val() <= 8)) && (!newData.hasChild('ti') || (newData.child('ti').isString() && newData.child('ti').val().length >= 1 && newData.child('ti').val().length <= 16))",
+          ".validate": "newData.hasChildren(['n', 's', 't']) && newData.child('n').isString() && newData.child('n').val().length >= 1 && newData.child('n').val().length <= 12 && newData.child('n').val().matches(/^[A-Za-z0-9 _-]+$/) && !newData.child('n').val().matches(/.*([nN][iI1!|]+[gG9][gG9]|[fF][aA4@]+[gG9][gG9]|[kK][iI1!|][kK][eE3]|[rR][eE3][tT7][aA4@][rR][dD]|[tT7][rR][aA4@][nN][nN][yY]|[fF][uUvV]+[cC][kK]).*/) && (!root.child('usernames').child(newData.child('n').val().toLowerCase()).exists() || (auth != null && root.child('usernames').child(newData.child('n').val().toLowerCase()).val() === auth.uid)) && newData.child('s').isNumber() && newData.child('s').val() > 0 && (newData.child('s').val() < 1000000 || ($mode === 'rogue' && newData.child('s').val() < 1000000000)) && newData.child('t').val() === now && (!newData.hasChild('k') || ($mode === 'rogue' && newData.child('k').isNumber() && newData.child('k').val() >= 2 && newData.child('k').val() <= 8)) && (!newData.hasChild('ti') || (newData.child('ti').isString() && newData.child('ti').val().length >= 1 && newData.child('ti').val().length <= 16))",
           "$other": {
             ".validate": "$other === 'n' || $other === 's' || $other === 't' || $other === 'k' || $other === 'ti'"
           }
+        }
+      }
+    },
+    "usernames": {
+      "$n": {
+        ".read": true,
+        ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || (data.val() === auth.uid && !newData.exists()))",
+        ".validate": "newData.isString() && $n.matches(/^[a-z0-9 _-]{3,12}$/) && !$n.matches(/.*([nN][iI1!|]+[gG9][gG9]|[fF][aA4@]+[gG9][gG9]|[kK][iI1!|][kK][eE3]|[rR][eE3][tT7][aA4@][rR][dD]|[tT7][rR][aA4@][nN][nN][yY]|[fF][uUvV]+[cC][kK]).*/)"
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        "name": {
+          ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9 _-]{3,12}$/) && newData.parent().parent().parent().child('usernames').child(newData.val().toLowerCase()).val() === $uid"
+        },
+        "p": {
+          ".validate": "newData.isString() && newData.val().length < 300000"
+        },
+        "r": {
+          ".validate": "newData.isString() && newData.val().length < 300000"
+        },
+        "sc": {
+          ".validate": "newData.isString() && newData.val().length < 100000"
+        },
+        "ti": {
+          ".validate": "newData.isString() && newData.val().length <= 16"
+        },
+        "t": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
         }
       }
     }

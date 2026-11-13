@@ -43,3 +43,14 @@ Titles work the same way: the rules allow an optional `ti` (the player's title, 
 The same goes for stakes: the rules now allow an optional `k` (the Ripeness level, called stake in the code, 2 to 8) on Rogue scores. Paste `database.rules.json` into the Rules tab again and publish. Until then Rogue scores still reach the world board, but without their stake.
 
 Note: any browser game that submits its own score can be cheated by someone who edits the request. The rules stop junk data and overwrites, not a determined cheater.
+
+## Accounts (Firebase Authentication, email and password)
+
+Signing in is optional. An account keeps a player's Rogue profile (awards, unlocks, stats, Ripeness wins), saved run, local scores and title online, merges them when they sign in on another device, and reserves their username so nobody else can post scores under it.
+
+1. In the Firebase console: Authentication, Sign-in method, enable **Email/Password** (leave the passwordless link off).
+2. Paste `database.rules.json` into Realtime Database, Rules, and publish. The rules add `users` (each player reads and writes only their own) and `usernames` (one owner per name), refuse the worst slurs in any name, and refuse a claimed username from anyone but its owner.
+3. The game uses the project's Web API key (`FB_KEY` in `index.html`) and talks to Firebase over REST, with no SDK. The key is not a secret: it only identifies the project, the rules protect the data.
+
+Usernames and leaderboard names are 1 to 12 letters, numbers, spaces, `-` or `_` (usernames at least 3). The game filters slurs, swears and staff-sounding names (`nameBad`), the database rules repeat the worst of it. If something slips through, delete it under Realtime Database, Data.
+
