@@ -57,7 +57,7 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Destruction | Fireworks, Pet Caterpillar, Compost, Ashes, Volcano, Safety Net | Cherry Bomb, Sieve | Scrub | Fine |
 | Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin | | Fine |
 | Full jar | Hoarder, High Wire | Anchor | Slow Fuse | Thin |
-| Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder | Sieve | Scrub | Filled, needs play |
+| Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder, Crumbs | Sieve | Scrub | Filled, measured (v1.26, see Small fruit measurement) |
 | Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
 | Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | | Filled, needs play |
 | Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
@@ -83,6 +83,7 @@ All in `CH` except Trick Shot. Numbers changed from the first proposal where not
 | Small fruit | Small Fry | Common | Merges that make a size 4 fruit or smaller score ×2. | Opposite of Heavyweight, so the two compete for a run |
 | Small fruit | Pip Collector | Uncommon | Gains +0.03 Mult every time you make a size 3 fruit or smaller. | Combo, Blender |
 | Small fruit | Bite Size | Uncommon | Fruit you drop are never bigger than size 3. +4 points a merge. | Pet Caterpillar, Sieve. Clashes with Rich Soil |
+| Small fruit | Crumbs (v1.26) | Uncommon | Every merge that makes a size 4 fruit or smaller adds +2 points to every merge for the rest of the jar. | The points side the build lacked: Small Fry and Hoarder multiply it, Bite Size feeds it |
 | Seeds | Gardener | Common | +1 level to a random seed every time you beat a boss, mini bosses included (about 9 levels a run). | Abacus, slow scaling |
 | Seeds | Seed Packet | Common | Seeds in the shop cost 1 coin less. | Economy |
 | Seeds | Sprout | Uncommon | The first time you make each size in a jar, its seed counts double. | Rewards spreading levels over many sizes |
@@ -136,6 +137,7 @@ Creatures that live in the jar and act every few drops, plus charms that pay off
 | Whistle (tool) | 5, charge 6 (caterpillar) | Tap a fruit (size 3 or less), the caterpillar comes now and eats it |
 | Butterfly Garden | Chrysalis + Busy Bee | Butterfly every 3rd meal. Bee every 3 drops, pollen ×4 |
 | Menagerie | Pet Bowl + Mole | +0.5 Mult per meal this jar. Mole every 5 drops for 60 |
+| Nectar | Busy Bee + Pet Treats | Bee as Busy Bee. Pets eat pollinated fruit first and a pollinated meal scores ×3 (its pollen). +30 per meal. Without it, pets leave pollinated fruit alone (v1.26: they used to eat it and waste the pollen) |
 | Feeding Frenzy | Small Fry + Pet Caterpillar | Small merges ×3, caterpillar every 4 drops for 90 (was 60) |
 
 Changes made while measuring:
@@ -200,6 +202,25 @@ Runs started with one charm, then greedy buying, 200 runs each (average depth re
 The two new rares sit with the existing ones. Blue Ribbon (×0.3 Mult per charm owned) was the strongest charm by this measure, so it now gives ×0.2 per charm: 400 runs, average depth 4.68, 2% wins. Still the best rare, no longer far ahead.
 
 Pets land with small fruit and chance: real builds, not the strongest. Their extra value (clearing fruit, so fewer overflows) does not show in a single-jar score. Chain Reaction is a common that scores like a rare: worth a look on its own.
+
+## Small fruit measurement (13 Nov, v1.26)
+
+Question asked: do small fruit builds work. Bot as in the Seeds measurement (aims at the highest uncovered match, no tools), three jars of a depth in a row with the pile carried, quota and drops lifted so every jar plays 24 drops, 20 to 30 runs per loadout. Growers set to a fair value for the depth: at depth 2 Pip +0.4, Keepsake +0.8; at depth 7 Pip +3, Keepsake +9 (Pip gains about +0.2 a jar, so about 7 small fruit made a jar).
+
+Single charms at depth 2 (no charms ~250 a jar): Juicer ×2.0, Hot Streak ×2.7, Hoarder ×2.4, Heavyweight ×1.7, Pip ×1.8, Pet Caterpillar ×1.45, **Small Fry ×1.34, Bite Size ×1.23**. Small Fry and Bite Size were the weak pieces: a merge that makes size 2 to 4 is worth 3 to 10 points against 21 to 66 for big fruit, so ×2 on small merges multiplies very little, and nothing in the build raised the points of small merges.
+
+| Loadout | Depth 2 | Depth 7 |
+|---|---|---|
+| Generic (Juicer, Honey, Hot Streak, Heavyweight, Chain) | ~3,040 | ~2,940 |
+| Big fruit (Heavyweight, Melon Mania, Juicer, Honey, Hot Streak) | ~5,830 | ~5,670 |
+| Small, raw (Small Fry, Pip, Bite Size, Hoarder, Caterpillar) | ~1,540 | ~2,990 |
+| Small, raw with Crumbs in place of the Caterpillar | | ~5,850 |
+| Small with fusions (Feeding Frenzy, Snack Pack, Keepsake, Hot Streak, Juicer) | ~6,240 | ~14,040 |
+| The same with Crumbs in place of Hot Streak | | ~21,150 |
+
+Four-charm comparison at depth 2: Small Fry, Bite Size, Hoarder plus Juicer ~1,520; plus Crumbs instead ~2,330; generic four ~2,290.
+
+Conclusion: the build was weak early (half the generic score at depth 2) and only caught up once Pip had grown, which is what players felt. Crumbs fixes the early game and keeps raw small fruit level with the big fruit build late. With its fusions and a grown Keepsake the build is the strongest measured, but that needs two uncommon + uncommon fusions (both halves offered in only ~28% of runs). Keepsake's +0.6 per jar cleared is the biggest single source late: watch it. No overflow deaths in these runs (the bot's 24-drop jars rarely fill the jar).
 
 ## Seeds measurement (13 Nov, fixed in v1.23)
 
