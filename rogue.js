@@ -187,15 +187,15 @@ const UPG={
  fuse:{n:'Slow Fuse',c:4,max:2,d:'The pile can sit over the line 1 second longer before the run ends.'},
  drum:{n:'Tambourine',c:4,max:2,d:'Combos stay alive 0.5 seconds longer.'},
  crowbar:{n:'Crowbar',c:5,max:1,d:'Every crate offers 1 more choice.'},
- trellis:{n:'Trellis',c:4,d:'Merges that make a size 7 fruit or bigger score +15 points for the rest of the run.'},
+ trellis:{n:'Trellis',c:4,d:'Merges that make a size 7 fruit or bigger score +30 points for the rest of the run.'},
  clean:{n:'Spring Clean',c:5,now:1,d:'Right now: clears the top half of the jar.'},
  sign:{n:'Signing Bonus',c:4,max:2,d:'Every contract you clear pays 2 more coins.'},
- road:{n:'Back Road',c:4,max:1,d:'Skipping a jar pays 2 coins.'},
+ road:{n:'Back Road',c:4,max:1,d:'Skipping a jar pays 3 coins.'},
  key:{n:'Crate Key',c:4,max:1,d:'The crate in the shop costs 2 coins less.'},
- thick:{n:'Thick Skin',c:5,max:2,d:'Bosses reach phase 2 later: 10% of the target more.'},
+ thick:{n:'Thick Skin',c:4,max:2,d:'Bosses reach phase 2 later: 10% of the target more.'},
  scales:{n:'Gold Scales',c:4,max:2,d:'A gold fruit pays 1 more coin when it merges.'},
- ledger:{n:'Ledger',c:6,max:1,d:'Interest pays 1 coin per 4 coins held instead of per 5.'},
- ot:{n:'Overtime',c:4,max:1,d:'Unused drops can pay up to 5 coins instead of 3.'},
+ ledger:{n:'Ledger',c:5,max:1,d:'Interest pays 1 coin per 3 coins held instead of per 5.'},
+ ot:{n:'Overtime',c:3,max:1,d:'Unused drops can pay up to 5 coins instead of 3.'},
  rim:{n:'Raised Rim',c:6,max:1,r:1,d:'The line sits higher, by 5% of the jar.'}
 };
 const UPW=[1,.4]; /* an upgrade's weight on the shop shelf by its rarity r (0 when not set): an Uncommon one is picked 0.4 times as often */
@@ -308,7 +308,7 @@ const RG={
   return{quota,drops,boss:b,rules,ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*15;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* a fruit of tier l was made: returns the charms that paid out */
@@ -325,7 +325,7 @@ const RG={
  upCost:(R,id)=>RG.cost(R,UPG[id].c+(UPG[id].now?0:R.up[id]*2)),
  upOk:(R,k)=>PF.lk('up.'+k)?false:k==='scrub'||k==='clean'?R.jar!==0:k==='thick'&&(R.stake>=8||RG.has(R,'flag'))?false:k==='bribe'?!BOSS[RG.boss(R)].fin:k==='belt'?RG.ts(R)<RG.tsMax(R):!UPG[k].max||R.up[k]<UPG[k].max,
  sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]*SDS-(RG.has(R,'svault')?2:RG.has(R,'packet')?1:0)),
- intN:R=>R.up.ledger?4:5, /* coins held per coin of interest */
+ intN:R=>R.up.ledger?3:5, /* coins held per coin of interest */
  crCost:R=>Math.max(1,RG.cost(R,CRP[R.shop.cr])-R.up.key*2), /* the price of the crate on the shop's shelf */
  p2at:R=>.5+R.up.thick*.1, /* the share of the target where a boss reaches phase 2 */
  sellV:(R,c)=>R.up.haggle?c:Math.floor(c/2),
@@ -370,7 +370,7 @@ const RG={
  leave(R){const c=R.crate;if(!c)return 0;const n=CRT[c.tier].out;R.coins+=n;R.at=c.then;R.crate=null;return n;},
  buyCr(R){const k=R.shop.cr,p=k&&RG.crCost(R);if(!k||R.coins<p)return false;R.coins-=p;R.shop.cr=null;R.crate=RG.crate(R,'wood','shop',k);R.at='crate';return true;},
  /* skip jar 1 or 2 of a depth: no payout, no shop, and a pick between a wooden crate and one other skip reward (not one already held) */
- skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.jar++;R.coins+=R.up.road*2;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;},
+ skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.jar++;R.coins+=R.up.road*3;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;},
  skipTake(R,id){if(!R.sk||!R.sk.includes(id))return false;R.sk=null;if(id==='crate'){R.crate=RG.crate(R,'wood','hub');R.at='crate';}else{R.tg[id]=SKR[id].u;R.at='hub';}return true;},
  buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
  buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},

@@ -64,7 +64,24 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
 
-Upgrades added in v1.31 (10, on the user's call that the shelf showed the same few: five upgrades never leave the pool and nine had a cap of 1 or 2, so a late shop was mostly Fertiliser, Hot Sauce, Watering Can, Scrub and Bribe). Each was checked against every charm, tool, skip reward and award name first: Pip Jar, Gold Pan, Seed Tray, Pet Food and Seed Mix were dropped as copies of Crumbs, Gold Leaf, Seed Packet, Pet Treats and the Seeds shelf. Thick Skin (bosses) sits in no build. None is bot-tested. Trellis, Raised Rim and Spring Clean change scoring or survival directly and are the ones to watch. The shop shows 2 upgrades since v1.30.3 (3 with Catalogue), and Good Taste is the first Uncommon upgrade (weight 0.4 on the shelf).
+Upgrades added in v1.31 (10, on the user's call that the shelf showed the same few: five upgrades never leave the pool and nine had a cap of 1 or 2, so a late shop was mostly Fertiliser, Hot Sauce, Watering Can, Scrub and Bribe). Each was checked against every charm, tool, skip reward and award name first: Pip Jar, Gold Pan, Seed Tray, Pet Food and Seed Mix were dropped as copies of Crumbs, Gold Leaf, Seed Packet, Pet Treats and the Seeds shelf. Thick Skin (bosses) sits in no build. See Upgrades measurement below. The shop shows 2 upgrades since v1.30.3 (3 with Catalogue), and Good Taste is the first Uncommon upgrade (weight 0.4 on the shelf).
+
+### Upgrades measurement (14 Nov, v1.31.1)
+
+A quick bot through the real engine and rules: aims each fruit at an open match, else the lowest spot, buys any charm with a score hook, the cheapest seed for sizes 3 to 7, Hot Sauce, Fertiliser and Charm Pouch, uses no tools, signs no contracts, never skips. It wins 48 runs in 800 and clears 15.7 jars a run, in line with the earlier greedy bots. Upgrades were handed over at the start of the run.
+
+| Start with | Runs | Jars cleared | Notes |
+|---|---|---|---|
+| Nothing | 800 | 15.66 ± 0.16 | 9 runs ended by overflow, the rest ran out of drops |
+| 3 Fertiliser | 400 | 16.60 ± 0.21 | the reference |
+| 3 Trellis at +15 | 400 | 15.76 ± 0.25 | no measurable gain: 0.5 merges a jar make size 7+, against 9.8 merges in all |
+| Overtime + Ledger (per 4) | 400 | 16.33 ± 0.23 | about 10 coins a run |
+| Raised Rim | 400 | 15.98 ± 0.24 | within noise, 0 overflow endings |
+| 2 Thick Skin | 400 | 15.44 ± 0.25 | within noise |
+
+Coins a run, counted from the baseline runs: Overtime 5.6 (a jar leaves 16 or more drops 28% of the time), Ledger at 1 per 4 coins 4.5, at 1 per 3 coins 8.9 (the bot holds 9 coins on average and is paid 17.5 interest a run). Packed Lunch pays 15.7 for 5 coins. Of 375 failed boss jars, 334 had reached half the target, 36 ended below 60% and 66 below 70%, so Thick Skin could only have helped in about 1 in 6.
+
+Changes made: Trellis +30 (was +15), Ledger 1 per 3 coins and 5 coins (was per 4, 6 coins), Overtime 3 coins (was 4), Back Road pays 3 (was 2), Thick Skin 4 coins (was 5). Not measured: Spring Clean (this bot almost never overflows; watch it with Compost, each fruit cleared is +0.05 Mult and an instant upgrade's price never rises), Signing Bonus (9.3 jars a run offer a contract), Crate Key, Gold Scales (0.03 gold merges a jar without gold items). The retuned numbers were not re-run.
 
 Long-run growers today are all +Mult: Vintage (per jar), Hot Streak (per merge, resets each jar), Melon Fever (per size 8+), Compost (per fruit destroyed), Fat Wallet (coins held), Abacus (seed levels).
 
