@@ -323,6 +323,18 @@ const RG={
  ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
+/* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------
+   jk = jar skins: f frame, i inside, e edge line, k pattern. bg = backgrounds: c colours top to bottom, k pattern.
+   fs = fruit skins: r = colour ramp, dark to light, every fruit is recoloured through it by brightness. ss = sound sets (the merge sound, in SFX.merge).
+   Drawn by drawJar, drawBg and skinBuild in index.html. */
+const COS={
+ jk:{piggy:{n:'Pink Ceramic',f:'#ff9db5',i:'#fff1f5',e:'#d8607f',k:'dots'},tall:{n:'Deep Glass',f:'#3d5a80',i:'#eaf3ff',e:'#22395a',k:'shine'},wide:{n:'Velvet',f:'#6b3fb0',i:'#f6efff',e:'#f4bb4a',k:'trim'},kit:{n:'Steel',f:'#aab2bb',i:'#f3f5f7',e:'#5f6770',k:'dots'},bare:{n:'Planks',f:'#a9713a',i:'#fff6e8',e:'#6e4420',k:'planks'},gold:{n:'Golden',f:'#ffd43b',i:'#fffbe6',e:'#e09600',k:'spark'},melon:{n:'Melon Rind',f:'#7fcf4e',i:'#fff0f0',e:'#24711c',k:'stripe'},crystal:{n:'Crystal',f:'#bfefff',i:'#f7fdff',e:'#4cc9f0',k:'shine'}},
+ bg:{throne:{n:'Throne Room',c:['#1d4d2b','#12331c'],k:'diamond'},orchard:{n:'Orchard Sky',c:['#9fdcff','#e3f7c9'],k:'cloud'},night:{n:'Midnight',c:['#1b1029','#3a2358'],k:'stars'},deep:{n:'The Deep',c:['#06283d','#0f5a6e'],k:'bubbles'},patch:{n:'Melon Patch',c:['#8fd85e','#6fc043'],k:'stripe'},note:{n:'Notebook',c:['#fdfaf0','#fdfaf0'],k:'lines'},sunset:{n:'Sunset',c:['#6b3fb0','#ff8f6b','#ffd1a3'],k:'sun'}},
+ fs:{gold:{n:'Solid Gold',r:['#3d2400','#b87400','#ffc61a','#fff8d0']},rot:{n:'Past It',r:['#241a12','#6b5230','#b59a62','#efe2b8']},mono:{n:'Black and White',r:['#16101f','#6b6572','#c9c3d4','#ffffff']}},
+ ss:{chip:{n:'Chiptune'},mar:{n:'Marimba'},wood:{n:'Wood Block'}}
+};
+const COSK={jk:'jar skin',bg:'background',fs:'fruit skin',ss:'sound set'};for(const k in COS)for(const id in COS[k])COS[k][id].id=id;
+
 /* ---------- player profile: everything that outlives a run ---------- */
 /* One object, one storage key, so a sign-in later only has to sync this.
    seen / unlocked / ach: id -> time first reached (ids are namespaced: ch.juicer, boss.fog, up.fert).
@@ -332,7 +344,9 @@ const PV=1;
 const PF={d:null,dirty:0,
  blank:()=>({v:PV,rev:0,at:0,seen:{},unlocked:{},ach:{},stats:{},stakes:{}}),
  fix(p){const b=PF.blank();if(!p||typeof p!=='object')return b;for(const k in b)if(typeof b[k]==='object'){if(p[k]&&typeof p[k]==='object'&&!Array.isArray(p[k]))b[k]=p[k];}else if(typeof p[k]==='number')b[k]=p[k];b.v=PV;return b;},
- load(){PF.d=PF.fix(store.get('profile',null));return PF.d;},
+ load(){PF.d=PF.heal(PF.fix(store.get('profile',null)));return PF.d;},
+ /* an award earned before it unlocked anything (an unlock added to it later) opens its unlock now */
+ heal(p){for(const id in p.ach){const a=ACH[id];if(a&&a.un&&!p.unlocked[a.un])p.unlocked[a.un]=p.ach[id];}return p;},
  save(){if(!PF.dirty||!PF.d)return;PF.dirty=0;PF.d.rev++;PF.d.at=Date.now();store.set('profile',PF.d);},
  inc(k,n=1){const s=PF.d.stats;s[k]=(s[k]||0)+n;PF.dirty=1;},
  max(k,v){const s=PF.d.stats;if(!(s[k]>=v)){s[k]=v;PF.dirty=1;}},
@@ -343,7 +357,7 @@ const PF={d:null,dirty:0,
  lk:key=>!!LOCK[key]&&!(PF.d||PF.load()).unlocked[key]
 };
 function mergeProfile(a,b){a=PF.fix(a);b=PF.fix(b);const o=PF.blank(),first=(x,y)=>{const r={...x};for(const k in y)r[k]=r[k]?Math.min(r[k],y[k]):y[k];return r;},most=(x,y)=>{const r={...x};for(const k in y)r[k]=Math.max(r[k]||0,y[k]);return r;};
- o.seen=first(a.seen,b.seen);o.unlocked=first(a.unlocked,b.unlocked);o.ach=first(a.ach,b.ach);o.stats=most(a.stats,b.stats);o.stakes=most(a.stakes,b.stakes);o.rev=Math.max(a.rev,b.rev)+1;o.at=Math.max(a.at,b.at);return o;}
+ o.seen=first(a.seen,b.seen);o.unlocked=first(a.unlocked,b.unlocked);o.ach=first(a.ach,b.ach);o.stats=most(a.stats,b.stats);o.stakes=most(a.stakes,b.stakes);o.rev=Math.max(a.rev,b.rev)+1;o.at=Math.max(a.at,b.at);return PF.heal(o);}
 
 /* ---------- run events ---------- */
 /* Everything worth counting goes through here: the engine through ro.ev, the screens by calling rgEv.
@@ -421,8 +435,8 @@ const ACH={
  endless:{n:'Still Going',d:'Beat the depth 10 boss.',on:'jar',t:(R,d)=>d.jar===2&&d.depth>=10,un:'jar.wide'},
  slayer:{n:'Giant Slayer',d:'Beat 15 different bosses.',on:'jar',t:(R,d,S)=>Object.keys(S).filter(k=>/^boss\..*\.win$/.test(k)).length>=15,un:'jar.kit'},
  almanac:{n:'Know-It-All',d:'Meet every boss.',on:'start jar',t:()=>Object.keys(BOSS).every(k=>PF.d.seen['boss.'+k])},
- stake4:{n:'Seasoned',d:'Win a run on Ripeness 4 or higher.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4},
- stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8},
+ stake4:{n:'Seasoned',d:'Win a run on Ripeness 4 or higher.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4,un:'jk.gold'},
+ stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8,un:'jk.melon'},
  /* hard and obscure ones (ti = the title they give, shown before the player's name) */
  bugtest:{n:'Bugtest',d:'Hold Pet Caterpillar, Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. Their fusions count.',on:'buy take fuse',t:R=>[['pet','frenzy'],['bowl','zoo'],['treats','nectar'],['chrys','bfly'],['appetite']].every(g=>g.some(id=>RG.has(R,id))),ti:'Bugtester'},
  bfly5:{n:'Butterfly Effect',d:'Chrysalis reaches +5 Mult in one run.',on:'pet jar fuse',t:R=>R.ch.some(c=>(c.id==='chrys'||c.id==='bfly')&&(c.v||0)>=5),ti:'Lepidopterist'},
@@ -440,13 +454,37 @@ const ACH={
  broke:{n:'Empty Pockets',d:'Beat a final boss holding 0 coins.',on:'jar',t:(R,d)=>d.jar===2&&d.boss&&BOSS[d.boss].fin&&R.coins===0,ti:'Pauper'},
  noint:{n:'Not Interested',d:'Leave 5 crates unopened in one run.',on:'leave',t:R=>(R.st.leaves||0)>=5},
  pear:{n:'Pear-Shaped',d:'Lose a run with a Pear (7) over the line.',on:'overf',t:(R,d)=>d.l===6,secret:1,ti:'Pear-Shaped'},
- fly:{n:'Fruit Fly',d:'Keep a fruit in the air for 2.5 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly'}
+ fly:{n:'Fruit Fly',d:'Keep a fruit in the air for 2.5 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly'},
+ /* awards that open looks (COS). Cosmetic only. Most read lifetime stats, so they are also checked when a run starts (on 'run') and count what was done before they existed */
+ jwpiggy:{n:'Piggy Banked',d:'Win a run with the Piggy Jar.',on:'run jar',t:()=>PF.d.stakes.piggy>=1,un:'jk.piggy'},
+ jwtall:{n:'Deep End',d:'Win a run with the Deep Jar.',on:'run jar',t:()=>PF.d.stakes.tall>=1,un:'jk.tall'},
+ jwwide:{n:'Charmed Life',d:'Win a run with the Charm Jar.',on:'run jar',t:()=>PF.d.stakes.wide>=1,un:'jk.wide'},
+ jwkit:{n:'Right Tool',d:'Win a run with the Tool Kit.',on:'run jar',t:()=>PF.d.stakes.kit>=1,un:'jk.kit'},
+ jwbare:{n:'Unboxed',d:'Win a run with the Crate Jar.',on:'run jar',t:()=>PF.d.stakes.bare>=1,un:'jk.bare'},
+ king:{n:'Regicide',d:'Beat The Melon King.',on:'run jar',t:(R,d,S)=>S['boss.melon.win']>=1,un:'bg.throne'},
+ queen:{n:'Windfall',d:'Beat The Orchard Queen.',on:'run jar',t:(R,d,S)=>S['boss.queen.win']>=1,un:'bg.orchard'},
+ reap:{n:'Cheat Death',d:'Beat The Reaper.',on:'run jar',t:(R,d,S)=>S['boss.reaper.win']>=1,un:'bg.night'},
+ deep12:{n:'Pressure',d:'Beat the depth 12 boss.',on:'run jar',t:(R,d,S)=>S.bestDepth>=13||(d.jar===2&&d.depth>=12),un:'bg.deep'},
+ melons:{n:'Melon Farmer',d:'Make 10 Watermelons (over all your runs).',on:'run merge',t:(R,d,S)=>S['made.10']>=10,un:'bg.patch'},
+ wins10:{n:'Old Hand',d:'Win 10 runs.',on:'run jar',t:(R,d,S)=>S.wins>=10,un:'bg.sunset'},
+ gold200:{n:'Gilded',d:'Merge 200 gold fruit (over all your runs).',on:'run gold',t:(R,d,S)=>S.golds>=200,un:'fs.gold'},
+ mould25:{n:'Past Its Best',d:'Let 25 fruit go mouldy (over all your runs).',on:'run mould',t:(R,d,S)=>S.moulds>=25,un:'fs.rot'},
+ nocharm:{n:'Bare Hands',d:'Beat the depth 3 boss, or a deeper one, holding no charms.',on:'jar',t:(R,d)=>d.jar===2&&d.depth>=3&&!R.ch.length,un:'fs.mono'},
+ m1500:{n:'Warming Up',d:'Make 1,500 merges (over all your runs).',on:'run merge',t:(R,d,S)=>S.merges>=1500,un:'ss.chip'},
+ m6000:{n:'In the Groove',d:'Make 6,000 merges (over all your runs).',on:'run merge',t:(R,d,S)=>S.merges>=6000,un:'ss.mar'},
+ crates50:{n:'Unpacker',d:'Get 50 crates (over all your runs).',on:'run crate',t:(R,d,S)=>S.crates>=50,un:'ss.wood'},
+ /* meta = left out of the Almanac's own completion count (alPct), since they are earned from it */
+ al50:{n:'Bookworm',d:'Fill half of the Almanac.',on:'run start jar',t:()=>alPct()>=50,un:'bg.note',meta:1},
+ al100:{n:'Encyclopedia',d:'Fill the whole Almanac.',on:'run start jar',t:()=>alPct()>=100,un:'jk.crystal',ti:'Professor',meta:1}
 };
 const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
 const ACHQ=[]; /* awards earned and not yet shown */
 function achCheck(R,n,d){for(const id in ACH){const a=ACH[id];if(PF.d.ach[id]||!a.on.split(' ').includes(n))continue;let hit=false;try{hit=!!a.t(R,d,PF.d.stats);}catch(e){}if(!hit)continue;
   PF.d.ach[id]=Date.now();if(a.un)PF.d.unlocked[a.un]=Date.now();PF.dirty=1;(R.got=R.got||[]).push(id);ACHQ.push(id);}}
 /* the name of what an award unlocks, e.g. "Twin (tool)" */
-function unName(key){const[k,id]=key.split('.');return k==='ch'?CH[id].n+' (charm)':k==='tl'?TL[id].n+' (tool)':k==='up'?UPG[id].n+' (upgrade)':k==='fu'?(CH[id]||TL[id]).n+' (fusion)':k==='jar'?(typeof JARS!=='undefined'&&JARS[id]?JARS[id].n:'A starting jar')+' (starting jar)':key;}
-const unKind=key=>({ch:'a charm',tl:'a tool',up:'an upgrade',fu:'a fusion',jar:'a starting jar'}[key.split('.')[0]]);
+function unName(key){const[k,id]=key.split('.');return k==='ch'?CH[id].n+' (charm)':k==='tl'?TL[id].n+' (tool)':k==='up'?UPG[id].n+' (upgrade)':k==='fu'?(CH[id]||TL[id]).n+' (fusion)':k==='jar'?(typeof JARS!=='undefined'&&JARS[id]?JARS[id].n:'A starting jar')+' (starting jar)':COS[k]&&COS[k][id]?COS[k][id].n+' ('+COSK[k]+')':key;}
+const unKind=key=>({ch:'a charm',tl:'a tool',up:'an upgrade',fu:'a fusion',jar:'a starting jar'}[key.split('.')[0]])||'a '+COSK[key.split('.')[0]];
+/* Almanac completion, 0 to 100: things met (charms, tools, fusions, upgrades, seeds, bosses; locked ones do not count) plus awards earned */
+function alPct(){const P=PF.d||PF.load(),ks=[...Object.keys(CH).filter(k=>!CH[k].dev).map(k=>(CH[k].fu?'fu.':'ch.')+k),...Object.keys(TL).map(k=>(TL[k].fu?'fu.':'tl.')+k),...Object.keys(UPG).map(k=>'up.'+k),...[1,2,3,4,5,6,7,8,9,10].map(l=>'sd.'+l),...Object.keys(BOSS).map(k=>'boss.'+k)],as=Object.keys(ACH).filter(k=>!ACH[k].meta);
+ return Math.floor((ks.filter(k=>P.seen[k]&&!PF.lk(k)).length+as.filter(k=>P.ach[k]).length)/(ks.length+as.length)*100);}
 

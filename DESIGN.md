@@ -424,15 +424,17 @@ Hard or obscure, not earned by accident. The hard ones give a **title** shown be
 
 Tracking added for them: drop side, airtime, pile over the line this jar, the fruit over the line at game over, sizes made in the current combo (see `CLAUDE.md`, Awards).
 
-## Cosmetic rewards (backlog)
+## Cosmetic rewards (built, v1.27)
 
-For awards that should not unlock power (pillar 7). Use these now or later, the game is a work in progress and wants a lot of content.
+For awards that should not unlock power (pillar 7). Called Looks in the game, data in `COS`, worn from Options.
 
 - Titles: a tag before the player's name, shown on the leaderboard. First choice for hard awards.
-- Jar skins: wooden, glass, golden jar frame.
-- Backgrounds: jar backdrop and menu themes.
-- Fruit skins: e.g. a gold palette for the drawn fruit, a rotten set.
-- Almanac stamps: a gold seal on earned awards, a completion percentage.
-- Sound sets: a different merge sound.
+- Jar skins (8): one for a win with each starting jar (Pink Ceramic, Deep Glass, Velvet, Steel, Planks), Golden for Ripeness 4, Melon Rind for Ripeness 8, Crystal for a full Almanac.
+- Backgrounds (7): one per final boss beaten (Throne Room, Orchard Sky, Midnight), The Deep for the depth 12 boss, Melon Patch for 10 Watermelons, Sunset for 10 wins, Notebook for half the Almanac.
+- Fruit skins (3): Solid Gold (200 gold merges), Past It (25 mouldy fruit), Black and White (a depth 3 boss with no charms). Each is a colour ramp applied to the sprites by brightness, so they need no new drawings. Past It is brown, not green, so mould still shows on it.
+- Sound sets (3): Chiptune (1,500 merges), Marimba (6,000 merges), Wood Block (50 crates). Only the merge sound changes.
+- Almanac stamps: a dated seal on earned awards, and a completion bar. Half and full completion are awards.
+
+The lifetime numbers are guesses, not measured against real play. The jar frame is only 6 pixels wide, so skins read mostly through colour. Ideas not built: skins for the tool bar and HUD, a second sound per set (land, combo), animated fruit skins.
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.

@@ -10,7 +10,7 @@ Drop fruit, merge matching ones, make a watermelon. The game lives in `index.htm
 
 Rogue rules live in `rogue.js`: `CH` (charms), `TL` (tools), `BOSS`, `UPG` (upgrades), the seed numbers (`SDC`, `SDS`, `SDM`, `sdP`), crates (`CRT`, `CRP`), fusions (entries with `fu` in `CH` and `TL`), and the balance tables `RQ` (depth 1 targets), `RSC` (target multiplier per depth) and `RPAY` (coins per jar).
 
-Some tools, charms, upgrades and fusions start locked and are opened by awards (`ACH` in `rogue.js`). The Almanac, on the menu, lists everything you have met and every award. Progress that outlives a run (stats, things met, awards) is kept in one `profile` object on the device, ready to sync once sign-in exists.
+Some tools, charms, upgrades and fusions start locked and are opened by awards (`ACH` in `rogue.js`). The Almanac, on the menu, lists everything you have met and every award. Other awards open looks (jar skins, backgrounds, fruit skins, sound sets, in `COS` in `rogue.js`), worn from Options. Looks change nothing about play. Progress that outlives a run (stats, things met, awards) is kept in one `profile` object on the device, ready to sync once sign-in exists.
 
 For testing, open the page with `?dev` on the end of the address. A panel lets you jump to any depth, pick the boss and hand yourself charms and tools. Runs it touches do not count for scores or stats.
 
