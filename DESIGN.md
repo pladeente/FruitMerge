@@ -465,6 +465,8 @@ For awards that should not unlock power (pillar 7). Called Looks in the game, da
 - Sound sets (3): Chiptune (1,500 merges), Marimba (6,000 merges), Wood Block (50 crates). Only the merge sound changes.
 - Almanac stamps: a dated seal on earned awards, and a completion bar. Half and full completion are awards.
 
+Animated (v1.30), for the six that are hardest to earn, so a moving look is a mark of skill: Melon Rind (Ripeness 8), Crystal (full Almanac), Golden (Ripeness 4), The Deep (depth 12 boss), Sunset (10 wins), Black and White (a boss with no charms). A new look from a hard award should move too, one from a count of things done should not.
+
 The lifetime numbers are guesses, not measured against real play. The jar frame is only 6 pixels wide, so skins read mostly through colour. Ideas not built: skins for the tool bar and HUD, a second sound per set (land, combo), animated fruit skins.
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.
