@@ -61,7 +61,7 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder, Crumbs | Sieve | Scrub | Filled, measured (v1.26, see Small fruit measurement) |
 | Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
 | Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | Gold Scales | Filled, needs play |
-| Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
+| Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble, Lead Weight | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
 
 Upgrades added in v1.31 (10, on the user's call that the shelf showed the same few: five upgrades never leave the pool and nine had a cap of 1 or 2, so a late shop was mostly Fertiliser, Hot Sauce, Watering Can, Scrub and Bribe). Each was checked against every charm, tool, skip reward and award name first: Pip Jar, Gold Pan, Seed Tray, Pet Food and Seed Mix were dropped as copies of Crumbs, Gold Leaf, Seed Packet, Pet Treats and the Seeds shelf. Thick Skin (bosses) sits in no build. See Upgrades measurement below. The shop shows 2 upgrades since v1.30.3 (3 with Catalogue), and Good Taste is the first Uncommon upgrade (weight 0.4 on the shelf).
