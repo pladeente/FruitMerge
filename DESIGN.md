@@ -52,17 +52,36 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Chance | Lucky Clover, Snake Eyes, Scratch Card, Horseshoe, Four-Leaf Clover, The Mint | | | Fine |
 | Combo | Chain Reaction, Hot Streak, Metronome, Wildfire | Blender, Cyclone | Tambourine | Fine |
 | Timing in the jar | Early Bird, Photo Finish, Marathon | Free Sample, Double Down | Watering Can, Big Basket | Fine |
-| Big fruit | Heavyweight, Melon Fever, Golden Touch, Rich Soil, Melon Mania | Ripen | | Fine |
-| Economy | Piggy Bank, Savings Account, Fat Wallet, Coupon, Golden Touch, Scratch Card, Golden Goose, The Mint | Cash Out | Vault, Packed Lunch, Haggler | Plenty |
+| Big fruit | Heavyweight, Melon Fever, Golden Touch, Rich Soil, Melon Mania | Ripen | Trellis | Fine |
+| Economy | Piggy Bank, Savings Account, Fat Wallet, Coupon, Golden Touch, Scratch Card, Golden Goose, The Mint | Cash Out | Vault, Packed Lunch, Haggler, Ledger, Overtime, Signing Bonus, Back Road, Crate Key | Plenty |
 | Tools | Juggler, Spark Plug, Showman, Overdrive, Crowd Pleaser, Encore, Battery, Dynamo, Headliner | all, Sleight of Hand | Tool Belt, Whetstone | Plenty |
 | Destruction | Fireworks, Pet Caterpillar, Compost, Ashes, Volcano, Safety Net | Cherry Bomb, Sieve | Scrub | Fine |
 | Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin | | Fine |
-| Full jar | Hoarder, High Wire | Anchor | Slow Fuse | Thin |
+| Full jar | Hoarder, High Wire | Anchor | Slow Fuse, Raised Rim, Spring Clean | Thin |
 | Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder, Crumbs | Sieve | Scrub | Filled, measured (v1.26, see Small fruit measurement) |
 | Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
-| Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | | Filled, needs play |
-| Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
+| Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | Gold Scales | Filled, needs play |
+| Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble, Lead Weight | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
+
+Upgrades added in v1.31 (10, on the user's call that the shelf showed the same few: five upgrades never leave the pool and nine had a cap of 1 or 2, so a late shop was mostly Fertiliser, Hot Sauce, Watering Can, Scrub and Bribe). Each was checked against every charm, tool, skip reward and award name first: Pip Jar, Gold Pan, Seed Tray, Pet Food and Seed Mix were dropped as copies of Crumbs, Gold Leaf, Seed Packet, Pet Treats and the Seeds shelf. Thick Skin (bosses) sits in no build. See Upgrades measurement below. The shop shows 2 upgrades since v1.30.3 (3 with Catalogue), and Good Taste is the first Uncommon upgrade (weight 0.4 on the shelf).
+
+### Upgrades measurement (14 Nov, v1.31.1)
+
+A quick bot through the real engine and rules: aims each fruit at an open match, else the lowest spot, buys any charm with a score hook, the cheapest seed for sizes 3 to 7, Hot Sauce, Fertiliser and Charm Pouch, uses no tools, signs no contracts, never skips. It wins 48 runs in 800 and clears 15.7 jars a run, in line with the earlier greedy bots. Upgrades were handed over at the start of the run.
+
+| Start with | Runs | Jars cleared | Notes |
+|---|---|---|---|
+| Nothing | 800 | 15.66 ± 0.16 | 9 runs ended by overflow, the rest ran out of drops |
+| 3 Fertiliser | 400 | 16.60 ± 0.21 | the reference |
+| 3 Trellis at +15 | 400 | 15.76 ± 0.25 | no measurable gain: 0.5 merges a jar make size 7+, against 9.8 merges in all |
+| Overtime + Ledger (per 4) | 400 | 16.33 ± 0.23 | about 10 coins a run |
+| Raised Rim | 400 | 15.98 ± 0.24 | within noise, 0 overflow endings |
+| 2 Thick Skin | 400 | 15.44 ± 0.25 | within noise |
+
+Coins a run, counted from the baseline runs: Overtime 5.6 (a jar leaves 16 or more drops 28% of the time), Ledger at 1 per 4 coins 4.5, at 1 per 3 coins 8.9 (the bot holds 9 coins on average and is paid 17.5 interest a run). Packed Lunch pays 15.7 for 5 coins. Of 375 failed boss jars, 334 had reached half the target, 36 ended below 60% and 66 below 70%, so Thick Skin could only have helped in about 1 in 6.
+
+Changes made: Trellis +30 (was +15), Ledger 1 per 3 coins and 5 coins (was per 4, 6 coins), Overtime 3 coins (was 4), Back Road pays 3 (was 2), Thick Skin 4 coins (was 5). Not measured: Spring Clean (this bot almost never overflows; watch it with Compost, each fruit cleared is +0.05 Mult and an instant upgrade's price never rises), Signing Bonus (9.3 jars a run offer a contract), Crate Key, Gold Scales (0.03 gold merges a jar without gold items). The retuned numbers were not re-run.
 
 Long-run growers today are all +Mult: Vintage (per jar), Hot Streak (per merge, resets each jar), Melon Fever (per size 8+), Compost (per fruit destroyed), Fat Wallet (coins held), Abacus (seed levels).
 
@@ -404,7 +423,7 @@ For the play-near-the-top build (High Wire, Climbing Ivy), which had nothing to 
 | Item | Kind | Effect |
 |---|---|---|
 | Petrify | Tool, 5, charge 8 | Tap a fruit: stone, can not move or merge, never counts as over the line, crumbles when the next jar starts (counts as destroyed for Compost and Ashes) |
-| Shatter | Tool, 4, charge 6 | Tap a rock: it becomes a fruit of the same size. An answer to The Quarry and Melon King's rock |
+| Shatter | Tool, 4, charge 6 | Tap a rock: it becomes a fruit of the same size. An answer to The Quarry and the Melon Queen's rock |
 | Gargoyle | Charm, uncommon, 6 | Rocks never count as over the line. +0.5 Mult per rock in the jar |
 | Medusa | Fusion, Petrify + High Wire | Petrifies the tapped fruit and every fruit touching it |
 
@@ -428,7 +447,7 @@ Slingshot (throw fruit by flicking) and Trick Shot (a thrown fruit that banks of
 
 ## Fruit names (built, v1.19)
 
-Sizes get names, with the number kept: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11). Mandarin and Rockmelon are the Australian names, on purpose. A single size is written "Orange (5)", a range stays numeric ("size 3 or smaller"). Touches item texts, seed labels and the Almanac. Keep names short where cards are small.
+Sizes get names, with the number kept: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11). Since v1.31 the Mandarin is the Lemon (4) (feedback: the sprite reads as a lemon) and the Watermelon (11) has a new sprite from the user (it was named Watermelon Queen from v1.31 to v1.32.1 by mistake: the user meant the boss, now The Melon Queen). Mandarin and Rockmelon were the Australian names, on purpose. A single size is written "Orange (5)", a range stays numeric ("size 3 or smaller"). Touches item texts, seed labels and the Almanac. Keep names short where cards are small.
 
 ## Hard awards (built, v1.19)
 
