@@ -423,7 +423,7 @@ For the play-near-the-top build (High Wire, Climbing Ivy), which had nothing to 
 | Item | Kind | Effect |
 |---|---|---|
 | Petrify | Tool, 5, charge 8 | Tap a fruit: stone, can not move or merge, never counts as over the line, crumbles when the next jar starts (counts as destroyed for Compost and Ashes) |
-| Shatter | Tool, 4, charge 6 | Tap a rock: it becomes a fruit of the same size. An answer to The Quarry and Melon King's rock |
+| Shatter | Tool, 4, charge 6 | Tap a rock: it becomes a fruit of the same size. An answer to The Quarry and the Melon Queen's rock |
 | Gargoyle | Charm, uncommon, 6 | Rocks never count as over the line. +0.5 Mult per rock in the jar |
 | Medusa | Fusion, Petrify + High Wire | Petrifies the tapped fruit and every fruit touching it |
 
