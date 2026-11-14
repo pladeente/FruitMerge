@@ -177,6 +177,7 @@ const UPG={
  pouch:{n:'Charm Pouch',c:10,max:1,d:'+1 charm slot.'},
  shelf:{n:'Bigger Shelf',c:5,max:1,d:'The shop offers 1 more charm.'},
  seedbag:{n:'Seed Bag',c:4,max:1,d:'The shop offers 1 more seed.'},
+ cata:{n:'Catalogue',c:5,max:1,d:'The shop offers 1 more upgrade.'},
  dice:{n:'Loaded Dice',c:5,max:1,d:'The first reroll in every shop is free.'},
  taste:{n:'Good Taste',c:6,max:2,r:1,d:'Uncommon and Rare charms turn up in the shop more often.'},
  haggle:{n:'Haggler',c:4,max:1,d:'Charms and tools sell for their full price.'},
@@ -262,7 +263,9 @@ const RG={
  stakeMax:(jar='classic')=>Math.min(STAKES.length,1+((PF.d||PF.load()).stakes[jar]||0)), /* per jar: one above the best Ripeness won with that jar */
  fin(){const f=Object.keys(BOSS).filter(k=>BOSS[k].fin);return f[rint(f.length)];},
  /* a saved run that this version can load, or null */
- saved(){const sv=store.get('run',null);if(sv&&sv.v===9){sv.ct=null;sv.sk=null;sv.tg={};sv.v=10;} /* v9 to v10: contracts and skip rewards, nothing else moved */if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
+ saved(){const sv=store.get('run',null);if(sv&&sv.v===9){sv.ct=null;sv.sk=null;sv.tg={};sv.v=10;} /* v9 to v10: contracts and skip rewards, nothing else moved */
+  if(sv&&sv.up)for(const k in UPG)if(sv.up[k]==null)sv.up[k]=0; /* upgrades added since the run was saved start at 0, no version bump needed for those */
+  if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
  /* the run's copy of a charm, if it holds one that is working (The Thief switches off the first R.off charms) */
  has:(R,id)=>{const i=R.ch.findIndex(c=>c.id===id);return i>=(R.off||0)?R.ch[i]:undefined;},
  /* tools: {id, c} where c is the charge held. New tools arrive charged */
@@ -323,7 +326,7 @@ const RG={
  advance(R,sum){R.coins+=sum;const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.6:.4)).toFixed(2);if(hl)hl.v=+((hl.v||0)+.2).toFixed(1);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.shop=RG.stock(R);R.at='shop';return win;},
  stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste;for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(from[rint(from.length)]);}
   const take=RG.pick,sizes=RG.sizes(R);
-  return{ch,cr:Object.keys(CRP)[rint(3)],tl:take(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),3,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};},
+  return{ch,cr:Object.keys(CRP)[rint(3)],tl:take(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};},
  pick(a,n){const o=[];while(o.length<n&&a.length)o.push(a.splice(rint(a.length),1)[0]);return o;},
  /* the same, with a weight per item: w(item) */
  pickW(a,n,w){const o=[];while(o.length<n&&a.length){let t=0,i=0;for(const k of a)t+=w(k);let r=Math.random()*t;while(i<a.length-1&&(r-=w(a[i]))>=0)i++;o.push(a.splice(i,1)[0]);}return o;},
