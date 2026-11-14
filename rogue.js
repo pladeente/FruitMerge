@@ -2,8 +2,8 @@
    Nothing here touches the page. It uses rint and store from index.html, but only inside functions, so load order is fine. */
 /* ---------- rogue mode: rules (charms, bosses, shop, scoring) ---------- */
 const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=10; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
-/* fruit names by tier: a single size is written 'Orange (5)' (fnm), ranges stay numeric ('size 3 or smaller'). Mandarin and Rockmelon are the Australian names */
-const FN=['Cherry','Strawberry','Grape','Mandarin','Orange','Apple','Pear','Pineapple','Peach','Rockmelon','Watermelon'],fnm=l=>FN[l]+' ('+(l+1)+')',fna=l=>(/^[AEIOU]/.test(FN[l])?'an ':'a ')+fnm(l);
+/* fruit names by tier: a single size is written 'Orange (5)' (fnm), ranges stay numeric ('size 3 or smaller'). Rockmelon is the Australian name. The Lemon (4) was the Mandarin until v1.31 (players read the sprite as a lemon), the Watermelon Queen (11) was the Watermelon */
+const FN=['Cherry','Strawberry','Grape','Lemon','Orange','Apple','Pear','Pineapple','Peach','Rockmelon','Watermelon Queen'],fnm=l=>FN[l]+' ('+(l+1)+')',fna=l=>(/^[AEIOU]/.test(FN[l])?'an ':'a ')+fnm(l);
 const RQ=[100,130,160]; /* depth 1 score targets: jar 1, jar 2, boss */
 const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2; /* target multiplier per depth, then ×RSCX for every endless depth */
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
@@ -503,11 +503,11 @@ const ACH={
  bugtest:{n:'Bugtest',d:'Hold Pet Caterpillar, Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. Their fusions count.',on:'buy take fuse',t:R=>[['pet','frenzy'],['bowl','zoo'],['treats','nectar'],['chrys','bfly'],['appetite']].every(g=>g.some(id=>RG.has(R,id))),ti:'Bugtester'},
  bfly5:{n:'Butterfly Effect',d:'Chrysalis reaches +5 Mult in one run.',on:'pet jar fuse',t:R=>R.ch.some(c=>(c.id==='chrys'||c.id==='bfly')&&(c.v||0)>=5),ti:'Lepidopterist'},
  rainbow:{n:'Rainbow Jar',d:'Have one of every fruit from Cherry (1) to Rockmelon (10) in the jar at once.',on:'rainbow',t:()=>true,ti:'Rainbow'},
- gmelon:{n:'Golden Melon',d:'Make a Watermelon out of a gold Rockmelon (10).',on:'merge',t:(R,d)=>d.l===10&&d.gold,ti:'Golden'},
+ gmelon:{n:'Golden Melon',d:'Make a Watermelon Queen (11) out of a gold Rockmelon (10).',on:'merge',t:(R,d)=>d.l===10&&d.gold,ti:'Golden'},
  exact:{n:'Exact Change',d:'Reach a jar\'s target exactly, not a point over.',on:'exact',t:()=>true,ti:'Accountant'},
  shave:{n:'Close Shave',d:'Clear a jar while the pile is over the line.',on:'shave',t:()=>true,ti:'Daredevil'},
  south:{n:'Southpaw',d:'Clear a jar of 10 or more drops with every fruit dropped in the left half.',on:'jar',t:R=>R.jst.drops>=10&&!R.jst.rdrops,ti:'Southpaw'},
- ladder:{n:'Full Ladder',d:'Make every fruit from Strawberry (2) to Watermelon (11) in one combo.',on:'ladder',t:()=>true,ti:'Climber'},
+ ladder:{n:'Full Ladder',d:'Make every fruit from Strawberry (2) to Watermelon Queen (11) in one combo.',on:'ladder',t:()=>true,ti:'Climber'},
  untouch:{n:'Untouchable',d:'Beat a boss at depth 5 or deeper without the pile ever going over the line.',on:'jar',t:(R,d)=>d.boss&&d.jar===2&&d.depth>=5&&!R.jst.overlns,ti:'Untouchable'},
  medusa:{n:'Medusa\'s Garden',d:'Petrify 5 Oranges (5) in one run.',on:'petr',t:R=>(R.st['petr.4']||0)>=5,ti:'Medusa'},
  rocks:{n:'Rock Bottom',d:'Have 6 rocks in the jar at once.',on:'rocks6',t:()=>true,ti:'Geologist'},
@@ -527,7 +527,7 @@ const ACH={
  queen:{n:'Windfall',d:'Beat The Orchard Queen.',on:'run jar',t:(R,d,S)=>S['boss.queen.win']>=1,un:'bg.orchard'},
  reap:{n:'Cheat Death',d:'Beat The Reaper.',on:'run jar',t:(R,d,S)=>S['boss.reaper.win']>=1,un:'bg.night'},
  deep12:{n:'Pressure',d:'Beat the depth 12 boss.',on:'run jar',t:(R,d,S)=>S.bestDepth>=13||(d.jar===2&&d.depth>=12),un:'bg.deep'},
- melons:{n:'Melon Farmer',d:'Make 10 Watermelons (over all your runs).',on:'run merge',t:(R,d,S)=>S['made.10']>=10,un:'bg.patch'},
+ melons:{n:'Melon Farmer',d:'Make 10 Watermelon Queens (over all your runs).',on:'run merge',t:(R,d,S)=>S['made.10']>=10,un:'bg.patch'},
  wins10:{n:'Old Hand',d:'Win 10 runs.',on:'run jar',t:(R,d,S)=>S.wins>=10,un:'bg.sunset'},
  gold200:{n:'Gilded',d:'Merge 200 gold fruit (over all your runs).',on:'run gold',t:(R,d,S)=>S.golds>=200,un:'fs.gold'},
  mould25:{n:'Past Its Best',d:'Let 25 fruit go mouldy (over all your runs).',on:'run mould',t:(R,d,S)=>S.moulds>=25,un:'fs.rot'},
