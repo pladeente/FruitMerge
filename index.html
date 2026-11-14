@@ -786,6 +786,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.31.1',d:'14 Nov 2026',t:'Upgrade tuning',i:['Five of the new upgrades were weaker than the old ones in testing. They are stronger or cheaper now.']},
  {v:'1.31',d:'14 Nov 2026',t:'More upgrades',i:['10 new upgrades in the shop.','The biggest fruit has a new look and a new name: the Watermelon Queen (11).','The Mandarin (4) is now the Lemon (4).']},
  {v:'1.30.3',d:'14 Nov 2026',t:'Fewer upgrades on the shelf',i:['The shop offers 2 upgrades (was 3). A new upgrade adds the third back.','Good Taste shifts the shop half as far: Rare charms are 7 in 100 at one level and 10 in 100 at two (was 10 and 16).','Good Taste is now an Uncommon upgrade: the shop offers it less than half as often.']},
  {v:'1.30.2',d:'14 Nov 2026',t:'Crate opening',i:['The picks stay hidden while a crate opens, then pop in.']},
@@ -1080,7 +1081,7 @@ function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;
  else if(a==='rtake'){const o=RG.take(RUN,i);if(o){rgEv(RUN,'take',{k:o.k,id:o.id});if(o.k==='fu')rgEv(RUN,'fuse',{id:o.id});snd(o.k==='fu'?'hi':'coin');after();}}
  else if(a==='rleave'){if(RG.leave(RUN)){rgEv(RUN,'leave');rgEv(RUN,'take',{k:'out'});snd('coin');after();}}
  else if(a==='rcbuy'){const k=RUN.shop.cr;if(RG.buyCr(RUN)){rgEv(RUN,'buy',{id:k,k:'cr'});rgEv(RUN,'crate',{tier:'wood'});snd('coin');rgCrate();}}
- else if(a==='rskip'){if(sure(RUN.up.road?'Tap again: 2 coins, no shop':'Tap again: no coins, no shop')&&RG.skip(RUN)){rgEv(RUN,'skip');rgSkip();}}
+ else if(a==='rskip'){if(sure(RUN.up.road?'Tap again: 3 coins, no shop':'Tap again: no coins, no shop')&&RG.skip(RUN)){rgEv(RUN,'skip');rgSkip();}}
  else if(a==='rsk'){const k=b.dataset.k;if(RG.skipTake(RUN,k)){if(k==='crate'){rgEv(RUN,'crate',{tier:'wood'});rgCrate();}else{rgEv(RUN,'tag',{id:k});snd('coin');rgHub();}}}
  else if(a==='rct'){if(RUN.ct&&G.state==='rogue'){RUN.ct.on=RUN.ct.on?0:1;snd(RUN.ct.on?'tool':'swap');const m=ui.querySelector('.msg');G.sy=m?m.scrollTop:0;back();}}
  else if(a==='rsd'){const l=RG.buySd(RUN,i);if(l){rgEv(RUN,'seed',{l});snd('coin');rgShop(1);}}
