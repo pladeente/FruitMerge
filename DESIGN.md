@@ -11,7 +11,7 @@ The design view of Rogue mode: which build each item feeds, where the gaps are, 
 
 ## How often things turn up
 
-Since v1.24 boss crates give fewer rares, on the user's call that a rare in a crate pushes the run towards one build: gold crates 45/45/10 (was 30/55/15), melon crates 0/70/30 (was 0/30/70, which often offered two rares at once). Measured the same way as below: rares offered from crates went from 2.9 a run to 1.5, total from about 5.7 to 4.4. The plan for legendaries is to move 5 of the melon crate's uncommon share to them (0/65/30/5).
+Since v1.24 boss crates give fewer rares, on the user's call that a rare in a crate pushes the run towards one build: gold crates 45/45/10 (was 30/55/15), melon crates 0/70/30 (was 0/30/70, which often offered two rares at once). Measured the same way as below: rares offered from crates went from 2.9 a run to 1.5, total from about 5.7 to 4.4. Since v1.29 that is done: melon crates are 0/65/30/5, the 5 being Legendary.
 
 Since v1.20 rares are rarer, on the user's call that a rare did not feel rare: shop rolls 70% common, 26% uncommon, 4% rare (Good Taste: 10% at one level, 16% at two), wooden crates 70/26/4, gold crates 30/55/15 (was 20/50/30), melon crates unchanged. Measured with the real stock and crate code over 400 runs (24 shops, 8 boss crates, no rerolls or wooden crates): rares offered per run went from 11.1 (shop 7.2, crates 3.8) to 5.7 (shop 2.8, crates 2.9), so each of the 10 rares now turns up about once every two runs. A rare on offer shines (`.tile.r2::after`) and plays `snd('rare')` once (`rareCue`). The greedy bot was not re-run: its numbers below show several rares score about like no charm, so the win rate barely depends on them. Weak rares (Sweet Spot, Old Oak, Melon Fever) are the next thing to look at if rares should also feel stronger.
 
@@ -40,6 +40,7 @@ A guide for new charms, from what is in the pool now:
 | Uncommon | ×2 to ×2.5 with a loose condition, or +Mult that grows slowly | Heavyweight, Hot Streak, Vintage, Clean Plate |
 | Rare | ×3 with a condition, ×5 now and then, or a rule change | High Wire, Sweet Spot, Rich Soil, Melon Fever |
 | Fusion | about both halves together plus a bit | Smoothie, Marathon, Wildfire |
+| Legendary | breaks one rule of the game outright, or an unconditional × that grows every jar. About two rares | Phoenix, Stowaway, Heirloom |
 
 ## Builds and what feeds them
 
@@ -367,6 +368,35 @@ The real gap: some builds have no ×Mult of their own below rare or fusion, so t
 
 **To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
 
+## Legendaries (built, v1.29)
+
+Five charms above rare, never sold. They are what makes the shop's Charm Crate worth its price, and a reason to look forward to a melon crate.
+
+| Charm | What it does | The rule it breaks |
+|---|---|---|
+| Phoenix | An overflow clears the top half of the jar instead, once every jar | Overflow ends the run |
+| Cornucopia | A merge that makes an Orange (5) or bigger gives 1 drop back | Drops only go down |
+| Heirloom | ×1.5 Mult, gains ×0.2 every jar cleared | The growing ×Mult the Builds table lists as missing below rare |
+| Stowaway | ×1.5 Mult, takes no charm slot | Slots are scarce |
+| White Flag | Bosses never reach phase 2 | Bosses get worse at half the target |
+
+- Odds: 2 in 100 for each charm in a bought Charm Crate (about 6 in 100 crates), 5 in 100 for each charm in a melon crate (about 6 in 100 crates, measured over 4,000 of each). A player who buys every Charm Crate offered sees one in roughly 1 run in 3, one who buys none in about 1 run in 8. Gold and wooden boss crates never hold one.
+- Cornucopia can not loop: a drop adds about 3.75 units of fruit and it takes 8 to 16 units per merge of size 5 or bigger, so it returns about 0.3 to 0.45 drops per drop. With Rich Soil or on The Gambler it gets close to 1, and the jar fills before it gets there.
+- Heirloom found at the depth 4 melon crate ends a run at about ×3.7. Snowball (rare, with a condition) ends near ×3 when found early.
+- White Flag also cancels Ripeness 8's "bosses start in phase 2". The second boss rule on the final boss still applies.
+- Not measured with the bot. They are rare enough not to move the average run, but a run that finds one early is plainly stronger.
+- Ideas not built: a Legendary tool, crate-only items for the Tool Crate and Seed Crate, a sixth one for the Tools build (a tool keeps half its charge when used).
+
+## Contracts and skip rewards (built, v1.28)
+
+Aim: jars 1 and 2 of a depth all played the same. Contracts give each one a choice (pillar 5, risk for reward) without adding power to the item pool.
+
+- Every contract is a handicap. A side goal with no cost ("finish with 8 drops left for 4 coins") would be free coins on every jar, about 60 a run, and the target curve was set against a player without them. A handicap is paid for with risk, and a player who never signs plays the old game exactly.
+- Pay: 3 to 5 coins (a plain jar pays 3 or 4), 1 seed level, or a wooden crate. Coins for rules that cost a known amount (drops, target, tools), a crate for the two that hurt most (Big Game, Rubble, whose rocks stay in the pile for the rest of the depth).
+- Not measured. A good player who signs most contracts earns maybe 30 to 40 more coins a run. If runs get too rich, cut the pay before cutting the offers. Hands Off is free value for a build with no tools worth using, Big Game for a big-fruit build: that is intended, a contract that suits the build is a small reward for having one.
+- Skip rewards: the crate is always one of the two, so skipping is never worse than before. The other four are tempo (Extra Drops, Free Rolls) or greed (Double Pay, Bigger Haul).
+- Ideas not built: a second contract to choose between, contracts on boss jars for a better crate, contracts in the Almanac.
+
 ## Stone (built)
 
 For the play-near-the-top build (High Wire, Climbing Ivy), which had nothing to make it safer.
@@ -424,15 +454,19 @@ Hard or obscure, not earned by accident. The hard ones give a **title** shown be
 
 Tracking added for them: drop side, airtime, pile over the line this jar, the fruit over the line at game over, sizes made in the current combo (see `CLAUDE.md`, Awards).
 
-## Cosmetic rewards (backlog)
+## Cosmetic rewards (built, v1.27)
 
-For awards that should not unlock power (pillar 7). Use these now or later, the game is a work in progress and wants a lot of content.
+For awards that should not unlock power (pillar 7). Called Looks in the game, data in `COS`, worn from Options.
 
 - Titles: a tag before the player's name, shown on the leaderboard. First choice for hard awards.
-- Jar skins: wooden, glass, golden jar frame.
-- Backgrounds: jar backdrop and menu themes.
-- Fruit skins: e.g. a gold palette for the drawn fruit, a rotten set.
-- Almanac stamps: a gold seal on earned awards, a completion percentage.
-- Sound sets: a different merge sound.
+- Jar skins (8): one for a win with each starting jar (Pink Ceramic, Deep Glass, Velvet, Steel, Planks), Golden for Ripeness 4, Melon Rind for Ripeness 8, Crystal for a full Almanac.
+- Backgrounds (7): one per final boss beaten (Throne Room, Orchard Sky, Midnight), The Deep for the depth 12 boss, Melon Patch for 10 Watermelons, Sunset for 10 wins, Notebook for half the Almanac.
+- Fruit skins (3): Solid Gold (200 gold merges), Past It (25 mouldy fruit), Black and White (a depth 3 boss with no charms). Each is a colour ramp applied to the sprites by brightness, so they need no new drawings. Past It is brown, not green, so mould still shows on it.
+- Sound sets (3): Chiptune (1,500 merges), Marimba (6,000 merges), Wood Block (50 crates). Only the merge sound changes.
+- Almanac stamps: a dated seal on earned awards, and a completion bar. Half and full completion are awards.
+
+Animated (v1.30), for the six that are hardest to earn, so a moving look is a mark of skill: Melon Rind (Ripeness 8), Crystal (full Almanac), Golden (Ripeness 4), The Deep (depth 12 boss), Sunset (10 wins), Black and White (a boss with no charms). A new look from a hard award should move too, one from a count of things done should not.
+
+The lifetime numbers are guesses, not measured against real play. The jar frame is only 6 pixels wide, so skins read mostly through colour. Ideas not built: skins for the tool bar and HUD, a second sound per set (land, combo), animated fruit skins.
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.
