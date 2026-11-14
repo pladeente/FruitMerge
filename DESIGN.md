@@ -367,6 +367,16 @@ The real gap: some builds have no ×Mult of their own below rare or fusion, so t
 
 **To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
 
+## Contracts and skip rewards (built, v1.28)
+
+Aim: jars 1 and 2 of a depth all played the same. Contracts give each one a choice (pillar 5, risk for reward) without adding power to the item pool.
+
+- Every contract is a handicap. A side goal with no cost ("finish with 8 drops left for 4 coins") would be free coins on every jar, about 60 a run, and the target curve was set against a player without them. A handicap is paid for with risk, and a player who never signs plays the old game exactly.
+- Pay: 3 to 5 coins (a plain jar pays 3 or 4), 1 seed level, or a wooden crate. Coins for rules that cost a known amount (drops, target, tools), a crate for the two that hurt most (Big Game, Rubble, whose rocks stay in the pile for the rest of the depth).
+- Not measured. A good player who signs most contracts earns maybe 30 to 40 more coins a run. If runs get too rich, cut the pay before cutting the offers. Hands Off is free value for a build with no tools worth using, Big Game for a big-fruit build: that is intended, a contract that suits the build is a small reward for having one.
+- Skip rewards: the crate is always one of the two, so skipping is never worse than before. The other four are tempo (Extra Drops, Free Rolls) or greed (Double Pay, Bigger Haul).
+- Ideas not built: a second contract to choose between, contracts on boss jars for a better crate, contracts in the Almanac.
+
 ## Stone (built)
 
 For the play-near-the-top build (High Wire, Climbing Ivy), which had nothing to make it safer.
