@@ -447,7 +447,7 @@ Slingshot (throw fruit by flicking) and Trick Shot (a thrown fruit that banks of
 
 ## Fruit names (built, v1.19)
 
-Sizes get names, with the number kept: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11). Since v1.31 the Mandarin is the Lemon (4) (feedback: the sprite reads as a lemon) and the Watermelon is the Watermelon Queen (11), with a new sprite from the user. Mandarin and Rockmelon were the Australian names, on purpose. A single size is written "Orange (5)", a range stays numeric ("size 3 or smaller"). Touches item texts, seed labels and the Almanac. Keep names short where cards are small.
+Sizes get names, with the number kept: Cherry (1), Strawberry (2), Grape (3), Mandarin (4), Orange (5), Apple (6), Pear (7), Pineapple (8), Peach (9), Rockmelon (10), Watermelon (11). Since v1.31 the Mandarin is the Lemon (4) (feedback: the sprite reads as a lemon) and the Watermelon (11) has a new sprite from the user (it was named Watermelon Queen from v1.31 to v1.32.1 by mistake: the user meant the boss, now The Melon Queen). Mandarin and Rockmelon were the Australian names, on purpose. A single size is written "Orange (5)", a range stays numeric ("size 3 or smaller"). Touches item texts, seed labels and the Almanac. Keep names short where cards are small.
 
 ## Hard awards (built, v1.19)
 
