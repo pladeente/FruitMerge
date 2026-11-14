@@ -493,9 +493,9 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  function phase2(){ph=2;for(const k in B)B[k]=2;if(B.lock)for(const t of ro.tools)t.c=0;if(B.hour)dl=Math.max(1,dl-2);if(B.mirror)B.fog=B.fog||1;if(B.thief)ro.off(2);
   if(B.melon){const r=rad(6);let bx=W/2,bh=1e9;for(let i=0;i<13;i++){const x=L+r+(Rw-L-2*r)*i/12;let h=bot;for(const f of fr)if(!f.dead&&Math.abs(f.x-x)<rad(f.l)+r*.8)h=Math.min(h,f.y-rad(f.l));if(bot-h<bh){bh=bot-h;bx=x;}}
     add({x:bx,y:line+r+4,vx:0,vy:0,l:6,age:0,a:0,sp:'stone',lit:1,safe:1});grace=Math.max(grace,3);} /* The Melon King's rock: into the lowest gap, the pile gets 3s to settle, and the rock itself never counts as over the line */ban={t:3.6,a:'Phase 2',b:J.rule2,ic:J.ic};shake=.35;snd('warn');snd('boom');}
- function bossTick(dt){const jh=bot-line0;line=line0+jh*((B.lid?(B.lid>1?.22:.14):0)+(B.tide?(B.tide>1?.24:.13)*(.5-.5*Math.cos(time*.8)):0));
+ function bossTick(dt){const jh=bot-line0;line=line0+jh*((B.lid?(B.lid>1?.22:.14):0)+(B.tide?(B.tide>1?.24:.13)*(.5-.5*Math.cos(time*.8)):0)-ro.up('rim')*.05);
   const tl=L0+vz;if(Math.abs(L-tl)>.2){L+=(tl-L)*Math.min(1,dt*5);Rw=W-L;}else{L=tl;Rw=W-L;}
-  if(!J||done||over)return;if(J.p2&&ph<2&&js>=J.quota*.5)phase2();
+  if(!J||done||over)return;if(J.p2&&ph<2&&js>=J.quota*(.5+ro.up('thick')*.1))phase2();
   if(B.vamp&&jd>0)js=Math.max(0,js-J.quota*(B.vamp>1?.01:.005)*dt);
   if(B.clock&&cool<=0&&!arm&&(dl>0||free>0)){ck+=dt;if(ck>=(B.clock>1?2:3))api.up(null);}}
   const dkTick=dt=>{dkT=Math.max(0,dkT-dt);const to=!B.dark||dkT>0||done||over?1:0;dk=to>dk?Math.min(1,dk+dt*8):to<dk?Math.max(0,dk-dt*3):dk;};
@@ -604,6 +604,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  cheat(f=1){if(J&&!done){js=J.quota*f;if(f>=1)gotC=1;}}, /* dev panel: fill the jar's target (or a share of it) */
  cnt,peek(){return{dl,free,dd,cyc,jd,jm,tu,cur,curSp,nxt,nxtSp,arm,n:fr.length,ph,bee,B:{...B},line,L,Rw,js,gotC,vz,dk,dkN,pets:{bee:!!bee,mole:!!mole,hog:!!hog,cat:!!cat},last:lastF&&{vx:lastF.f.vx,thr:!!lastF.f.thr}};}, /* for tests and the dev panel */
  scrub(){const n=fr.length;fr=fr.filter(f=>f.l>1||f.sp==='stone');return n-fr.length;},
+ clean(){const n=fr.length,cut=line+(bot-line)*.5;fr=fr.filter(f=>f.y>=cut);return n-fr.length;}, /* Spring Clean: the top half, the same cut as Safety Net */
  snap(){return fr.filter(f=>!f.dead&&!f.pet).map(f=>[+((f.x-L0)/(R0-L0)).toFixed(4),+((bot-f.y)/W).toFixed(4),f.l,f.sp||0,f.rot?1:0,f.gold||0,f.pol||0,f.lb?1:0]);},
  load(a){fr=[];for(const[x,y,l,sp,rot,gd,pl,lb]of a)add({gold:gd||0,pol:pl||0,lb:lb||0,x:L0+x*(R0-L0),y:bot-y*W,vx:0,vy:0,l,age:9,a:0,landed:1,sp:sp||null,lit:sp&&sp!=='bomb'&&sp!=='ice'?1:0,stuck:sp==='sticky'?1:0,rot:rot?1:0,mold:rot?1:0});},
  nudge(d){cx=clampN(cx+(B.mirror?-d:d),L,Rw);},
@@ -651,7 +652,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if(merge.length){fr=fr.filter(f=>!f.dead);let melon=false,top=0;combo=time-lastM<(ro?(ro.has('metro')?2.5:1)+ro.up('drum')*.5:1)?combo+1:0;lastM=time;if(ro&&(!combo||!lad))lad=new Set(); /* lad = sizes made in this combo, for Full Ladder */
     for(const m of merge){if(lad){lad.add(m.l);if(lad.size>=10&&[1,2,3,4,5,6,7,8,9,10].every(l=>lad.has(l)))ro.ev('ladder');}const ag=m.gold&&ro&&(ro.has('phil')?Math.random()<.5:ro.has('alch')&&Math.random()<ro.luck()/3)?m.gold:0;add({x:m.x,y:m.y,vx:(Math.random()-.5)*80*K,vy:-160*K,l:m.l,age:1,a:0,landed:1,gold:ag,lb:m.lb&&ro&&ro.has('lady')?1:0});top=Math.max(top,m.l);if(ag){ro.fx([ro.has('phil')?'phil':'alch']);floatTxt('Still gold!',m.x,m.y-12,'#e09600',16);}
      if(ro){jm++;if(m.l<=3)jsm++;let p=0,mm=1;const lb=m.lb&&ro.has('lady'),xm=(m.gold?m.gold+1:1)*(dd?4:1)*(cyc>0?2:1)*(m.pol||1)*(lb?2:1);petFx(m,lb);if(!(B.prune&&m.l<=(B.prune>1?4:3))){const first=!seen[m.l];seen[m.l]=1;const r=sc(tri(m.l),rc(m.l,{combo,bull:m.bull,enc,first,trick:!!m.trick,wall:!!m.wall,low:m.y>=bot-(bot-line)/3}));p=Math.ceil(r.p*xm);mm=r.m*xm;lsc=[Math.round(r.chips),mm,p];enc=0;ro.fx(r.hit);jfx(r.hit,m);}
-      if(dd){dd=0;floatTxt('Double Down ×4',m.x,m.y-76,'#ff4d8d',18);}if(m.gold){ro.ev('gold');ro.coins+=m.gold*2;floatTxt('Gold! +'+m.gold*2+' coin',m.x,m.y-60,'#e09600',16);}gain(p);pop(p,m.x,m.y,mm);chg(1);
+      if(dd){dd=0;floatTxt('Double Down ×4',m.x,m.y-76,'#ff4d8d',18);}if(m.gold){ro.ev('gold');const gc=m.gold*2+ro.up('scales');ro.coins+=gc;floatTxt('Gold! +'+gc+' coin',m.x,m.y-60,'#e09600',16);}gain(p);pop(p,m.x,m.y,mm);chg(1);
       if(B.twins&&m.l>=2)for(let q=0;q<B.twins;q++){const r0=rad(0);add({x:L+r0+Math.random()*(Rw-L-r0*2),y:line+r0+4,vx:0,vy:0,l:0,age:0,a:0});}
       if(B.vise&&m.l>=5&&vz>0){vz=0;floatTxt('The walls open!',W/2,line+50,'#1f9c90',20);}
       if(B.collect&&m.l>=(B.collect>1?7:6)&&!gotC){gotC=1;floatTxt('Collected!',W/2,line+50,'#38b000',24);snd('fly');}
@@ -763,7 +764,7 @@ function loop(t){G.raf=requestAnimationFrame(loop);const dt=G.last?Math.min(.05,
  if(G.g){if(G.state==='play'){try{G.g.update(dt)}catch(e){console.error(e)}}try{G.g.draw(ctx,G.state==='play'?dt:0)}catch(e){console.error(e)}}else drawIdle();syncPw();syncBoss();if(RUN&&G.chKey!=null&&G.chKey!==chKey())rgHead();if(RUN&&G.g&&G.chKey!=null)syncCnt();if(ACHQ.length)toastTick();}
 /* boss jar: a tappable boss icon under Next, pauses and shows the rules (bossMsg) */
 function syncBoss(){const c=G.mode==='rogue'&&RUN&&RUN.cfg,on=!!(G.g&&G.state==='play'&&c&&c.boss),k=on?c.boss:'';if(k===G.bbK)return;G.bbK=k;const b=$('#bossB');b.hidden=!on;if(on)b.innerHTML=ic(icn(c.boss),1);}
-function bossMsg(){const c=RUN.cfg,p2=G.g.peek().ph>1;show(`<div class="mode">${RUN.jar===2?'Boss':'Mini boss'} · Depth ${RUN.depth}</div>${tile(c.boss,'big boss')}<h3>${BOSS[c.boss].n}</h3><p class="rule">${c.rule}</p>${c.p2?`<p class="rule"><i>${p2?'Phase 2 is on:':'At half the target:'}</i> ${c.rule2}</p>`:''}<button class="go" data-a="resume">Keep playing</button>`);}
+function bossMsg(){const c=RUN.cfg,p2=G.g.peek().ph>1;show(`<div class="mode">${RUN.jar===2?'Boss':'Mini boss'} · Depth ${RUN.depth}</div>${tile(c.boss,'big boss')}<h3>${BOSS[c.boss].n}</h3><p class="rule">${c.rule}</p>${c.p2?`<p class="rule"><i>${p2?'Phase 2 is on:':p2T()}</i> ${c.rule2}</p>`:''}<button class="go" data-a="resume">Keep playing</button>`);}
 function drawIdle(){drawBg(ctx,G.W,G.H,performance.now()/1000,G.H*.62);const r=G.W*.09;for(let i=0;i<7;i++){const l=(i*3)%11;drawFruit(ctx,(i+.5)*G.W/7,G.H-r*1.1-(i%2)*r*.9,r*(.55+l*.05),l)}}
 function show(html){const tp=$('#tip');if(tp){tp.remove();G.tipEl=null;}let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');ui.appendChild(m)}m.className='msg';m.innerHTML=html;m.scrollTop=0;return m}
 function hide(){ui.innerHTML=''}
@@ -785,6 +786,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.31',d:'14 Nov 2026',t:'More upgrades',i:['10 new upgrades in the shop.']},
  {v:'1.30.3',d:'14 Nov 2026',t:'Fewer upgrades on the shelf',i:['The shop offers 2 upgrades (was 3). A new upgrade adds the third back.','Good Taste shifts the shop half as far: Rare charms are 7 in 100 at one level and 10 in 100 at two (was 10 and 16).','Good Taste is now an Uncommon upgrade: the shop offers it less than half as often.']},
  {v:'1.30.2',d:'14 Nov 2026',t:'Crate opening',i:['The picks stay hidden while a crate opens, then pop in.']},
  {v:'1.30.1',d:'14 Nov 2026',t:'Where a look came from',i:['Every unlocked look now says which award earned it and what you did, in the Looks screen and the Almanac.']},
@@ -938,11 +940,12 @@ function rgBar(){const m=RG.score(RUN,0,{l:-1,combo:0,n:0,idle:1,jd:99,dl:99,jm:
 function rgTrack(){let h='';for(let j=0;j<3;j++){const c=RG.jarCfg(RUN,j),done=j<RUN.jar;h+=`<div class="nd${done?' done':j===RUN.jar?' cur':''}${c.boss?' boss':''}">${done?ic('check'):c.boss?`<i class="slot boss">${ic(icn(c.boss))}</i>`:`<u>${j+1}</u>`}<b>${c.boss?(j===2?'Boss':'Mini boss'):'Jar '+(j+1)}</b><small>${done?'Done':'Score '+c.quota}</small></div>`;}
  const nx=RG.jarCfg(RUN);return `<div class="trk">${h}</div>${rgBossP()}<p class="nxt">Next: <b>${nx.boss?BOSS[nx.boss].n:'Jar '+(RUN.jar+1)}</b>. Score <b>${nx.quota}</b> in <b>${nx.drops}</b> drops for ${cn(nx.pay)}</p>${rgCt()}`;}
 /* the contract on offer for the jar that is up next (hub and shop). Signing it changes the jar (RG.jarCfg), so the Next line above it updates */
-function rgCt(){const c=RUN.ct;if(!c)return '';const d=CT[c.id],[k,n]=d.pay,cr=RUN.jarId==='bare',pay=k==='coin'?cn(n):k==='sd'?`${n} level of the ${fnm(c.sd)} seed`:cr?'a gold crate in place of the wooden one':'a wooden crate';
+const p2T=()=>RUN&&RUN.up.thick?`At ${Math.round(RG.p2at(RUN)*100)}% of the target:`:'At half the target:'; /* when a boss reaches phase 2 (Thick Skin moves it) */
+function rgCt(){const c=RUN.ct;if(!c)return '';const d=CT[c.id],[k,n]=d.pay,cr=RUN.jarId==='bare',sb=RUN.up.sign*2,pay=k==='coin'?cn(n+sb):(k==='sd'?`${n} level of the ${fnm(c.sd)} seed`:cr?'a gold crate in place of the wooden one':'a wooden crate')+(sb?' and '+cn(sb):'');
  return `<div class="ctb${c.on?' on':''}"><b>Contract: ${d.n}</b>${c.on?' <small class="chip r2">Signed</small>':''}<br>${d.d} Clear the jar and it pays ${pay}.<button class="go sm${c.on?' alt':''}" data-a="rct">${c.on?'Tear it up':'Sign it'}</button></div>`;}
 const rgTags=()=>Object.keys(RUN.tg).map(id=>`<p class="nxt">Skip reward: <b>${SKR[id].n}</b>. ${SKR[id].d}${SKR[id].u>1?` ${RUN.tg[id]} left.`:''}</p>`).join('');
 /* this depth's boss rules in words: the mini boss if there is one still to come, then the boss with its phase 2 */
-function rgBossP(){const bid=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null;return (mid?`<p class="rule"><b>Mini boss: ${BOSS[mid].n}.</b> ${BOSS[mid].d}</p>`:'')+`<p class="rule"><b>Boss: ${BOSS[bid].n}.</b> ${RG.bossD(RUN,bid)}<br>${RG.has(RUN,'flag')?'<i>White Flag: it never reaches phase 2.</i>':`<i>At half the target:</i> ${RG.bossD(RUN,bid,RUN.depth,1)}`}</p>`;}
+function rgBossP(){const bid=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null;return (mid?`<p class="rule"><b>Mini boss: ${BOSS[mid].n}.</b> ${BOSS[mid].d}</p>`:'')+`<p class="rule"><b>Boss: ${BOSS[bid].n}.</b> ${RG.bossD(RUN,bid)}<br>${RG.has(RUN,'flag')?'<i>White Flag: it never reaches phase 2.</i>':`<i>${p2T()}</i> ${RG.bossD(RUN,bid,RUN.depth,1)}`}</p>`;}
 function rgIntro(){if(G.state!=='menu'||RUN)menu();G.mode='rogue';store.set('mode','rogue');setBest();const sv=RG.saved(),ok=!!sv;
  const m=show(`<h3>Rogue run</h3><p>Go ${DEPTHS} depths down. Each depth is 3 jars, and the third is a <b>boss</b> with a nasty rule that gets worse once you are halfway to its target.</p><ul class="wl">
 <li><span>${ic('bull')}</span><div>Hit the jar's <b>score target</b> before your <b>drops</b> run out. Run dry or overflow and the run is over.</div></li>
@@ -1008,7 +1011,7 @@ function rgInfo(){const nb=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,ups=Objec
 ${ups.length?`<div class="sec"><h5>Upgrades</h5><ul class="it">${ups.map(k=>`<li>${tile(k,'up')}<div><b>${UPG[k].n} ×${RUN.up[k]}</b><br>${UPG[k].d}</div></li>`).join('')}</ul></div>`:''}
 ${sds.length?`<div class="sec"><h5>Seeds</h5><ul class="it">${sds.map(l=>`<li>${tile('fr'+l,'sd')}<div><b>${fnm(l)} Seed</b> <small class="chip">Level ${RUN.sd[l]}</small><br>Making ${fna(l)} scores +${RUN.sd[l]*sdP(l)} points and +${num(RUN.sd[l]*SDM)} Mult.</div></li>`).join('')}</ul></div>`:''}
 <div class="sec"><h5>This run</h5><ul class="it"><li>${tile('jar_'+(RUN.jarId||'classic'),'')}<div><b>${JARS[RUN.jarId||'classic'].n}</b><br>${JARS[RUN.jarId||'classic'].d}</div></li>${RUN.stake>1?`<li>${tile('lid','boss')}<div><b>Ripeness ${RUN.stake}</b><br>${STAKES.slice(1,RUN.stake).join(' ')}</div></li>`:''}</ul></div>
-${rgTags()}<div class="sec"><h5>This depth's boss</h5><ul class="it">${mid?`<li>${tile(mid,'boss')}<div><b>${BOSS[mid].n}</b> <small class="chip">Mini boss</small><br>${BOSS[mid].d}</div></li>`:''}<li>${tile(nb,'boss')}<div><b>${BOSS[nb].n}</b><br>${RG.bossD(RUN,nb)}<br>${RG.has(RUN,'flag')?'<i>White Flag: it never reaches phase 2.</i>':`<i>At half the target:</i> ${RG.bossD(RUN,nb,RUN.depth,1)}`}</div></li></ul></div><button class="go alt" data-a="${G.state==='pause'?'paused':'rback'}">Back</button>`);}
+${rgTags()}<div class="sec"><h5>This depth's boss</h5><ul class="it">${mid?`<li>${tile(mid,'boss')}<div><b>${BOSS[mid].n}</b> <small class="chip">Mini boss</small><br>${BOSS[mid].d}</div></li>`:''}<li>${tile(nb,'boss')}<div><b>${BOSS[nb].n}</b><br>${RG.bossD(RUN,nb)}<br>${RG.has(RUN,'flag')?'<i>White Flag: it never reaches phase 2.</i>':`<i>${p2T()}</i> ${RG.bossD(RUN,nb,RUN.depth,1)}`}</div></li></ul></div><button class="go alt" data-a="${G.state==='pause'?'paused':'rback'}">Back</button>`);}
 function rgCharm(i){const c=RUN.ch[i];if(!c)return rgInfo();const d=CH[c.id];
  show(`<div class="mode">Charm ${i+1} of ${RUN.ch.length}</div>${tile(c.id,'big r'+d.r)}<h3>${d.n}</h3><p>${chip(d.r)}</p><p>${chD(c)}</p><button class="go alt" data-a="rsell" data-i="${i}">Sell for <i class="coin"></i>${RG.sellV(RUN,d.c)}</button><button class="go" data-a="${G.state==='pause'?'resume':'rback'}">Back</button>`);}
 /* tap-to-peek (Balatro style): a small card next to a charm or tool. Tap anywhere else to close it. Opened from the header in play, it freezes the jar (G.tipP) until closed */
@@ -1042,7 +1045,7 @@ function rgShop(keep){G.state='rogue';$('#pauseB').hidden=true;RUN.at='shop';rgS
  const tl=S.tl.map((id,i)=>{if(!id)return'';const d=TL[id];return `<li>${tile(id,'tl')}<div><b>${d.n}</b> <small class="chip">Charge ${RG.need(RUN,id)}</small><br>${d.d}</div>${buy('rtbuy',i,RG.cost(RUN,d.c),tfull)}</li>`}).join('');
  const up=S.up.map((id,i)=>{if(!id)return'';const d=UPG[id];return `<li>${tile(id,'up')}<div><b>${d.n}</b>${d.r?' '+chip(d.r):''}${!d.now&&RUN.up[id]?` <small class="chip">Owned ×${RUN.up[id]}</small>`:''}<br>${d.d}</div>${buy('rup',i,RG.upCost(RUN,id))}</li>`}).join('');
  const sd=S.sd.map((l,i)=>{if(!l)return'';const lv=RUN.sd[l];return `<li>${tile('fr'+l,'sd')}<div><b>${fnm(l)} Seed</b>${lv?` <small class="chip">Level ${lv}</small>`:''}<br>${sdD(l)}</div>${buy('rsd',i,RG.sdCost(RUN,l))}</li>`}).join('');
- const cr=S.cr?`<div class="sec"><h5>Crate <small>Pay once, then pick what you want from inside.</small></h5><ul class="it"><li>${tile('crate_'+S.cr,S.cr==='ch'?'up':S.cr)}<div><b>${CRN[S.cr]}</b><br>Pick 1 of ${3+RUN.up.crowbar} ${CRW[S.cr]}.${S.cr==='ch'?` Each charm inside has a ${CRL*100} in 100 chance to be <b>Legendary</b>. Legendary charms are never sold in the shop.`:''}</div>${buy('rcbuy',0,RG.cost(RUN,CRP[S.cr]))}</li></ul></div>`:'';
+ const cr=S.cr?`<div class="sec"><h5>Crate <small>Pay once, then pick what you want from inside.</small></h5><ul class="it"><li>${tile('crate_'+S.cr,S.cr==='ch'?'up':S.cr)}<div><b>${CRN[S.cr]}</b><br>Pick 1 of ${3+RUN.up.crowbar} ${CRW[S.cr]}.${S.cr==='ch'?` Each charm inside has a ${CRL*100} in 100 chance to be <b>Legendary</b>. Legendary charms are never sold in the shop.`:''}</div>${buy('rcbuy',0,RG.crCost(RUN))}</li></ul></div>`:'';
  const m=show(`<div class="mode">${jn()}</div><h3>Shop</h3><p class="tg">You have ${cn(RUN.coins)}</p>${rgFuNote()}${rgTags()}${cr}
 <div class="sec"><h5>Charms <small>Items that work on their own once bought. You can hold ${cs}.${full?' Sell one to make room.':''}</small></h5>${it?`<ul class="it">${it}</ul>`:'<p class="none">Sold out.</p>'}</div>
 <div class="sec"><h5>Tools <small>Abilities you tap during a jar. They charge as you merge. You can hold ${ts}.${tfull?' Sell one to make room.':''}</small></h5>${tl?`<ul class="it">${tl}</ul>`:'<p class="none">Sold out.</p>'}</div>
@@ -1077,11 +1080,11 @@ function rgAct(a,b){const i=+b.dataset.i,sure=t=>{if(b.dataset.sure)return true;
  else if(a==='rtake'){const o=RG.take(RUN,i);if(o){rgEv(RUN,'take',{k:o.k,id:o.id});if(o.k==='fu')rgEv(RUN,'fuse',{id:o.id});snd(o.k==='fu'?'hi':'coin');after();}}
  else if(a==='rleave'){if(RG.leave(RUN)){rgEv(RUN,'leave');rgEv(RUN,'take',{k:'out'});snd('coin');after();}}
  else if(a==='rcbuy'){const k=RUN.shop.cr;if(RG.buyCr(RUN)){rgEv(RUN,'buy',{id:k,k:'cr'});rgEv(RUN,'crate',{tier:'wood'});snd('coin');rgCrate();}}
- else if(a==='rskip'){if(sure('Tap again: no coins, no shop')&&RG.skip(RUN)){rgEv(RUN,'skip');rgSkip();}}
+ else if(a==='rskip'){if(sure(RUN.up.road?'Tap again: 2 coins, no shop':'Tap again: no coins, no shop')&&RG.skip(RUN)){rgEv(RUN,'skip');rgSkip();}}
  else if(a==='rsk'){const k=b.dataset.k;if(RG.skipTake(RUN,k)){if(k==='crate'){rgEv(RUN,'crate',{tier:'wood'});rgCrate();}else{rgEv(RUN,'tag',{id:k});snd('coin');rgHub();}}}
  else if(a==='rct'){if(RUN.ct&&G.state==='rogue'){RUN.ct.on=RUN.ct.on?0:1;snd(RUN.ct.on?'tool':'swap');const m=ui.querySelector('.msg');G.sy=m?m.scrollTop:0;back();}}
  else if(a==='rsd'){const l=RG.buySd(RUN,i);if(l){rgEv(RUN,'seed',{l});snd('coin');rgShop(1);}}
- else if(a==='rup'){const id=RG.buyUp(RUN,i);if(id){rgEv(RUN,'up',{id});if(id==='scrub'){const n=G.g.scrub();if(n)rgEv(RUN,'kill',{n});const k=RG.kill(RUN,n);if(k)rgPulse([k]);}snd('coin');rgShop(1);}}
+ else if(a==='rup'){const id=RG.buyUp(RUN,i);if(id){rgEv(RUN,'up',{id});if(id==='scrub'||id==='clean'){const n=G.g[id]();if(n)rgEv(RUN,'kill',{n});const k=RG.kill(RUN,n);if(k)rgPulse([k]);}snd('coin');rgShop(1);}}
  else if(a==='rsell'){const c=RUN.ch[i];if(sure('Tap again to sell')&&RG.sell(RUN,i)){rgEv(RUN,'sell',{id:c.id});snd('coin');tipClose();rgHead();if(G.state!=='play')back();}}
  else if(a==='rroll'){if(RG.reroll(RUN)){rgEv(RUN,'roll');snd('swap');rgShop(1);}}
  else return false;
@@ -1147,7 +1150,7 @@ if(/[?&]dev\b/.test(location.search))(function(){
   else if(a==='boss'){RG.boss(RUN);RUN.bs[RUN.depth-1]=v('#dvB');}
   else if(a==='charm'){const id=v('#dvC');if(RG.has(RUN,id))return say('Already owned.');if(RUN.ch.length>=RG.slots(RUN))RUN.ch.shift();RUN.ch.push({id});}
   else if(a==='tool'){const id=v('#dvT');if(RUN.tl.some(t=>t.id===id))return say('Already owned.');if(RUN.tl.length>=RG.ts(RUN))RUN.tl.shift();RUN.tl.push(RG.tool(id,RUN));}
-  else if(a==='up'){const id=v('#dvU');if(!RG.upOk(RUN,id)&&id!=='scrub')return say('Not available now.');if(id==='scrub')G.g.scrub();else if(id==='bribe')RG.bribe(RUN);else RUN.up[id]++;}
+  else if(a==='up'){const id=v('#dvU');if(!RG.upOk(RUN,id)&&id!=='scrub'&&id!=='clean')return say('Not available now.');if(id==='scrub'||id==='clean')G.g[id]();else if(id==='bribe')RG.bribe(RUN);else RUN.up[id]++;}
   else if(a==='seed')RUN.sd[+v('#dvS')]++;
   else if(a==='crate'||a==='lcrate'){RUN.dev=1;RUN.crate=a==='crate'?RG.crate(RUN,v('#dvK'),RUN.at==='shop'?'shop':'hub'):RG.crate(RUN,'wood',RUN.at==='shop'?'shop':'hub','ch',1);rgHead();rgCrate();return say('Crate opened.');}
   RUN.dev=1;redraw();say('Done. This run no longer counts.');});})();

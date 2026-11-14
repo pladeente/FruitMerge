@@ -52,17 +52,19 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Chance | Lucky Clover, Snake Eyes, Scratch Card, Horseshoe, Four-Leaf Clover, The Mint | | | Fine |
 | Combo | Chain Reaction, Hot Streak, Metronome, Wildfire | Blender, Cyclone | Tambourine | Fine |
 | Timing in the jar | Early Bird, Photo Finish, Marathon | Free Sample, Double Down | Watering Can, Big Basket | Fine |
-| Big fruit | Heavyweight, Melon Fever, Golden Touch, Rich Soil, Melon Mania | Ripen | | Fine |
-| Economy | Piggy Bank, Savings Account, Fat Wallet, Coupon, Golden Touch, Scratch Card, Golden Goose, The Mint | Cash Out | Vault, Packed Lunch, Haggler | Plenty |
+| Big fruit | Heavyweight, Melon Fever, Golden Touch, Rich Soil, Melon Mania | Ripen | Trellis | Fine |
+| Economy | Piggy Bank, Savings Account, Fat Wallet, Coupon, Golden Touch, Scratch Card, Golden Goose, The Mint | Cash Out | Vault, Packed Lunch, Haggler, Ledger, Overtime, Signing Bonus, Back Road, Crate Key | Plenty |
 | Tools | Juggler, Spark Plug, Showman, Overdrive, Crowd Pleaser, Encore, Battery, Dynamo, Headliner | all, Sleight of Hand | Tool Belt, Whetstone | Plenty |
 | Destruction | Fireworks, Pet Caterpillar, Compost, Ashes, Volcano, Safety Net | Cherry Bomb, Sieve | Scrub | Fine |
 | Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin | | Fine |
-| Full jar | Hoarder, High Wire | Anchor | Slow Fuse | Thin |
+| Full jar | Hoarder, High Wire | Anchor | Slow Fuse, Raised Rim, Spring Clean | Thin |
 | Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder, Crumbs | Sieve | Scrub | Filled, measured (v1.26, see Small fruit measurement) |
 | Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
-| Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | | Filled, needs play |
+| Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | Gold Scales | Filled, needs play |
 | Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble | | Better, still the most room to grow |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
+
+Upgrades added in v1.31 (10, on the user's call that the shelf showed the same few: five upgrades never leave the pool and nine had a cap of 1 or 2, so a late shop was mostly Fertiliser, Hot Sauce, Watering Can, Scrub and Bribe). Each was checked against every charm, tool, skip reward and award name first: Pip Jar, Gold Pan, Seed Tray, Pet Food and Seed Mix were dropped as copies of Crumbs, Gold Leaf, Seed Packet, Pet Treats and the Seeds shelf. Thick Skin (bosses) sits in no build. None is bot-tested. Trellis, Raised Rim and Spring Clean change scoring or survival directly and are the ones to watch. The shop shows 2 upgrades since v1.30.3 (3 with Catalogue), and Good Taste is the first Uncommon upgrade (weight 0.4 on the shelf).
 
 Long-run growers today are all +Mult: Vintage (per jar), Hot Streak (per merge, resets each jar), Melon Fever (per size 8+), Compost (per fruit destroyed), Fat Wallet (coins held), Abacus (seed levels).
 
