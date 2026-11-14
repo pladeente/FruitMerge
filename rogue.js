@@ -161,7 +161,7 @@ const BOSS={
  audit:{n:'The Auditor',d:'Mult can not go above ×6.',d2:'Mult can not go above ×4.',min:4,q:.45},
  vise:{n:'The Vise',d:'The walls close in with every drop. Making a size 6 fruit or bigger opens them again.',d2:'They close twice as fast.',min:4},
  vamp:{n:'The Leech',d:'Your jar score drains away: 0.5% of the target every second.',d2:'It drains twice as fast.',min:5,q:.7},
- melon:{n:'The Melon King',d:'A watermelon drops into your jar and stays. It never counts as over the line.',d2:'A big rock drops into the lowest gap as well. It never counts as over the line either.',fin:1,q:1.1},
+ melon:{n:'The Melon Queen',d:'The Watermelon Queen drops into your jar and stays. She never counts as over the line.',d2:'A big rock drops into the lowest gap as well. It never counts as over the line either.',fin:1,q:1.1},
  queen:{n:'The Orchard Queen',d:'Two bosses at once.',d2:'Both step up.',fin:1},
  reaper:{n:'The Reaper',d:'Half the drops. Merges that make a size 4 fruit or bigger give 1 drop back.',d2:'Only a size 6 fruit or bigger gives a drop back.',fin:1,q:.9}
 };
@@ -524,7 +524,7 @@ const ACH={
  jwwide:{n:'Charmed Life',d:'Win a run with the Charm Jar.',on:'run jar',t:()=>PF.d.stakes.wide>=1,un:'jk.wide'},
  jwkit:{n:'Right Tool',d:'Win a run with the Tool Kit.',on:'run jar',t:()=>PF.d.stakes.kit>=1,un:'jk.kit'},
  jwbare:{n:'Unboxed',d:'Win a run with the Crate Jar.',on:'run jar',t:()=>PF.d.stakes.bare>=1,un:'jk.bare'},
- king:{n:'Regicide',d:'Beat The Melon King.',on:'run jar',t:(R,d,S)=>S['boss.melon.win']>=1,un:'bg.throne'},
+ king:{n:'Regicide',d:'Beat The Melon Queen.',on:'run jar',t:(R,d,S)=>S['boss.melon.win']>=1,un:'bg.throne'},
  queen:{n:'Windfall',d:'Beat The Orchard Queen.',on:'run jar',t:(R,d,S)=>S['boss.queen.win']>=1,un:'bg.orchard'},
  reap:{n:'Cheat Death',d:'Beat The Reaper.',on:'run jar',t:(R,d,S)=>S['boss.reaper.win']>=1,un:'bg.night'},
  deep12:{n:'Pressure',d:'Beat the depth 12 boss.',on:'run jar',t:(R,d,S)=>S.bestDepth>=13||(d.jar===2&&d.depth>=12),un:'bg.deep'},
