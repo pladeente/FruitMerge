@@ -11,7 +11,7 @@ The design view of Rogue mode: which build each item feeds, where the gaps are, 
 
 ## How often things turn up
 
-Since v1.24 boss crates give fewer rares, on the user's call that a rare in a crate pushes the run towards one build: gold crates 45/45/10 (was 30/55/15), melon crates 0/70/30 (was 0/30/70, which often offered two rares at once). Measured the same way as below: rares offered from crates went from 2.9 a run to 1.5, total from about 5.7 to 4.4. The plan for legendaries is to move 5 of the melon crate's uncommon share to them (0/65/30/5).
+Since v1.24 boss crates give fewer rares, on the user's call that a rare in a crate pushes the run towards one build: gold crates 45/45/10 (was 30/55/15), melon crates 0/70/30 (was 0/30/70, which often offered two rares at once). Measured the same way as below: rares offered from crates went from 2.9 a run to 1.5, total from about 5.7 to 4.4. Since v1.29 that is done: melon crates are 0/65/30/5, the 5 being Legendary.
 
 Since v1.20 rares are rarer, on the user's call that a rare did not feel rare: shop rolls 70% common, 26% uncommon, 4% rare (Good Taste: 10% at one level, 16% at two), wooden crates 70/26/4, gold crates 30/55/15 (was 20/50/30), melon crates unchanged. Measured with the real stock and crate code over 400 runs (24 shops, 8 boss crates, no rerolls or wooden crates): rares offered per run went from 11.1 (shop 7.2, crates 3.8) to 5.7 (shop 2.8, crates 2.9), so each of the 10 rares now turns up about once every two runs. A rare on offer shines (`.tile.r2::after`) and plays `snd('rare')` once (`rareCue`). The greedy bot was not re-run: its numbers below show several rares score about like no charm, so the win rate barely depends on them. Weak rares (Sweet Spot, Old Oak, Melon Fever) are the next thing to look at if rares should also feel stronger.
 
@@ -40,6 +40,7 @@ A guide for new charms, from what is in the pool now:
 | Uncommon | ×2 to ×2.5 with a loose condition, or +Mult that grows slowly | Heavyweight, Hot Streak, Vintage, Clean Plate |
 | Rare | ×3 with a condition, ×5 now and then, or a rule change | High Wire, Sweet Spot, Rich Soil, Melon Fever |
 | Fusion | about both halves together plus a bit | Smoothie, Marathon, Wildfire |
+| Legendary | breaks one rule of the game outright, or an unconditional × that grows every jar. About two rares | Phoenix, Stowaway, Heirloom |
 
 ## Builds and what feeds them
 
@@ -366,6 +367,25 @@ The real gap: some builds have no ×Mult of their own below rare or fusion, so t
 **Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.23) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
 
 **To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
+
+## Legendaries (built, v1.29)
+
+Five charms above rare, never sold. They are what makes the shop's Charm Crate worth its price, and a reason to look forward to a melon crate.
+
+| Charm | What it does | The rule it breaks |
+|---|---|---|
+| Phoenix | An overflow clears the top half of the jar instead, once every jar | Overflow ends the run |
+| Cornucopia | A merge that makes an Orange (5) or bigger gives 1 drop back | Drops only go down |
+| Heirloom | ×1.5 Mult, gains ×0.2 every jar cleared | The growing ×Mult the Builds table lists as missing below rare |
+| Stowaway | ×1.5 Mult, takes no charm slot | Slots are scarce |
+| White Flag | Bosses never reach phase 2 | Bosses get worse at half the target |
+
+- Odds: 2 in 100 for each charm in a bought Charm Crate (about 6 in 100 crates), 5 in 100 for each charm in a melon crate (about 6 in 100 crates, measured over 4,000 of each). A player who buys every Charm Crate offered sees one in roughly 1 run in 3, one who buys none in about 1 run in 8. Gold and wooden boss crates never hold one.
+- Cornucopia can not loop: a drop adds about 3.75 units of fruit and it takes 8 to 16 units per merge of size 5 or bigger, so it returns about 0.3 to 0.45 drops per drop. With Rich Soil or on The Gambler it gets close to 1, and the jar fills before it gets there.
+- Heirloom found at the depth 4 melon crate ends a run at about ×3.7. Snowball (rare, with a condition) ends near ×3 when found early.
+- White Flag also cancels Ripeness 8's "bosses start in phase 2". The second boss rule on the final boss still applies.
+- Not measured with the bot. They are rare enough not to move the average run, but a run that finds one early is plainly stronger.
+- Ideas not built: a Legendary tool, crate-only items for the Tool Crate and Seed Crate, a sixth one for the Tools build (a tool keeps half its charge when used).
 
 ## Contracts and skip rewards (built, v1.28)
 
