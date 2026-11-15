@@ -489,3 +489,46 @@ Animated (v1.30), for the six that are hardest to earn, so a moving look is a ma
 The lifetime numbers are guesses, not measured against real play. The jar frame is only 6 pixels wide, so skins read mostly through colour. Ideas not built: skins for the tool bar and HUD, a second sound per set (land, combo), animated fruit skins.
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.
+
+## Families and the Orchard row (proposal, not started)
+
+Why: Rogue feels less strategic than Balatro. Builds hang off narrow pieces (fusions need two exact halves, ~28% of runs see both uncommon halves), so a loss often comes down to the shop. Balatro has broad axes (suits) and lets you shape what you draw. A fruit bag (deck) was considered and turned down by the user: the random queue is what gives tools their job. This keeps the random queue and lets the player tilt it.
+
+### Families
+A tag on each size, on top of size. They jump across sizes, so a family build rewards a pattern, not a block (unlike Small Fry and the size-range charms).
+- Stone fruit: Cherry (1), Peach (9)
+- Berries: Strawberry (2), Grape (3)
+- Citrus: Lemon (4), Orange (5)
+- Orchard: Apple (6), Pear (7)
+- Tropical: Pineapple (8), one member, could count as any family (wildcard)
+- Melons: Rockmelon (10), Watermelon (11)
+
+### Orchard row
+- A second charm row, separate from the 5 scoring slots. 2 slots, a 3rd from an upgrade. Shown near Next, its own shop section.
+- Orchard charms only change what drops and what state a drop arrives in. Never the score maths.
+- Examples: Citrus Grove (Lemons drop twice as often), Weeding (Cherries never drop), Hothouse (1 drop in 12 is an Apple), Gilded Crate (every 8th drop arrives gold), Second Helping (every 5th drop matches the one before), Forecast (shows 2 more fruit after Next).
+- Gilded Crate and Second Helping are the "deck enhancement" layer without a bag: the stream is upgraded, not a list of cards.
+
+### Family scorers (main 5 slots)
+- Charms that read families: +1 Mult per Citrus merge this jar, ×2 on Peach merges, Fruit Salad (×1.5 when the last 3 merges were 3 different families).
+- Fusions join an Orchard charm with its scorer (Citrus Grove + a citrus scorer), so a build has a spine: shape the queue, then score what you shaped.
+- A family is a broad axis, so more of each shop is partly useful.
+
+### Bosses on the stream
+Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
+- Enchantments: Blight (one family stops dropping, replaced by rocks), Overgrowth (1 drop in 5 is a Cherry whatever the Orchard row says), Worms (every 7th drop arrives mouldy), Frost (every 6th drop is stuck in place for 2s), Bramble (Next hidden, Forecast too).
+- Disenchantments: Uproot (Orchard charms switched off, the Thief's twin), Sour Graft (Orchard charms work backwards, its slot must show an obvious red flipped look or it is unreadable), Pest (steals the leftmost Orchard charm for the jar and uses it against you).
+- Contracts can offer stream curses as handicaps. A Ripeness level could add a stream curse to every boss.
+- Counter items: Hardy (Orchard charms can't be switched off), Pesticide (no mouldy drops). Only worth buying once the boss is seen coming.
+
+### RNG relief to go with it
+- Show the next depth's boss early, and a boss reroll (upgrade or skip reward). Required once bosses hit the Orchard row. Origin: a Sleight of Hand + Battery + Juggler + Cash Out + Fat Wallet money loop was ended by The Padlock with no answer available.
+- Pity for fusion halves: holding one half guarantees the other within N shops.
+- Score table in Run info: what each size is worth with the current build, so the target can be planned against.
+- Charm editions (already under Later).
+
+### First slice and open points
+- Family tags, the Orchard row with 2 slots, ~8 Orchard charms, ~6 family scorers, a few fusions. Boss layer after.
+- Run save gains an Orchard list: version bump (`RV`) with a migration.
+- Queue shaping makes runs more consistent, so re-run the balance bot, and give it a policy for Orchard charms or it will undervalue them.
+- Each new item needs an icon grid, `ANIM` entry, Almanac rows, dev panel support and events through `rgEv`.
