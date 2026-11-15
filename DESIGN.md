@@ -565,4 +565,4 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 - Fallbacks if it crowds: header charms shrink past 6, or the Orchard cluster collapses into one icon that opens a card (like `tipShow`).
 - Mock up with Playwright screenshots at phone widths (360 and 412) before building.
 - User's layout (15 Nov, replaces the proposal above): pause and i leave the top row. The top row holds charms and, on the far right above Next, the Orchard slots with a green outer border (about 10 spots in all). Under the boss picture: the boss's stream enchantments and disenchantments.
-- Open: where pause goes. Suggested: fold i into pause (the pause screen gets a Run info button, tapping an empty part of the header still opens Run info), and put pause as a small button at the left end of the HUD score line.
+- Open: where pause goes. i stays its own visible button (the user wants Run info one tap away). Suggested: pause and i side by side, small, at the left end of the HUD score line; the empty-header tap still opens Run info too.
