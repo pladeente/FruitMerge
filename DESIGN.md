@@ -550,3 +550,11 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 - Bouncy fruit (new fruit state, does not exist yet): high restitution, bounces off walls and fruit. Feeds Slingshot, Trick Shot, Ricochet and Bank Shot. Source: an Orchard charm, Rubber Tree (1 in 5 drops arrives bouncy), so the throwing build gets a queue-shaping piece like the family builds.
 - Bounce ×Mult (rare charm, name open, e.g. Pinball): a thrown fruit gains ×1.25 per wall bounce, paid only if it merges before settling, lost on a miss. Accuracy traded for points. Cap the bounces counted (about 4), or bouncy fruit in low gravity farms it. Target combo: Rubber Tree + Slingshot + Moon Boots + Heavyweight.
 - Several toggles may run at once (up to the 4 tool slots). Each drains its own charge per drop, merges refill all of them, so the limits are slots and charge. Check that Moon Boots + bouncy fruit still settle in reasonable time.
+
+### Charm, Orchard or tool (rule proposed 15 Nov, not decided)
+- Charm: has a scoring effect (points, Mult, ×), even if it also changes drops.
+- Orchard: only changes what drops or the state it arrives in, no scoring text.
+- Tool: the player chooses when (fire, armed, or toggle).
+- Existing drop-shaping charms under this rule: Lodestone, Rich Soil, Prospector are pure and would move to Orchard. Fireworks, Bite Size, Volcano, Snack Pack, Sharpshooter, Treasure Hunter score, so stay charms. Alternative: leave every existing charm where it is and use Orchard only for new items (no migration, less tidy).
+- Moving charms needs an `RV` bump: a migration moves them from `ch` to the Orchard list (overflow beyond the Orchard slots stays as a charm or is refunded).
+- Orchard fusions: cross-row like tool fusions. Orchard + charm makes a charm when the result scores (Sharpshooter would become Lodestone + Bullseye, freeing the Orchard slot), Orchard + Orchard makes an Orchard item (e.g. Rubber Tree + Prospector: bouncy gold drops).
