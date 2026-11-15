@@ -558,3 +558,9 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 - Existing drop-shaping charms under this rule: Lodestone, Rich Soil, Prospector are pure and would move to Orchard. Fireworks, Bite Size, Volcano, Snack Pack, Sharpshooter, Treasure Hunter score, so stay charms. Alternative: leave every existing charm where it is and use Orchard only for new items (no migration, less tidy).
 - Moving charms needs an `RV` bump: a migration moves them from `ch` to the Orchard list (overflow beyond the Orchard slots stays as a charm or is refunded).
 - Orchard fusions: cross-row like tool fusions. Orchard + charm makes a charm when the result scores (Sharpshooter would become Lodestone + Bullseye, freeing the Orchard slot), Orchard + Orchard makes an Orchard item (e.g. Rubber Tree + Prospector: bouncy gold drops).
+
+### Layout for the Orchard row (open)
+- Worst case to fit at 360px CSS width: charms 5 + Charm Pouch + Charm jar + Stowaway (8), tools 4, Orchard 3, plus pause, i, Next, boss icon.
+- Proposal: Orchard slots sit beside the Next preview, small, since they act on Next. The boss icon moves or shares that cluster. Header charm row and tool bar unchanged.
+- Fallbacks if it crowds: header charms shrink past 6, or the Orchard cluster collapses into one icon that opens a card (like `tipShow`).
+- Mock up with Playwright screenshots at phone widths (360 and 412) before building.
