@@ -532,3 +532,17 @@ Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
 - Run save gains an Orchard list: version bump (`RV`) with a migration.
 - Queue shaping makes runs more consistent, so re-run the balance bot, and give it a policy for Orchard charms or it will undervalue them.
 - Each new item needs an icon grid, `ANIM` entry, Almanac rows, dev panel support and events through `rgEv`.
+
+### Steering to fusions (added 15 Nov)
+Goal: stop "drop this for a rare". Recipes stay hidden until both halves are held.
+- Hidden weight (user accepted it on 15 Nov, was turned down before): while one half is held, the missing half's shop and crate weight starts at ×2 and gains +1 per shop it fails to show, resetting when it shows. Soft pity in place of a hard guarantee.
+- Fusions should beat any rare on the power budget, so holding a half is a real bet.
+- Found recipes stay in the Almanac. In later runs their halves carry a small mark in the shop. Undiscovered ones stay hidden.
+- Fusion payoff charms: Grafter (+3 Mult per fusion held), Rootstock (making a fusion gives a random seed level).
+- Optional: halves grow a little per jar held.
+
+### Style items (added 15 Nov)
+Items that change how you play, like Slingshot and long combos played fast. No separate Style slot (the user found it narrows builds).
+- As charms (change every drop): Ricochet (+1 Mult per wall bounce of a thrown fruit), Bank Shot (thrown fruit merging after a bounce ×2), Curveball (thrown fruit curve towards the nearest match), Quick Hands (drop gap 0.55s to 0.3s), Slow Cook (+Mult per second since the last drop, capped).
+- As timed tools (bursts, counted in drops, shown with the countdown badge): Moon Boots (low gravity), Tilt (tip the jar), Long Arm (drop from any height), Twin Drop (two fruit at once). Tune each with charge cost and length in drops. Tool charm Lingering: timed tools last 2 more drops.
+- Needs human playtests, a bot can't judge feel.
