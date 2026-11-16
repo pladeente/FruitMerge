@@ -598,7 +598,10 @@ Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
 - Queue shaping makes runs more consistent, so re-run the balance bot, and give it a policy for Orchard charms or it will undervalue them.
 - Each new item needs an icon grid, `ANIM` entry, Almanac rows, dev panel support and events through `rgEv`.
 
-### Steering to fusions (added 15 Nov)
+### Steering to fusions (added 15 Nov, built in v1.35)
+Built: the hidden weight as below (rarity is rolled first, the weight only acts within the half's rarity), Grafter (uncommon, 7: +2 Mult per fusion held, started below the +3 first suggested), Rootstock (common, 5: a fusion made gives a random seed 2 levels). The user kept recipes in the Almanac only and turned down the mark on halves in later runs (16 Nov). Measured over 400 runs of 24 shops, one half held, nothing bought: an uncommon half (Hot Streak) never offered in 60% of runs before, 0.5% after, first offered at shop 18.7 on average before, 7.1 after; a common half (Juicer) 8% never before, 0% after, first at 9.0 before, 2.4 after; a rare half (Melon Fever) 75% never before, 14% after.
+Bot, buyer B (now also buying Grafter and Rootstock), Ripeness 1, 400 runs: v1.34 23.0% wins, depth 7.22, 0.69 fusions made a run; v1.35 27.0% wins, depth 7.13, 1.01 fusions a run. The win rate moved within noise, the fusion count by about half.
+
 Goal: stop "drop this for a rare". Recipes stay hidden until both halves are held.
 - Hidden weight (user accepted it on 15 Nov, was turned down before): while one half is held, the missing half's shop and crate weight starts at ×2 and gains +1 per shop it fails to show, resetting when it shows. Soft pity in place of a hard guarantee.
 - Fusions should beat any rare on the power budget, so holding a half is a real bet.

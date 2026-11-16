@@ -141,6 +141,9 @@ const CH={
  cider:{n:'Cider Press',r:1,c:7,d:'Pome merges (two Apples or two Pears) score ×3.',x:c=>c.fa==='po'?3:1},
  medley:{n:'Medley',r:1,c:7,d:'×0.15 Mult more for every family you have merged this jar.',x:c=>1+.15*Object.keys(c.fm||{}).length},
  tiki:{n:'Tiki Bar',r:2,c:9,d:'Gains ×0.25 Mult every time two Pineapples (8) merge. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
+ /* fusion payoffs (v1.35): Grafter reads c.nfu = fusions held (charms, Orchard items and tools), Rootstock is in RG.take */
+ graft:{n:'Grafter',r:1,c:7,d:'+2 Mult for every fusion you hold.',add:c=>2*(c.nfu||0)},
+ root:{n:'Rootstock',r:0,c:5,d:'Making a fusion gives a random seed 2 levels.'},
  /* Orchard fusions: an Orchard item and a charm make a charm (it takes the charm's slot and frees the Orchard one), two Orchard items make an Orchard item */
  marm:{n:'Marmalade',r:3,c:12,fu:['zest','citrus'],d:'Lemons (4) drop twice as often. +0.5 Mult for every Citrus merge this jar.',add:c=>(c.fm&&c.fm.ci||0)*.5},
  jam:{n:'Jam',r:3,c:12,fu:['picker','berry'],d:'Strawberries (2) and Grapes (3) drop twice as often. Berry merges score +25 points and ×1.5.',chip:c=>c.fa==='be'?25:0,x:c=>c.fa==='be'?1.5:1},
@@ -298,13 +301,14 @@ const nice=q=>{const m=Math.pow(10,Math.max(1,Math.floor(Math.log10(q))-1));retu
 const RG={
  new(jar='classic',stake=1){const pool=Object.keys(BOSS).filter(k=>!BOSS[k].fin),bs=[];for(let d=1;d<DEPTHS;d++){const c=pool.filter(k=>BOSS[k].min<=d&&!bs.includes(k));bs.push(c[rint(c.length)]);}bs.push(RG.fin());
   const tl=[RG.tool('swap')];if(jar!=='wide')tl.push(RG.tool('shake'));if(jar==='kit'){const k=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&k!=='swap'&&k!=='shake');tl.push(RG.tool(k[rint(k.length)]));}
-  return{v:RV,jarId:jar,stake,depth:1,jar:0,coins:jar==='piggy'?12:4,total:0,ch:[],or:[],tl,up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,ms:{},bq:{},bx:{},off:0,shop:null,crate:null,ct:null,sk:null,tg:{},pile:[],at:'hub',won:0,st:{},jst:{}};},
+  return{v:RV,jarId:jar,stake,depth:1,jar:0,coins:jar==='piggy'?12:4,total:0,ch:[],or:[],tl,up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,ms:{},bq:{},bx:{},off:0,shop:null,crate:null,ct:null,sk:null,tg:{},fw:{},pile:[],at:'hub',won:0,st:{},jst:{}};},
  /* the highest stake the player may pick: one above the best they have won on, with any jar */
  stakeMax:(jar='classic')=>Math.min(STAKES.length,1+((PF.d||PF.load()).stakes[jar]||0)), /* per jar: one above the best Ripeness won with that jar */
  fin(){const f=Object.keys(BOSS).filter(k=>BOSS[k].fin);return f[rint(f.length)];},
  /* a saved run that this version can load, or null */
  saved(){const sv=store.get('run',null);if(sv&&sv.v===9){sv.ct=null;sv.sk=null;sv.tg={};sv.v=10;} /* v9 to v10: contracts and skip rewards, nothing else moved */
   if(sv&&sv.v===10){sv.or=[];sv.ch=sv.ch.filter(c=>{if(!CH[c.id]||!CH[c.id].o)return true;if(sv.or.length<OS0)sv.or.push(c);else sv.coins+=Math.max(1,Math.floor(CH[c.id].c/2));return false;});sv.v=11;} /* v10 to v11: the Orchard row. Lodestone, Rich Soil and Prospector move from the charm slots to it, any past its 2 slots are sold */
+  if(sv&&!sv.fw)sv.fw={}; /* v1.35: the fusion weight counters, filled in place */
   if(sv&&sv.up)for(const k in UPG)if(sv.up[k]==null)sv.up[k]=0; /* upgrades added since the run was saved start at 0, no version bump needed for those */
   if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
  /* the run's copy of a charm, if it holds one that is working (The Thief switches off the first R.off charms) */
@@ -340,7 +344,7 @@ const RG={
   return{quota,drops,boss:b,rules,ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* a fruit of tier l was made: returns the charms that paid out */
@@ -369,11 +373,14 @@ const RG={
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
  advance(R,sum){R.coins+=sum;const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.6:.4)).toFixed(2);if(hl)hl.v=+((hl.v||0)+.2).toFixed(1);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.shop=RG.stock(R);R.at='shop';return win;},
- stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste;for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(from[rint(from.length)]);}
+ stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
   const take=RG.pick,sizes=RG.sizes(R);
-  return{ch,or:RG.orPick(R,1),cr:Object.keys(CRP)[rint(3)],tl:take(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};},
+  const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
+ /* steering to fusions (v1.35): while the run holds one half of a fusion, the missing half weighs 2 in the shop and in crates, +1 for every shop that has not shown it (R.fw), back to 2 once it shows. Rarity is rolled first, so it only wins within its rarity */
+ miss(R){const m=new Set(),hasT=id=>R.tl.some(t=>t.id===id),hold=id=>CH[id]?!!RG.has(R,id):hasT(id);for(const D of[CH,TL])for(const id in D){const f=D[id].fu;if(!f||PF.lk('fu.'+id)||hold(id))continue;const a=hold(f[0]),b=hold(f[1]);if(a!==b)m.add(a?f[1]:f[0]);}return m;},
+ fwW:(R,m)=>k=>m.has(k)?2+((R.fw||{})[k]||0):1,
  /* n Orchard items the run does not hold, rarity rolled like the charms (70/26/4, Good Taste shifts it) */
- orPick(R,n,not=[]){const o=[],tt=R.up.taste;for(let i=0;i<n;i++){const left=Object.keys(CH).filter(k=>CH[k].o&&!CH[k].fu&&!CH[k].dev&&!PF.lk('ch.'+k)&&!RG.has(R,k)&&!o.includes(k)&&!not.includes(k));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;o.push(from[rint(from.length)]);}return o;},
+ orPick(R,n,not=[],w=()=>1){const o=[],tt=R.up.taste;for(let i=0;i<n;i++){const left=Object.keys(CH).filter(k=>CH[k].o&&!CH[k].fu&&!CH[k].dev&&!PF.lk('ch.'+k)&&!RG.has(R,k)&&!o.includes(k)&&!not.includes(k));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;o.push(RG.pickW(from,1,w)[0]);}return o;},
  pick(a,n){const o=[];while(o.length<n&&a.length)o.push(a.splice(rint(a.length),1)[0]);return o;},
  /* the same, with a weight per item: w(item) */
  pickW(a,n,w){const o=[];while(o.length<n&&a.length){let t=0,i=0;for(const k of a)t+=w(k);let r=Math.random()*t;while(i<a.length-1&&(r-=w(a[i]))>=0)i++;o.push(a.splice(i,1)[0]);}return o;},
@@ -387,19 +394,19 @@ const RG={
   if(t&&t.fu){const i=R.tl.findIndex(x=>x.id===t.fu[0]),j=R.ch.findIndex(x=>x.id===t.fu[1]);if(i<0||j<0)return false;R.tl[i]=RG.tool(id,R);R.ch.splice(j,1);return true;}return false;},
  /* ---- crates ---- */
  /* opts: {k:'ch'|'tl'|'sd'|'coin'|'fu', id, n}. kind = a shop crate of one kind. then = the screen that follows (shop or hub) */
- crate(R,tier,then,kind,lgAll){const lg=lgAll?1:kind==='ch'?CRL:kind?0:T0(tier),big=!kind&&tier!=='wood'&&R.tg.boss?2:0,T=CRT[tier],n=3+R.up.crowbar+big,o=[],fu=kind||tier==='wood'?[]:RG.fusable(R);if(fu.length)o.push({k:'fu',id:fu[rint(fu.length)].id});
+ crate(R,tier,then,kind,lgAll){const w=RG.fwW(R,RG.miss(R)),lg=lgAll?1:kind==='ch'?CRL:kind?0:T0(tier),big=!kind&&tier!=='wood'&&R.tg.boss?2:0,T=CRT[tier],n=3+R.up.crowbar+big,o=[],fu=kind||tier==='wood'?[]:RG.fusable(R);if(fu.length)o.push({k:'fu',id:fu[rint(fu.length)].id});
   const all=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&!CH[k].dev&&!PF.lk('ch.'+k)&&!R.ch.some(c=>c.id===k)&&RG.rq(R,CH[k].req)),chs=all.filter(k=>CH[k].r<3),lgs=all.filter(k=>CH[k].r===4),tls=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(t=>t.id===k)&&RG.rq(R,TL[k].req)),sds=RG.sizes(R);let coin=0;
   for(let g=0;o.length<n&&g<60;g++){const r=Math.random(),k=kind||(r<.4?'ch':r<.6?'tl':r<.9?'sd':'coin');
    if(k==='ch'&&lgs.length&&lg&&!o.some(x=>x.lg)&&Math.random()<lg)o.push({k,id:lgs[rint(lgs.length)],lg:1});
-   else if(k==='ch'&&Math.random()<CRO){const id=RG.orPick(R,1,o.filter(x=>x.k==='or').map(x=>x.id))[0];if(id)o.push({k:'or',id});}
-   else if(k==='ch'){const q=Math.random()*(T.r[0]+T.r[1]+T.r[2]),rar=q<T.r[0]?0:q<T.r[0]+T.r[1]?1:2,c=chs.filter(x=>CH[x].r===rar),from=c.length?c:chs;if(from.length){const id=from[rint(from.length)];chs.splice(chs.indexOf(id),1);o.push({k,id});}}
-   else if(k==='tl'){if(tls.length)o.push({k,id:tls.splice(rint(tls.length),1)[0]});}
+   else if(k==='ch'&&Math.random()<CRO){const id=RG.orPick(R,1,o.filter(x=>x.k==='or').map(x=>x.id),w)[0];if(id)o.push({k:'or',id});}
+   else if(k==='ch'){const q=Math.random()*(T.r[0]+T.r[1]+T.r[2]),rar=q<T.r[0]?0:q<T.r[0]+T.r[1]?1:2,c=chs.filter(x=>CH[x].r===rar),from=c.length?c:chs;if(from.length){const id=RG.pickW(from.slice(),1,w)[0];chs.splice(chs.indexOf(id),1);o.push({k,id});}}
+   else if(k==='tl'){if(tls.length){const id=RG.pickW(tls.slice(),1,w)[0];tls.splice(tls.indexOf(id),1);o.push({k,id});}}
    else if(k==='sd'){if(sds.length)o.push({k,id:sds.splice(rint(sds.length),1)[0],n:T.sd});}
    else if(!coin){coin=1;o.push({k,n:T.coin});}}
   if(big)delete R.tg.boss;return{tier,then,kind:kind||null,opts:o};},
  /* why a pick can not be taken right now, or '' */
  blocked:(R,o)=>o.k==='ch'&&o.id!=='stow'&&R.ch.length>=RG.slots(R)?'Charms full':o.k==='or'&&R.or.length>=RG.os(R)?'Orchard full':o.k==='tl'&&R.tl.length>=RG.ts(R)?'Tools full':'',
- take(R,i){const o=R.crate&&R.crate.opts[i];if(!o||RG.blocked(R,o))return null;if(o.k==='ch')R.ch.push({id:o.id});else if(o.k==='or')R.or.push({id:o.id});else if(o.k==='tl')R.tl.push(RG.tool(o.id,R));else if(o.k==='sd')R.sd[o.id]+=o.n;else if(o.k==='coin')R.coins+=o.n;else if(!RG.fuse(R,o.id))return null;
+ take(R,i){const o=R.crate&&R.crate.opts[i];if(!o||RG.blocked(R,o))return null;if(o.k==='ch')R.ch.push({id:o.id});else if(o.k==='or')R.or.push({id:o.id});else if(o.k==='tl')R.tl.push(RG.tool(o.id,R));else if(o.k==='sd')R.sd[o.id]+=o.n;else if(o.k==='coin')R.coins+=o.n;else if(!RG.fuse(R,o.id))return null;else if(RG.has(R,'root')){const a=RG.sizes(R),l=a[rint(a.length)];R.sd[l]+=2;o.root=l;} /* Rootstock */
   if(R.shop&&R.shop[o.k]&&(o.k==='ch'||o.k==='tl'||o.k==='or'))R.shop[o.k]=R.shop[o.k].map(x=>x===o.id?null:x); /* the shop was stocked before the crate opened: take that item off its shelf */
   R.at=R.crate.then;R.crate=null;return o;},
  leave(R){const c=R.crate;if(!c)return 0;const n=CRT[c.tier].out;R.coins+=n;R.at=c.then;R.crate=null;return n;},
