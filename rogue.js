@@ -309,12 +309,12 @@ const CT={
  cfrost:{n:'Frost',cu:'frost',pay:['coin',3]},
  cbramble:{n:'Bramble',cu:'bramble',pay:['sd',1]}
 };
-/* boss curses (v1.37): every boss jar (not mini bosses) draws one drop curse (k:'en', from the start) and one Orchard curse (k:'de', at phase 2) per depth, kept in R.sc[depth] = [en, de, family for Blight]. Drop curses also come as contracts (CT cu). Hardy stops the Orchard curses, Pesticide stops mould */
+/* boss curses (v1.37): every boss jar (not mini bosses) draws one drop curse (k:'en', from the start) and one Orchard curse (k:'de', at phase 2) per depth, kept in R.sc[depth] = [en, de, the size Blight hits]. Drop curses also come as contracts (CT cu). Hardy stops the Orchard curses, Pesticide stops mould */
 const CUR={
- blight:{n:'Blight',k:'en',d:f=>FMN[f]+' stop dropping: they arrive as rocks.'},
+ blight:{n:'Blight',k:'en',d:f=>'Every 3rd '+fnm(+f||0)+' you get arrives as a rock.'},
  overg:{n:'Overgrowth',k:'en',d:()=>'Every 5th drop is a Cherry (1), whatever your Orchard says.'},
- worms:{n:'Worms',k:'en',d:()=>'Every 7th drop arrives mouldy and never merges.'},
- frost:{n:'Frost',k:'en',d:()=>'Every 6th drop arrives Frozen.'},
+ worms:{n:'Worms',k:'en',d:()=>'Every 12th drop arrives mouldy and never merges.'},
+ frost:{n:'Frost',k:'en',d:()=>'Every 4th drop freezes where it lands for 3 seconds: it can not move or merge.'},
  bramble:{n:'Bramble',k:'en',d:()=>'The Next box and Forecast are hidden.'},
  uproot:{n:'Uproot',k:'de',d:()=>'Your Orchard items are switched off.'},
  pest:{n:'Pest',k:'de',d:()=>'Your leftmost Orchard item is switched off.'},
@@ -373,7 +373,7 @@ const RG={
  rules(R,b,d=R.depth){let r=[b];if(b==='queen'){if(!R.bq[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'),a=k.splice(rint(k.length),1)[0],c=k.filter(x=>!(['swarm','gamble'].includes(a)&&['swarm','gamble'].includes(x)));R.bq[d]=[a,c[rint(c.length)]];}r=R.bq[d];}
   if(R.stake>=8&&BOSS[b].fin){if(!R.bx[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'&&!r.includes(k)&&!(['swarm','gamble'].includes(k)&&r.some(x=>['swarm','gamble'].includes(x))));R.bx[d]=k[rint(k.length)];}r=r.concat(R.bx[d]);}return r;},
  /* the curses on this depth's boss jar: [drop curse, Orchard curse, Blight family] */
- curse(R,d=R.depth){if(!R.sc)R.sc={};if(!R.sc[d]){const e=Object.keys(CUR).filter(k=>CUR[k].k==='en'),o=Object.keys(CUR).filter(k=>CUR[k].k==='de');R.sc[d]=[e[rint(e.length)],o[rint(o.length)],['st','be','ci'][rint(3)]];}return R.sc[d];},
+ curse(R,d=R.depth){if(!R.sc)R.sc={};if(!R.sc[d]){const e=Object.keys(CUR).filter(k=>CUR[k].k==='en'),o=Object.keys(CUR).filter(k=>CUR[k].k==='de');R.sc[d]=[e[rint(e.length)],o[rint(o.length)],rint(3)];}if(typeof R.sc[d][2]!=='number')R.sc[d][2]=rint(3);return R.sc[d];}, /* [2] = the size Blight hits, Cherry to Lemon */
  curD:(id,f)=>CUR[id].d(f),
  bossD(R,b,d=R.depth,two){if(b===RG.boss(R,d)){const[e,o,f]=RG.curse(R,d);return RG.bossD0(R,b,d,two)+(two?(CUR[o]?` ${CUR[o].n}: ${CUR[o].d()}${R.up.hardy?' (Hardy: no effect.)':''}`:''):(CUR[e]?` ${CUR[e].n}: ${CUR[e].d(f)}`:''));}return RG.bossD0(R,b,d,two);},
  bossD0(R,b,d=R.depth,two){const k=two?'d2':'d',r=RG.rules(R,b,d),x=R.stake>=8&&BOSS[b].fin?r[r.length-1]:null,xt=x?` Also ${BOSS[x].n}: ${BOSS[x][k]}`:'';if(b!=='queen')return BOSS[b][k]+xt;
@@ -382,7 +382,7 @@ const RG={
   const quota=nice(RQ[j]*sc*(bd&&bd.q||1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
   const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2?RG.curse(R,d):null;
   const p2=j===2&&!RG.has(R,'flag'); /* White Flag: no phase 2 */
-  return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f||'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
+  return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
  score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
@@ -409,7 +409,7 @@ const RG={
  rrBase:R=>R.up.dice?(R.shop.rr?RG.cost(R,1+R.shop.rr):0):RG.cost(R,2+R.shop.rr),
  rrCost:R=>R.tg.roll?0:RG.rrBase(R), /* Free Rolls (a skip reward) covers the rerolls that would cost coins */
  /* draw the contract for the jar that is up next: none on depth 1, none on a boss or mini boss jar */
- offer(R){R.ct=null;if(R.depth<2||R.jar>1||(R.jar===1&&RG.mid(R)))return;const k=Object.keys(CT).filter(k=>!CT[k].r||BOSS[CT[k].r].min<=R.depth),id=k[rint(k.length)],c={id,on:0};if(CT[id].cu==='blight')c.f=['st','be','ci'][rint(3)];if(CT[id].pay[0]==='sd'){const a=RG.sizes(R);c.sd=a[rint(a.length)];}R.ct=c;},
+ offer(R){R.ct=null;if(R.depth<2||R.jar>1||(R.jar===1&&RG.mid(R)))return;const k=Object.keys(CT).filter(k=>!CT[k].r||BOSS[CT[k].r].min<=R.depth),id=k[rint(k.length)],c={id,on:0};if(CT[id].cu==='blight')c.f=rint(3);if(CT[id].pay[0]==='sd'){const a=RG.sizes(R);c.sd=a[rint(a.length)];}R.ct=c;},
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],ct=cfg.ct&&CT[cfg.ct],u=Math.min(3+R.up.ot*2,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/RG.intN(R)));
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
