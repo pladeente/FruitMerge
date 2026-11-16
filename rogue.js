@@ -27,7 +27,7 @@ const CH={
  clutch:{n:'Photo Finish',r:0,c:4,d:'×2.5 Mult for your last 5 drops of each jar.',x:c=>c.dl<5?2.5:1},
  lucky:{n:'Lucky Clover',r:0,c:5,d:'1 in 4 merges score ×3.',x:c=>c.l>=0&&Math.random()<.25*c.luck?3:1},
  scratch:{n:'Scratch Card',r:0,c:4,d:'1 in 6 merges pays 1 coin.'},
- lode:{n:'Lodestone',r:0,c:4,o:1,d:'Every 5th drop is a Magnet that pulls its matches in.'},
+ lode:{n:'Lodestone',r:0,c:4,o:1,rv:'Every 5th drop is a rock.',d:'Every 5th drop is a Magnet that pulls its matches in.'},
  piggy:{n:'Piggy Bank',r:0,c:4,d:'+3 coins every time you clear a jar.'},
  bag:{n:'Big Basket',r:0,c:5,d:'+5 drops in every jar.'},
  juggle:{n:'Juggler',r:0,c:5,d:'When you use a tool, your other tools each gain 1 charge.'},
@@ -60,7 +60,7 @@ const CH={
  crit:{n:'Sweet Spot',r:2,c:8,d:'Every 7th merge of a jar scores ×5.',x:c=>c.l>=0&&c.jm>0&&c.jm%7===0?5:1},
  abacus:{n:'Abacus',r:2,c:8,d:'+0.5 Mult for every seed level you hold.',add:c=>c.sdl*.5},
  crew:{n:'Full House',r:2,c:9,d:'×2 Mult while every charm slot is filled.',x:c=>c.full?2:1},
- soil:{n:'Rich Soil',r:2,c:9,o:1,d:'Every fruit you drop is one size bigger.'},
+ soil:{n:'Rich Soil',r:2,c:9,o:1,rv:'Every fruit you drop is one size smaller.',d:'Every fruit you drop is one size bigger.'},
  garg:{n:'Gargoyle',r:1,c:6,d:'Rocks never count as over the line. +0.5 Mult for every rock in the jar.',add:c=>(c.rk||0)*.5},
  wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.2 Mult more for every charm you own, this one included.',x:c=>1+.2*c.nc},
@@ -76,7 +76,7 @@ const CH={
  packet:{n:'Seed Packet',r:0,c:4,d:'Seeds cost 1 coin less.'},
  sprout:{n:'Sprout',r:1,c:6,d:'The first time you make each fruit size in a jar, its seed counts double.'},
  leaf:{n:'Gold Leaf',r:0,c:4,d:'The first fruit you drop in each jar is gold.'},
- prosp:{n:'Prospector',r:1,c:6,o:1,d:'1 in 10 fruit you drop are gold.'},
+ prosp:{n:'Prospector',r:1,c:6,o:1,rv:'1 in 10 fruit you drop arrive mouldy.',d:'1 in 10 fruit you drop are gold.'},
  alch:{n:'Alchemy',r:1,c:6,d:'1 in 3 times a gold fruit merges, the fruit it makes is gold too.'},
  wall:{n:'Wallflower',r:0,c:4,d:'Merges touching a wall score +20 points.',chip:c=>c.wall?20:0},
  low:{n:'Low Tide',r:1,c:7,d:'Merges in the bottom third of the jar score ×2.',x:c=>c.low?2:1},
@@ -127,20 +127,21 @@ const CH={
  hunter:{n:'Treasure Hunter',r:3,c:12,fu:['prosp','magpie'],d:'1 in 6 fruit you drop are gold. +1.5 Mult for every gold fruit in the jar.',add:c=>(c.gold||0)*1.5},
  still:{n:'Still Water',r:3,c:12,fu:['low','tidy'],d:'Merges in the bottom third of the jar score ×2.5. ×2 more while the jar holds 8 fruit or fewer.',x:c=>(c.low?2.5:1)*(c.n<=8&&!c.idle?2:1)},
  ivy:{n:'Climbing Ivy',r:3,c:12,fu:['wall','wire'],d:'Merges touching a wall score +30 points and ×1.5. ×3 Mult while the pile reaches the gold line near the top of the jar.',chip:c=>c.wall?30:0,x:c=>(c.wall?1.5:1)*(c.high?3:1)},
+ /* rv = what it does while The Sour Graft has it working backwards (v1.37) */
  /* the Orchard row (v1.34): o = an Orchard item. It sits in R.or, not a charm slot, and only changes what drops and the state a drop arrives in. Lodestone, Rich Soil and Prospector moved here (o:1 above) */
- citrus:{n:'Citrus Grove',r:0,c:4,o:1,d:'Lemons (4) drop twice as often.'},
- berry:{n:'Berry Patch',r:0,c:4,o:1,d:'Strawberries (2) and Grapes (3) drop twice as often.'},
- rubber:{n:'Rubber Tree',r:1,c:6,o:1,d:'Every 5th fruit you drop is bouncy: it springs off walls and fruit until it has bounced 4 times.'},
- fore:{n:'Forecast',r:0,c:4,o:1,d:'Shows the 2 fruit that come after Next.'},
- dew:{n:'Morning Dew',r:0,c:4,o:1,d:'Your first 6 fruit of each jar are Cherries (1).'},
- crop:{n:'Crop Rotation',r:0,c:4,o:1,d:'Drops take turns by family: a Cherry (1), then a Strawberry (2) or Grape (3), then a Lemon (4).'},
- rgard:{n:'Rock Garden',r:0,c:3,o:1,d:'Every 8th fruit is a rock.'},
- weed:{n:'Weeding',r:1,c:6,o:1,d:'Cherries (1) never drop.'},
- hothouse:{n:'Hothouse',r:1,c:6,o:1,d:'1 in 12 fruit you drop are an Apple (6).'},
- second:{n:'Second Helping',r:1,c:6,o:1,d:'Every 5th fruit is the same as the one before it.'},
- hive:{n:'Beehive',r:1,c:6,o:1,d:'Every 6th fruit you drop arrives pollinated: it scores ×3 when it merges.'},
- ghour:{n:'Golden Hour',r:1,c:7,o:1,d:'Your last 4 drops of each jar arrive gold.'},
- hotbed:{n:'Hot Bed',r:1,c:6,o:1,d:'When a combo reaches 3 merges, your Next fruit becomes a Magnet.'},
+ citrus:{n:'Citrus Grove',r:0,c:4,o:1,rv:'Lemons (4) drop half as often.',d:'Lemons (4) drop twice as often.'},
+ berry:{n:'Berry Patch',r:0,c:4,o:1,rv:'Strawberries (2) and Grapes (3) drop half as often.',d:'Strawberries (2) and Grapes (3) drop twice as often.'},
+ rubber:{n:'Rubber Tree',r:1,c:6,o:1,rv:'Every 5th fruit you drop is Sticky.',d:'Every 5th fruit you drop is bouncy: it springs off walls and fruit until it has bounced 4 times.'},
+ fore:{n:'Forecast',r:0,c:4,o:1,rv:'The Next box is hidden.',d:'Shows the 2 fruit that come after Next.'},
+ dew:{n:'Morning Dew',r:0,c:4,o:1,rv:'Your first 6 fruit of each jar are Lemons (4).',d:'Your first 6 fruit of each jar are Cherries (1).'},
+ crop:{n:'Crop Rotation',r:0,c:4,o:1,rv:'Every 4th drop is a rock.',d:'Drops take turns by family: a Cherry (1), then a Strawberry (2) or Grape (3), then a Lemon (4).'},
+ rgard:{n:'Rock Garden',r:0,c:3,o:1,rv:'No rocks from it.',d:'Every 8th fruit is a rock.'},
+ weed:{n:'Weeding',r:1,c:6,o:1,rv:'Cherries (1) drop twice as often.',d:'Cherries (1) never drop.'},
+ hothouse:{n:'Hothouse',r:1,c:6,o:1,rv:'1 in 12 fruit you drop are a Cherry (1).',d:'1 in 12 fruit you drop are an Apple (6).'},
+ second:{n:'Second Helping',r:1,c:6,o:1,rv:'Every 5th fruit is never the same as the one before it.',d:'Every 5th fruit is the same as the one before it.'},
+ hive:{n:'Beehive',r:1,c:6,o:1,rv:'Every 6th fruit you drop arrives mouldy.',d:'Every 6th fruit you drop arrives pollinated: it scores ×3 when it merges.'},
+ ghour:{n:'Golden Hour',r:1,c:7,o:1,rv:'Your last 4 drops arrive mouldy.',d:'Your last 4 drops of each jar arrive gold.'},
+ hotbed:{n:'Hot Bed',r:1,c:6,o:1,rv:'When a combo reaches 3 merges, your Next fruit becomes a rock.',d:'When a combo reaches 3 merges, your Next fruit becomes a Magnet.'},
  /* family scorers: c.fa = the family of the pair that merged, c.fm = family merges this jar (this one included), */
  zest:{n:'Zest',r:0,c:5,d:'+0.3 Mult for every Citrus merge this jar (two Lemons or two Oranges).',add:c=>(c.fm&&c.fm.ci||0)*.3},
  picker:{n:'Berry Picker',r:0,c:5,d:'Berry merges (two Strawberries or two Grapes) score +15 points.',chip:c=>c.fa==='be'?15:0},
@@ -156,7 +157,7 @@ const CH={
  jam:{n:'Jam',r:3,c:12,fu:['picker','berry'],d:'Strawberries (2) and Grapes (3) drop twice as often. Berry merges score +25 points and ×1.5.',chip:c=>c.fa==='be'?25:0,x:c=>c.fa==='be'?1.5:1},
  mill:{n:'Cider Mill',r:3,c:12,fu:['cider','hothouse'],d:'1 in 12 fruit you drop are an Apple (6). Pome merges score ×4.',x:c=>c.fa==='po'?4:1},
  zen:{n:'Zen Garden',r:3,c:12,fu:['garg','rgard'],d:'Every 6th fruit is a rock. Rocks never count as over the line. ×0.25 Mult more for every rock in the jar.',x:c=>1+.25*(c.rk||0)},
- fortune:{n:'Fortune Teller',r:3,c:12,o:1,fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
+ fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
 const STAKES=['The normal game.','Every jar pays 1 coin less.','Every target is 25% higher.','3 fewer drops in every jar.','Everything in the shop costs 1 coin more.','From depth 5 on, every depth has a mini boss.','1 charm slot fewer.','Bosses start in phase 2, and the final boss brings a second boss with it.'];
@@ -214,6 +215,8 @@ const UPG={
  belt:{n:'Tool Belt',c:6,max:2,d:'+1 tool slot (up to 4).'},
  pouch:{n:'Charm Pouch',c:10,max:1,d:'+1 charm slot.'},
  bed:{n:'Raised Bed',c:10,max:1,d:'+1 Orchard slot.'},
+ hardy:{n:'Hardy',c:6,max:1,d:'Bosses can not switch off or sour your Orchard.'},
+ pesti:{n:'Pesticide',c:5,max:1,d:'Your fruit never go mouldy.'},
  shelf:{n:'Bigger Shelf',c:5,max:1,d:'The shop offers 1 more charm.'},
  seedbag:{n:'Seed Bag',c:4,max:1,d:'The shop offers 1 more seed.'},
  cata:{n:'Catalogue',c:5,max:1,d:'The shop offers 1 more upgrade.'},
@@ -298,7 +301,24 @@ const CT={
  lid:{n:'Low Ceiling',d:'The line sits lower in the jar.',r:'lid',pay:['sd',1]},
  sticky:{n:'Sticky Fingers',d:'Every 3rd fruit is Sticky and stays where it lands.',r:'sticky',pay:['sd',1]},
  prune:{n:'Big Game',d:'Merges that make a size 4 fruit or smaller score nothing.',r:'prune',pay:['cr',1]},
- stone:{n:'Rubble',d:'Every 5th drop is a rock that never merges.',r:'stone',pay:['cr',1]}
+ stone:{n:'Rubble',d:'Every 5th drop is a rock that never merges.',r:'stone',pay:['cr',1]},
+ /* drop curses as contracts (v1.37), cu = the curse */
+ cblight:{n:'Blight',cu:'blight',pay:['coin',3]},
+ covg:{n:'Overgrowth',cu:'overg',pay:['coin',3]},
+ cworms:{n:'Worms',cu:'worms',pay:['coin',4]},
+ cfrost:{n:'Frost',cu:'frost',pay:['coin',3]},
+ cbramble:{n:'Bramble',cu:'bramble',pay:['sd',1]}
+};
+/* boss curses (v1.37): every boss jar (not mini bosses) draws one drop curse (k:'en', from the start) and one Orchard curse (k:'de', at phase 2) per depth, kept in R.sc[depth] = [en, de, family for Blight]. Drop curses also come as contracts (CT cu). Hardy stops the Orchard curses, Pesticide stops mould */
+const CUR={
+ blight:{n:'Blight',k:'en',d:f=>FMN[f]+' stop dropping: they arrive as rocks.'},
+ overg:{n:'Overgrowth',k:'en',d:()=>'Every 5th drop is a Cherry (1), whatever your Orchard says.'},
+ worms:{n:'Worms',k:'en',d:()=>'Every 7th drop arrives mouldy and never merges.'},
+ frost:{n:'Frost',k:'en',d:()=>'Every 6th drop arrives Frozen.'},
+ bramble:{n:'Bramble',k:'en',d:()=>'The Next box and Forecast are hidden.'},
+ uproot:{n:'Uproot',k:'de',d:()=>'Your Orchard items are switched off.'},
+ pest:{n:'Pest',k:'de',d:()=>'Your leftmost Orchard item is switched off.'},
+ sour:{n:'Sour Graft',k:'de',d:()=>'Your Orchard items work backwards.'}
 };
 /* Skip rewards: a skipped jar offers the wooden crate or one of the others. u = how many uses it holds. R.sk = the ids on offer while the pick is open, R.tg = the ones held (id -> uses left) */
 const SKR={
@@ -306,9 +326,10 @@ const SKR={
  roll:{n:'Free Rolls',d:'Your next 3 paid shop rerolls are free.',u:3},
  pay:{n:'Double Pay',d:'The next jar you clear pays double.',u:1},
  boss:{n:'Bigger Haul',d:'The next boss crate offers 2 more choices.',u:1},
- drops:{n:'Extra Drops',d:'+6 drops in the next jar you play.',u:1}
+ drops:{n:'Extra Drops',d:'+6 drops in the next jar you play.',u:1},
+ detour:{n:'Detour',d:'This depth\'s boss is drawn again, with new curses.',u:0}
 };
-const ICN={sk_roll:'dice',sk_pay:'wallet',sk_boss:'crate_gold',sk_drops:'bag',lode:'magnet',boom:'bomb',pet:'cat',glut:'cat',rot:'mould',stone:'rock',storm:'whirl',slick:'drop',melon:'king',gamble:'dice',twins:'twin'}; /* things that share another icon (icons.js) */
+const ICN={sk_detour:'bribe',worms:'mould',frost:'ice',sk_roll:'dice',sk_pay:'wallet',sk_boss:'crate_gold',sk_drops:'bag',lode:'magnet',boom:'bomb',pet:'cat',glut:'cat',rot:'mould',stone:'rock',storm:'whirl',slick:'drop',melon:'king',gamble:'dice',twins:'twin'}; /* things that share another icon (icons.js) */
 const icn=id=>ICN[id]||id,T0=t=>CRT[t].lg||0;
 const nice=q=>{const m=Math.pow(10,Math.max(1,Math.floor(Math.log10(q))-1));return Math.round(q*(1+1e-9)/m)*m;};
 const RG={
@@ -326,7 +347,9 @@ const RG={
   if(sv&&sv.up)for(const k in UPG)if(sv.up[k]==null)sv.up[k]=0; /* upgrades added since the run was saved start at 0, no version bump needed for those */
   if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
  /* the run's copy of a charm, if it holds one that is working (The Thief switches off the first R.off charms) */
- has:(R,id)=>{const i=R.ch.findIndex(c=>c.id===id);return i>=(R.off||0)?R.ch[i]:R.or&&R.or.find(c=>c.id===id);}, /* the Orchard row (R.or) counts too, The Thief never touches it */
+ has:(R,id)=>{const i=R.ch.findIndex(c=>c.id===id);if(i>=(R.off||0))return R.ch[i];if(!R.or)return;const j=R.or.findIndex(c=>c.id===id);if(j<0||R.oc&&(R.oc!=='pest'||j===0))return;return R.or[j];},
+ /* R.oc = the Orchard curse running in this jar (uproot, pest, sour), set by the engine at phase 2, 0 otherwise. rev = an Orchard item working backwards */
+ rev:(R,id)=>R.oc==='sour'&&!!R.or&&R.or.some(c=>c.id===id), /* the Orchard row (R.or) counts too, The Thief never touches it */
  os:R=>OS0+R.up.bed, /* Orchard slots */
  /* tools: {id, c} where c is the charge held. New tools arrive charged */
  tool:(id,R)=>({id,c:R?RG.need(R,id):TL[id].ch}),
@@ -349,14 +372,18 @@ const RG={
  /* the rule flags a boss switches on. The Orchard Queen runs two other bosses, picked once per depth */
  rules(R,b,d=R.depth){let r=[b];if(b==='queen'){if(!R.bq[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'),a=k.splice(rint(k.length),1)[0],c=k.filter(x=>!(['swarm','gamble'].includes(a)&&['swarm','gamble'].includes(x)));R.bq[d]=[a,c[rint(c.length)]];}r=R.bq[d];}
   if(R.stake>=8&&BOSS[b].fin){if(!R.bx[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'&&!r.includes(k)&&!(['swarm','gamble'].includes(k)&&r.some(x=>['swarm','gamble'].includes(x))));R.bx[d]=k[rint(k.length)];}r=r.concat(R.bx[d]);}return r;},
- bossD(R,b,d=R.depth,two){const k=two?'d2':'d',r=RG.rules(R,b,d),x=R.stake>=8&&BOSS[b].fin?r[r.length-1]:null,xt=x?` Also ${BOSS[x].n}: ${BOSS[x][k]}`:'';if(b!=='queen')return BOSS[b][k]+xt;
+ /* the curses on this depth's boss jar: [drop curse, Orchard curse, Blight family] */
+ curse(R,d=R.depth){if(!R.sc)R.sc={};if(!R.sc[d]){const e=Object.keys(CUR).filter(k=>CUR[k].k==='en'),o=Object.keys(CUR).filter(k=>CUR[k].k==='de');R.sc[d]=[e[rint(e.length)],o[rint(o.length)],['st','be','ci'][rint(3)]];}return R.sc[d];},
+ curD:(id,f)=>CUR[id].d(f),
+ bossD(R,b,d=R.depth,two){if(b===RG.boss(R,d)){const[e,o,f]=RG.curse(R,d);return RG.bossD0(R,b,d,two)+(two?(CUR[o]?` ${CUR[o].n}: ${CUR[o].d()}${R.up.hardy?' (Hardy: no effect.)':''}`:''):(CUR[e]?` ${CUR[e].n}: ${CUR[e].d(f)}`:''));}return RG.bossD0(R,b,d,two);},
+ bossD0(R,b,d=R.depth,two){const k=two?'d2':'d',r=RG.rules(R,b,d),x=R.stake>=8&&BOSS[b].fin?r[r.length-1]:null,xt=x?` Also ${BOSS[x].n}: ${BOSS[x][k]}`:'';if(b!=='queen')return BOSS[b][k]+xt;
   const q=r.slice(0,2);return (two?BOSS.queen.d2+' '+q.map(i=>BOSS[i].d2).join(' '):`${BOSS[q[0]].n} and ${BOSS[q[1]].n} at once. `+q.map(i=>BOSS[i].d).join(' '))+xt;},
  jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):j===1?RG.mid(R,d):null,bd=b&&BOSS[b],rules=b?RG.rules(R,b,d):[],sc=d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(RSCX,d-DEPTHS),J=R.jarId,now=j===R.jar,ct=now&&!b&&R.ct&&R.ct.on?CT[R.ct.id]:null; /* ct = the contract signed for this jar */
   const quota=nice(RQ[j]*sc*(bd&&bd.q||1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
-  const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'';
+  const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2?RG.curse(R,d):null;
   const p2=j===2&&!RG.has(R,'flag'); /* White Flag: no phase 2 */
-  return{quota,drops,boss:b,rules,ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
-   rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
+  return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f||'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
+   rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
  score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],sd=c.l>0?R.sd[c.l]:0;c.coins=R.coins;c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
@@ -382,7 +409,7 @@ const RG={
  rrBase:R=>R.up.dice?(R.shop.rr?RG.cost(R,1+R.shop.rr):0):RG.cost(R,2+R.shop.rr),
  rrCost:R=>R.tg.roll?0:RG.rrBase(R), /* Free Rolls (a skip reward) covers the rerolls that would cost coins */
  /* draw the contract for the jar that is up next: none on depth 1, none on a boss or mini boss jar */
- offer(R){R.ct=null;if(R.depth<2||R.jar>1||(R.jar===1&&RG.mid(R)))return;const k=Object.keys(CT).filter(k=>!CT[k].r||BOSS[CT[k].r].min<=R.depth),id=k[rint(k.length)],c={id,on:0};if(CT[id].pay[0]==='sd'){const a=RG.sizes(R);c.sd=a[rint(a.length)];}R.ct=c;},
+ offer(R){R.ct=null;if(R.depth<2||R.jar>1||(R.jar===1&&RG.mid(R)))return;const k=Object.keys(CT).filter(k=>!CT[k].r||BOSS[CT[k].r].min<=R.depth),id=k[rint(k.length)],c={id,on:0};if(CT[id].cu==='blight')c.f=['st','be','ci'][rint(3)];if(CT[id].pay[0]==='sd'){const a=RG.sizes(R);c.sd=a[rint(a.length)];}R.ct=c;},
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],ct=cfg.ct&&CT[cfg.ct],u=Math.min(3+R.up.ot*2,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/RG.intN(R)));
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
@@ -427,7 +454,7 @@ const RG={
  buyCr(R){const k=R.shop.cr,p=k&&RG.crCost(R);if(!k||R.coins<p)return false;R.coins-=p;R.shop.cr=null;R.crate=RG.crate(R,'wood','shop',k);R.at='crate';return true;},
  /* skip jar 1 or 2 of a depth: no payout, no shop, and a pick between a wooden crate and one other skip reward (not one already held) */
  skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.jar++;R.coins+=R.up.road*3;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;},
- skipTake(R,id){if(!R.sk||!R.sk.includes(id))return false;R.sk=null;if(id==='crate'){R.crate=RG.crate(R,'wood','hub');R.at='crate';}else{R.tg[id]=SKR[id].u;R.at='hub';}return true;},
+ skipTake(R,id){if(!R.sk||!R.sk.includes(id))return false;R.sk=null;if(id==='crate'){R.crate=RG.crate(R,'wood','hub');R.at='crate';}else if(id==='detour'){RG.bribe(R);R.at='hub';}else{R.tg[id]=SKR[id].u;R.at='hub';}return true;},
  buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
  buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},
  buySd(R,i){const l=R.shop.sd[i],p=l&&RG.sdCost(R,l);if(!l||R.coins<p)return 0;R.coins-=p;R.sd[l]++;R.shop.sd[i]=null;return l;},
@@ -437,7 +464,7 @@ const RG={
  sellOr(R,i){const c=R.or[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c);R.or.splice(i,1);return true;},
  sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c);R.ch.splice(i,1);return true;},
  reroll(R){const fr=R.tg.roll>0&&RG.rrBase(R)>0,p=fr?0:RG.rrBase(R);if(R.coins<p)return false;R.coins-=p;const s=RG.stock(R);s.rr=R.shop.rr+(fr?0:1);if(fr&&--R.tg.roll<=0)delete R.tg.roll;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
- ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
+ ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
 /* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------

@@ -579,7 +579,8 @@ A tag on each size, on top of size. They jump across sizes, so a family build re
 - Fusions join an Orchard charm with its scorer (Citrus Grove + a citrus scorer), so a build has a spine: shape the queue, then score what you shaped.
 - A family is a broad axis, so more of each shop is partly useful.
 
-### Bosses on the stream
+### Bosses on the stream (built in v1.37)
+Built as recommended (16 Nov): every boss jar draws one drop curse and one Orchard curse per depth. Sour Graft, on the user's call, makes each Orchard item work in the opposite direction (Citrus Grove: Lemons half as often; Weeding: Cherries twice as often; Rich Soil: one size smaller; Morning Dew: Lemons first; Hothouse: 1 in 12 a Cherry; Forecast: Next hidden; Second Helping: never the same; Beehive, Golden Hour, Prospector: mouldy drops; Hot Bed: a rock; Rubber Tree: Sticky; Lodestone and Crop Rotation, which have no plain opposite: rocks every 5th / 4th; Rock Garden: no rocks). Hardy and Pesticide are upgrades. The Ripeness curse was skipped, since every boss already brings two. Boss preview (next depth's boss and its curses in the hub and shop) and the Detour skip reward are in; Bribe stays the paid reroll.
 Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
 - Enchantments: Blight (one family stops dropping, replaced by rocks), Overgrowth (1 drop in 5 is a Cherry whatever the Orchard row says), Worms (every 7th drop arrives mouldy), Frost (every 6th drop is stuck in place for 2s), Bramble (Next hidden, Forecast too).
 - Disenchantments: Uproot (Orchard charms switched off, the Thief's twin), Sour Graft (Orchard charms work backwards, its slot must show an obvious red flipped look or it is unreadable), Pest (steals the leftmost Orchard charm for the jar and uses it against you).
