@@ -490,9 +490,23 @@ The lifetime numbers are guesses, not measured against real play. The jar frame 
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.
 
-## Families and the Orchard row (proposal, not started)
+## Families and the Orchard row (planned, not started)
 
 Why: Rogue feels less strategic than Balatro. Builds hang off narrow pieces (fusions need two exact halves, ~28% of runs see both uncommon halves), so a loss often comes down to the shop. Balatro has broad axes (suits) and lets you shape what you draw. A fruit bag (deck) was considered and turned down by the user: the random queue is what gives tools their job. This keeps the random queue and lets the player tilt it.
+
+### Plan summary (read first, 16 Nov)
+Decided by the user:
+1. Fruit families as a second axis (list below). No fruit bag.
+2. Orchard row: a separate row of 2 slots (3 with an upgrade) for items that only shape drops. Green outer border, far right of the top row above Next.
+3. Bosses gain stream enchantments (phase 1) and Orchard disenchantments (phase 2), shown under the boss picture.
+4. Hidden weight towards the missing half of a held fusion (soft pity, below). Steer players to fusions over rares.
+5. Style items: no Style slot. Throwing and speed items are charms, physics and placement items are tools. Tools can be timed (counted in drops) or toggles (tap on/off, 1 charge per drop while on, several can run at once). Slingshot can become a toggle.
+6. Bouncy fruit (new state) from the Orchard item Rubber Tree, and a rare bounce ×Mult charm for throwing builds.
+7. Layout: pause folds into one i button that opens a tabbed screen (Run info first, Almanac, Options, Resume, Quit run at the bottom). Drops bar moves to just above the tool bar, the jar keeps its size and moves up.
+
+Still open: the charm/Orchard/tool rule and whether Lodestone, Rich Soil and Prospector move to Orchard; where the i button sits; item names and numbers; family wildcard (Pineapple).
+
+Suggested order: layout first (i screen, drops bar, top row with Orchard space, screenshots at 360 and 412px), then families + Orchard row + family scorers, then fusion weight, then style items and toggles, then the boss stream layer. Rebalance with the bot after scoring changes. Each stage asked for separately, one commit series each.
 
 ### Families
 A tag on each size, on top of size. They jump across sizes, so a family build rewards a pattern, not a block (unlike Small Fry and the size-range charms).
@@ -523,7 +537,7 @@ Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
 
 ### RNG relief to go with it
 - Show the next depth's boss early, and a boss reroll (upgrade or skip reward). Required once bosses hit the Orchard row. Origin: a Sleight of Hand + Battery + Juggler + Cash Out + Fat Wallet money loop was ended by The Padlock with no answer available.
-- Pity for fusion halves: holding one half guarantees the other within N shops.
+- Pity for fusion halves: superseded by the hidden weight in "Steering to fusions".
 - Score table in Run info: what each size is worth with the current build, so the target can be planned against.
 - Charm editions (already under Later).
 
@@ -561,7 +575,7 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 
 ### Layout for the Orchard row (open)
 - Worst case to fit at 360px CSS width: charms 5 + Charm Pouch + Charm jar + Stowaway (8), tools 4, Orchard 3, plus pause, i, Next, boss icon.
-- Proposal: Orchard slots sit beside the Next preview, small, since they act on Next. The boss icon moves or shares that cluster. Header charm row and tool bar unchanged.
+- (Superseded by the user's layout below.) Proposal: Orchard slots sit beside the Next preview, small, since they act on Next. The boss icon moves or shares that cluster. Header charm row and tool bar unchanged.
 - Fallbacks if it crowds: header charms shrink past 6, or the Orchard cluster collapses into one icon that opens a card (like `tipShow`).
 - Mock up with Playwright screenshots at phone widths (360 and 412) before building.
 - User's layout (15 Nov, replaces the proposal above): pause and i leave the top row. The top row holds charms and, on the far right above Next, the Orchard slots with a green outer border (about 10 spots in all). Under the boss picture: the boss's stream enchantments and disenchantments.
