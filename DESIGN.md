@@ -584,7 +584,6 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 - User's HUD draft (16 Nov, mock-up over the live game at 360px): top-left the depth and boss name, with the boss icon under it and the stream badges (orange = on the drops, red = on the Orchard row) beside the icon. Score and target centred with the score bar under them. Mult top right, Next under it. Drops bar and the single i button above the tool bar, as above. Under the score bar, centred: the Last line (points × Mult = score, kept for pillar 1), then the boss tag line (`bossIn`, e.g. "Make a Pear (7)") under it (user, 16 Nov). Layout decided.
 
 ### Parked ideas from the same talk (not adopted, not rejected)
-- Hold slot: keep one fruit aside and swap it in later.
 - Consumables: cheap one-shot items (like tarot cards) that change a seed level or the next few drops.
 - Online (feasibility only, 15 Nov): public profiles and a friends list fit the existing Firebase setup (a public `pub/$uid` slice, friend requests, a heartbeat for online status, rules change by hand). Multiplayer: async seeded challenges are easy and give the daily seeded run, live versus with separate jars (send rocks to the opponent) is moderate, a shared jar is hard and not recommended.
-- Turned down: a fruit bag (deck) in place of the random queue; a separate single Style slot.
+- Turned down: a fruit bag (deck) in place of the random queue; a separate single Style slot; a hold slot (overlaps Swap and weakens the random queue).
