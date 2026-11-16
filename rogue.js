@@ -453,7 +453,9 @@ const RG={
  leave(R){const c=R.crate;if(!c)return 0;const n=CRT[c.tier].out;R.coins+=n;R.at=c.then;R.crate=null;return n;},
  buyCr(R){const k=R.shop.cr,p=k&&RG.crCost(R);if(!k||R.coins<p)return false;R.coins-=p;R.shop.cr=null;R.crate=RG.crate(R,'wood','shop',k);R.at='crate';return true;},
  /* skip jar 1 or 2 of a depth: no payout, no shop, and a pick between a wooden crate and one other skip reward (not one already held) */
- skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.jar++;R.coins+=R.up.road*3;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;},
+ /* the skip rewards on offer, drawn ahead per depth so the map can show them (v1.38): R.sr[depth] = [jar 1's, jar 2's], the wooden crate always comes with it */
+ srw(R,d=R.depth){if(!R.sr)R.sr={};if(!R.sr[d]){const k=Object.keys(SKR).filter(k=>k!=='crate'),a=k[rint(k.length)],b=k.filter(x=>x!==a);R.sr[d]=[a,b[rint(b.length)]];}return R.sr[d];},
+ skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;const pre=RG.srw(R)[R.jar];R.jar++;R.coins+=R.up.road*3;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.includes(pre)?['crate',pre]:k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;}, /* the drawn reward, or another if it is already held */
  skipTake(R,id){if(!R.sk||!R.sk.includes(id))return false;R.sk=null;if(id==='crate'){R.crate=RG.crate(R,'wood','hub');R.at='crate';}else if(id==='detour'){RG.bribe(R);R.at='hub';}else{R.tg[id]=SKR[id].u;R.at='hub';}return true;},
  buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
  buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},
