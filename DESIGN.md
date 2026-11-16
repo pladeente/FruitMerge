@@ -609,7 +609,9 @@ Goal: stop "drop this for a rare". Recipes stay hidden until both halves are hel
 - Fusion payoff charms: Grafter (+3 Mult per fusion held), Rootstock (making a fusion gives a random seed level).
 - Optional: halves grow a little per jar held.
 
-### Style items (added 15 Nov)
+### Style items (added 15 Nov, built in v1.36)
+Built, on the user's go (16 Nov): Ricochet (common 5, +0.2 Mult per thrown wall bounce this jar), Curveball (uncommon 6), Pinball (rare 9, ×1.25 per bounce up to 4 if the thrown fruit merges before resting 0.4s), Quick Hands (common 4, drop gap 0.3s), Slow Cook (uncommon 6, +0.5 Mult per second waited before the last drop, up to +4), Lingering (uncommon 6). Toggles: Slingshot (charge 6, now a tool, saves migrate), Moon Boots (8), Long Arm (6). Timed: Tilt (8, 3 drops), Twin Drop (10, 2 drops). Rubber Tree (Orchard, uncommon 6, every 5th drop bouncy for 4 bounces). Bank Shot dropped as a copy of Trick Shot. Lead Weight may target the held fruit (user, 16 Nov). The bot does not throw or wait, so none of this is measured: needs human playtests, above all Slow Cook (+4 for waiting 8 seconds a drop may be too generous) and Moon Boots with bouncy fruit.
+
 Items that change how you play, like Slingshot and long combos played fast. No separate Style slot (the user found it narrows builds).
 - As charms (change every drop): Ricochet (+1 Mult per wall bounce of a thrown fruit), Bank Shot (thrown fruit merging after a bounce ×2), Curveball (thrown fruit curve towards the nearest match), Quick Hands (drop gap 0.55s to 0.3s), Slow Cook (+Mult per second since the last drop, capped).
 - As timed tools (bursts, counted in drops, shown with the countdown badge): Moon Boots (low gravity), Tilt (tip the jar), Long Arm (drop from any height), Twin Drop (two fruit at once). Tune each with charge cost and length in drops. Tool charm Lingering: timed tools last 2 more drops.

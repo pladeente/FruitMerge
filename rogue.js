@@ -1,7 +1,7 @@
 /* Fruit Merge: Rogue mode rules and the player profile. Loaded before the main script in index.html.
    Nothing here touches the page. It uses rint and store from index.html, but only inside functions, so load order is fine. */
 /* ---------- rogue mode: rules (charms, bosses, shop, scoring) ---------- */
-const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=11,OS0=2; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
+const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=12,OS0=2; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
 /* fruit names by tier: a single size is written 'Orange (5)' (fnm), ranges stay numeric ('size 3 or smaller'). Rockmelon is the Australian name. The Lemon (4) was the Mandarin until v1.31 (players read the sprite as a lemon). Size 11 is the Watermelon: it was called Watermelon Queen from v1.31 to v1.32.1 by mistake, the Queen is the boss */
 const FN=['Cherry','Strawberry','Grape','Lemon','Orange','Apple','Pear','Pineapple','Peach','Rockmelon','Watermelon'],fnm=l=>FN[l]+' ('+(l+1)+')',fna=l=>(/^[AEIOU]/.test(FN[l])?'an ':'a ')+fnm(l);
 /* fruit families (v1.34): a tag on each size. A family merge is two fruit of that family merging, so FAM[l-1] for the fruit made at tier l. Pineapple is Tropical only */
@@ -96,8 +96,14 @@ const CH={
  stow:{n:'Stowaway',r:4,c:15,d:'Takes no charm slot. ×1.5 Mult.',x:()=>1.5},
  flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2.'},
  /* throwing fruit (being tested) */
- sling:{n:'Slingshot',r:1,c:6,d:'Flick as you let go to throw your fruit sideways. The faster the flick, the harder the throw.'},
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else scores ×3.',x:c=>c.trick?3:1},
+ /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
+ ricochet:{n:'Ricochet',r:0,c:5,req:'sling',d:'+0.2 Mult for every wall bounce of a thrown fruit this jar.',add:c=>(c.wb||0)*.2},
+ curve:{n:'Curveball',r:1,c:6,req:'sling',d:'A thrown fruit curves towards the nearest fruit of its size.'},
+ pinball:{n:'Pinball',r:2,c:9,req:'sling',d:'A thrown fruit scores ×1.25 for every wall bounce (up to 4) if it merges before it comes to rest.',x:c=>Math.pow(1.25,Math.min(4,c.pin||0))},
+ quick:{n:'Quick Hands',r:0,c:4,d:'You can drop again 0.3 seconds after a drop, instead of 0.55.'},
+ slow:{n:'Slow Cook',r:1,c:6,d:'+0.5 Mult for every second you waited before your last drop (up to +4).',add:c=>Math.min(4,(c.wt||0)*.5)},
+ linger:{n:'Lingering',r:1,c:6,d:'Timed tools last 2 more drops. Tools you switch on use charge every other drop.'},
  fourleaf:{n:'Four-Leaf Clover',r:3,c:12,fu:['lucky','shoe'],d:'1 in 2 merges score ×3. Every other "1 in" chance comes up twice as often.',x:c=>c.l>=0&&Math.random()<.5?3:1},
  goose:{n:'Golden Goose',r:3,c:12,fu:['piggy','bank'],d:'+4 coins every time you clear a jar. Interest can pay up to 10 coins per jar.'},
  volcano:{n:'Volcano',r:3,c:12,fu:['boom','compost'],d:'Every 5th drop is a Boom fruit. Each fruit it blows up scores 40 points. Gains +0.1 Mult every time a fruit is destroyed.',add:c=>c.ch.v||0,live:1},
@@ -124,6 +130,7 @@ const CH={
  /* the Orchard row (v1.34): o = an Orchard item. It sits in R.or, not a charm slot, and only changes what drops and the state a drop arrives in. Lodestone, Rich Soil and Prospector moved here (o:1 above) */
  citrus:{n:'Citrus Grove',r:0,c:4,o:1,d:'Lemons (4) drop twice as often.'},
  berry:{n:'Berry Patch',r:0,c:4,o:1,d:'Strawberries (2) and Grapes (3) drop twice as often.'},
+ rubber:{n:'Rubber Tree',r:1,c:6,o:1,d:'Every 5th fruit you drop is bouncy: it springs off walls and fruit until it has bounced 4 times.'},
  fore:{n:'Forecast',r:0,c:4,o:1,d:'Shows the 2 fruit that come after Next.'},
  dew:{n:'Morning Dew',r:0,c:4,o:1,d:'Your first 6 fruit of each jar are Cherries (1).'},
  crop:{n:'Crop Rotation',r:0,c:4,o:1,d:'Drops take turns by family: a Cherry (1), then a Strawberry (2) or Grape (3), then a Lemon (4).'},
@@ -253,10 +260,16 @@ const TL={
  ddown:{n:'Double Down',s:'Double',c:5,ch:6,d:'Costs 2 drops. Your next merge scores ×4.'},
  sieve:{n:'Sieve',c:4,ch:7,d:'Clears every Cherry (1) out of the jar.'},
  anchor:{n:'Anchor',c:4,ch:6,tg:1,d:'Tap a fruit. It cannot move until the jar ends, but it still merges.'},
- lead:{n:'Lead Weight',s:'Weight',c:5,ch:5,tg:1,d:'Tap a fruit. It becomes 8 times heavier until it merges or the jar ends. It pushes lighter fruit aside and sinks.'},
+ lead:{n:'Lead Weight',s:'Weight',c:5,ch:5,tg:1,d:'Tap a fruit, or the one you hold. It becomes 8 times heavier until it merges or the jar ends. It pushes lighter fruit aside and sinks.'},
  petrify:{n:'Petrify',c:5,ch:8,tg:1,d:'Tap a fruit. It turns to stone: it can not move or merge, and never counts as over the line. It crumbles away when the next jar starts.'},
  shatter:{n:'Shatter',c:4,ch:6,tg:1,d:'Tap a rock. It turns into a fruit of the same size.'},
  cash:{n:'Cash Out',c:5,ch:8,d:'Pays 2 coins.'},
+ /* v1.36: tog = a toggle (tap on, tap off: switching on costs 1 charge and counts as a use, every drop while on costs 1, it goes off at 0). tm = a timed tool, lasting tm drops (t.n counts down) */
+ sling:{n:'Slingshot',s:'Sling',c:6,ch:6,tog:1,d:'Switch on or off. While on, flick as you let go to throw your fruit sideways. The faster the flick, the harder the throw.'},
+ moon:{n:'Moon Boots',s:'Moon',c:6,ch:8,tog:1,d:'Switch on or off. While on, fruit fall at half the gravity.'},
+ reach:{n:'Long Arm',s:'Arm',c:5,ch:6,tog:1,d:'Switch on or off. While on, your fruit drops from where you tap in the jar, not from the top.'},
+ tilt:{n:'Tilt',c:6,ch:8,tm:3,d:'For your next 3 drops the jar tips towards the side your fruit is on, and the pile slides that way.'},
+ tdrop:{n:'Twin Drop',s:'Twins',c:7,ch:10,tm:2,d:'Your next 2 drops each drop two of your fruit side by side. The second one is free.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
  bloom:{n:'Bloom',c:12,ch:10,tg:1,fu:['ripen','sprout'],d:'Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level.'},
@@ -308,6 +321,7 @@ const RG={
  /* a saved run that this version can load, or null */
  saved(){const sv=store.get('run',null);if(sv&&sv.v===9){sv.ct=null;sv.sk=null;sv.tg={};sv.v=10;} /* v9 to v10: contracts and skip rewards, nothing else moved */
   if(sv&&sv.v===10){sv.or=[];sv.ch=sv.ch.filter(c=>{if(!CH[c.id]||!CH[c.id].o)return true;if(sv.or.length<OS0)sv.or.push(c);else sv.coins+=Math.max(1,Math.floor(CH[c.id].c/2));return false;});sv.v=11;} /* v10 to v11: the Orchard row. Lodestone, Rich Soil and Prospector move from the charm slots to it, any past its 2 slots are sold */
+  if(sv&&sv.v===11){const i=sv.ch.findIndex(c=>c.id==='sling');if(i>=0){sv.ch.splice(i,1);if(sv.tl.length<RG.ts(sv))sv.tl.push({id:'sling',c:TL.sling.ch});else sv.coins+=3;}sv.v=12;} /* v11 to v12: Slingshot became a tool. With no free tool slot it is sold */
   if(sv&&!sv.fw)sv.fw={}; /* v1.35: the fusion weight counters, filled in place */
   if(sv&&sv.up)for(const k in UPG)if(sv.up[k]==null)sv.up[k]=0; /* upgrades added since the run was saved start at 0, no version bump needed for those */
   if(sv&&sv.v!==RV){store.set('run',null);return null;}return sv;},
@@ -321,7 +335,7 @@ const RG={
  slots:R=>Math.max(2,SLOTS+R.up.pouch+(R.jarId==='wide'?1:0)-(R.jarId==='kit'?1:0)-(R.stake>=7?1:0))+(R.ch.some(c=>c.id==='stow')?1:0), /* Stowaway takes no slot: it brings its own */
  need:(R,id)=>Math.max(Math.min(2,TL[id].ch),TL[id].ch-R.up.whet),
  /* req: an item that needs one of these charms (an id or a list) before it is offered */
- rq:(R,q)=>!q||[].concat(q).some(id=>RG.has(R,id)),
+ rq:(R,q)=>!q||[].concat(q).some(id=>RG.has(R,id)||R.tl.some(t=>t.id===id)), /* a charm or a tool (Slingshot) */
  /* Chrysalis / Butterfly Garden: the caterpillar ate. Returns the charm id when it turns into a butterfly */
  chrys(R){const c=RG.has(R,'bfly')||RG.has(R,'chrys');if(!c)return false;c.n=(c.n||0)+1;if(c.n%(c.id==='bfly'?3:4))return false;c.v=+((c.v||0)+.5).toFixed(1);return c.id;},
  luck:R=>RG.has(R,'shoe')||RG.has(R,'fourleaf')?2:1,
@@ -450,7 +464,8 @@ const PF={d:null,dirty:0,
  fix(p){const b=PF.blank();if(!p||typeof p!=='object')return b;for(const k in b)if(typeof b[k]==='object'){if(p[k]&&typeof p[k]==='object'&&!Array.isArray(p[k]))b[k]=p[k];}else if(typeof p[k]==='number')b[k]=p[k];b.v=PV;return b;},
  load(){PF.d=PF.heal(PF.fix(store.get('profile',null)));return PF.d;},
  /* an award earned before it unlocked anything (an unlock added to it later) opens its unlock now */
- heal(p){for(const id in p.ach){const a=ACH[id];if(a&&a.un&&!p.unlocked[a.un])p.unlocked[a.un]=p.ach[id];}return p;},
+ heal(p){if(p.seen&&p.seen['ch.sling']&&!p.seen['tl.sling'])p.seen['tl.sling']=p.seen['ch.sling']; /* Slingshot moved from charms to tools in v1.36 */
+  for(const id in p.ach){const a=ACH[id];if(a&&a.un&&!p.unlocked[a.un])p.unlocked[a.un]=p.ach[id];}return p;},
  save(){if(!PF.dirty||!PF.d)return;PF.dirty=0;PF.d.rev++;PF.d.at=Date.now();store.set('profile',PF.d);},
  inc(k,n=1){const s=PF.d.stats;s[k]=(s[k]||0)+n;PF.dirty=1;},
  max(k,v){const s=PF.d.stats;if(!(s[k]>=v)){s[k]=v;PF.dirty=1;}},
