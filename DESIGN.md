@@ -62,6 +62,7 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Seeds | Abacus, Gardener, Seed Packet, Sprout | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
 | Gold fruit | Magpie, Gold Leaf, Prospector, Alchemy | Midas, Golden Hand | Gold Scales | Filled, needs play |
 | Physics and position | Bullseye, Clean Plate, High Wire, Wallflower, Low Tide | Shake, Whirl, Rumble, Lead Weight | | Better, still the most room to grow |
+| Families (v1.34) | Zest, Berry Picker, Cherry Pit, Cider Press, Medley, Tiki Bar, Marmalade, Jam, Cider Mill | | Raised Bed | New. Orchard items shape the queue, these score it |
 | Growing ×Mult | none | | | **Missing, deferred (see Priorities)** |
 
 Upgrades added in v1.31 (10, on the user's call that the shelf showed the same few: five upgrades never leave the pool and nine had a cap of 1 or 2, so a late shop was mostly Fertiliser, Hot Sauce, Watering Can, Scrub and Bribe). Each was checked against every charm, tool, skip reward and award name first: Pip Jar, Gold Pan, Seed Tray, Pet Food and Seed Mix were dropped as copies of Crumbs, Gold Leaf, Seed Packet, Pet Treats and the Seeds shelf. Thick Skin (bosses) sits in no build. See Upgrades measurement below. The shop shows 2 upgrades since v1.30.3 (3 with Catalogue), and Good Taste is the first Uncommon upgrade (weight 0.4 on the shelf).
@@ -489,3 +490,157 @@ Animated (v1.30), for the six that are hardest to earn, so a moving look is a ma
 The lifetime numbers are guesses, not measured against real play. The jar frame is only 6 pixels wide, so skins read mostly through colour. Ideas not built: skins for the tool bar and HUD, a second sound per set (land, combo), animated fruit skins.
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.
+
+## Families and the Orchard row (doing: stage 1 layout v1.33, stage 2 families and the Orchard v1.34)
+
+Why: Rogue feels less strategic than Balatro. Builds hang off narrow pieces (fusions need two exact halves, ~28% of runs see both uncommon halves), so a loss often comes down to the shop. Balatro has broad axes (suits) and lets you shape what you draw. A fruit bag (deck) was considered and turned down by the user: the random queue is what gives tools their job. This keeps the random queue and lets the player tilt it.
+
+### Plan summary (read first, 16 Nov)
+Decided by the user:
+1. Fruit families as a second axis (list below). No fruit bag.
+2. Orchard row: a separate row of 2 slots (3 with an upgrade) for items that only shape drops. Green outer border, far right of the top row above Next.
+3. Bosses gain stream enchantments (phase 1) and Orchard disenchantments (phase 2), shown under the boss picture.
+4. Hidden weight towards the missing half of a held fusion (soft pity, below). Steer players to fusions over rares.
+5. Style items: no Style slot. Throwing and speed items are charms, physics and placement items are tools. Tools can be timed (counted in drops) or toggles (tap on/off, 1 charge per drop while on, several can run at once). Slingshot can become a toggle.
+6. Bouncy fruit (new state) from the Orchard item Rubber Tree, and a rare bounce ×Mult charm for throwing builds.
+7. Layout: pause folds into one i button that opens a tabbed screen (Run info first, Almanac, Options, Resume, Quit run at the bottom). Drops bar moves to just above the tool bar, the jar keeps its size and moves up.
+
+Still open: the charm/Orchard/tool rule and whether Lodestone, Rich Soil and Prospector move to Orchard; where the i button sits; item names and numbers; family wildcard (Pineapple).
+
+Suggested order: layout first (i screen, drops bar, top row with Orchard space, screenshots at 360 and 412px), then families + Orchard row + family scorers, then fusion weight, then style items and toggles, then the boss stream layer. Rebalance with the bot after scoring changes. Each stage asked for separately, one commit series each.
+
+### Stage 2 as built (v1.34)
+User calls (16 Nov): Lodestone, Rich Soil and Prospector moved to the Orchard. Pineapple is Tropical only, no wildcard. The Apple and Pear family is called Pome, so "Orchard" only names the row. More Orchard items than first proposed, and more dynamic ones that tie into existing builds.
+
+Family merge = two fruit of that family merging (so two Cherries count as Stone fruit). Measured with the aiming bot, fresh 24-drop jar: Stone 1.7, Berries 5.2, Citrus 4.1, Pome 0.1, Tropical about 0 merges a jar. Pome, Tropical and Melons grow as the pile carries over.
+
+| Orchard item | Rarity, price | Does | Feeds |
+|---|---|---|---|
+| Lodestone (moved) | Common 4 | Every 5th drop is a Magnet | Aim, Sharpshooter |
+| Citrus Grove | Common 4 | Lemons drop twice as often | Zest, Marmalade |
+| Berry Patch | Common 4 | Strawberries and Grapes drop twice as often | Berry Picker, Jam, small fruit |
+| Forecast | Common 4 | Shows the 2 fruit after Next | Aim, Fortune Teller |
+| Morning Dew | Common 4 | First 6 fruit of each jar are Cherries | Early Bird, Cherry Pit, Small Fry, pets |
+| Crop Rotation | Common 4 | Drops cycle Cherry, Strawberry or Grape, Lemon | Medley, aim |
+| Rock Garden | Common 3 | Every 8th fruit is a rock | Gargoyle, Zen Garden, Shatter, Compost |
+| Prospector (moved) | Uncommon 6 | 1 in 10 drops gold | Gold, Treasure Hunter |
+| Weeding | Uncommon 6 | Cherries never drop | Big fruit |
+| Hothouse | Uncommon 6 | 1 in 12 drops an Apple (Horseshoe doubles it) | Pome, Cider Mill, big fruit, chance |
+| Second Helping | Uncommon 6 | Every 5th fruit copies the one before | Aim, combos, Fortune Teller |
+| Beehive | Uncommon 6 | Every 6th drop arrives pollinated (×3, ×4 with Butterfly Garden) | Pets (Nectar eats pollinated first) |
+| Golden Hour | Uncommon 7 | Last 4 drops of each jar arrive gold | Gold, Photo Finish, Magpie |
+| Hot Bed | Uncommon 6 | A combo's 3rd merge turns Next into a Magnet | Combo |
+| Rich Soil (moved) | Rare 9 | Every drop one size bigger | Big fruit |
+
+| Charm | Rarity, price | Does |
+|---|---|---|
+| Zest | Common 5 | +0.3 Mult per Citrus merge this jar |
+| Berry Picker | Common 5 | Berry merges +15 points |
+| Cherry Pit | Uncommon 6 | +0.5 Mult per Stone fruit merge this jar, two Peaches ×5 |
+| Cider Press | Uncommon 7 | Pome merges ×3 |
+| Medley | Uncommon 7 | ×0.15 more per family merged this jar |
+| Tiki Bar | Rare 9 | ×0.25 per Pineapple merge, for the run |
+
+Fusions: Marmalade (Zest + Citrus Grove: the Grove's effect, +0.5 Mult per Citrus merge), Jam (Berry Picker + Berry Patch: the Patch's effect, Berry merges +25 points and ×1.5), Cider Mill (Cider Press + Hothouse: the Hothouse's effect, Pome ×4), Zen Garden (Gargoyle + Rock Garden: a rock every 6th fruit, rocks safe, ×0.25 per rock) are charms. Fortune Teller (Forecast + Second Helping: 3 fruit after Next, every 4th copies the one before) is an Orchard item. Raised Bed: upgrade, 10 coins, +1 Orchard slot.
+
+Shop: 1 Orchard item a visit. Crates: 1 charm pick in 5 becomes an Orchard pick.
+
+### Stage 2 measurement (16 Nov, v1.34)
+Bot rebuilt (kept out of the repo): aims at the highest fruit of the same size, else the lowest column. Buyer A is the smart buyer from "Ripeness check" (×Mult charms, Abacus, Sprout, Big Basket, seeds 4 to 7, Charm Pouch, Seed Bag, cheap Watering Can and Hot Sauce, up to 3 rerolls at 14+ coins, best crate pick, no tools, no Orchard). Buyer B is A plus the family scorers, Orchard items that pair with a held scorer (Citrus Grove with Zest, Berry Patch with Berry Picker, Hothouse with Cider Press, Rock Garden with Gargoyle) and the general ones (Weeding, Beehive, Golden Hour, Second Helping, Prospector). 400 runs each, Classic Jar:
+
+| Ripeness | main (v1.32.4), A | v1.34, A | v1.34, B |
+|---|---|---|---|
+| 1 | 14.0%, depth 6.78 | 11.3%, depth 6.45 | 25.5%, depth 7.22 |
+| 4 | 1.8%, depth 3.89 | | 3.3%, depth 4.22 |
+| 8 | 0.3% (1 win), depth 2.81 | | 0%, depth 2.99 |
+
+- The Orchard is two free slots of power, so a buyer that uses it wins about twice as often on Ripeness 1. Higher Ripeness barely moves: it is the drop and target rules there that kill runs, not the build. The user's call (16 Nov): Ripeness 1 is meant to be the easy level.
+- Before the retune below, B won 27.5% on Ripeness 1.
+- One jar at depth 7, base loadout Juicer, Honey Pot, Hot Streak, Heavyweight, 40 jars, fresh pile (noise about ±15%): Zest first measured ×1.50 at +0.6 (a common, Juicer ×1.2 to ×1.4), now +0.3 at ×1.42 against Juicer ×1.38 on the same run. Cherry Pit ×1.04 as ×2/×6, now +0.5 per Stone merge ×1.39. Medley ×1.06 as "last 3 merges 3 families", now ×0.15 per family ×1.54. Marmalade ×2.33 at +0.6, now +0.5. Jam ×1.77, Cider Mill ×2.05, Zest + Citrus Grove ×1.83, Cider Press + Hothouse ×1.82. Hive and Weeding ×1.2. Rich Soil ×1.63 (unchanged, but no longer takes a charm slot). Golden Hour and Prospector pay about 4.4 coins a jar.
+- Zen Garden measured ×1.0 on a fresh pile: its rocks pile up over a depth in a real run, so it needs play. Forecast, Morning Dew, Crop Rotation, Second Helping and Lodestone score ×0.9 for a bot that can not use them: they are aim tools.
+
+### Families
+A tag on each size, on top of size. They jump across sizes, so a family build rewards a pattern, not a block (unlike Small Fry and the size-range charms).
+- Stone fruit: Cherry (1), Peach (9)
+- Berries: Strawberry (2), Grape (3)
+- Citrus: Lemon (4), Orange (5)
+- Orchard: Apple (6), Pear (7)
+- Tropical: Pineapple (8), one member, could count as any family (wildcard)
+- Melons: Rockmelon (10), Watermelon (11)
+
+### Orchard row
+- A second charm row, separate from the 5 scoring slots. 2 slots, a 3rd from an upgrade. Shown near Next, its own shop section.
+- Orchard charms only change what drops and what state a drop arrives in. Never the score maths.
+- Examples: Citrus Grove (Lemons drop twice as often), Weeding (Cherries never drop), Hothouse (1 drop in 12 is an Apple), Gilded Crate (every 8th drop arrives gold), Second Helping (every 5th drop matches the one before), Forecast (shows 2 more fruit after Next).
+- Gilded Crate and Second Helping are the "deck enhancement" layer without a bag: the stream is upgraded, not a list of cards.
+
+### Family scorers (main 5 slots)
+- Charms that read families: +1 Mult per Citrus merge this jar, ×2 on Peach merges, Fruit Salad (×1.5 when the last 3 merges were 3 different families).
+- Fusions join an Orchard charm with its scorer (Citrus Grove + a citrus scorer), so a build has a spine: shape the queue, then score what you shaped.
+- A family is a broad axis, so more of each shop is partly useful.
+
+### Bosses on the stream (built in v1.37)
+Built as recommended (16 Nov): every boss jar draws one drop curse and one Orchard curse per depth. Sour Graft, on the user's call, makes each Orchard item work in the opposite direction (Citrus Grove: Lemons half as often; Weeding: Cherries twice as often; Rich Soil: one size smaller; Morning Dew: Lemons first; Hothouse: 1 in 12 a Cherry; Forecast: Next hidden; Second Helping: never the same; Beehive, Golden Hour, Prospector: mouldy drops; Hot Bed: a rock; Rubber Tree: Sticky; Lodestone and Crop Rotation, which have no plain opposite: rocks every 5th / 4th; Rock Garden: no rocks). Hardy and Pesticide are upgrades. The Ripeness curse was skipped, since every boss already brings two. Boss preview (next depth's boss and its curses in the hub and shop) and the Detour skip reward are in; Bribe stays the paid reroll.
+Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
+- Enchantments: Blight (one family stops dropping, replaced by rocks), Overgrowth (1 drop in 5 is a Cherry whatever the Orchard row says), Worms (every 7th drop arrives mouldy), Frost (every 6th drop is stuck in place for 2s), Bramble (Next hidden, Forecast too).
+- Disenchantments: Uproot (Orchard charms switched off, the Thief's twin), Sour Graft (Orchard charms work backwards, its slot must show an obvious red flipped look or it is unreadable), Pest (steals the leftmost Orchard charm for the jar and uses it against you).
+- Contracts can offer stream curses as handicaps. A Ripeness level could add a stream curse to every boss.
+- Counter items: Hardy (Orchard charms can't be switched off), Pesticide (no mouldy drops). Only worth buying once the boss is seen coming.
+
+### RNG relief to go with it
+- Show the next depth's boss early, and a boss reroll (upgrade or skip reward). Required once bosses hit the Orchard row. Origin: a Sleight of Hand + Battery + Juggler + Cash Out + Fat Wallet money loop was ended by The Padlock with no answer available.
+- Pity for fusion halves: superseded by the hidden weight in "Steering to fusions".
+- Score table in Run info: what each size is worth with the current build, so the target can be planned against.
+- Charm editions (already under Later).
+
+### First slice and open points
+- Family tags, the Orchard row with 2 slots, ~8 Orchard charms, ~6 family scorers, a few fusions. Boss layer after.
+- Run save gains an Orchard list: version bump (`RV`) with a migration.
+- Queue shaping makes runs more consistent, so re-run the balance bot, and give it a policy for Orchard charms or it will undervalue them.
+- Each new item needs an icon grid, `ANIM` entry, Almanac rows, dev panel support and events through `rgEv`.
+
+### Steering to fusions (added 15 Nov, built in v1.35)
+Built: the hidden weight as below (rarity is rolled first, the weight only acts within the half's rarity), Grafter (uncommon, 7: +2 Mult per fusion held, started below the +3 first suggested), Rootstock (common, 5: a fusion made gives a random seed 2 levels). The user kept recipes in the Almanac only and turned down the mark on halves in later runs (16 Nov). Measured over 400 runs of 24 shops, one half held, nothing bought: an uncommon half (Hot Streak) never offered in 60% of runs before, 0.5% after, first offered at shop 18.7 on average before, 7.1 after; a common half (Juicer) 8% never before, 0% after, first at 9.0 before, 2.4 after; a rare half (Melon Fever) 75% never before, 14% after.
+Bot, buyer B (now also buying Grafter and Rootstock), Ripeness 1, 400 runs: v1.34 23.0% wins, depth 7.22, 0.69 fusions made a run; v1.35 27.0% wins, depth 7.13, 1.01 fusions a run. The win rate moved within noise, the fusion count by about half.
+
+Goal: stop "drop this for a rare". Recipes stay hidden until both halves are held.
+- Hidden weight (user accepted it on 15 Nov, was turned down before): while one half is held, the missing half's shop and crate weight starts at ×2 and gains +1 per shop it fails to show, resetting when it shows. Soft pity in place of a hard guarantee.
+- Fusions should beat any rare on the power budget, so holding a half is a real bet.
+- Found recipes stay in the Almanac. In later runs their halves carry a small mark in the shop. Undiscovered ones stay hidden.
+- Fusion payoff charms: Grafter (+3 Mult per fusion held), Rootstock (making a fusion gives a random seed level).
+- Optional: halves grow a little per jar held.
+
+### Style items (added 15 Nov, built in v1.36)
+Built, on the user's go (16 Nov): Ricochet (common 5, +0.2 Mult per thrown wall bounce this jar), Curveball (uncommon 6), Pinball (rare 9, ×1.25 per bounce up to 4 if the thrown fruit merges before resting 0.4s), Quick Hands (common 4, drop gap 0.3s), Slow Cook (uncommon 6, +0.5 Mult per second waited before the last drop, up to +4), Lingering (uncommon 6). Toggles: Slingshot (charge 6, now a tool, saves migrate), Moon Boots (8), Long Arm (6). Timed: Tilt (8, 3 drops), Twin Drop (10, 2 drops). Rubber Tree (Orchard, uncommon 6, every 5th drop bouncy for 4 bounces). Bank Shot dropped as a copy of Trick Shot. Lead Weight may target the held fruit (user, 16 Nov). The bot does not throw or wait, so none of this is measured: needs human playtests, above all Slow Cook (+4 for waiting 8 seconds a drop may be too generous) and Moon Boots with bouncy fruit.
+
+Items that change how you play, like Slingshot and long combos played fast. No separate Style slot (the user found it narrows builds).
+- As charms (change every drop): Ricochet (+1 Mult per wall bounce of a thrown fruit), Bank Shot (thrown fruit merging after a bounce ×2), Curveball (thrown fruit curve towards the nearest match), Quick Hands (drop gap 0.55s to 0.3s), Slow Cook (+Mult per second since the last drop, capped).
+- As timed tools (bursts, counted in drops, shown with the countdown badge): Moon Boots (low gravity), Tilt (tip the jar), Long Arm (drop from any height), Twin Drop (two fruit at once). Tune each with charge cost and length in drops. Tool charm Lingering: timed tools last 2 more drops.
+- Needs human playtests, a bot can't judge feel.
+- Toggle tools (third tool kind beside fire and armed): tap on, tap off. While on, each drop costs 1 charge; it switches off when charge runs out. Slingshot as a toggle: drags only throw while it is on, so a stray flick never throws by accident. Padlock switches toggles off. Fits Moon Boots and Long Arm too, letting the player pick the moment instead of a fixed length.
+- Bouncy fruit (new fruit state, does not exist yet): high restitution, bounces off walls and fruit. Feeds Slingshot, Trick Shot, Ricochet and Bank Shot. Source: an Orchard charm, Rubber Tree (1 in 5 drops arrives bouncy), so the throwing build gets a queue-shaping piece like the family builds.
+- Bounce ×Mult (rare charm, name open, e.g. Pinball): a thrown fruit gains ×1.25 per wall bounce, paid only if it merges before settling, lost on a miss. Accuracy traded for points. Cap the bounces counted (about 4), or bouncy fruit in low gravity farms it. Target combo: Rubber Tree + Slingshot + Moon Boots + Heavyweight.
+- Several toggles may run at once (up to the 4 tool slots). Each drains its own charge per drop, merges refill all of them, so the limits are slots and charge. Check that Moon Boots + bouncy fruit still settle in reasonable time.
+
+### Charm, Orchard or tool (rule proposed 15 Nov, not decided)
+- Charm: has a scoring effect (points, Mult, ×), even if it also changes drops.
+- Orchard: only changes what drops or the state it arrives in, no scoring text.
+- Tool: the player chooses when (fire, armed, or toggle).
+- Existing drop-shaping charms under this rule: Lodestone, Rich Soil, Prospector are pure and would move to Orchard. Fireworks, Bite Size, Volcano, Snack Pack, Sharpshooter, Treasure Hunter score, so stay charms. Alternative: leave every existing charm where it is and use Orchard only for new items (no migration, less tidy).
+- Moving charms needs an `RV` bump: a migration moves them from `ch` to the Orchard list (overflow beyond the Orchard slots stays as a charm or is refunded).
+- Orchard fusions: cross-row like tool fusions. Orchard + charm makes a charm when the result scores (Sharpshooter would become Lodestone + Bullseye, freeing the Orchard slot), Orchard + Orchard makes an Orchard item (e.g. Rubber Tree + Prospector: bouncy gold drops).
+
+### Layout for the Orchard row (open)
+- Worst case to fit at 360px CSS width: charms 5 + Charm Pouch + Charm jar + Stowaway (8), tools 4, Orchard 3, plus pause, i, Next, boss icon.
+- (Superseded by the user's layout below.) Proposal: Orchard slots sit beside the Next preview, small, since they act on Next. The boss icon moves or shares that cluster. Header charm row and tool bar unchanged.
+- Fallbacks if it crowds: header charms shrink past 6, or the Orchard cluster collapses into one icon that opens a card (like `tipShow`).
+- Mock up with Playwright screenshots at phone widths (360 and 412) before building.
+- User's layout (15 Nov, replaces the proposal above): pause and i leave the top row. The top row holds charms and, on the far right above Next, the Orchard slots with a green outer border (about 10 spots in all). Under the boss picture: the boss's stream enchantments and disenchantments.
+- Pause and i merge (user, 15 Nov): one i button. It pauses the jar and opens a tabbed screen: Run info (default tab), Almanac, Options. Resume (and the sticky ×) returns to the jar, Quit run sits at the bottom of the screen. Replaces the pause screen, `#infoB` and the `G.inf` route. The empty-header tap opens the same screen. Where the i button sits is open (left end of the HUD score line suggested).
+- Drops bar moves from the HUD to just above the tool bar (user, 15 Nov). The jar keeps its size and moves up into the space the drops bar leaves in the HUD, so play is unchanged.
+- User's HUD draft (16 Nov, mock-up over the live game at 360px): top-left the depth and boss name, with the boss icon under it and the stream badges (orange = on the drops, red = on the Orchard row) beside the icon. Score and target centred with the score bar under them. Mult top right, Next under it. Drops bar and the single i button above the tool bar, as above. Under the score bar, centred: the Last line (points × Mult = score, kept for pillar 1), then the boss tag line (`bossIn`, e.g. "Make a Pear (7)") under it (user, 16 Nov). Layout decided.
+
+### Parked ideas from the same talk (not adopted, not rejected)
+- Consumables: cheap one-shot items (like tarot cards) that change a seed level or the next few drops.
+- Online (feasibility only, 15 Nov): public profiles and a friends list fit the existing Firebase setup (a public `pub/$uid` slice, friend requests, a heartbeat for online status, rules change by hand). Multiplayer: async seeded challenges are easy and give the daily seeded run, live versus with separate jars (send rocks to the opponent) is moderate, a shared jar is hard and not recommended.
+- Turned down: a fruit bag (deck) in place of the random queue; a separate single Style slot; a hold slot (overlaps Swap and weakens the random queue).
