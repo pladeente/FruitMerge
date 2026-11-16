@@ -490,7 +490,7 @@ The lifetime numbers are guesses, not measured against real play. The jar frame 
 
 Normal-play awards can keep unlocking charms, tools and jars as now. Obscure awards should not lock gameplay content.
 
-## Families and the Orchard row (planned, not started)
+## Families and the Orchard row (doing: stage 1 layout built in v1.33)
 
 Why: Rogue feels less strategic than Balatro. Builds hang off narrow pieces (fusions need two exact halves, ~28% of runs see both uncommon halves), so a loss often comes down to the shop. Balatro has broad axes (suits) and lets you shape what you draw. A fruit bag (deck) was considered and turned down by the user: the random queue is what gives tools their job. This keeps the random queue and lets the player tilt it.
 
