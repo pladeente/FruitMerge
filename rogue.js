@@ -109,9 +109,9 @@ const CH={
  slow:{n:'Slow Cook',r:1,c:6,d:'+0.5 Mult for every second you waited before your last drop (up to +2).',add:c=>Math.min(2,(c.wt||0)*.5)},
  linger:{n:'Lingering',r:1,c:6,d:'Timed tools last 2 more drops. Tools you switch on use charge every other drop.'},
  /* v1.40: ×Mult for builds that had none of their own (combo, destruction, economy, seeds, gold, tools, chance, the full jar). Context fields in the comment above CH. Family Tree is in RG.score */
- cresc:{n:'Crescendo',r:1,c:7,d:'The 3rd merge of a combo and every merge after it score ×2.',x:c=>c.combo>=2?2:1},
+ cresc:{n:'Crescendo',r:1,c:7,d:'The 2nd merge of a combo and every merge after it score ×2.',x:c=>c.combo>=1?2:1},
  bonfire:{n:'Bonfire',r:1,c:6,d:'After a fruit is destroyed, your next 3 merges score ×2.',x:c=>c.bf&&c.l>=0?2:1},
- spender:{n:'Big Spender',r:1,c:7,d:'×0.1 Mult more for every 3 coins you spent in the last shop (up to ×2).',x:c=>Math.min(2,1+.1*Math.floor((c.spt||0)/3))},
+ spender:{n:'Big Spender',r:1,c:7,d:'×0.1 Mult more for every 2 coins you spent in the last shop (up to ×2).',x:c=>Math.min(2,1+.1*Math.floor((c.spt||0)/2))},
  poly:{n:'Polyculture',r:1,c:7,d:'×0.1 Mult more for every fruit size you hold a seed for.',x:c=>1+.1*(c.sdn||0)},
  hall:{n:'Hallmark',r:1,c:6,d:'×0.5 Mult more for every gold fruit merged this jar (up to ×3).',x:c=>Math.min(3,1+.5*(c.gm||0))},
  fright:{n:'Stage Fright',r:2,c:9,d:'×2 Mult while every tool you hold is fully charged.',x:c=>c.tf?2:1},
