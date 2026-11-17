@@ -95,15 +95,15 @@ const CH={
  appetite:{n:'Big Appetite',r:1,c:6,req:EAT,d:'Your pets can eat bigger fruit: the caterpillar and mole up to size 5, the hedgehog up to size 7. Eating a size 4 or bigger fruit scores 3 times as much.'},
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance, Cornucopia in RG.snow. NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores its size\'s points ×2 and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
- horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes a Lemon (4) or bigger gives 1 drop back, a Pineapple (8) or bigger 2. Gains ×0.05 Mult for every drop left when you clear a jar.',x:c=>1.5+(c.ch.v||0),live:'x',x0:1.5},
- heir:{n:'Heirloom',r:4,c:15,d:'Gains ×0.2 Mult every time you clear a jar. Starts at ×1.25.',x:c=>1.25+(c.ch.v||0),live:'x',x0:1.25},
+ horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes a Lemon (4) or bigger gives 1 drop back, a Pineapple (8) or bigger 2. Gains ×0.05 Mult for every drop left when you clear a jar.',x:c=>1.5+(c.ch.v||0),live:'x',x0:1.5,g:.05},
+ heir:{n:'Heirloom',r:4,c:15,d:'Gains ×0.2 Mult every time you clear a jar. Starts at ×1.25.',x:c=>1.25+(c.ch.v||0),live:'x',x0:1.25,g:.2},
  stow:{n:'Stowaway',r:4,c:15,d:'Takes no charm slot. ×2 Mult. +1 Orchard slot. Your rightmost other charm scores twice (its points and Mult, not its other effects).',x:()=>2},
- flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2 and bring no curses. Boss targets are 25% lower. Gains ×0.25 Mult for every boss you beat (mini bosses too). Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
- /* active legendaries (v1.41): act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
+ flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2 and bring no curses. Boss targets are 25% lower. Gains ×0.25 Mult for every boss you beat (mini bosses too). Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x',g:.25,q:.75},
+ /* active legendaries (v1.41): n2 = how many merges or drops it lasts, xm = what its merges score ×. act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
  grain:{n:'Golden Rain',r:4,c:15,act:16,d:'Active (tap it in a jar, then Use; 16 charge, 1 per merge): every fruit in the jar turns gold.'},
- nova:{n:'Supernova',r:4,c:15,act:18,d:'Active (tap it in a jar, then Use; 18 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes.'},
- lime:{n:'Limelight',r:4,c:15,act:15,d:'Active (tap it in a jar, then Use; 15 charge, 1 per merge): your next 5 merges score ×4.'},
- passer:{n:'Passerby',r:4,c:15,act:12,d:'Active (tap it in a jar, then Use; 12 charge, 1 per merge): a Russian Blue cat carries your next 3 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
+ nova:{n:'Supernova',r:4,c:15,act:18,xm:1,d:'Active (tap it in a jar, then Use; 18 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes.'},
+ lime:{n:'Limelight',r:4,c:15,act:15,n2:5,d:'Active (tap it in a jar, then Use; 15 charge, 1 per merge): your next 5 merges score ×4.'},
+ passer:{n:'Passerby',r:4,c:15,act:12,n2:3,d:'Active (tap it in a jar, then Use; 12 charge, 1 per merge): a Russian Blue cat carries your next 3 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
  /* throwing fruit (being tested) */
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else scores ×3.',x:c=>c.trick?3:1},
  /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
@@ -216,7 +216,7 @@ const BOSS={
  collect:{n:'The Collector',d:'The jar only clears once you have also made a Pear (7).',d2:'If you have not made it yet, it must now be a Pineapple (8).',nb:'With Bite Size or Snack Pack it asks for one size smaller.',min:3}, /* nb = a note for the Almanac only. In a run the text comes from RG.bt */
  slick:{n:'The Slick',d:'Every fruit is Slippery.',d2:'The jar also shakes every 6 drops.',min:4},
  lid:{n:'The Lid',d:'The line sits lower in the jar.',d2:'The line drops lower still.',min:4},
- audit:{n:'The Auditor',d:'Mult can not go above ×6.',d2:'Mult can not go above ×4.',min:4,q:.45},
+ audit:{n:'The Auditor',d:'Mult above ×6 counts only half.',d2:'Mult above ×4 counts only a quarter.',min:4,q:.45},
  vise:{n:'The Vise',d:'The walls close in with every drop. Making a size 6 fruit or bigger opens them again.',d2:'They close twice as fast.',min:4},
  vamp:{n:'The Leech',d:'Your jar score drains away: 0.5% of the target every second.',d2:'It drains twice as fast.',min:5,q:.7},
  melon:{n:'The Melon Queen',d:'A Watermelon (11) drops into your jar and stays. It never counts as over the line.',d2:'A big rock drops into the lowest gap as well. It never counts as over the line either.',fin:1,q:1.1},
@@ -411,7 +411,7 @@ const RG={
  cs:R=>RG.has(R,'bite')||RG.has(R,'snack')?1:0,
  bt:(R,b,k)=>b==='collect'&&RG.cs(R)?(k==='d'?`The jar only clears once you have also made ${fna(6-RG.cs(R))}.`:`If you have not made it yet, it must now be ${fna(7-RG.cs(R))}.`):BOSS[b][k],
  jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):j===1?RG.mid(R,d):null,bd=b&&BOSS[b],rules=b?RG.rules(R,b,d):[],sc=d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(RSCX,d-DEPTHS),J=R.jarId,now=j===R.jar,ct=now&&!b&&R.ct&&R.ct.on?CT[R.ct.id]:null; /* ct = the contract signed for this jar */
-  const fl=RG.has(R,'flag'),quota=nice(RQ[j]*sc*RG.bq(b,rules)*(b&&fl?.75:1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
+  const fl=RG.has(R,'flag'),quota=nice(RQ[j]*sc*RG.bq(b,rules)*(b&&fl?CH.flag.q:1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
   const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2&&!fl?RG.curse(R,d):null; /* White Flag: no curses */
   const p2=j===2&&!RG.has(R,'flag'); /* White Flag: no phase 2 */
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
@@ -428,7 +428,7 @@ const RG={
   if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const ok=l>=6&&RG.has(R,'oak');if(ok){ok.v=+((ok.v||0)+.06).toFixed(2);ev.push('oak');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.04:.03)).toFixed(2);ev.push(pp.id);}const tk=l===8&&RG.has(R,'tiki');if(tk){tk.v=+((tk.v||0)+.25).toFixed(2);ev.push('tiki');}return ev;},
  /* n fruit were destroyed: returns the charm that grew from it, if any */
  /* Snowball: a jar was cleared with `left` drops unused. Returns true when it grew */
- snow(R,left){const h=RG.has(R,'horn');if(h&&left>0)h.v=+((h.v||0)+.05*left).toFixed(2); /* Cornucopia grows here too: ×0.05 a drop left */
+ snow(R,left){const h=RG.has(R,'horn');if(h&&left>0)h.v=+((h.v||0)+CH.horn.g*left).toFixed(2); /* Cornucopia grows here too: ×0.05 a drop left */
   const s=RG.has(R,'snow');if(!s||left<5)return false;s.v=+((s.v||0)+.04).toFixed(2);return true;},
  /* Gardener (1 level) or Greenhouse (2): a boss was beaten. Returns the seed tiers that gained a level */
  garden(R){const n=RG.has(R,'green')?2:RG.has(R,'gard')?1:0,a=RG.sizes(R),o=[];for(let i=0;i<n;i++){const l=a[rint(a.length)];R.sd[l]++;o.push(l);}return o;},
@@ -451,7 +451,7 @@ const RG={
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],ct=cfg.ct&&CT[cfg.ct],u=Math.min(3+R.up.ot*2,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/RG.intN(R)));
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
- advance(R,sum){R.coins+=sum;const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+.25).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+.2).toFixed(1);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
+ advance(R,sum){R.coins+=sum;const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
  stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
   const take=RG.pick,sizes=RG.sizes(R);
   const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
