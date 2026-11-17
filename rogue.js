@@ -93,17 +93,17 @@ const CH={
  treats:{n:'Pet Treats',r:0,c:4,req:EAT,d:'Every fruit your pets eat scores 30 more points.'},
  chrys:{n:'Chrysalis',r:1,c:6,req:CAT,d:'Every 4th fruit your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run.',add:c=>c.ch.v||0,live:1},
  appetite:{n:'Big Appetite',r:1,c:6,req:EAT,d:'Your pets can eat bigger fruit: the caterpillar and mole up to size 5, the hedgehog up to size 7. Eating a size 4 or bigger fruit scores 3 times as much.'},
- /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance, Cornucopia in RG.snow. NSL = the ones that take no slot */
+ /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance (g = growth). NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores its size\'s points ×2 and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
- horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes a Lemon (4) or bigger gives 1 drop back, a Pineapple (8) or bigger 2. Gains ×0.05 Mult for every drop left when you clear a jar.',x:c=>1.5+(c.ch.v||0),live:'x',x0:1.5,g:.05,l1:3,l2:7}, /* g = growth a drop left, l1/l2 = the tier made that gives 1/2 drops back */
+ horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes an Orange (5) or bigger gives 1 drop back.',x:()=>1.5}, /* v1.41: growth per drop left and drops from a Lemon measured 80 to 88% with the bot, cut */
  heir:{n:'Heirloom',r:4,c:15,d:'Gains ×0.1 Mult every time you clear a jar. Starts at ×1.25.',x:c=>1.25+(c.ch.v||0),live:'x',x0:1.25,g:.1},
  stow:{n:'Stowaway',r:4,c:15,d:'Takes no charm slot. ×1.75 Mult. +1 Orchard slot. Your rightmost other charm scores twice (its points and Mult, not its other effects).',x:()=>1.75},
  flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2 and bring no curses. Boss targets are 10% lower. Gains ×0.08 Mult for every boss you beat (mini bosses too). Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x',g:.08,q:.9},
- /* active legendaries (v1.41): n2 = how many merges or drops it lasts, xm = what its merges score ×, gl = the gold it gives (2 = Golden Hand's), dr = drops back per merge. act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
+ /* active legendaries (v1.41): n2 = how many merges or drops it lasts, xm = what its merges score ×, gl = the gold it gives (2 = Golden Hand's). act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
  grain:{n:'Golden Rain',r:4,c:15,act:10,gl:2,d:'Active (tap it in a jar, then Use; 10 charge, 1 per merge): every fruit in the jar turns gold. Each scores ×3 and pays 4 coins when it merges.'},
- nova:{n:'Supernova',r:4,c:15,act:18,xm:1,dr:0,d:'Active (tap it in a jar, then Use; 18 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes.'},
+ nova:{n:'Supernova',r:4,c:15,act:8,xm:10,d:'Active (tap it in a jar, then Use; 8 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes, and those merges score ×10.'},
  lime:{n:'Limelight',r:4,c:15,act:10,n2:8,d:'Active (tap it in a jar, then Use; 10 charge, 1 per merge): your next 8 merges score ×4.'},
- passer:{n:'Passerby',r:4,c:15,act:6,n2:6,xm:1,d:'Active (tap it in a jar, then Use; 6 charge, 1 per merge): a Russian Blue cat carries your next 6 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
+ passer:{n:'Passerby',r:4,c:15,act:6,n2:6,d:'Active (tap it in a jar, then Use; 6 charge, 1 per merge): a Russian Blue cat carries your next 6 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
  /* throwing fruit (being tested) */
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else scores ×3.',x:c=>c.trick?3:1},
  /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
@@ -428,8 +428,7 @@ const RG={
   if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const ok=l>=6&&RG.has(R,'oak');if(ok){ok.v=+((ok.v||0)+.06).toFixed(2);ev.push('oak');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.04:.03)).toFixed(2);ev.push(pp.id);}const tk=l===8&&RG.has(R,'tiki');if(tk){tk.v=+((tk.v||0)+.25).toFixed(2);ev.push('tiki');}return ev;},
  /* n fruit were destroyed: returns the charm that grew from it, if any */
  /* Snowball: a jar was cleared with `left` drops unused. Returns true when it grew */
- snow(R,left){const h=RG.has(R,'horn');if(h&&left>0)h.v=+((h.v||0)+CH.horn.g*left).toFixed(2); /* Cornucopia grows here too: ×0.05 a drop left */
-  const s=RG.has(R,'snow');if(!s||left<5)return false;s.v=+((s.v||0)+.04).toFixed(2);return true;},
+ snow(R,left){const s=RG.has(R,'snow');if(!s||left<5)return false;s.v=+((s.v||0)+.04).toFixed(2);return true;},
  /* Gardener (1 level) or Greenhouse (2): a boss was beaten. Returns the seed tiers that gained a level */
  garden(R){const n=RG.has(R,'green')?2:RG.has(R,'gard')?1:0,a=RG.sizes(R),o=[];for(let i=0;i<n;i++){const l=a[rint(a.length)];R.sd[l]++;o.push(l);}return o;},
  kill(R,n){const c=RG.has(R,'compost')||RG.has(R,'volcano');if(!c||!(n>0))return false;c.v=+((c.v||0)+(c.id==='volcano'?.1:.05)*n).toFixed(2);return c.id;},
