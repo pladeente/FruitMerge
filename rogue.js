@@ -96,14 +96,14 @@ const CH={
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance, Cornucopia in RG.snow. NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores its size\'s points ×2 and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes a Lemon (4) or bigger gives 1 drop back, a Pineapple (8) or bigger 2. Gains ×0.05 Mult for every drop left when you clear a jar.',x:c=>1.5+(c.ch.v||0),live:'x',x0:1.5,g:.05,l1:3,l2:7}, /* g = growth a drop left, l1/l2 = the tier made that gives 1/2 drops back */
- heir:{n:'Heirloom',r:4,c:15,d:'Gains ×0.2 Mult every time you clear a jar. Starts at ×1.25.',x:c=>1.25+(c.ch.v||0),live:'x',x0:1.25,g:.2},
- stow:{n:'Stowaway',r:4,c:15,d:'Takes no charm slot. ×2 Mult. +1 Orchard slot. Your rightmost other charm scores twice (its points and Mult, not its other effects).',x:()=>2},
- flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2 and bring no curses. Boss targets are 25% lower. Gains ×0.25 Mult for every boss you beat (mini bosses too). Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x',g:.25,q:.75},
+ heir:{n:'Heirloom',r:4,c:15,d:'Gains ×0.1 Mult every time you clear a jar. Starts at ×1.25.',x:c=>1.25+(c.ch.v||0),live:'x',x0:1.25,g:.1},
+ stow:{n:'Stowaway',r:4,c:15,d:'Takes no charm slot. ×1.75 Mult. +1 Orchard slot. Your rightmost other charm scores twice (its points and Mult, not its other effects).',x:()=>1.75},
+ flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2 and bring no curses. Boss targets are 10% lower. Gains ×0.08 Mult for every boss you beat (mini bosses too). Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x',g:.08,q:.9},
  /* active legendaries (v1.41): n2 = how many merges or drops it lasts, xm = what its merges score ×, gl = the gold it gives (2 = Golden Hand's), dr = drops back per merge. act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
- grain:{n:'Golden Rain',r:4,c:15,act:16,gl:1,d:'Active (tap it in a jar, then Use; 16 charge, 1 per merge): every fruit in the jar turns gold.'},
+ grain:{n:'Golden Rain',r:4,c:15,act:10,gl:2,d:'Active (tap it in a jar, then Use; 10 charge, 1 per merge): every fruit in the jar turns gold. Each scores ×3 and pays 4 coins when it merges.'},
  nova:{n:'Supernova',r:4,c:15,act:18,xm:1,dr:0,d:'Active (tap it in a jar, then Use; 18 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes.'},
- lime:{n:'Limelight',r:4,c:15,act:15,n2:5,d:'Active (tap it in a jar, then Use; 15 charge, 1 per merge): your next 5 merges score ×4.'},
- passer:{n:'Passerby',r:4,c:15,act:12,n2:3,xm:1,d:'Active (tap it in a jar, then Use; 12 charge, 1 per merge): a Russian Blue cat carries your next 3 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
+ lime:{n:'Limelight',r:4,c:15,act:10,n2:8,d:'Active (tap it in a jar, then Use; 10 charge, 1 per merge): your next 8 merges score ×4.'},
+ passer:{n:'Passerby',r:4,c:15,act:6,n2:6,xm:1,d:'Active (tap it in a jar, then Use; 6 charge, 1 per merge): a Russian Blue cat carries your next 6 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
  /* throwing fruit (being tested) */
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else scores ×3.',x:c=>c.trick?3:1},
  /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
