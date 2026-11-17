@@ -99,11 +99,11 @@ const CH={
  heir:{n:'Heirloom',r:4,c:15,d:'Gains ×0.2 Mult every time you clear a jar. Starts at ×1.25.',x:c=>1.25+(c.ch.v||0),live:'x',x0:1.25,g:.2},
  stow:{n:'Stowaway',r:4,c:15,d:'Takes no charm slot. ×2 Mult. +1 Orchard slot. Your rightmost other charm scores twice (its points and Mult, not its other effects).',x:()=>2},
  flag:{n:'White Flag',r:4,c:15,d:'Bosses never reach phase 2 and bring no curses. Boss targets are 25% lower. Gains ×0.25 Mult for every boss you beat (mini bosses too). Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x',g:.25,q:.75},
- /* active legendaries (v1.41): n2 = how many merges or drops it lasts, xm = what its merges score ×. act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
- grain:{n:'Golden Rain',r:4,c:15,act:16,d:'Active (tap it in a jar, then Use; 16 charge, 1 per merge): every fruit in the jar turns gold.'},
- nova:{n:'Supernova',r:4,c:15,act:18,xm:1,d:'Active (tap it in a jar, then Use; 18 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes.'},
+ /* active legendaries (v1.41): n2 = how many merges or drops it lasts, xm = what its merges score ×, gl = the gold it gives (2 = Golden Hand's), dr = drops back per merge. act = the charge one use needs, 1 per merge, kept in the charm as c (none = full). Tap the charm in a jar, then Use (G.g.act). Effects in act() in makeGame */
+ grain:{n:'Golden Rain',r:4,c:15,act:16,gl:1,d:'Active (tap it in a jar, then Use; 16 charge, 1 per merge): every fruit in the jar turns gold.'},
+ nova:{n:'Supernova',r:4,c:15,act:18,xm:1,dr:0,d:'Active (tap it in a jar, then Use; 18 charge, 1 per merge): every fruit with a partner of its size merges with it at once, all sizes.'},
  lime:{n:'Limelight',r:4,c:15,act:15,n2:5,d:'Active (tap it in a jar, then Use; 15 charge, 1 per merge): your next 5 merges score ×4.'},
- passer:{n:'Passerby',r:4,c:15,act:12,n2:3,d:'Active (tap it in a jar, then Use; 12 charge, 1 per merge): a Russian Blue cat carries your next 3 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
+ passer:{n:'Passerby',r:4,c:15,act:12,n2:3,xm:1,d:'Active (tap it in a jar, then Use; 12 charge, 1 per merge): a Russian Blue cat carries your next 3 fruit through the jar and sets each one down on a fruit of its size. Those drops are free.'},
  /* throwing fruit (being tested) */
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else scores ×3.',x:c=>c.trick?3:1},
  /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
