@@ -67,6 +67,7 @@ const CH={
  soil:{n:'Rich Soil',r:2,c:9,o:1,rv:'Every fruit you drop is one size smaller.',d:'Every fruit you drop is one size bigger.'},
  garg:{n:'Gargoyle',r:1,c:6,d:'Rocks never count as over the line. +0.5 Mult for every rock in the jar.',add:c=>(c.rk||0)*.5},
  wire:{n:'High Wire',r:2,c:8,d:'×3 Mult while the pile reaches the gold line near the top of the jar.',x:c=>c.high?3:1},
+ limbo:{n:'Limbo',r:2,c:8,d:'×3 Mult. The line sits lower, by 25% of the jar.',x:()=>3}, /* v1.42: the line move is in bossTick */
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'Starts at ×1 Mult, +0.2 for every charm you own, this one included (5 charms: ×2).',x:c=>1+.2*c.nc},
  /* rares whose ×Mult grows over the run (DESIGN.md priority 4). live:'x' = the grown value is a ×, shown as ×(1+v) */
  snow:{n:'Snowball',r:2,c:9,d:'Gains ×0.04 Mult every time you clear a jar with 5 or more drops left. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},

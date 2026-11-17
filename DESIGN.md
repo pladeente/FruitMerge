@@ -792,3 +792,8 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 - Consumables: cheap one-shot items (like tarot cards) that change a seed level or the next few drops.
 - Online (feasibility only, 15 Nov): public profiles and a friends list fit the existing Firebase setup (a public `pub/$uid` slice, friend requests, a heartbeat for online status, rules change by hand). Multiplayer: async seeded challenges are easy and give the daily seeded run, live versus with separate jars (send rocks to the opponent) is moderate, a shared jar is hard and not recommended.
 - Turned down: a fruit bag (deck) in place of the random queue; a separate single Style slot; a hold slot (overlaps Swap and weakens the random queue).
+
+
+## Limbo (v1.42)
+
+Rare, 8 coins, the user's idea. ×3 Mult with no condition, paid for with the line sitting 25% of the jar lower (The Lid is 14%, 22% in phase 2, and they stack). Builds: anything that wants a big ×, and the near-the-line pieces (High Wire, Brinkmanship, Hedgehog, Harvest), since the gold line comes down with it. Its risk is a carried pile: bought with a tall pile, the jar starts over the line. Not measured by the bot yet.
