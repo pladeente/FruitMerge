@@ -42,6 +42,8 @@ Titles work the same way: the rules allow an optional `ti` (the player's title, 
 
 The same goes for stakes: the rules now allow an optional `k` (the Ripeness level, called stake in the code, 2 to 8) on Rogue scores. Paste `database.rules.json` into the Rules tab again and publish. Until then Rogue scores still reach the world board, but without their stake.
 
+Run summaries (v1.39) use the same database. A player who switches them on (Options, or the question on the Run over screen) sends one small record per Rogue run to `runs`: where it ended, what beat it, the build, and the username when signed in. The rules let anyone add a record and only signed-in accounts read them. Paste `database.rules.json` into the Rules tab again and publish, or nothing is stored (Options then shows "Last run: not sent"). To read them, sign in, open the game with `?dev` and press Run data in the dev panel from the menu.
+
 Note: any browser game that submits its own score can be cheated by someone who edits the request. The rules stop junk data and overwrites, not a determined cheater.
 
 ## Accounts (Firebase Authentication, email and password)

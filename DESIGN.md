@@ -386,7 +386,51 @@ The real gap: some builds have no ×Mult of their own below rare or fusion, so t
 
 **Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.23) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
 
-**To do: Fat Wallet.** Not changed. ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
+**Fat Wallet (done in v1.39: capped at +4 Mult).** Before the cap: ×3.0 at 20 coins, ×5.9 at 50, ×11 at 100 from one uncommon, and bots that stop spending end runs on 50 to 75 coins. Options: +0.05 Mult a coin, or a cap (say +4 Mult at 40 coins). Check Golden Hand (its fusion) at the same time.
+
+## Tool bot and v1.39 fixes (17 Nov)
+
+Fixes: a tool hands charge to the others once per drop (Sleight of Hand at charge 1, a second Juggler, Battery and Cash Out with 2 Whetstones recharged each other with no merge: a depth 5 jar cleared with 24 of 24 drops left). The Orchard Queen and the Ripeness 8 extra rule carry the target discount of the rules they run, and The Swarm no longer pairs with The Pruner or The Collector. Fat Wallet caps at +4, Slow Cook at +2. Sweet Spot every 5th merge (was 7th), Old Oak ×0.06 (was ×0.04).
+
+Bot rebuilt once more (kept out of the repo). It runs in the page and steps the engine 70 frames (1.1 seconds) per drop. Aim: for 33 columns and the x of every fruit of the held size, find the first fruit the drop would touch. A same-size first contact wins (the highest one, more if a fruit one size bigger touches it), else the lowest landing spot. It scores about 194 on a fresh 24-drop jar and 250 a jar over a depth, like the earlier bots. Buyer B as in Stage 2 measurement. Tool policy: Swap or Sleight of Hand when the held fruit has no match and Next has one, Shake, Rumble, Whirl or Cyclone when there is no match in a jar of 10 or more fruit or the pile is near the line, Cash Out, Free Sample, Blender and Sieve when charged, Twin, Lodestar, Ripen or Bloom on a fruit touching one a size bigger, Midas, Double Down and Twin Drop on a sure merge, Cherry Bomb near the line, Shatter on a rock. It buys those tools into free slots and one Tool Belt. It never throws, never uses toggles, Tilt, Anchor, Lead Weight, Petrify or Rewind, signs no contracts and never skips.
+
+Classic Jar, 400 runs each (wins ±1.8 points, depth ±0.09):
+
+| Ripeness | Build | No tools | With tools |
+|---|---|---|---|
+| 1 | v1.38 | 14.5%, depth 6.51 | 15.5%, depth 6.67 |
+| 1 | v1.39 | 14.5%, depth 6.64 | 20.1%, depth 6.87 (800 runs: 19.3% and 21.0%) |
+| 4 | v1.38 | | 2.3%, depth 4.27 |
+| 4 | v1.39 | | 1.5%, depth 4.36 |
+| 8 | v1.39 | | 0 in 300, depth 3.04 |
+
+- The no-tools number matches the 15.3% measured for buyer B in v1.37.1, so this bot is comparable with the last one.
+- Tools are worth little to this bot: 2 uses a jar, 3 in 4 of them Swap. A player who times Shake or sets up Double Down gets more.
+- With tools the fixed build reads 4 to 5 points above v1.38, about twice the noise. The likely cause is the two buffed rares and the Queen's lower targets, since the bot never ran the charge loop.
+- What ended 316 lost runs (v1.39, tools, one batch of 400): a normal jar 66, The Melon Queen 36, The Collector 35, The Pruner 28, The Orchard Queen 16, The Swarm 15, The Thief 12, The Reaper 11. 296 ran out of drops, 20 overflowed.
+
+One charm given free at the start, then the same bot with tools, 300 runs each. No charm given: 20.1%, depth 6.87. The bot never sells, so a charm that scores below that line is worse than the slot left open for a ×Mult charm.
+
+| Charm from jar 1 | Wins | Depth |
+|---|---|---|
+| Vintage (uncommon) | 65.7% | 8.03 |
+| Snowball | 58.3% | 7.94 |
+| Melon Fever | 42.3% | 7.41 |
+| Blue Ribbon | 35.0% | 7.48 |
+| Old Oak at ×0.06 (400 runs) | 30.5% | 7.19 |
+| Full House | 29.3% | 7.29 |
+| Hot Streak | 27.3% | 7.38 |
+| Sweet Spot, every 5th merge | 25.0% | 7.40 |
+| Heavyweight | 20.0% | 7.01 |
+| Fat Wallet, capped | 18.7% | 6.80 |
+| High Wire | 16.0% | 6.52 |
+| Juicer | 13.7% | 6.88 |
+| Tiki Bar | 10.3% | 6.26 |
+
+- Before the change: Sweet Spot every 7th merge 20.0% (7.06), Old Oak at ×0.04 23.3% (6.96). Old Oak at ×0.08 measured 38.7% (7.46), above Blue Ribbon, so it went to ×0.06.
+- Melon Fever was listed as a weak rare from the greedy bot's numbers. With a bot that buys seeds it is the third best charm here, so it was left alone. A buff tried first (+1 Mult per size 7+ fruit) measured 66.7%.
+- **Open: Vintage and Snowball.** A grower that pays every jar, held from jar 1, wins most runs. Vintage is an uncommon at 7 coins and Keepsake builds on it. A real run finds it later, so this overstates it, but it is the strongest early find by a wide margin. Options: +0.3 a jar, or make it rare.
+- High Wire reads low because the bot never plays at the line. Tiki Bar is a dead slot for a bot that makes no Pineapple pairs.
 
 ## Legendaries (built, v1.29)
 
