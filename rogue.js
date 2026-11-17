@@ -284,7 +284,7 @@ const TL={
  /* v1.36: tog = a toggle (tap on, tap off: switching on costs 1 charge and counts as a use, every drop while on costs 1, it goes off at 0). tm = a timed tool, lasting tm drops (t.n counts down) */
  sling:{n:'Slingshot',s:'Sling',c:6,ch:6,tog:1,d:'Switch on or off. While on, flick as you let go to throw your fruit sideways. The faster the flick, the harder the throw.'},
  moon:{n:'Moon Boots',s:'Moon',c:6,ch:8,tog:1,d:'Switch on or off. While on, fruit fall at half the gravity.'},
- reach:{n:'Long Arm',s:'Arm',c:5,ch:6,tog:1,d:'Switch on or off. While on, your fruit drops from where you tap in the jar, not from the top.'},
+ reach:{n:'Long Arm',s:'Arm',c:5,ch:6,tm:3,d:'For your next 3 drops, your fruit drops from where you tap in the jar, not from the top.'}, /* a toggle until v1.40 */
  tilt:{n:'Tilt',c:6,ch:8,tm:3,d:'For your next 3 drops the jar tips towards the side your fruit is on, and the pile slides that way.'},
  tdrop:{n:'Twin Drop',s:'Twins',c:7,ch:10,tm:2,d:'Your next 2 drops each drop two of your fruit side by side. The second one is free.'},
  /* v1.40 */
