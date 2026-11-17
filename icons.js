@@ -3,7 +3,7 @@
    To change an icon, edit its letters. To add one, add a grid here and use it as <i class="px px-NAME"></i>.
    PXF is the pixel font used for the score pop-ups: 7 rows per glyph, '#' is a pixel. The game thickens every stroke by a pixel,
    except for the letters in PXFB, which are drawn bold by hand because thickening would fill them in. */
-const PXP={k:'#2a1a3a',w:'#ffffff',c:'#fff2d8',s:'#c9c3d4',d:'#8f8a99',D:'#5f5a6b',r:'#e63946',R:'#a3202c',o:'#fb8500',y:'#ffd43b',Y:'#e09600',g:'#7bc950',G:'#38862a',t:'#35c2b4',b:'#4cc9f0',B:'#1f7fb0',p:'#ff8fab',P:'#b388eb',V:'#6b3fb0',n:'#a9713a',N:'#6e4420',m:'#ff4d8d'};
+const PXP={k:'#2a1a3a',w:'#ffffff',c:'#fff2d8',s:'#c9c3d4',d:'#8f8a99',D:'#5f5a6b',r:'#e63946',R:'#a3202c',o:'#fb8500',y:'#ffd43b',Y:'#e09600',g:'#7bc950',G:'#38862a',t:'#35c2b4',b:'#4cc9f0',B:'#1f7fb0',p:'#ff8fab',P:'#b388eb',V:'#6b3fb0',n:'#a9713a',N:'#6e4420',m:'#ff4d8d',u:'#8fa3bd',U:'#5d7189'}; /* u, U: blue-greys for the Russian Blue cat (Passerby) */
 const PXD={
 /* ---- interface ---- */
 melon:`
@@ -3247,7 +3247,73 @@ kk......kdk.
 .....kkkk...
 ....kNnk....
 ...kNnk.....
-...kkk......`
+...kkk......`,
+/* ---- v1.41: active legendaries, and pcat = the Passerby cat drawn in the jar ---- */
+grain:`
+...kkkkk....
+..kwwwwwkk..
+.kwwwswwwwk.
+kwwsssswwssk
+kssssssssssk
+.kkkkkkkkkk.
+.kyk..kyk...
+.kYk..kYk.k.
+....kyk..kyk
+....kYk..kYk
+.kyk......k.
+.kk.........`,
+nova:`
+k....kk....k
+.k..kmmk..k.
+..kkmyymkk..
+..kmyyyymk..
+.kmyywwyymk.
+kmyywwwwyymk
+kmyywwwwyymk
+.kmyywwyymk.
+..kmyyyymk..
+..kkmyymkk..
+.k..kmmk..k.
+k....kk....k`,
+lime:`
+.kkkk.......
+kDDDDk......
+kDsdDkk.....
+kDddDkwk....
+.kkkkwwck...
+...kwwccck..
+...kwcccyyk.
+....kccyyyk.
+....kcyyyyyk
+.....kyyyyyk
+.....kkkkkkk
+............`,
+passer:`
+.k........k.
+kUk......kUk
+kuUk....kUuk
+kuuUkkkkUuuk
+kuuuuuuuuuuk
+kuGguuuugGuk
+kuuuuuuuuuuk
+kuuuuppuuuuk
+kuuuukkuuuUk
+.kuuuuuuuUk.
+..kkUUUUkk..
+....kkkk....`,
+pcat:`
+........k.k.
+.......kUkUk
+k......kuuuk
+kU.....kuguk
+.kU....kuupk
+..kkkkkkuuk.
+..kuuuuuuuk.
+.kuuuuuuuuk.
+.kuUuuuuUuk.
+.kUkUkkUkUk.
+.kk.kk.kk.k.
+............`
 };
 /* the shop's crates: the wooden crate recoloured, one colour per kind (charms purple, tools blue, seeds green) */
 for(const[k,a,b]of[['ch','V','P'],['tl','B','b'],['sd','G','g']])PXD['crate_'+k]=PXD.crate_wood.replace(/N/g,a).replace(/n/g,b);
