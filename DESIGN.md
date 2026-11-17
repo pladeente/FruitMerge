@@ -429,7 +429,7 @@ One charm given free at the start, then the same bot with tools, 300 runs each. 
 
 - Before the change: Sweet Spot every 7th merge 20.0% (7.06), Old Oak at ×0.04 23.3% (6.96). Old Oak at ×0.08 measured 38.7% (7.46), above Blue Ribbon, so it went to ×0.06.
 - Melon Fever was listed as a weak rare from the greedy bot's numbers. With a bot that buys seeds it is the third best charm here, so it was left alone. A buff tried first (+1 Mult per size 7+ fruit) measured 66.7%.
-- **Open: Vintage and Snowball.** A grower that pays every jar, held from jar 1, wins most runs. Vintage is an uncommon at 7 coins and Keepsake builds on it. A real run finds it later, so this overstates it, but it is the strongest early find by a wide margin. Options: +0.3 a jar, or make it rare.
+- **Done in v1.40.1 (see Vintage, Snowball and Keepsake below). Was open: Vintage and Snowball.** A grower that pays every jar, held from jar 1, wins most runs. Vintage is an uncommon at 7 coins and Keepsake builds on it. A real run finds it later, so this overstates it, but it is the strongest early find by a wide margin. Options: +0.3 a jar, or make it rare.
 - High Wire reads low because the bot never plays at the line. Tiki Bar is a dead slot for a bot that makes no Pineapple pairs.
 
 ## v1.40 charms and tools (built, 17 Nov)
@@ -464,7 +464,7 @@ The bot from "Tool bot and v1.39 fixes" was rebuilt the same way (kept out of th
 | v1.40 with the old Headliner and Sleight of Hand | 400 | 19.5%, depth 6.80 | |
 
 - The rebuilt bot matches the documented with-tools number within noise (±2 points at 400 runs) and loses to the same bosses (a normal jar, then The Collector, The Melon Queen, The Pruner). Its no-tools number reads higher than the documented 14.5%, so its buyer is not an exact copy. Tools are worth almost nothing to it.
-- v1.40 reads 4 points under v1.39 with tools, about two standard errors. Putting the old Headliner and Sleight of Hand back gives 19.5%, so the fix is not most of it. The rest is noise plus nine more charms diluting the shop the bot buys from. Worth a recheck with more runs.
+- v1.40 first read 4 points under v1.39. Rechecked with 800 more runs each (18 Nov): v1.40 22.5%, v1.39 19.0%. All runs together: v1.39 20.1% (1,200), v1.40 21.0% (1,200). No real difference, the first reading was noise.
 
 One charm given free at the start, tools on, 300 runs each (±2.5 points). No charm: 18.0%. The bot never sells, so a charm below that line is worse than an open slot. Targets: commons and uncommons 20 to 30%, rares 25 to 35%, nothing above 40%.
 
@@ -483,6 +483,35 @@ One charm given free at the start, tools on, 300 runs each (±2.5 points). No ch
 - Fireworks was tried first as Bonfire's helper and is useless here: alone it drops the bot to 3.0% (depth 4.82), with Bonfire 0.3% (4.87). This bot can not play Boom fruit.
 - Not measured: Shears and Harvest (the bot's tool policy predates them and never buys them), Brinkmanship, the five awards' difficulty, and anything above Ripeness 1. Stage Fright was measured with tools off. With tools used it sits at ×1 after each use until the merges charge them again.
 - Big Spender and Stage Fright pull against interest and against using tools, on purpose. Both need play.
+
+## Vintage, Snowball and Keepsake (v1.40.1, 18 Nov)
+
+The open point from the v1.39 run: growers that pay every jar won most runs when held from jar 1. Same bot as the v1.40 measurement, Classic Jar, Ripeness 1, tools on, 300 runs each, the charm given at the start. No charm: 21.0% (1,200 runs). Targets: uncommon 20 to 30%, rare 25 to 35%.
+
+| Charm | Growth | Wins | Depth |
+|---|---|---|---|
+| Vintage (uncommon) | +0.4 a jar (old) | 63.3% | 7.99 |
+| | +0.25 | 56.0% | 7.89 |
+| | +0.2 | 45.3% | 7.74 |
+| | +0.15 | 40.7% | 7.60 |
+| | +0.1 | 33.3% | 7.36 |
+| | **+0.08 (shipped)** | 27.3%, again 28.0% | 7.23 |
+| Snowball (rare) | ×0.1 a jar with 5+ drops left (old) | 56.7% | 7.96 |
+| | ×0.07 | 42.7% | 7.50 |
+| | ×0.05 | 37.0% | 7.40 |
+| | **×0.04 (shipped)** | 33.7%, again 31.3% | 7.35 |
+| | ×0.03 | 29.0% | 7.13 |
+| Keepsake (fusion: Pip Collector + Vintage) | +0.05 a small fruit, +0.6 a jar (old) | 68.0% | 8.15 |
+| | +0.05, +0.15 | 51.3% | 7.82 |
+| | **+0.04, +0.12 (shipped)** | 43.3% | 7.51 |
+| | +0.03, +0.12 | 44.3% | 7.73 |
+| | +0.03, +0.08 (its halves exactly) | 44.0% | 7.72 |
+| Pip Collector alone | +0.03 a small fruit | 22.3% | 7.08 |
+| Pip Collector + Vintage, two slots | new numbers | 48.3% | 7.86 |
+
+- Making Vintage rare was the other option. It was kept uncommon, the power table's "+Mult that grows slowly". At +0.08 it ends a full run near +1.9.
+- Snowball at ×0.04 sits near the top of the rare band, on purpose: held from jar 1 overstates a grower a real run finds later.
+- Keepsake stays above 40%. Even at exactly its halves in one slot it measures 44%, because Pip Collector and Vintage together are that strong (48% in two slots). Cutting it below its halves would make fusing a trap, so it keeps "both halves plus a bit" and the freed slot.
 
 ## Legendaries (built, v1.29)
 
