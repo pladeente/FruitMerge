@@ -13,7 +13,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
    l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar, sm = merges this jar that made a size 4 fruit or smaller,
    first = the first time this size is made this jar, wall = a merging fruit touched a wall, low = the merge was in the bottom third of the jar, trick = a thrown fruit hit a wall and then merged before touching anything else, pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, rk = rocks in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
    v1.40: gm = gold fruit merged this jar (the one in this merge included), bf = one of the 3 merges after a fruit was destroyed (Bonfire), ov = the pile is over the line, mis = {n}: chance charms that missed this jar (Lucky Clover, Snake Eyes and Four-Leaf Clover add 1 on a miss), ms0 = mis.n before this merge (so charm order never matters),
-   sdn = fruit sizes with a seed, spt = coins spent in the last shop (R.sp), tf = every tool held is fully charged (and at least one is held).
+   nr = no rolls (the score table: chance charms count as ×1), sdn = fruit sizes with a seed, spt = coins spent in the last shop (R.sp), tf = every tool held is fully charged (and at least one is held).
    chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG.
    dev = a prototype: only in the dev panel, never in the shop, crates or Almanac. req = only offered while the run holds that charm.
    fu = [a, b]: a fusion, made from those two charms. Fusions are rarity 3, never sold, and only come out of boss crates.
@@ -29,7 +29,7 @@ const CH={
  bull:{n:'Bullseye',r:0,c:5,d:'A dropped fruit that merges before it touches anything else scores ×2.',x:c=>c.bull?2:1},
  early:{n:'Early Bird',r:0,c:4,d:'×2 Mult for your first 6 drops of each jar.',x:c=>c.jd<=6?2:1},
  clutch:{n:'Photo Finish',r:0,c:4,d:'×2.5 Mult for your last 5 drops of each jar.',x:c=>c.dl<5?2.5:1},
- lucky:{n:'Lucky Clover',r:0,c:5,d:'1 in 4 merges score ×3.',x:c=>c.l<0?1:Math.random()<.25*c.luck?3:miss(c)},
+ lucky:{n:'Lucky Clover',r:0,c:5,d:'1 in 4 merges score ×3.',x:c=>c.l<0||c.nr?1:Math.random()<.25*c.luck?3:miss(c)},
  scratch:{n:'Scratch Card',r:0,c:4,d:'1 in 6 merges pays 1 coin.'},
  lode:{n:'Lodestone',r:0,c:4,o:1,rv:'Every 5th drop is a rock.',d:'Every 5th drop is a Magnet that pulls its matches in.'},
  piggy:{n:'Piggy Bank',r:0,c:4,d:'+3 coins every time you clear a jar.'},
@@ -58,7 +58,7 @@ const CH={
  bank:{n:'Savings Account',r:1,c:6,d:'Interest can pay up to 8 coins per jar instead of 4.'},
  gold:{n:'Golden Touch',r:1,c:6,d:'Earn 1 coin whenever you make a size 6 fruit or bigger.'},
  dynamo:{n:'Dynamo',r:2,c:8,d:'Every drop gives each tool 1 charge.'},
- snake:{n:'Snake Eyes',r:0,c:5,d:'1 in 6 merges score ×4.',x:c=>c.l<0?1:Math.random()<c.luck/6?4:miss(c)},
+ snake:{n:'Snake Eyes',r:0,c:5,d:'1 in 6 merges score ×4.',x:c=>c.l<0||c.nr?1:Math.random()<c.luck/6?4:miss(c)},
  magpie:{n:'Magpie',r:1,c:6,d:'+1 Mult for every gold fruit in the jar.',add:c=>c.gold||0},
  ash:{n:'Ashes',r:1,c:6,d:'Every fruit that is destroyed scores 15 points.'},
  crit:{n:'Sweet Spot',r:2,c:8,d:'Every 5th merge of a jar scores ×5.',x:c=>c.l>=0&&c.jm>0&&c.jm%5===0?5:1},
@@ -118,7 +118,7 @@ const CH={
  foot:{n:"Rabbit's Foot",r:0,c:5,req:['lucky','snake','fourleaf'],d:'Every time Lucky Clover, Snake Eyes or Four-Leaf Clover misses, +0.15 Mult until the jar ends.',add:c=>(c.ms0||0)*.15},
  brink:{n:'Brinkmanship',r:2,c:9,d:'Merges made while the pile is over the line score ×3.',x:c=>c.ov&&c.l>=0?3:1},
  ftree:{n:'Family Tree',r:1,c:6,d:'A seed gives half its bonus to the other fruit of its family.'},
- fourleaf:{n:'Four-Leaf Clover',r:3,c:12,fu:['lucky','shoe'],d:'1 in 2 merges score ×3. Every other "1 in" chance comes up twice as often.',x:c=>c.l<0?1:Math.random()<.5?3:miss(c)},
+ fourleaf:{n:'Four-Leaf Clover',r:3,c:12,fu:['lucky','shoe'],d:'1 in 2 merges score ×3. Every other "1 in" chance comes up twice as often.',x:c=>c.l<0||c.nr?1:Math.random()<.5?3:miss(c)},
  goose:{n:'Golden Goose',r:3,c:12,fu:['piggy','bank'],d:'+4 coins every time you clear a jar. Interest can pay up to 10 coins per jar.'},
  volcano:{n:'Volcano',r:3,c:12,fu:['boom','compost'],d:'Every 5th drop is a Boom fruit. Each fruit it blows up scores 40 points. Gains +0.1 Mult every time a fruit is destroyed.',add:c=>c.ch.v||0,live:1},
  headline:{n:'Headliner',r:3,c:12,fu:['show','encore'],d:'Every tool use gives +0.5 Mult until the jar ends, and makes your next merge score ×3.',add:c=>c.tu*.5,x:c=>c.enc&&c.l>=0?3:1},
