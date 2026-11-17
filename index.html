@@ -758,7 +758,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
       if(B.vise&&m.l>=5&&vz>0){vz=0;floatTxt('The walls open!',W/2,line+50,'#1f9c90',20);}
       if(B.collect&&m.l>=cT()&&!gotC){gotC=1;floatTxt('Collected!',W/2,line+50,'#38b000',24);snd('fly');}
       if(B.reaper&&m.l>=(B.reaper>1?5:3)){dl++;floatTxt('+1 drop',m.x,m.y-92,'#3b2346',16);}
-      if(m.l>=3&&ro.has('horn')){const k=m.l>=7?2:1;dl+=k;floatTxt('+'+k+(k>1?' drops':' drop'),m.x,m.y-108,'#a96f16',16);ro.fx(['horn']);} /* Cornucopia: a Lemon or bigger 1 drop, a Pineapple or bigger 2 */
+      if(m.l>=CH.horn.l1&&ro.has('horn')){const k=m.l>=CH.horn.l2?2:1;dl+=k;floatTxt('+'+k+(k>1?' drops':' drop'),m.x,m.y-108,'#a96f16',16);ro.fx(['horn']);} /* Cornucopia: a Lemon or bigger 1 drop, a Pineapple or bigger 2 */
       ro.ev('merge',{l:m.l,p,m:mm,combo,bull:m.bull,trick:!!m.trick,gold:m.gold});
       const ev=ro.made(m.l);if(ev.length){ro.fx(ev);const cn=ev.filter(e=>e==='gold'||e==='scratch'||e==='mint').length;if(cn)floatTxt('+'+cn+' coin',m.x,m.y-28,'#e09600',16);if(ev.includes('fever'))floatTxt('Fever +1.5',m.x,m.y-44,'#38862a',16);if(ev.includes('mania'))floatTxt('Mania +2',m.x,m.y-44,'#38862a',16);if(ev.includes('oak'))floatTxt('Oak ×0.06',m.x,m.y-60,'#6e4420',15);}}
      else{score+=tri(m.l);earn(Math.ceil(m.l/2));dmg(tri(m.l),m.x,m.y,m.l>=7?2:m.l>=4?1:0);}
