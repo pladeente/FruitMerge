@@ -376,12 +376,12 @@ The real gap: some builds have no ×Mult of their own below rare or fusion, so t
 
 | Build | Its own ×Mult today |
 |---|---|
-| Combo | none (Chain Reaction, Hot Streak are +Mult. Cyclone is a tool fusion) |
-| Destruction | none (Compost is +Mult, the rest flat points) |
-| Economy | none (Fat Wallet is +Mult) |
-| Seeds | none (Abacus is +Mult) |
-| Gold | none as a charm (gold fruit ×2 is a one-off, Magpie is +Mult) |
-| Tools | Encore only |
+| Combo | none (Chain Reaction, Hot Streak are +Mult. Cyclone is a tool fusion). v1.40: Crescendo |
+| Destruction | none (Compost is +Mult, the rest flat points). v1.40: Bonfire |
+| Economy | none (Fat Wallet is +Mult). v1.40: Big Spender |
+| Seeds | none (Abacus is +Mult). v1.40: Polyculture, Family Tree (more seed, not ×) |
+| Gold | none as a charm (gold fruit ×2 is a one-off, Magpie is +Mult). v1.40: Hallmark |
+| Tools | Encore only (v1.40: Stage Fright, which pays for not using them) |
 | Aim, timing, chance, big fruit, small fruit, position, pets | have one or more |
 
 **Direction (the user's call, not started):** fill these with new items, mainly fusions that pair pieces which plainly belong together, each giving the build a conditional ×Mult payoff. Keep to the fusion budget (both halves plus a bit: Smoothie was 2.35 times its halves before v1.23) and to Things to avoid (no unconditional ×Mult below rare). Two commons as halves means the fusion is ready in ~37% of runs by shop 9, so prefer a common + uncommon or two uncommons for the strong ones. Measure each against its halves held together before shipping.
@@ -431,6 +431,58 @@ One charm given free at the start, then the same bot with tools, 300 runs each. 
 - Melon Fever was listed as a weak rare from the greedy bot's numbers. With a bot that buys seeds it is the third best charm here, so it was left alone. A buff tried first (+1 Mult per size 7+ fruit) measured 66.7%.
 - **Open: Vintage and Snowball.** A grower that pays every jar, held from jar 1, wins most runs. Vintage is an uncommon at 7 coins and Keepsake builds on it. A real run finds it later, so this overstates it, but it is the strongest early find by a wide margin. Options: +0.3 a jar, or make it rare.
 - High Wire reads low because the bot never plays at the line. Tiki Bar is a dead slot for a bot that makes no Pineapple pairs.
+
+## v1.40 charms and tools (built, 17 Nov)
+
+Nine charms that give the builds in "+Mult against ×Mult" a ×Mult of their own, two tools, and five awards that open five of the charms. Text and numbers in `rogue.js`.
+
+| Build | New piece | Rarity | Open from the start |
+|---|---|---|---|
+| Combo | Crescendo | Uncommon | yes |
+| Destruction | Bonfire | Uncommon | yes |
+| Economy | Big Spender | Uncommon | Big Night Out |
+| Seeds | Polyculture | Uncommon | yes |
+| Seeds, families | Family Tree | Uncommon | Family Reunion |
+| Gold | Hallmark | Uncommon | yes |
+| Tools | Stage Fright (pays for not using them) | Rare | Jailbreak |
+| Chance | Rabbit's Foot (needs a chance charm) | Common | Superstitious |
+| Full jar | Brinkmanship | Rare | On the Brink |
+| Aim, small fruit | Shears (tool) | | yes |
+| Full jar, destruction | Harvest (tool) | | yes |
+
+Also fixed: Headliner +0.5 Mult per tool use (was +1) and Sleight of Hand at 2 charge (was 1). The Collector asks for one size smaller on a Bite Size or Snack Pack run.
+
+### Measurement (bot, 17 Nov)
+
+The bot from "Tool bot and v1.39 fixes" was rebuilt the same way (kept out of the repo): same aim, same tool policy, buyer B. It buys none of the v1.40 charms or tools, so the new pool only dilutes its offers. Classic Jar, Ripeness 1.
+
+| Build | Runs | With tools | No tools |
+|---|---|---|---|
+| v1.39, documented | 400 | 20.1%, depth 6.87 | 14.5% |
+| v1.39, rebuilt bot | 400 | 22.3%, depth 6.92 | |
+| v1.40 | 400 | 18.0%, depth 6.67 | 18.8%, depth 6.74 (300 runs: 18.0%) |
+| v1.40 with the old Headliner and Sleight of Hand | 400 | 19.5%, depth 6.80 | |
+
+- The rebuilt bot matches the documented with-tools number within noise (±2 points at 400 runs) and loses to the same bosses (a normal jar, then The Collector, The Melon Queen, The Pruner). Its no-tools number reads higher than the documented 14.5%, so its buyer is not an exact copy. Tools are worth almost nothing to it.
+- v1.40 reads 4 points under v1.39 with tools, about two standard errors. Putting the old Headliner and Sleight of Hand back gives 19.5%, so the fix is not most of it. The rest is noise plus nine more charms diluting the shop the bot buys from. Worth a recheck with more runs.
+
+One charm given free at the start, tools on, 300 runs each (±2.5 points). No charm: 18.0%. The bot never sells, so a charm below that line is worse than an open slot. Targets: commons and uncommons 20 to 30%, rares 25 to 35%, nothing above 40%.
+
+| Charm from jar 1 | As first written | Final | Change |
+|---|---|---|---|
+| Crescendo | ×2 from the 4th merge of a combo: 11.7%. From the 3rd: 14.0% | ×2 from the 2nd merge: 22.7%, again 20.0% | The bot rarely makes combos of 3 or more. ×3 from the 3rd measured 24.0% but is a rare's budget |
+| Bonfire, with Pet Caterpillar as the helper (caterpillar alone 21.7%) | next merge ×2: 19.7% (alone, no helper: 9.0%) | next 3 merges ×2: 22.7% | One merge every 5 drops was about ×1.2 a jar |
+| Big Spender | ×0.1 per 5 coins: 15.0%. Per 3: 16.3% | ×0.1 per 2 coins (up to ×2): 20.0% | The bot spends about 10 to 15 coins a shop |
+| Polyculture | 21.3% | unchanged | |
+| Family Tree | 25.3% | unchanged | |
+| Hallmark, with Prospector as the helper (Prospector alone 27.7%) | ×0.25 per gold merge: 20.0% | ×0.5 per gold merge (up to ×3): 30.7% | About 1 or 2 gold merges a jar with Prospector |
+| Stage Fright, tools off (no charm, tools off: 18.0%) | 33.7% | unchanged | |
+| Rabbit's Foot, with Lucky Clover (Lucky Clover alone 25.0%) | +0.1 a miss: 18.0% | +0.15: 25.0% | +0.2 and +0.25 both measured 34.3%, too high for a common |
+| Brinkmanship | 10.7% | unchanged, **not measured**: the bot never plays at the line, so this only shows a dead slot | |
+
+- Fireworks was tried first as Bonfire's helper and is useless here: alone it drops the bot to 3.0% (depth 4.82), with Bonfire 0.3% (4.87). This bot can not play Boom fruit.
+- Not measured: Shears and Harvest (the bot's tool policy predates them and never buys them), Brinkmanship, the five awards' difficulty, and anything above Ripeness 1. Stage Fright was measured with tools off. With tools used it sits at ×1 after each use until the merges charge them again.
+- Big Spender and Stage Fright pull against interest and against using tools, on purpose. Both need play.
 
 ## Legendaries (built, v1.29)
 

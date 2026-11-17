@@ -115,7 +115,7 @@ const CH={
  poly:{n:'Polyculture',r:1,c:7,d:'×0.1 Mult more for every fruit size you hold a seed for.',x:c=>1+.1*(c.sdn||0)},
  hall:{n:'Hallmark',r:1,c:6,d:'×0.5 Mult more for every gold fruit merged this jar (up to ×3).',x:c=>Math.min(3,1+.5*(c.gm||0))},
  fright:{n:'Stage Fright',r:2,c:9,d:'×2 Mult while every tool you hold is fully charged.',x:c=>c.tf?2:1},
- foot:{n:"Rabbit's Foot",r:0,c:5,req:['lucky','snake','fourleaf'],d:'Every time Lucky Clover, Snake Eyes or Four-Leaf Clover misses, +0.25 Mult until the jar ends.',add:c=>(c.ms0||0)*.25},
+ foot:{n:"Rabbit's Foot",r:0,c:5,req:['lucky','snake','fourleaf'],d:'Every time Lucky Clover, Snake Eyes or Four-Leaf Clover misses, +0.15 Mult until the jar ends.',add:c=>(c.ms0||0)*.15},
  brink:{n:'Brinkmanship',r:2,c:9,d:'Merges made while the pile is over the line score ×3.',x:c=>c.ov&&c.l>=0?3:1},
  ftree:{n:'Family Tree',r:1,c:6,d:'A seed gives half its bonus to the other fruit of its family.'},
  fourleaf:{n:'Four-Leaf Clover',r:3,c:12,fu:['lucky','shoe'],d:'1 in 2 merges score ×3. Every other "1 in" chance comes up twice as often.',x:c=>c.l<0?1:Math.random()<.5?3:miss(c)},
