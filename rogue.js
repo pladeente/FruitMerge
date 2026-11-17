@@ -30,7 +30,7 @@ const CH={
  lode:{n:'Lodestone',r:0,c:4,o:1,rv:'Every 5th drop is a rock.',d:'Every 5th drop is a Magnet that pulls its matches in.'},
  piggy:{n:'Piggy Bank',r:0,c:4,d:'+3 coins every time you clear a jar.'},
  bag:{n:'Big Basket',r:0,c:5,d:'+5 drops in every jar.'},
- juggle:{n:'Juggler',r:0,c:5,d:'When you use a tool, your other tools each gain 1 charge.'},
+ juggle:{n:'Juggler',r:0,c:5,d:'When you use a tool, your other tools each gain 1 charge. Each tool does this once per drop.'},
  spark:{n:'Spark Plug',r:0,c:5,d:'Every tool starts each jar fully charged.'},
  coupon:{n:'Coupon',r:0,c:4,d:'Everything in the shop costs 1 coin less.'},
  heavy:{n:'Heavyweight',r:1,c:7,d:'Merges that make a size 6 fruit or bigger score ×2.5.',x:c=>c.l>=5?2.5:1},
@@ -39,7 +39,7 @@ const CH={
  vintage:{n:'Vintage',r:1,c:7,d:'Gains +0.4 Mult every time you clear a jar.',add:c=>c.ch.v||0,live:1},
  hoard:{n:'Hoarder',r:1,c:6,d:'+0.15 Mult for every fruit in the jar.',add:c=>c.n*.15},
  tidy:{n:'Clean Plate',r:1,c:7,d:'×2 Mult while the jar holds 6 fruit or fewer.',x:c=>c.n<=6&&!c.idle?2:1},
- wallet:{n:'Fat Wallet',r:1,c:7,d:'+0.1 Mult for every coin you hold.',add:c=>c.coins*.1},
+ wallet:{n:'Fat Wallet',r:1,c:7,d:'+0.1 Mult for every coin you hold (up to +4).',add:c=>Math.min(4,c.coins*.1)},
  boom:{n:'Fireworks',r:1,c:6,d:'Every 6th drop is a Boom fruit. Each fruit it blows up scores 20 points.'},
  pet:{n:'Pet Caterpillar',r:1,c:6,d:'Every 5 drops it eats a small fruit (size 3 or less) for 45 points.'},
  compost:{n:'Compost',r:1,c:6,d:'Gains +0.05 Mult every time a fruit is destroyed (Boom, caterpillar, Scrub, Safety Net).',add:c=>c.ch.v||0,live:1},
@@ -57,7 +57,7 @@ const CH={
  snake:{n:'Snake Eyes',r:0,c:5,d:'1 in 6 merges score ×4.',x:c=>c.l>=0&&Math.random()<c.luck/6?4:1},
  magpie:{n:'Magpie',r:1,c:6,d:'+1 Mult for every gold fruit in the jar.',add:c=>c.gold||0},
  ash:{n:'Ashes',r:1,c:6,d:'Every fruit that is destroyed scores 15 points.'},
- crit:{n:'Sweet Spot',r:2,c:8,d:'Every 7th merge of a jar scores ×5.',x:c=>c.l>=0&&c.jm>0&&c.jm%7===0?5:1},
+ crit:{n:'Sweet Spot',r:2,c:8,d:'Every 5th merge of a jar scores ×5.',x:c=>c.l>=0&&c.jm>0&&c.jm%5===0?5:1},
  abacus:{n:'Abacus',r:2,c:8,d:'+0.5 Mult for every seed level you hold.',add:c=>c.sdl*.5},
  crew:{n:'Full House',r:2,c:9,d:'×2 Mult while every charm slot is filled.',x:c=>c.full?2:1},
  soil:{n:'Rich Soil',r:2,c:9,o:1,rv:'Every fruit you drop is one size smaller.',d:'Every fruit you drop is one size bigger.'},
@@ -66,7 +66,7 @@ const CH={
  ribbon:{n:'Blue Ribbon',r:2,c:9,d:'×0.2 Mult more for every charm you own, this one included.',x:c=>1+.2*c.nc},
  /* rares whose ×Mult grows over the run (DESIGN.md priority 4). live:'x' = the grown value is a ×, shown as ×(1+v) */
  snow:{n:'Snowball',r:2,c:9,d:'Gains ×0.1 Mult every time you clear a jar with 5 or more drops left. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
- oak:{n:'Old Oak',r:2,c:9,d:'Gains ×0.04 Mult every time you make a size 7 fruit or bigger. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
+ oak:{n:'Old Oak',r:2,c:9,d:'Gains ×0.06 Mult every time you make a size 7 fruit or bigger. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  fever:{n:'Melon Fever',r:2,c:9,d:'Gains +1.5 Mult every time you make a size 8 fruit or bigger.',add:c=>c.ch.v||0,live:1},
  /* thin builds (see DESIGN.md): small fruit, seeds, gold, position */
  fry:{n:'Small Fry',r:0,c:4,d:'Merges that make a size 4 fruit or smaller score ×2.',x:c=>c.l>=1&&c.l<=3?2:1},
@@ -102,7 +102,7 @@ const CH={
  curve:{n:'Curveball',r:1,c:6,req:'sling',d:'A thrown fruit curves towards the nearest fruit of its size.'},
  pinball:{n:'Pinball',r:2,c:9,req:'sling',d:'A thrown fruit scores ×1.25 for every wall bounce (up to 4) if it merges before it comes to rest.',x:c=>Math.pow(1.25,Math.min(4,c.pin||0))},
  quick:{n:'Quick Hands',r:0,c:4,d:'You can drop again 0.3 seconds after a drop, instead of 0.55.'},
- slow:{n:'Slow Cook',r:1,c:6,d:'+0.5 Mult for every second you waited before your last drop (up to +4).',add:c=>Math.min(4,(c.wt||0)*.5)},
+ slow:{n:'Slow Cook',r:1,c:6,d:'+0.5 Mult for every second you waited before your last drop (up to +2).',add:c=>Math.min(2,(c.wt||0)*.5)},
  linger:{n:'Lingering',r:1,c:6,d:'Timed tools last 2 more drops. Tools you switch on use charge every other drop.'},
  fourleaf:{n:'Four-Leaf Clover',r:3,c:12,fu:['lucky','shoe'],d:'1 in 2 merges score ×3. Every other "1 in" chance comes up twice as often.',x:c=>c.l>=0&&Math.random()<.5?3:1},
  goose:{n:'Golden Goose',r:3,c:12,fu:['piggy','bank'],d:'+4 coins every time you clear a jar. Interest can pay up to 10 coins per jar.'},
@@ -274,7 +274,7 @@ const TL={
  tilt:{n:'Tilt',c:6,ch:8,tm:3,d:'For your next 3 drops the jar tips towards the side your fruit is on, and the pile slides that way.'},
  tdrop:{n:'Twin Drop',s:'Twins',c:7,ch:10,tm:2,d:'Your next 2 drops each drop two of your fruit side by side. The second one is free.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
- sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge.'},
+ sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:1,fu:['swap','juggle'],d:'Swap your fruit with the next one. Your other tools each gain 2 charge, once per drop.'},
  bloom:{n:'Bloom',c:12,ch:10,tg:1,fu:['ripen','sprout'],d:'Tap a fruit. It grows one size. The first use in each jar also gives the seed for its new size 1 level.'},
  mesh:{n:'Fine Mesh',c:12,ch:7,fu:['sieve','pip'],d:'Clears every Cherry (1) and Strawberry (2) out of the jar. Each one cleared scores 15 points.'},
  medusa:{n:'Medusa',c:12,ch:8,tg:1,fu:['petrify','wire'],d:'Tap a fruit. It and every fruit touching it turn to stone: they can not move or merge, and never count as over the line. They crumble away when the next jar starts.'},
@@ -331,6 +331,8 @@ const SKR={
 };
 const ICN={sk_detour:'bribe',worms:'mould',frost:'ice',sk_roll:'dice',sk_pay:'wallet',sk_boss:'crate_gold',sk_drops:'bag',lode:'magnet',boom:'bomb',pet:'cat',glut:'cat',rot:'mould',stone:'rock',storm:'whirl',slick:'drop',melon:'king',gamble:'dice',twins:'twin'}; /* things that share another icon (icons.js) */
 const icn=id=>ICN[id]||id,T0=t=>CRT[t].lg||0;
+/* boss rules that may not share a jar (The Orchard Queen's pair, the second rule on Ripeness 8): The Swarm drops only tiny fruit, so it can not sit with a rule that needs or only pays for bigger fruit */
+const CLASH=[['swarm','gamble'],['swarm','prune'],['swarm','collect']],clash=(a,b)=>a!==b&&CLASH.some(p=>p.includes(a)&&p.includes(b));
 const nice=q=>{const m=Math.pow(10,Math.max(1,Math.floor(Math.log10(q))-1));return Math.round(q*(1+1e-9)/m)*m;};
 const RG={
  new(jar='classic',stake=1){const pool=Object.keys(BOSS).filter(k=>!BOSS[k].fin),bs=[];for(let d=1;d<DEPTHS;d++){const c=pool.filter(k=>BOSS[k].min<=d&&!bs.includes(k));bs.push(c[rint(c.length)]);}bs.push(RG.fin());
@@ -370,8 +372,11 @@ const RG={
  /* the mini boss on jar 2 of some depths (every depth 4 of 8), or null. It has no phase 2 and drops a wooden crate */
  mid(R,d=R.depth){if(d%8!==4&&!(R.stake>=6&&d>=5))return null;if(!R.ms[d]){const b=RG.boss(R,d),k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==b&&BOSS[k].min<=d&&k!=='hour');R.ms[d]=k[rint(k.length)];}return R.ms[d];},
  /* the rule flags a boss switches on. The Orchard Queen runs two other bosses, picked once per depth */
- rules(R,b,d=R.depth){let r=[b];if(b==='queen'){if(!R.bq[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'),a=k.splice(rint(k.length),1)[0],c=k.filter(x=>!(['swarm','gamble'].includes(a)&&['swarm','gamble'].includes(x)));R.bq[d]=[a,c[rint(c.length)]];}r=R.bq[d];}
-  if(R.stake>=8&&BOSS[b].fin){if(!R.bx[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'&&!r.includes(k)&&!(['swarm','gamble'].includes(k)&&r.some(x=>['swarm','gamble'].includes(x))));R.bx[d]=k[rint(k.length)];}r=r.concat(R.bx[d]);}return r;},
+ rules(R,b,d=R.depth){let r=[b];if(b==='queen'){if(R.bq[d]&&clash(R.bq[d][0],R.bq[d][1]))delete R.bq[d]; /* a pair drawn before v1.38 that is no longer allowed is drawn again */
+  if(!R.bq[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'),a=k.splice(rint(k.length),1)[0],c=k.filter(x=>!clash(a,x));R.bq[d]=[a,c[rint(c.length)]];}r=R.bq[d];}
+  if(R.stake>=8&&BOSS[b].fin){if(R.bx[d]&&r.some(x=>clash(x,R.bx[d])))delete R.bx[d];if(!R.bx[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'&&!r.includes(k)&&!r.some(x=>clash(x,k)));R.bx[d]=k[rint(k.length)];}r=r.concat(R.bx[d]);}return r;},
+ /* a boss jar's target multiplier: the boss's own q, times the biggest discount among the other rules in the jar (the Queen's pair, the Ripeness 8 extra). Without it the Queen ran The Auditor's Mult cap against a full target */
+ bq:(b,rules)=>b?(BOSS[b].q||1)*Math.min(1,...rules.filter(k=>k!==b&&BOSS[k]).map(k=>BOSS[k].q||1)):1,
  /* the curses on this depth's boss jar: [drop curse, Orchard curse, Blight family] */
  curse(R,d=R.depth){if(!R.sc)R.sc={};if(!R.sc[d]){const e=Object.keys(CUR).filter(k=>CUR[k].k==='en'),o=Object.keys(CUR).filter(k=>CUR[k].k==='de');R.sc[d]=[e[rint(e.length)],o[rint(o.length)],rint(3)];}if(typeof R.sc[d][2]!=='number')R.sc[d][2]=rint(3);return R.sc[d];}, /* [2] = the size Blight hits, Cherry to Lemon */
  curD:(id,f)=>CUR[id].d(f),
@@ -379,7 +384,7 @@ const RG={
  bossD0(R,b,d=R.depth,two){const k=two?'d2':'d',r=RG.rules(R,b,d),x=R.stake>=8&&BOSS[b].fin?r[r.length-1]:null,xt=x?` Also ${BOSS[x].n}: ${BOSS[x][k]}`:'';if(b!=='queen')return BOSS[b][k]+xt;
   const q=r.slice(0,2);return (two?BOSS.queen.d2+' '+q.map(i=>BOSS[i].d2).join(' '):`${BOSS[q[0]].n} and ${BOSS[q[1]].n} at once. `+q.map(i=>BOSS[i].d).join(' '))+xt;},
  jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):j===1?RG.mid(R,d):null,bd=b&&BOSS[b],rules=b?RG.rules(R,b,d):[],sc=d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(RSCX,d-DEPTHS),J=R.jarId,now=j===R.jar,ct=now&&!b&&R.ct&&R.ct.on?CT[R.ct.id]:null; /* ct = the contract signed for this jar */
-  const quota=nice(RQ[j]*sc*(bd&&bd.q||1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
+  const quota=nice(RQ[j]*sc*RG.bq(b,rules)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
   const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2?RG.curse(R,d):null;
   const p2=j===2&&!RG.has(R,'flag'); /* White Flag: no phase 2 */
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
@@ -390,7 +395,7 @@ const RG={
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* a fruit of tier l was made: returns the charms that paid out */
  made(R,l){const ev=[],f=RG.has(R,'fever'),m=RG.has(R,'mania'),lk=RG.luck(R);if(l>=5&&RG.has(R,'gold')){R.coins++;ev.push('gold');}if(RG.has(R,'scratch')&&Math.random()<lk/6){R.coins++;ev.push('scratch');}
-  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const ok=l>=6&&RG.has(R,'oak');if(ok){ok.v=+((ok.v||0)+.04).toFixed(2);ev.push('oak');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.05:.03)).toFixed(2);ev.push(pp.id);}const tk=l===8&&RG.has(R,'tiki');if(tk){tk.v=+((tk.v||0)+.25).toFixed(2);ev.push('tiki');}return ev;},
+  if(RG.has(R,'mint')){if(l>=5){R.coins+=2;ev.push('mint','mint');}if(Math.random()<lk/4){R.coins++;ev.push('mint');}}if(l>=7&&f){f.v=(f.v||0)+1.5;ev.push('fever');}if(l>=7&&m){m.v=(m.v||0)+2;ev.push('mania');}const ok=l>=6&&RG.has(R,'oak');if(ok){ok.v=+((ok.v||0)+.06).toFixed(2);ev.push('oak');}const pp=l<=2&&(RG.has(R,'keep')||RG.has(R,'pip'));if(pp){pp.v=+((pp.v||0)+(pp.id==='keep'?.05:.03)).toFixed(2);ev.push(pp.id);}const tk=l===8&&RG.has(R,'tiki');if(tk){tk.v=+((tk.v||0)+.25).toFixed(2);ev.push('tiki');}return ev;},
  /* n fruit were destroyed: returns the charm that grew from it, if any */
  /* Snowball: a jar was cleared with `left` drops unused. Returns true when it grew */
  snow(R,left){const s=RG.has(R,'snow');if(!s||left<5)return false;s.v=+((s.v||0)+.1).toFixed(1);return true;},
@@ -453,7 +458,9 @@ const RG={
  leave(R){const c=R.crate;if(!c)return 0;const n=CRT[c.tier].out;R.coins+=n;R.at=c.then;R.crate=null;return n;},
  buyCr(R){const k=R.shop.cr,p=k&&RG.crCost(R);if(!k||R.coins<p)return false;R.coins-=p;R.shop.cr=null;R.crate=RG.crate(R,'wood','shop',k);R.at='crate';return true;},
  /* skip jar 1 or 2 of a depth: no payout, no shop, and a pick between a wooden crate and one other skip reward (not one already held) */
- skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.jar++;R.coins+=R.up.road*3;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;},
+ /* the skip rewards on offer, drawn ahead per depth so the map can show them (v1.38): R.sr[depth] = [jar 1's, jar 2's], the wooden crate always comes with it */
+ srw(R,d=R.depth){if(!R.sr)R.sr={};if(!R.sr[d]){const k=Object.keys(SKR).filter(k=>k!=='crate'),a=k[rint(k.length)],b=k.filter(x=>x!==a);R.sr[d]=[a,b[rint(b.length)]];}return R.sr[d];},
+ skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;const pre=RG.srw(R)[R.jar];R.jar++;R.coins+=R.up.road*3;RG.offer(R);const k=Object.keys(SKR).filter(k=>k!=='crate'&&!R.tg[k]);R.sk=k.includes(pre)?['crate',pre]:k.length?['crate',k[rint(k.length)]]:['crate'];R.at='skip';return true;}, /* the drawn reward, or another if it is already held */
  skipTake(R,id){if(!R.sk||!R.sk.includes(id))return false;R.sk=null;if(id==='crate'){R.crate=RG.crate(R,'wood','hub');R.at='crate';}else if(id==='detour'){RG.bribe(R);R.at='hub';}else{R.tg[id]=SKR[id].u;R.at='hub';}return true;},
  buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;R.coins-=p;R.ch.push({id});R.shop.ch[i]=null;return true;},
  buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;R.coins-=p;R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},

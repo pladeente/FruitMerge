@@ -15,6 +15,100 @@
         }
       }
     },
+    "runs": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "t"
+      ],
+      "$id": {
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['t', 'v', 'k', 'j', 'd', 'a', 'w', 's'])",
+        "t": {
+          ".validate": "newData.val() === now"
+        },
+        "v": {
+          ".validate": "newData.isString() && newData.val().matches(/^[0-9.]{1,10}$/)"
+        },
+        "k": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 8"
+        },
+        "j": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z]{1,10}$/)"
+        },
+        "d": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 999"
+        },
+        "a": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2"
+        },
+        "w": {
+          ".validate": "newData.isString() && newData.val().matches(/^(win|over|drops|quit)$/)"
+        },
+        "n": {
+          ".validate": "newData.isString() && newData.val().length <= 12 && auth != null && root.child('usernames').child(newData.val().toLowerCase()).val() === auth.uid"
+        },
+        "ch": {
+          ".validate": "newData.isString() && newData.val().length <= 400 && newData.val().matches(/^[a-z0-9_,:]*$/)"
+        },
+        "or": {
+          ".validate": "newData.isString() && newData.val().length <= 400 && newData.val().matches(/^[a-z0-9_,:]*$/)"
+        },
+        "tl": {
+          ".validate": "newData.isString() && newData.val().length <= 400 && newData.val().matches(/^[a-z0-9_,:]*$/)"
+        },
+        "up": {
+          ".validate": "newData.isString() && newData.val().length <= 400 && newData.val().matches(/^[a-z0-9_,:]*$/)"
+        },
+        "sd": {
+          ".validate": "newData.isString() && newData.val().length <= 400 && newData.val().matches(/^[a-z0-9_,:]*$/)"
+        },
+        "b": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9_]{0,12}$/)"
+        },
+        "en": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9_]{0,12}$/)"
+        },
+        "de": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9_]{0,12}$/)"
+        },
+        "ct": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9_]{0,12}$/)"
+        },
+        "s": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "wn": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "c": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "jc": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "tu": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "sk": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "cc": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "q": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "js": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "ph": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000000000"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
     "usernames": {
       "$n": {
         ".read": true,
