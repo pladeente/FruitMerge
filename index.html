@@ -709,7 +709,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
       if(B.reaper&&m.l>=(B.reaper>1?5:3)){dl++;floatTxt('+1 drop',m.x,m.y-92,'#3b2346',16);}
       if(m.l>=4&&ro.has('horn')){dl++;floatTxt('+1 drop',m.x,m.y-108,'#a96f16',16);ro.fx(['horn']);}
       ro.ev('merge',{l:m.l,p,m:mm,combo,bull:m.bull,trick:!!m.trick,gold:m.gold});
-      const ev=ro.made(m.l);if(ev.length){ro.fx(ev);const cn=ev.filter(e=>e==='gold'||e==='scratch'||e==='mint').length;if(cn)floatTxt('+'+cn+' coin',m.x,m.y-28,'#e09600',16);if(ev.includes('fever'))floatTxt('Fever +1',m.x,m.y-44,'#38862a',16);if(ev.includes('mania'))floatTxt('Mania +1.5',m.x,m.y-44,'#38862a',16);if(ev.includes('oak'))floatTxt('Oak ×0.08',m.x,m.y-60,'#6e4420',15);}}
+      const ev=ro.made(m.l);if(ev.length){ro.fx(ev);const cn=ev.filter(e=>e==='gold'||e==='scratch'||e==='mint').length;if(cn)floatTxt('+'+cn+' coin',m.x,m.y-28,'#e09600',16);if(ev.includes('fever'))floatTxt('Fever +1.5',m.x,m.y-44,'#38862a',16);if(ev.includes('mania'))floatTxt('Mania +2',m.x,m.y-44,'#38862a',16);if(ev.includes('oak'))floatTxt('Oak ×0.06',m.x,m.y-60,'#6e4420',15);}}
      else{score+=tri(m.l);earn(Math.ceil(m.l/2));dmg(tri(m.l),m.x,m.y,m.l>=7?2:m.l>=4?1:0);}
      if(m.l===10){melon=true;earn(10);dkT=Math.max(dkT,1.5);if(ro){const nm=fr.reduce((a,f)=>a+(f.l===10&&!f.dead?1:0),0);if(nm>1)ro.ev('melons',{n:nm});}floatTxt('WATERMELON!',W/2,line+40,'#38b000',30);}burst(m.x,m.y,FRUIT[m.l][0]);}merge.length=0;
     if(combo>=2)floatTxt('combo x'+(combo+1),W/2,line+18,'#8e44ec',16);snd(melon?'melon':'merge',top,combo);}}
