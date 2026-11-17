@@ -12,7 +12,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
 /* Charms. r = rarity, c = price, d = description. Scoring hooks get a context c:
    l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar, sm = merges this jar that made a size 4 fruit or smaller,
    first = the first time this size is made this jar, wall = a merging fruit touched a wall, low = the merge was in the bottom third of the jar, trick = a thrown fruit hit a wall and then merged before touching anything else, pu = different tools used this jar, tu = tool uses this jar, gold = gold fruit in the jar, rk = rocks in the jar, sdl = seed levels held, full = every charm slot is filled, high = pile at the gold line, coins, luck, nc = charms owned, ch = this charm's saved state.
-   v1.40: gm = gold fruit merged this jar (the one in this merge included), bf = a fruit was destroyed since the last merge scored, ov = the pile is over the line, mis = {n}: chance charms that missed this jar (Lucky Clover, Snake Eyes and Four-Leaf Clover add 1 on a miss), ms0 = mis.n before this merge (so charm order never matters),
+   v1.40: gm = gold fruit merged this jar (the one in this merge included), bf = one of the 3 merges after a fruit was destroyed (Bonfire), ov = the pile is over the line, mis = {n}: chance charms that missed this jar (Lucky Clover, Snake Eyes and Four-Leaf Clover add 1 on a miss), ms0 = mis.n before this merge (so charm order never matters),
    sdn = fruit sizes with a seed, spt = coins spent in the last shop (R.sp), tf = every tool held is fully charged (and at least one is held).
    chip adds points, add adds Mult, x multiplies Mult. Charms with no hook are handled in makeGame or RG.
    dev = a prototype: only in the dev panel, never in the shop, crates or Almanac. req = only offered while the run holds that charm.
@@ -110,7 +110,7 @@ const CH={
  linger:{n:'Lingering',r:1,c:6,d:'Timed tools last 2 more drops. Tools you switch on use charge every other drop.'},
  /* v1.40: ×Mult for builds that had none of their own (combo, destruction, economy, seeds, gold, tools, chance, the full jar). Context fields in the comment above CH. Family Tree is in RG.score */
  cresc:{n:'Crescendo',r:1,c:7,d:'The 3rd merge of a combo and every merge after it score ×2.',x:c=>c.combo>=2?2:1},
- bonfire:{n:'Bonfire',r:1,c:6,d:'After a fruit is destroyed, your next merge scores ×2.',x:c=>c.bf&&c.l>=0?2:1},
+ bonfire:{n:'Bonfire',r:1,c:6,d:'After a fruit is destroyed, your next 3 merges score ×2.',x:c=>c.bf&&c.l>=0?2:1},
  spender:{n:'Big Spender',r:1,c:7,d:'×0.1 Mult more for every 3 coins you spent in the last shop (up to ×2).',x:c=>Math.min(2,1+.1*Math.floor((c.spt||0)/3))},
  poly:{n:'Polyculture',r:1,c:7,d:'×0.1 Mult more for every fruit size you hold a seed for.',x:c=>1+.1*(c.sdn||0)},
  hall:{n:'Hallmark',r:1,c:6,d:'×0.5 Mult more for every gold fruit merged this jar (up to ×3).',x:c=>Math.min(3,1+.5*(c.gm||0))},
