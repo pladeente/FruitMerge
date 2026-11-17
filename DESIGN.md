@@ -513,9 +513,9 @@ The open point from the v1.39 run: growers that pay every jar won most runs when
 - Snowball at ×0.04 sits near the top of the rare band, on purpose: held from jar 1 overstates a grower a real run finds later.
 - Keepsake stays above 40%. Even at exactly its halves in one slot it measures 44%, because Pip Collector and Vintage together are that strong (48% in two slots). Cutting it below its halves would make fusing a trap, so it keeps "both halves plus a bit" and the freed slot.
 
-## Legendaries (built, v1.29)
+## Legendaries (built, v1.29, reworked v1.41: see Legendaries rework below)
 
-Five charms above rare, never sold. They are what makes the shop's Charm Crate worth its price, and a reason to look forward to a melon crate.
+Five charms above rare, never sold (nine since v1.41). The table is the v1.29 version. They are what makes the shop's Charm Crate worth its price, and a reason to look forward to a melon crate.
 
 | Charm | What it does | The rule it breaks |
 |---|---|---|
@@ -531,6 +531,27 @@ Five charms above rare, never sold. They are what makes the shop's Charm Crate w
 - White Flag also cancels Ripeness 8's "bosses start in phase 2". The second boss rule on the final boss still applies.
 - Not measured with the bot. They are rare enough not to move the average run, but a run that finds one early is plainly stronger.
 - Ideas not built: a Legendary tool, crate-only items for the Tool Crate and Seed Crate, a sixth one for the Tools build (a tool keeps half its charge when used).
+
+### Legendaries rework (v1.41, 18 Nov)
+
+The user found them weak for their rarity. Bot, Classic Jar, Ripeness 1, tools on, the Legendary held from jar 1, 300 runs each. No charm: 20.3% (400 runs). Before the rework: Phoenix 9.7%, Cornucopia 25.7%, Heirloom 67.0%, Stowaway 38.3%, White Flag 20.0%. On Ripeness 4 (no charm 2.0%): Heirloom 53.0%, Stowaway 12.3%, White Flag 2.3%. Target for a Legendary, "about two rares": 45 to 60%. Every suggestion was built first, then the numbers were cut to the target.
+
+| Legendary | Shipped | Wins | What was cut, and why |
+|---|---|---|---|
+| Phoenix | No slot. On a save the cleared fruit score ×2 and it gains ×0.5 | 24.0% | **Not measured**: the bot almost never overflows. Left as built |
+| Cornucopia | ×1.5, an Orange (5) or bigger gives 1 drop back | 52.3%, again 48.0% | With growth per drop left (×0.05, ×0.02 or ×0.01) and drops from a Lemon or 2 from a Pineapple: 80 to 88%. Drops left snowball the growth. Both cut |
+| Heirloom | ×1.25, ×0.1 per jar | 59.7% | ×0.2 measured 66% under the old Auditor and 75.7% after its fix |
+| Stowaway | No slot, ×1.75, +1 Orchard slot, the rightmost other charm scores twice | 60.0%, after the Auditor fix 63.0% | ×2: 62.3 to 63.7% |
+| White Flag | No phase 2, no curses, boss targets −10%, ×0.08 per boss beaten | 52.3% | All four at −25% and ×0.25: 92.3%. −25% with ×0.1: 74%. −10% with ×0.1: 60.7% |
+| Golden Rain (new, active) | 10 charge: every fruit gold, at ×3 and 4 coins | 50.7% | 16 charge with plain gold: 27%. 10 or 8 charge: 37 to 38%, so the gold was raised, not the charge |
+| Supernova (new, active) | 8 charge: every pair merges at once, those merges ×10 | 54.0% | Plain: 9.3%. ×3: 18%. ×6: 33%. A drop back per merge did nothing (18.7%) |
+| Limelight (new, active) | 10 charge: next 8 merges ×4 | 58.7% | 15 charge for 5 merges: 28% |
+| Passerby (new, active) | 6 charge: the cat carries the next 6 drops to a match, free | 49.3% | 12 charge for 3: 18.7%. 8 for 5: 36%. 8 for 5 with ×2 merges: 58.3%, not taken (more text) |
+
+- The bot uses an active Legendary the moment it is charged. A player who saves Supernova for a full jar or Limelight for big fruit gets more.
+- The Auditor fix (v1.41) moved every grower up: under the hard ×6 cap it ended many runs that held a growing ×Mult. Heirloom went from 66% to 75.7% with nothing else changed.
+- White Flag's second boss rule on a Ripeness 8 final boss still applies. Ripeness 8 was not measured.
+- Charm Crates hold a Legendary 4 times in 100 per charm (was 2). Legendaries sell for their full 15.
 
 ## Contracts and skip rewards (built, v1.28)
 
