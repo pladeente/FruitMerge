@@ -450,7 +450,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   let cat=null,catT=wild?45:1e9,meals=0,coins=0,whirl=0,wdir=1,rumble=0,settle=0,rt=0,grace=0,combo=0,lastM=-9;
  const merge=[];
  /* rogue: J = the jar being played, B = its boss flags, js = score this jar, dl/jd = drops left/made, jm = merges this jar */
- let J=null,B={},js=0,dl=0,jd=0,jm=0,jsm=0,seq=0,EN='',blF='',blC=0,fq=[],pT=-1,jfm={},jwb=0,wtv=0,curHv=0,tiltS=0,tiltE=0,dropK=0,done=0,doneT=0,exF=0,shF=0,olF=0,rbF=0,rkF=0,flyF=0,lad=null,lastD=0,ptop=bot,ban=null,pu={},catB=0,enc=0;
+ let J=null,B={},js=0,dl=0,jd=0,jm=0,jsm=0,seq=0,EN='',blF='',blC=0,fq=[],pT=-1,jfm={},jwb=0,wtv=0,curHv=0,tiltS=0,tiltE=0,dropK=0,done=0,doneT=0,exF=0,shF=0,olF=0,rbF=0,rkF=0,flyF=0,lad=null,lastD=0,ptop=bot,ban=null,pu={},gv={},catB=0,enc=0;
  /* rogue tools: arm = targeted tool waiting for a tap, free = drops that cost nothing, dd = Double Down is live, tu = tool uses this jar, lastF = last drop (for Rewind), stash = the Next fruit Rewind pushed back */
  let arm=null,free=0,dd=0,tu=0,lastF=null,stash=null,flash=0,cyc=0,phx=0; /* phx = Phoenix has saved this jar */ /* cyc = seconds of Cyclone's ×2 left */
  /* bosses: ph = phase (2 from half the target), vz = how far The Vise has closed, ck = The Clock's timer, gotC = The Collector's fruit was made */
@@ -511,9 +511,9 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    else if(id==='sieve'){let n=0;for(const o of fr)if(o.l===0&&o.sp!=='stone'&&!o.dead){o.dead=1;n++;burst(o.x,o.y,FRUIT[0][0],6);}if(!n)return false;fr=fr.filter(o=>!o.dead);died(n);}
   else if(id==='cash'){ro.coins+=2;s='coin';}
   else return false;snd(s);}
- function spent(t,keep){const id=t.id;if(!keep)t.c=0;pu[id]=1;tu++;lastD=time+1;flash=.3;floatTxt(TL[id].n+(TL[id].tog?' on!':'!'),W/2,line+70,'#1f9c90',26);ro.ev('tool',{id});if(ro.has('show'))ro.fx(['show']);if(ro.has('drive'))ro.fx(['drive']);if(id==='sleight')chg(2,t);
+ function spent(t,keep){const id=t.id;if(!keep)t.c=0;pu[id]=1;tu++;lastD=time+1;flash=.3;floatTxt(TL[id].n+(TL[id].tog?' on!':'!'),W/2,line+70,'#1f9c90',26);ro.ev('tool',{id});if(ro.has('show'))ro.fx(['show']);if(ro.has('drive'))ro.fx(['drive']);const g1=!gv[id];gv[id]=1;if(id==='sleight'&&g1)chg(2,t); /* gv: a tool hands charge to the others (Sleight of Hand, Juggler) once per drop, or two tools could recharge each other for ever */
   const en=ro.has('headline')?'headline':ro.has('encore')?'encore':'';if(en){enc=1;ro.fx([en]);floatTxt('Encore!',W/2,line+30,'#8e44ec',20);}
-  if(ro.has('juggle')){chg(1,t);ro.fx(['juggle']);}
+  if(ro.has('juggle')&&g1){chg(1,t);ro.fx(['juggle']);}
   if(ro.has('crowd')){const r=sc(25,rc(-1));gain(r.p);pop(r.p,W/2,line+100);ro.fx(['crowd']);}}
  /* phase 2: every rule flag goes to 2, plus the one-off hits */
  function phase2(){ph=2;for(const k in B)B[k]=2;if(J.de&&!ro.up('hardy'))ro.oc(J.de); /* the Orchard curse */if(B.lock)for(const t of ro.tools){t.c=0;t.on=0;t.n=0;}if(B.hour)dl=Math.max(1,dl-2);if(B.mirror)B.fog=B.fog||1;if(B.thief)ro.off(2);
@@ -602,7 +602,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    if(ro.has('lady')&&(ladT-=dt)<=0){ladT=.5;if(!fr.some(f=>f.lb&&!f.dead)){const c=fr.filter(f=>!f.dead&&f.sp!=='stone'&&f.l<10&&f.age>1.5);if(c.length){const f=c[rint(c.length)];f.lb=1;burst(f.x,f.y-rad(f.l),'#e63946',8);snd('lady');}}}}
   /* countdowns. spIn: drops until a fruit with special sp is dropped (0 = the one held now), from the seq pattern genSp uses. dIn: drops until an every-n-drops event */
   const spIn=(m,r,sp)=>{if(curSp===sp)return 0;if(nxtSp===sp)return 1;for(let k=1;k<=m;k++)if((seq+k)%m===r)return k+1;return 0;},dIn=n=>n-(jd%n);
-  function cnt(){const o={};if(!ro||!J||done)return o;if(ro.has('crit'))o.crit=7-(jm%7);
+  function cnt(){const o={};if(!ro||!J||done)return o;if(ro.has('crit'))o.crit=5-(jm%5);
    for(const[id,m,r,sp]of[['sharp',4,2,'magnet'],['lode',5,2,'magnet'],['volcano',5,3,'bomb'],['boom',6,4,'bomb']])if(ro.has(id))o[id]=spIn(m,r,sp);
    const ck=ro.has('frenzy')?'frenzy':ro.has('pet')?'pet':0,bk=beeK(),mk=ro.has('zoo')?'zoo':ro.has('mole')?'mole':0;
    if(ck)o[ck]=dIn(ck==='frenzy'?4:5);if(bk)o[bk]=dIn(bk==='bfly'?3:4);if(mk)o[mk]=dIn(mk==='zoo'?5:6);if(ro.has('hog')&&jd-hogD<3)o.hog=3-(jd-hogD);if(ro.has('zen'))o.zen=spIn(6,0,'stone');else if(ro.has('rgard'))o.rgard=spIn(8,0,'stone');if(ro.has('hive'))o.hive=dIn(6);if(ro.has('ghour'))o.ghour=Math.max(0,dl-4);return o;}
@@ -629,7 +629,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  const api={
  get score(){return score},get jarScore(){return Math.floor(js)},get phase(){return ph},get coins(){return ro?ro.coins:coins},get cd(){return cd},get locked(){return !!(J&&B.lock)},get arm(){return arm},price:p=>PRICE[p],
  jar(j){ph=1;vz=0;ck=0;gotC=0;seen={};bl=0;phx=0;lsc=null;bee=mole=hog=null;hogT=0;jml=0;hogD=-99;beeQ=moleQ=catQ=0;dk=1;dkT=3.4;dkN=3+rint(3);L=L0;Rw=R0;cyc=0;arm=null;free=0;dd=0;tu=0;lastF=null;stash=null;for(const f of fr){if(f.anch){f.anch=0;f.stuck=0;}f.hv=0;}if(ro.has('spark'))ro.fill();
-  J=j;B={};for(const k of j.rules||[])B[k]=1;ro.off(B.thief?1:0);js=0;dl=j.drops;jd=0;jm=0;jsm=0;seq=0;done=0;doneT=0;pu={};enc=0;over=false;overT=0;grace=2.5;cool=.4;lastD=time;combo=0;exF=shF=olF=rbF=rkF=flyF=0;lad=null;catT=1e9;for(const k in cd)cd[k]=0;
+  J=j;B={};for(const k of j.rules||[])B[k]=1;ro.off(B.thief?1:0);js=0;dl=j.drops;jd=0;jm=0;jsm=0;seq=0;done=0;doneT=0;pu={};gv={};enc=0;over=false;overT=0;grace=2.5;cool=.4;lastD=time;combo=0;exF=shF=olF=rbF=rkF=flyF=0;lad=null;catT=1e9;for(const k in cd)cd[k]=0;
    {const pf=fr.filter(f=>f.pet&&!f.dead);if(pf.length){for(const f of pf)burst(f.x,f.y,'#8f8a99',12);fr=fr.filter(f=>!f.pet);died(pf.length);snd('crack');}} /* Petrify: the stone crumbles */
   bossTick(0);EN=j.en||'';blF=j.fam===''||j.fam==null?-1:j.fam;blC=0;ro.oc(0);fq=[];pT=-1;jfm={};jwb=0;wtv=0;curHv=0;tiltE=0;dropK=0;for(const t of ro.tools){t.on=0;t.n=0;}[cur,curSp]=gen();deal();if(B.melon)add({x:W/2,y:rad(10)+2,vx:0,vy:0,l:10,age:0,a:0,safe:1}); /* safe: on a full jar it used to land over the line and end the run with no move to make */ban={t:3.2,a:j.name,b:j.rule,ic:j.ic};if(j.p2s){phase2();ban={t:4.2,a:j.name,b:j.rule+' '+j.rule2,ic:j.ic};}},
  wipe(){fr=[];cat=null;bee=mole=hog=null;hogT=0;parts=[];line=line0;L=L0;Rw=R0;vz=0;B={};J=null;},
@@ -647,7 +647,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   if(arm){if(x==null||y==null)return;const f=pick(x,y),t=ro.tools.find(t=>t.id===arm);if(!t){arm=null;return;}
    if(arm==='lead'&&!f&&!curHv){const r=rad(cur),hx=clampN(cx,L+r,Rw-r),hy=line-r-6;if(Math.hypot(mx(x)-hx,y-hy)<r+14*K){curHv=1;arm=null;spent(t);burst(hx,hy,'#8f8a99',14);snd('land',10);return;}} /* Lead Weight on the fruit you hold: it drops heavy */if(!f||!okTg(arm,f)){floatTxt(f?'Not that one':'Tap a fruit',W/2,line+48,'#1f9c90',18);snd('nope');return;}tool(arm,f);arm=null;spent(t);return;}
   if(cool>0||(ro&&dl<=0&&free<=0))return;if(x!=null)cx=mx(x);ck=0;const r=rad(cur),o={x:clampN(cx,L+r,Rw-r),y:line-r-6,vx:0,vy:60*K,l:cur,age:0,sp:curSp};if(ro&&y!=null&&y>line+r&&ton('reach'))o.y=Math.min(y,bot-r); /* Long Arm: drop from where you tap */
-   if(curHv){o.hv=1;curHv=0;}if(ro&&ro.has('rubber')&&(jd+1)%5===0&&o.sp!=='stone')o.bn=4; /* Rubber Tree: bouncy, 4 bounces */add(o);drops++;
+   if(curHv){o.hv=1;curHv=0;}if(ro&&ro.has('rubber')&&(jd+1)%5===0&&o.sp!=='stone')o.bn=4; /* Rubber Tree: bouncy, 4 bounces */add(o);drops++;gv={};
    if(ro&&tmd('tdrop')){const x2=clampN(o.x+(o.x<W/2?1:-1)*r*2.05,L+r,Rw-r);add({x:x2,y:o.y,vx:0,vy:60*K,l:cur,age:0});} /* Twin Drop: a free second one */
    if(ro&&vx&&ton('sling')&&Math.abs(vx)>300*K){o.vx=clampN((B.mirror?-vx:vx)*.35,-450*K,450*K);o.thr=1;}
    if(ro&&o.sp!=='stone'){const gk=jd<2&&ro.has('phil')?'phil':dl<=4&&ro.has('ghour')?'ghour':jd===0&&ro.has('leaf')?'leaf':ro.has('hunter')&&Math.random()<ro.luck()/6?'hunter':ro.has('prosp')&&Math.random()<ro.luck()/10?'prosp':'';if(gk){o.gold=1;ro.fx([gk]);burst(o.x,o.y,'#ffd43b',12);floatTxt('Gold!',o.x,o.y-r-8,'#e09600',16);snd('coin');}
@@ -709,7 +709,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
       if(B.reaper&&m.l>=(B.reaper>1?5:3)){dl++;floatTxt('+1 drop',m.x,m.y-92,'#3b2346',16);}
       if(m.l>=4&&ro.has('horn')){dl++;floatTxt('+1 drop',m.x,m.y-108,'#a96f16',16);ro.fx(['horn']);}
       ro.ev('merge',{l:m.l,p,m:mm,combo,bull:m.bull,trick:!!m.trick,gold:m.gold});
-      const ev=ro.made(m.l);if(ev.length){ro.fx(ev);const cn=ev.filter(e=>e==='gold'||e==='scratch'||e==='mint').length;if(cn)floatTxt('+'+cn+' coin',m.x,m.y-28,'#e09600',16);if(ev.includes('fever'))floatTxt('Fever +1.5',m.x,m.y-44,'#38862a',16);if(ev.includes('mania'))floatTxt('Mania +2',m.x,m.y-44,'#38862a',16);if(ev.includes('oak'))floatTxt('Oak ×0.04',m.x,m.y-60,'#6e4420',15);}}
+      const ev=ro.made(m.l);if(ev.length){ro.fx(ev);const cn=ev.filter(e=>e==='gold'||e==='scratch'||e==='mint').length;if(cn)floatTxt('+'+cn+' coin',m.x,m.y-28,'#e09600',16);if(ev.includes('fever'))floatTxt('Fever +1',m.x,m.y-44,'#38862a',16);if(ev.includes('mania'))floatTxt('Mania +1.5',m.x,m.y-44,'#38862a',16);if(ev.includes('oak'))floatTxt('Oak ×0.08',m.x,m.y-60,'#6e4420',15);}}
      else{score+=tri(m.l);earn(Math.ceil(m.l/2));dmg(tri(m.l),m.x,m.y,m.l>=7?2:m.l>=4?1:0);}
      if(m.l===10){melon=true;earn(10);dkT=Math.max(dkT,1.5);if(ro){const nm=fr.reduce((a,f)=>a+(f.l===10&&!f.dead?1:0),0);if(nm>1)ro.ev('melons',{n:nm});}floatTxt('WATERMELON!',W/2,line+40,'#38b000',30);}burst(m.x,m.y,FRUIT[m.l][0]);}merge.length=0;
     if(combo>=2)floatTxt('combo x'+(combo+1),W/2,line+18,'#8e44ec',16);snd(melon?'melon':'merge',top,combo);}}
