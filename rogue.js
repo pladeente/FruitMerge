@@ -241,7 +241,7 @@ const UPG={
  seedbag:{n:'Seed Bag',c:4,max:1,d:'The shop offers 1 more seed.'},
  cata:{n:'Catalogue',c:5,max:1,d:'The shop offers 1 more upgrade.'},
  dice:{n:'Loaded Dice',c:5,max:1,d:'The first reroll in every shop is free.'},
- taste:{n:'Good Taste',c:6,max:2,r:1,d:'Rarer charms turn up in the shop more often. Common, Uncommon and Rare odds go from 70/26/4 to 62.5/30.5/7 (55/35/10 with two).'},
+ taste:{n:'Good Taste',c:6,max:2,r:1,d:'Rarer charms turn up in the shop more often. Common, Uncommon and Rare odds go from 70/27.6/2.4 to 62.5/33.3/4.2 (55/39/6 with two).'},
  haggle:{n:'Haggler',c:4,max:1,d:'Charms and tools sell for their full price.'},
  vault:{n:'Vault',c:5,max:2,d:'Interest can pay 2 more coins per jar.'},
  lunch:{n:'Packed Lunch',c:5,max:3,d:'+1 coin every time you clear a jar.'},
@@ -307,7 +307,7 @@ const TL={
 /* Crates: pick one thing out of a few, for free. r = charm rarity odds, sd = seed levels in one pick, coin = the coin pick, out = coins for leaving it.
    Bosses drop gold (melon every 4th depth), skipping a jar gives wood, the shop sells wood crates of one kind (CRP = price). */
 const CRT={wood:{n:'Wooden crate',r:[.7,.26,.04],sd:1,coin:5,out:2},gold:{n:'Gold crate',r:[.45,.45,.1],sd:2,coin:9,out:3},melon:{n:'Melon crate',r:[0,.65,.3],lg:.05,sd:3,coin:14,out:4}};
-const NSL=['stow','phoenix'],CRL=.04,CRO=.2; /* a bought Charm Crate: the chance that a charm inside is a Legendary. lg on a tier is the same chance for that tier's crates. At most one Legendary in a crate */
+const NSL=['stow','phoenix'],CRL=.04,CRO=.2,SHN=5; /* SHN: charms on the shop shelf (v1.43, was 3). The rare chance per slot went from 4% to 2.4% (+1.8% per Good Taste) so rares per run stay the same */ /* a bought Charm Crate: the chance that a charm inside is a Legendary. lg on a tier is the same chance for that tier's crates. At most one Legendary in a crate */
 const CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
 /* Contracts: an optional handicap on a normal jar (never a boss or mini boss jar), offered from depth 2. Sign it and the jar is harder, clear the jar and it pays.
    One is drawn for every such jar: R.ct = {id, on (signed), sd (the seed tier it pays, for a seed contract)}.
@@ -452,7 +452,7 @@ const RG={
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
  advance(R,sum){R.coins+=sum;const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
- stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
+ stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:SHN+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.976-.018*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
   const take=RG.pick,sizes=RG.sizes(R);
   const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
  /* steering to fusions (v1.35): while the run holds one half of a fusion, the missing half weighs 2 in the shop and in crates, +1 for every shop that has not shown it (R.fw), back to 2 once it shows. Rarity is rolled first, so it only wins within its rarity */
