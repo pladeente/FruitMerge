@@ -311,6 +311,9 @@ const NSL=['stow','phoenix'],CRL=.04,CRO=.2,SHN=5; /* SHN: charms on the shop sh
 /* Editions (v1.43, the user's idea after Balatro's foil and holographic): any charm, Orchard item or tool can come Candied or Juiced, rolled on shop and crate offers.
    The bonus counts on every merge while the item is held and working. p = points, m = Mult, $ = added to the price (and so to the sell value), w = chance per offer */
 const ED={c:{n:'Candied',p:15,$:2,w:.04,d:'+15 points on every merge'},j:{n:'Juiced',m:1.5,$:3,w:.02,d:'+1.5 Mult'}},edR=()=>{const r=Math.random();return r<ED.j.w?'j':r<ED.j.w+ED.c.w?'c':'';},ed$=e=>e&&ED[e]?ED[e].$:0,edB=(a,b)=>a==='j'||b==='j'?'j':a||b||''; /* edB: a fusion keeps the better edition of its halves */
+/* Pet levels (v1.43, Vampire Survivors): a pet item gains 1 XP per jar cleared while held and 1 per 5 actions (meals, pollinations, ladybird hops).
+   PK = the items that carry each pet (fusions keep the level), PLX = XP needed for Lv1 to Lv5. XP lives in the charm as x (a = actions towards the next XP), selling loses it */
+const PK={cat:['pet','frenzy'],bee:['bee','bfly','nectar'],mole:['mole','zoo'],hog:['hog'],lady:['lady']},PLX=[0,2,5,9,14],PLK=Object.fromEntries(Object.entries(PK).flatMap(([k,a])=>a.map(id=>[id,k])));
 const SDF=['svault','green','bloom'],CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
 /* Contracts: an optional handicap on a normal jar (never a boss or mini boss jar), offered from depth 2. Sign it and the jar is harder, clear the jar and it pays.
    One is drawn for every such jar: R.ct = {id, on (signed), sd (the seed tier it pays, for a seed contract)}.
@@ -424,6 +427,7 @@ const RG={
  score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
+  for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
   const eds=[...R.ch.slice(R.off||0),...R.or.filter(o=>RG.has(R,o.id)),...R.tl];for(const o of eds)if(o.e&&ED[o.e]){const E=ED[o.e];if(E.p&&c.l>=0)chips+=E.p;if(E.m)a+=E.m;} /* editions: Candied points, Juiced Mult */
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* Family Tree: the other tier of the same family (FAM), or -1 (Pineapple has none). The Peach's is the Cherry, which never has a seed */
@@ -470,11 +474,15 @@ const RG={
  sizes(R){const a=[];for(let l=1;l<=(R.depth<4?7:10);l++)a.push(l);return a;},
  /* ---- fusions ---- */
  /* every fusion the run holds both halves of: [{id, k (ch or tl), a, b}] */
+ pob:(R,k)=>R.ch.find(c=>PK[k].includes(c.id)), /* the held item that carries pet k */
+ plv:o=>o?PLX.filter(t=>(o.x||0)>=t).length:1, /* its level */
+ pl:(R,k)=>RG.plv(RG.pob(R,k)),
+ pxp(R,o,n){if(!o||!PLK[o.id])return;const a=RG.plv(o);o.x=(o.x||0)+n*(RG.has(R,'collar')?2:1);const b=RG.plv(o);if(b>a)(R.lvq=R.lvq||[]).push({id:o.id,lv:b});}, /* add XP, queue a level-up for the engine to show */
  fuK(f){const k=[f.k==='tl'?'tl':'ch'];if(SDF.includes(f.id))k.push('sd');return k;}, /* the shop crates that offer this fusion (v1.43): Charm Crate a charm fusion, Tool Crate a tool fusion, Seed Crate one with a seed half */
  fusable(R){const o=[],hasT=id=>R.tl.some(t=>t.id===id);for(const id in CH){const f=CH[id].fu;if(f&&!PF.lk('fu.'+id)&&RG.has(R,f[0])&&RG.has(R,f[1]))o.push({id,k:'ch',a:CH[f[0]].n,b:CH[f[1]].n});}
   for(const id in TL){const f=TL[id].fu;if(f&&!PF.lk('fu.'+id)&&hasT(f[0])&&RG.has(R,f[1]))o.push({id,k:'tl',a:TL[f[0]].n,b:CH[f[1]].n});}return o;},
  /* make it: both halves go, the fusion takes the first half's place. A charm fusion keeps what its halves had grown */
- fuse(R,id){const c=CH[id],t=TL[id];if(c&&c.fu){const row=c.o?R.or:R.ch,at=x=>R.ch.includes(x)?R.ch:R.or,a=RG.has(R,c.fu[0]),b=RG.has(R,c.fu[1]);if(!a||!b)return false;const[k,o]=at(a)===row?[a,b]:[b,a];if(at(k)!==row)return false;const v=(a.v||0)+(b.v||0),e=edB(a.e,b.e),n={id};if(v)n.v=v;if(e)n.e=e;row[row.indexOf(k)]=n;const L=at(o);L.splice(L.indexOf(o),1);return true;} /* an Orchard half and a charm half make a charm in the charm's place; two Orchard halves make an Orchard item */
+ fuse(R,id){const c=CH[id],t=TL[id];if(c&&c.fu){const row=c.o?R.or:R.ch,at=x=>R.ch.includes(x)?R.ch:R.or,a=RG.has(R,c.fu[0]),b=RG.has(R,c.fu[1]);if(!a||!b)return false;const[k,o]=at(a)===row?[a,b]:[b,a];if(at(k)!==row)return false;const v=(a.v||0)+(b.v||0),e=edB(a.e,b.e),n={id},px=Math.max(a.x||0,b.x||0);if(v)n.v=v;if(e)n.e=e;if(px&&PLK[id])n.x=px;row[row.indexOf(k)]=n;const L=at(o);L.splice(L.indexOf(o),1);return true;} /* an Orchard half and a charm half make a charm in the charm's place; two Orchard halves make an Orchard item */
   if(t&&t.fu){const i=R.tl.findIndex(x=>x.id===t.fu[0]),j=R.ch.findIndex(x=>x.id===t.fu[1]);if(i<0||j<0)return false;const e=edB(R.tl[i].e,R.ch[j].e);R.tl[i]=RG.tool(id,R);if(e)R.tl[i].e=e;R.ch.splice(j,1);return true;}return false;},
  /* ---- crates ---- */
  /* opts: {k:'ch'|'tl'|'sd'|'coin'|'fu', id, n}. kind = a shop crate of one kind. then = the screen that follows (shop or hub) */
@@ -514,7 +522,7 @@ const RG={
  sellOr(R,i){const c=R.or[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.or.splice(i,1);return true;},
  sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.ch.splice(i,1);return true;},
  reroll(R){const fr=R.tg.roll>0&&RG.rrBase(R)>0,p=fr?0:RG.rrBase(R);if(R.coins<p)return false;RG.pay(R,p);const s=RG.stock(R);s.rr=R.shop.rr+(fr?0:1);if(fr&&--R.tg.roll<=0)delete R.tg.roll;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
- ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
+ ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),pl:k=>RG.has(R,(RG.pob(R,k)||{}).id)?RG.pl(R,k):1,lvq:()=>R.lvq&&R.lvq.shift(),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
 /* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------
@@ -571,7 +579,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='net')inc('nets');
  else if(n==='gold')inc('golds');
  else if(n==='melons')inc('melons2');
- else if(n==='jar'){inc('jars');top('bestDepth',d.depth);top('bestJar',d.score);if(d.boss){inc('bosses');PF.inc('boss.'+d.boss+'.win');}if(d.win){PF.inc('wins');const j=R.jarId||'classic';PF.d.stakes[j]=Math.max(PF.d.stakes[j]||0,R.stake||1);PF.dirty=1;}}
+ else if(n==='jar'){inc('jars');for(const c of R.ch)if(PLK[c.id])RG.pxp(R,c,1);top('bestDepth',d.depth);top('bestJar',d.score);if(d.boss){inc('bosses');PF.inc('boss.'+d.boss+'.win');}if(d.win){PF.inc('wins');const j=R.jarId||'classic';PF.d.stakes[j]=Math.max(PF.d.stakes[j]||0,R.stake||1);PF.dirty=1;}}
  else if(n==='end'){PF.inc('end.'+d.why);if(d.why!=='win'&&d.why!=='quit'&&d.boss)PF.inc('boss.'+d.boss+'.loss');PF.max('bestScore',R.total);top('bestCoins',R.coins);}
  else if(n==='buy'){inc('buys');PF.inc((d.k||'ch')+'.'+d.id+'.buy');}
  else if(n==='sell'){inc('sells');if(R.jst&&(d.k||'ch')==='ch')R.jst['sold.'+d.id]=1;}
@@ -582,7 +590,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='up'){inc('ups');PF.inc('up.'+d.id+'.buy');}
  else if(n==='seed'){inc('seeds');PF.inc('sd.'+d.l+'.buy');}
  else if(n==='grow')inc('grown');
- else if(n==='pet'){inc('pets');inc('pet.'+d.k);}
+ else if(n==='pet'||n==='hop'){if(n==='pet'){inc('pets');inc('pet.'+d.k);}const o=RG.pob(R,n==='hop'?'lady':d.k==='cat'?'cat':d.k);if(o){o.a=(o.a||0)+1;if(o.a>=5){o.a=0;RG.pxp(R,o,1);}}} /* hop: the ladybird moved on, only for pet XP */
  else if(n==='roll')inc('rolls');
  else if(n==='skip'){inc('skips');R.dsk=(R.dsk||0)+1;}
  else if(n==='crate'){inc('crates');PF.inc('crate.'+d.tier);}
