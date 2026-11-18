@@ -423,7 +423,7 @@ const CRT={wood:{n:'Wooden crate',r:[.7,.26,.04],sd:1,coin:5,out:2},gold:{n:'Gol
 const NSL=['stow','phoenix'],CRL=.04,CRO=.2,SHN=5; /* SHN: charms on the shop shelf (v1.43, was 3). The rare chance per slot went from 4% to 2.4% (+1.8% per Good Taste) so rares per run stay the same */ /* a bought Charm Crate: the chance that a charm inside is a Legendary. lg on a tier is the same chance for that tier's crates. At most one Legendary in a crate */
 /* Editions (v1.43, the user's idea after Balatro's foil and holographic): any charm, Orchard item or tool can come Candied or Juiced, rolled on shop and crate offers.
    The bonus counts on every merge while the item is held and working. p = points, m = Mult, $ = added to the price (and so to the sell value), w = chance per offer */
-const ED={c:{n:'Candied',p:10,$:2,w:.02,d:'+10 points on every merge'},j:{n:'Juiced',m:1.5,$:3,w:.008,d:'+1.5 Mult'}},edR=()=>{const r=Math.random();return r<ED.j.w?'j':r<ED.j.w+ED.c.w?'c':'';},ed$=e=>e&&ED[e]?ED[e].$:0,edB=(a,b)=>a==='j'||b==='j'?'j':a||b||''; /* edB: a fusion keeps the better edition of its halves */
+const ED={c:{n:'Candied',p:10,$:2,w:.02,d:'+10 points on every merge'},j:{n:'Juiced',m:1.5,$:3,w:.008,d:'+1.5 Mult'},a:{n:'Ambrosia',x:1.5,$:5,w:.003,d:'×1.5 Mult'}},edR=()=>{const r=Math.random();return r<ED.a.w?'a':r<ED.a.w+ED.j.w?'j':r<ED.a.w+ED.j.w+ED.c.w?'c':'';},ed$=e=>e&&ED[e]?ED[e].$:0,EDO='cja',edB=(a,b)=>EDO.indexOf(a||'x')>EDO.indexOf(b||'x')?a:b||a||''; /* edB: a fusion keeps the better edition of its halves (EDO = worst to best) */
 /* Pet levels (v1.43, Vampire Survivors): a pet item gains 1 XP per jar cleared while held and 1 per 5 actions (meals, pollinations, ladybird hops).
    PK = the items that carry each pet (fusions keep the level), PLX = XP needed for Lv1 to Lv5. XP lives in the charm as x (a = actions towards the next XP), selling loses it */
 const PK={cat:['pet','frenzy'],bee:['bee','bfly','nectar'],mole:['mole','zoo'],hog:['hog'],lady:['lady']},PLX=[0,2,5,9,14],PLK=Object.fromEntries(Object.entries(PK).flatMap(([k,a])=>a.map(id=>[id,k])));
@@ -541,7 +541,7 @@ const RG={
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
   for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
-  const eds=[...R.ch.slice(R.off||0),...R.or.filter(o=>RG.has(R,o.id)),...R.tl];for(const o of eds)if(o.e&&ED[o.e]){const E=ED[o.e];if(E.p&&c.l>=0)chips+=E.p;if(E.m)a+=E.m;} /* editions: Candied points, Juiced Mult */
+  const eds=[...R.ch.slice(R.off||0),...R.or.filter(o=>RG.has(R,o.id)),...R.tl];for(const o of eds)if(o.e&&ED[o.e]){const E=ED[o.e];if(E.p&&c.l>=0)chips+=E.p;if(E.m)a+=E.m;if(E.x)x*=E.x;} /* editions: Candied points, Juiced +Mult, Ambrosia ×Mult */
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* Family Tree: the other tier of the same family (FAM), or -1 (Pineapple has none). The Peach's is the Cherry, which never has a seed */
  sib:l=>FAM.findIndex((f,i)=>i!==l&&f===FAM[l]),
