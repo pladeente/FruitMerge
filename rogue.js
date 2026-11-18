@@ -142,6 +142,28 @@ const CH={
  pdirt:{n:'Pay Dirt',r:0,c:4,d:'The first gold merge of each jar pays 3 more coins.'},
  gplate:{n:'Gold Plating',r:1,c:6,d:'Gold fruit never count as over the line.'},
  gstd:{n:'Gold Standard',r:1,c:7,d:'+0.1 Mult for every coin gold fruit have paid you this run (up to +5).',add:c=>Math.min(5,(c.gco||0)*.1)},
+ /* batch 4 (v1.46): seeds */
+ cbin:{n:'Compost Bin',r:0,c:4,d:'In the shop, seeds cost 1 coin less for every fruit destroyed (removed without merging) in the jar you just played, up to 3 less.'},
+ hmoon:{n:'Harvest Moon',r:1,c:6,d:'The first merge each jar that makes a size whose seed is level 3 or higher gets ×3 Mult.',x:c=>c.first&&(c.sdv||0)>=3?3:1},
+ sbank:{n:'Seed Bank',r:1,c:6,d:'Seed prices stop rising once a seed reaches level 3.'},
+ /* tools */
+ jstart:{n:'Jump Start',r:0,c:4,d:'The first merge of each jar gives every tool +2 charge.'},
+ tremor:{n:'Tremor',r:0,c:4,d:'Using Shake or Rumble gives your other tools +1 charge.'},
+ recyc:{n:'Recycler',r:1,c:6,d:'Every 4th tool use in a jar is free: the tool keeps its charge.'},
+ tsmith:{n:'Toolsmith',r:1,c:6,d:'Tools you aim at a fruit (Ripen, Twin, Midas, Anchor, Lead Weight, Shears, Petrify...) need 2 less charge, never less than 2.'},
+ /* position and rocks */
+ fshow:{n:'Floor Show',r:0,c:4,d:'Merges touching the floor score +15 points.',chip:c=>c.floor?15:0},
+ balc:{n:'Balcony',r:0,c:4,d:'Merges above the gold line near the top of the jar score +40 points.',chip:c=>c.hi?40:0},
+ ppol:{n:'Pebble Polish',r:0,c:4,d:'Every rock touching a merge adds +15 points to it.',chip:c=>(c.rkt||0)*15},
+ cstage:{n:'Centre Stage',r:1,c:6,d:'Merges in the middle third of the jar get ×2 Mult.',x:c=>c.mid?2:1},
+ geode:{n:'Geode',r:1,c:6,d:'A rock touched by 3 merges cracks open into a gold fruit of its size.'},
+ /* economy and chance */
+ tjar:{n:'Tip Jar',r:0,c:4,d:'Every 10th merge of a jar pays 1 coin.'},
+ lchange:{n:'Loose Change',r:0,c:4,d:'Selling a charm gives 2 more coins.'},
+ cint:{n:'Compound Interest',r:1,c:7,d:'+0.05 Mult for every coin of interest you have earned this run (up to +5).',add:c=>Math.min(5,(c.intc||0)*.05)},
+ dnoth:{n:'Double or Nothing',r:1,c:6,d:'Every merge has a 1 in 2 chance of ×2 Mult. Otherwise it gets ×0.75.',x:c=>c.l<0||c.nr?1:Math.random()<.5*c.luck?2:(miss(c),.75)},
+ /* throwing */
+ lob:{n:'Lob',r:0,c:4,req:'sling',d:'Thrown fruit fly higher, so they land about half a second later.'},
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance (g = growth). NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores twice its size\'s base points and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes an Orange (5) or bigger gives 1 drop back.',x:()=>1.5}, /* v1.41: growth per drop left and drops from a Lemon measured 80 to 88% with the bot, cut */
@@ -240,6 +262,13 @@ const CH={
  bigbang:{n:'Big Bang',r:3,c:12,fu:['bbomb','lslide'],d:'Boom fruit grow the fruit they hit one size instead of destroying them, at full points. Making or growing a size 8 fruit or bigger settles the pile and gives +2 Mult for the rest of the jar.',add:c=>(c.ls||0)*2},
  fknox:{n:'Fort Knox',r:3,c:12,fu:['gplate','gstd'],d:'Gold fruit never count as over the line. +0.15 Mult for every coin gold fruit have paid you this run (up to +7).',add:c=>Math.min(7,(c.gco||0)*.15)},
  gdig:{n:'Gold Digger',r:3,c:12,fu:['truffle','pdirt'],d:'Every fruit your Mole eats pays 2 coins and turns a fruit next to it gold. The first gold merge of each jar pays 3 more coins.'},
+ hfest:{n:'Harvest Festival',r:3,c:12,fu:['hmoon','sbank'],d:'The first merge each jar that makes each size whose seed is level 3 or higher gets ×3 Mult. Seed prices stop rising once a seed reaches level 2.',x:c=>c.first&&(c.sdv||0)>=3?3:1},
+ wshop:{n:'Workshop',r:3,c:12,fu:['recyc','tsmith'],d:'Every 3rd tool use in a jar is free. Tools you aim at a fruit need 2 less charge, never less than 2.'},
+ amph:{n:'Amphitheatre',r:3,c:12,fu:['cstage','fshow'],d:'Merges in the middle third of the jar get ×2.5 Mult. Merges touching the floor score +25 points.',x:c=>c.mid?2.5:1,chip:c=>c.floor?25:0},
+ ccave:{n:'Crystal Cave',r:3,c:12,fu:['geode','ppol'],d:'A rock touched by 2 merges cracks open into a gold fruit of its size. Every rock touching a merge adds +20 points to it.',chip:c=>(c.rkt||0)*20},
+ hfund:{n:'Hedge Fund',r:3,c:12,fu:['cint','tjar'],d:'+0.08 Mult for every coin of interest you have earned this run (up to +7). Every 8th merge of a jar pays 1 coin.',add:c=>Math.min(7,(c.intc||0)*.08)},
+ allin:{n:'All In',r:3,c:12,fu:['dnoth','lucky'],d:'Every merge has a 1 in 2 chance of ×2.5 Mult, with no downside.',x:c=>c.l<0||c.nr?1:Math.random()<.5*c.luck?2.5:miss(c)},
+ cpult:{n:'Catapult',r:3,c:12,fu:['lob','curve'],d:'Thrown fruit fly higher and curve towards the nearest fruit of their size.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
@@ -450,7 +479,7 @@ const RG={
  tsMax:R=>TSLOTS-(R.jarId==='wide'?1:0),
  ts:R=>Math.max(1,Math.min(RG.tsMax(R),TS0+R.up.belt+(R.jarId==='kit'?1:0)-(R.jarId==='wide'?1:0))),
  slots:R=>Math.max(2,SLOTS+R.up.pouch+(R.jarId==='wide'?1:0)-(R.jarId==='kit'?1:0)-(R.stake>=7?1:0))+R.ch.filter(c=>NSL.includes(c.id)).length, /* Stowaway and Phoenix take no slot: they brings its own */
- need:(R,id)=>Math.max(Math.min(2,TL[id].ch),TL[id].ch-R.up.whet),
+ need:(R,id)=>Math.max(Math.min(2,TL[id].ch),TL[id].ch-R.up.whet-(TL[id].tg&&(RG.has(R,'tsmith')||RG.has(R,'wshop'))?2:0)),
  /* req: an item that needs one of these charms (an id or a list) before it is offered */
  rq:(R,q)=>!q||[].concat(q).some(id=>RG.has(R,id)||R.tl.some(t=>t.id===id)), /* a charm or a tool (Slingshot) */
  /* Chrysalis / Butterfly Garden: the caterpillar ate. Returns the charm id when it turns into a butterfly */
@@ -487,7 +516,7 @@ const RG={
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.npt=R.ch.filter(o=>PLK[o.id]).length;c.nor=R.or.filter(o=>RG.has(R,o.id)).length;c.gco=R.st&&R.st.goldc||0;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.npt=R.ch.filter(o=>PLK[o.id]).length;c.nor=R.or.filter(o=>RG.has(R,o.id)).length;c.gco=R.st&&R.st.goldc||0;c.intc=R.st&&R.st.intc||0;if(c.l>=0)c.sdv=R.sd[c.l]||0;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
   for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
@@ -510,7 +539,7 @@ const RG={
  cost:(R,c)=>Math.max(1,c-(RG.has(R,'coupon')?1:0)+(R.stake>=5?1:0)),
  upCost:(R,id)=>RG.cost(R,UPG[id].c+(UPG[id].now?0:R.up[id]*2)),
  upOk:(R,k)=>PF.lk('up.'+k)?false:k==='scrub'||k==='clean'?R.jar!==0:k==='thick'&&(R.stake>=8||RG.has(R,'flag'))?false:k==='bribe'?!BOSS[RG.boss(R)].fin:k==='belt'?RG.ts(R)<RG.tsMax(R):!UPG[k].max||R.up[k]<UPG[k].max,
- sdCost:(R,l)=>RG.cost(R,SDC+R.sd[l]*SDS-(RG.has(R,'svault')?2:RG.has(R,'packet')?1:0)),
+ sdCost:(R,l)=>RG.cost(R,SDC+Math.min(R.sd[l],RG.has(R,'hfest')?2:RG.has(R,'sbank')?3:99)*SDS-(RG.has(R,'svault')?2:RG.has(R,'packet')?1:0)-(RG.has(R,'cbin')?Math.min(3,R.jst&&R.jst.kills||0):0)), /* Seed Bank and Harvest Festival stop the rise, Compost Bin reads the last jar's kills */
  intN:R=>R.up.ledger?3:5, /* coins held per coin of interest */
  crCost:R=>Math.max(1,RG.cost(R,CRP[R.shop.cr])-R.up.key*2), /* the price of the crate on the shop's shelf */
  p2at:R=>.5+R.up.thick*.1, /* the share of the target where a boss reaches phase 2 */
@@ -519,10 +548,10 @@ const RG={
  rrCost:R=>R.tg.roll?0:RG.rrBase(R), /* Free Rolls (a skip reward) covers the rerolls that would cost coins */
  /* draw the contract for the jar that is up next: none on depth 1, none on a boss or mini boss jar */
  offer(R){R.ct=null;if(R.depth<2||R.jar>1||(R.jar===1&&RG.mid(R)))return;const k=Object.keys(CT).filter(k=>!CT[k].r||BOSS[CT[k].r].min<=R.depth),id=k[rint(k.length)],c={id,on:0};if(CT[id].cu==='blight')c.f=rint(3);if(CT[id].pay[0]==='sd'){const a=RG.sizes(R);c.sd=a[rint(a.length)];}R.ct=c;},
- payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],ct=cfg.ct&&CT[cfg.ct],u=Math.min(3+R.up.ot*2,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/RG.intN(R)));
+ payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],ct=cfg.ct&&CT[cfg.ct],u=Math.min(3+R.up.ot*2,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/RG.intN(R)));R.lint=i; /* Compound Interest counts it in advance */
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
- advance(R,sum){R.coins+=sum;const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
+ advance(R,sum){R.coins+=sum;if(R.lint){R.st.intc=(R.st.intc||0)+R.lint;R.lint=0;}const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
  stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:SHN+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.976-.018*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
   const take=RG.pick,sizes=RG.sizes(R);
   const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0,ed:{}};for(const k of ['ch','or','tl'])(S[k]||[]).forEach((id,i)=>{const e=id&&edR();if(e)S.ed[k+i]=e;});if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
@@ -583,7 +612,7 @@ const RG={
  sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=RG.sellV(R,TL[t.id].c+ed$(t.e));R.tl.splice(i,1);return true;},
  buyOr(R,i){const id=R.shop.or&&R.shop.or[i],e=RG.se(R,'or',i),p=id&&RG.cost(R,CH[id].c+ed$(e));if(!id||R.coins<p||R.or.length>=RG.os(R)||RG.has(R,id))return false;RG.pay(R,p);R.or.push(e?{id,e}:{id});R.shop.or[i]=null;return true;},
  sellOr(R,i){const c=R.or[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.or.splice(i,1);return true;},
- sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.ch.splice(i,1);return true;},
+ sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r)+(RG.has(R,'lchange')?2:0);R.ch.splice(i,1);return true;},
  reroll(R){const fr=R.tg.roll>0&&RG.rrBase(R)>0,p=fr?0:RG.rrBase(R);if(R.coins<p)return false;RG.pay(R,p);const s=RG.stock(R);s.rr=R.shop.rr+(fr?0:1);if(fr&&--R.tg.roll<=0)delete R.tg.roll;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
  ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),pl:k=>RG.has(R,(RG.pob(R,k)||{}).id)?RG.pl(R,k):1,lvq:()=>R.lvq&&R.lvq.shift(),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
