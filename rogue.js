@@ -21,7 +21,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
 /* pet groups for req: CAT = brings the caterpillar, EAT = a pet that eats fruit, PETS = any pet */
 /* a chance charm missed: counted for Rabbit's Foot (c.mis is only there on a real merge, never in the score table) */
 const miss=c=>{if(c.mis)c.mis.n++;return 1;};
-const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'];
+const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'],BEE=['bee','bfly','nectar'],MOLE=['mole','zoo'],BOMB=['boom','volcano','cbomb'];
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
@@ -94,6 +94,21 @@ const CH={
  treats:{n:'Pet Treats',r:0,c:4,req:EAT,d:'Every fruit your pets eat scores 30 more points.'},
  chrys:{n:'Chrysalis',r:1,c:6,req:CAT,d:'Every 4th fruit your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run.',add:c=>c.ch.v||0,live:1},
  appetite:{n:'Big Appetite',r:1,c:6,req:EAT,d:'Your pets can eat bigger fruit: the caterpillar and mole up to size 5, the hedgehog up to size 7. Eating a size 4 or bigger fruit scores 3 times as much.'},
+ /* batch 1 of the pool expansion (v1.43, DESIGN.md "Pool expansion plan"): pets */
+ collar:{n:'Pet Collar',r:0,c:4,req:PETS,d:'Your pets gain levels twice as fast.'},
+ dbag:{n:'Doggy Bag',r:0,c:4,req:EAT,d:'+0.1 Mult for every fruit your pets have eaten this jar.',add:c=>(c.ml||0)*.1},
+ pcount:{n:'Pollen Count',r:0,c:5,req:BEE,d:'+0.5 Mult for every pollinated fruit in the jar.',add:c=>(c.pn||0)*.5},
+ truffle:{n:'Truffle Hunt',r:0,c:4,req:MOLE,d:'Every fruit your Mole eats pays 1 coin.'},
+ wfed:{n:'Well Fed',r:1,c:6,req:EAT,d:'Once your pets have eaten 3 fruit in a jar, ×2 Mult for the rest of the jar.',x:c=>(c.ml||0)>=3?2:1},
+ pack:{n:'Pack Leader',r:1,c:7,req:PETS,d:'Starts at ×1 Mult, +0.25 for every pet you hold.',x:c=>1+.25*(c.npt||0)},
+ xpol:{n:'Cross-Pollination',r:1,c:6,req:BEE,d:'The first pollinated merge of each jar gives the seed of the size it makes +1 level.'},
+ /* bombs (Boom fruit come from Fireworks, Volcano and the Cherry Bomb tool) */
+ shortf:{n:'Short Fuse',r:0,c:4,req:BOMB,d:'Boom fruit go off the moment they land, and score +10 points for every fruit they hit.'},
+ shrap:{n:'Shrapnel',r:0,c:4,req:BOMB,d:'Boom blasts reach 50% further and hit up to 5 fruit instead of 3.'},
+ demo:{n:'Demolition',r:0,c:5,d:'Every merge scores +3 points for every fruit destroyed (removed without merging) this jar.',chip:c=>(c.kd||0)*3},
+ zbomb:{n:'Zest Bomb',r:1,c:6,req:BOMB,d:'Boom fruit only hit Citrus (Lemons and Oranges), up to 3 anywhere in the blast. Every Citrus destroyed gives +0.3 Mult for the rest of the jar.',add:c=>(c.zb||0)*.3},
+ bbomb:{n:'Bloom Bomb',r:1,c:6,req:BOMB,d:'Boom fruit grow the fruit they hit one size instead of destroying them. A grown fruit scores half when it next merges.'},
+ cblast:{n:'Chain Blast',r:1,c:6,req:BOMB,d:'1 in 3 fruit destroyed by a Boom explode too.'},
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance (g = growth). NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores twice its size\'s base points and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes an Orange (5) or bigger gives 1 drop back.',x:()=>1.5}, /* v1.41: growth per drop left and drops from a Lemon measured 80 to 88% with the bot, cut */
@@ -177,6 +192,10 @@ const CH={
  jam:{n:'Jam',r:3,c:12,fu:['picker','berry'],d:'Strawberries (2) and Grapes (3) drop twice as often. Berry merges score +25 points and get ×1.5 Mult.',chip:c=>c.fa==='be'?25:0,x:c=>c.fa==='be'?1.5:1},
  mill:{n:'Cider Mill',r:3,c:12,fu:['cider','hothouse'],d:'1 in 12 fruit you drop is an Apple (6). Pome merges get ×4 Mult.',x:c=>c.fa==='po'?4:1},
  zen:{n:'Zen Garden',r:3,c:12,fu:['garg','rgard'],d:'Every 6th fruit is a rock. Rocks never count as over the line. Starts at ×1 Mult, +0.25 for every rock in the jar.',x:c=>1+.25*(c.rk||0)},
+ alpha:{n:'Alpha',r:3,c:12,fu:['pack','collar'],d:'Starts at ×1 Mult, +0.35 for every pet you hold. Your pets gain levels three times as fast.',x:c=>1+.35*(c.npt||0)},
+ feast:{n:'Feast',r:3,c:12,fu:['wfed','dbag'],d:'+0.15 Mult for every fruit your pets have eaten this jar. Once they have eaten 3, ×2.5 Mult for the rest of the jar.',add:c=>(c.ml||0)*.15,x:c=>(c.ml||0)>=3?2.5:1},
+ hcomb:{n:'Honeycomb',r:3,c:12,fu:['pcount','xpol'],d:'+0.6 Mult for every pollinated fruit in the jar. The first 2 pollinated merges of each jar give the seed of the size they make +1 level.',add:c=>(c.pn||0)*.6},
+ cluster:{n:'Cluster Bomb',r:3,c:12,fu:['shrap','cblast'],d:'Boom blasts reach 50% further and hit up to 5 fruit. Every fruit a Boom destroys explodes too, and scores +20 points.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
@@ -424,7 +443,7 @@ const RG={
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.npt=R.ch.filter(o=>PLK[o.id]).length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
   for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
@@ -477,7 +496,7 @@ const RG={
  pob:(R,k)=>R.ch.find(c=>PK[k].includes(c.id)), /* the held item that carries pet k */
  plv:o=>o?PLX.filter(t=>(o.x||0)>=t).length:1, /* its level */
  pl:(R,k)=>RG.plv(RG.pob(R,k)),
- pxp(R,o,n){if(!o||!PLK[o.id])return;const a=RG.plv(o);o.x=(o.x||0)+n*(RG.has(R,'collar')?2:1);const b=RG.plv(o);if(b>a)(R.lvq=R.lvq||[]).push({id:o.id,lv:b});}, /* add XP, queue a level-up for the engine to show */
+ pxp(R,o,n){if(!o||!PLK[o.id])return;const a=RG.plv(o);o.x=(o.x||0)+n*(RG.has(R,'alpha')?3:RG.has(R,'collar')?2:1);const b=RG.plv(o);if(b>a)(R.lvq=R.lvq||[]).push({id:o.id,lv:b});}, /* add XP, queue a level-up for the engine to show */
  fuK(f){const k=[f.k==='tl'?'tl':'ch'];if(SDF.includes(f.id))k.push('sd');return k;}, /* the shop crates that offer this fusion (v1.43): Charm Crate a charm fusion, Tool Crate a tool fusion, Seed Crate one with a seed half */
  fusable(R){const o=[],hasT=id=>R.tl.some(t=>t.id===id);for(const id in CH){const f=CH[id].fu;if(f&&!PF.lk('fu.'+id)&&RG.has(R,f[0])&&RG.has(R,f[1]))o.push({id,k:'ch',a:CH[f[0]].n,b:CH[f[1]].n});}
   for(const id in TL){const f=TL[id].fu;if(f&&!PF.lk('fu.'+id)&&hasT(f[0])&&RG.has(R,f[1]))o.push({id,k:'tl',a:TL[f[0]].n,b:CH[f[1]].n});}return o;},

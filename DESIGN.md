@@ -804,6 +804,8 @@ The user's call after a build-variety check: late runs converge on the same gene
 
 Order of work: shop changes, editions, pet levels, then items in batches of about 12 (pets and bombs first), each batch with icons, ANIM entries and a bot check.
 
+**Built in v1.43 (18 Nov):** shop 5 slots and rare 2.4%, shop crate fusions, editions, pet levels, batch 1 (the 7 pet and 6 bomb items, fusions Alpha, Feast, Honeycomb, Cluster Bomb). Changes from the plan: Alpha triples XP instead of starting pets at Lv2; Lv5 Bee is 5 at a time with no pollen carry-over and Lv5 Ladybird is ×2.5 with no second ladybird (both left for later); Zest Bomb hits up to 3 Citrus anywhere in the blast, since only touching Citrus would rarely fire; Shrapnel also hits 5 fruit instead of 3. Not bot-measured yet.
+
 ### Shop and crates
 - 5 charm slots in the shop (was 3), 6 with Bigger Shelf. The rare chance per slot goes from 4% to 2.4%, so rares offered per run stay at about 2.9. With the pool at about 52 commons and 79 uncommons, per-item offer rates come back to today's.
 - Shop crates offer a ready fusion as their first pick, like boss crates: the Charm Crate a charm fusion, the Tool Crate a tool fusion, the Seed Crate a fusion with a seed half (Seed Vault, Greenhouse, Bloom, Honeycomb, Harvest Festival). Fusions free a slot, so getting them sooner eases slot pressure.
