@@ -806,6 +806,8 @@ Order of work: shop changes, editions, pet levels, then items in batches of abou
 
 **Built in v1.43 (18 Nov):** shop 5 slots and rare 2.4%, shop crate fusions, editions, pet levels, batch 1 (the 7 pet and 6 bomb items, fusions Alpha, Feast, Honeycomb, Cluster Bomb). Changes from the plan: Alpha triples XP instead of starting pets at Lv2; Lv5 Bee is 5 at a time with no pollen carry-over and Lv5 Ladybird is ×2.5 with no second ladybird (both left for later); Zest Bomb hits up to 3 Citrus anywhere in the blast, since only touching Citrus would rarely fire; Shrapnel also hits 5 fruit instead of 3. Not bot-measured yet.
 
+**Built in v1.44 (18 Nov), batch 2:** the 3 Wildcard items, the 5 family items, the 3 boss counters, fusions Full Deck, Carnival, Citrus Blast, Fondue. Changes from the plan: Fruit Salad and Carnival pay on the merge that brings a combo to 3 families (the last merge of a combo is not known when it scores); Citrus Blast keeps Citrus Squeeze's merge charge too; Blue Cheese merges mouldy with mouldy only, Fondue opens mouldy and frozen fruit to any fruit of their size. The bot pass waits for the end of the expansion (the user's call).
+
 ### Shop and crates
 - 5 charm slots in the shop (was 3), 6 with Bigger Shelf. The rare chance per slot goes from 4% to 2.4%, so rares offered per run stay at about 2.9. With the pool at about 52 commons and 79 uncommons, per-item offer rates come back to today's.
 - Shop crates offer a ready fusion as their first pick, like boss crates: the Charm Crate a charm fusion, the Tool Crate a tool fusion, the Seed Crate a fusion with a seed half (Seed Vault, Greenhouse, Bloom, Honeycomb, Harvest Festival). Fusions free a slot, so getting them sooner eases slot pressure.
