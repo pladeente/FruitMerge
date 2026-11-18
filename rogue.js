@@ -123,6 +123,25 @@ const CH={
  bcheese:{n:'Blue Cheese',r:1,c:6,d:'Mouldy fruit can merge with each other, and those merges get ×2 Mult.',x:c=>c.mo?2:1},
  isculpt:{n:'Ice Sculptor',r:1,c:6,d:'A fruit that has been frozen gets ×2 Mult on its next merge.',x:c=>c.wz?2:1},
  stooth:{n:'Sweet Tooth',r:0,c:4,d:'Sticky fruit score +20 points when they merge.',chip:c=>c.stk?20:0},
+ /* batch 3 (v1.45): small fruit */
+ psq:{n:'Pip Squeak',r:0,c:4,d:'Every merge that makes a Strawberry (2) pushes the fruit around it apart a little.'},
+ gberry:{n:'Golden Berry',r:0,c:5,d:'1 in 8 merges that make a Strawberry (2) make it gold.'},
+ kindl:{n:'Kindling',r:1,c:6,d:'Merges that make a Strawberry (2) or Grape (3) give every tool +1 charge, once per drop.'},
+ nurs:{n:'Nursery',r:1,c:6,d:'+0.25 Mult for every Cherry and Strawberry in the jar. Two Cherries merging get ×2 Mult.',add:c=>(c.ncs||0)*.25,x:c=>c.l===1?2:1},
+ /* big fruit */
+ bbrk:{n:'Big Break',r:0,c:5,d:'The first merge of each jar that makes a size 7 fruit or bigger gets ×3 Mult.',x:c=>c.bb1?3:1},
+ ball:{n:'Ballast',r:0,c:4,d:'Apples (6) and bigger fall 30% faster and push other fruit harder.'},
+ sky:{n:'Skyline',r:1,c:7,d:'Starts at ×1 Mult, +0.25 for every different size from 6 up in the jar.',x:c=>1+.25*(c.sk6||0)},
+ lslide:{n:'Landslide',r:1,c:6,d:'Making a size 8 fruit or bigger settles the pile (a free Rumble) and gives +2 Mult for the rest of the jar.',add:c=>(c.ls||0)*2},
+ /* combo */
+ fin:{n:'Finisher',r:0,c:4,d:'When a combo of 2 or more merges ends, it scores +25 points for every merge in it.'},
+ rfire:{n:'Rapid Fire',r:0,c:4,d:'Drop 3 fruit within 2 seconds: +0.3 Mult for the rest of the jar.',add:c=>(c.rf||0)*.3},
+ dom:{n:'Domino',r:1,c:6,d:'The 4th merge of a combo gives 1 drop back.'},
+ droll:{n:'Drumroll',r:1,c:6,d:'The 3rd merge of every combo gives +0.2 Mult for the rest of the jar.',add:c=>(c.drn||0)*.2},
+ /* gold */
+ pdirt:{n:'Pay Dirt',r:0,c:4,d:'The first gold merge of each jar pays 3 more coins.'},
+ gplate:{n:'Gold Plating',r:1,c:6,d:'Gold fruit never count as over the line.'},
+ gstd:{n:'Gold Standard',r:1,c:7,d:'+0.1 Mult for every coin gold fruit have paid you this run (up to +5).',add:c=>Math.min(5,(c.gco||0)*.1)},
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance (g = growth). NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores twice its size\'s base points and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes an Orange (5) or bigger gives 1 drop back.',x:()=>1.5}, /* v1.41: growth per drop left and drops from a Lemon measured 80 to 88% with the bot, cut */
@@ -214,6 +233,13 @@ const CH={
  carnival:{n:'Carnival',r:3,c:12,fu:['masq','fsalad'],d:'A merge with a Wildcard counts as every family. In a combo, the merge that brings it to 3 different families gets ×4 Mult.',x:c=>c.fs3?4:1},
  citblast:{n:'Citrus Blast',r:3,c:12,fu:['zbomb','csq'],d:'Boom fruit only hit Citrus, up to 3 anywhere in the blast. Every Citrus destroyed gives +0.4 Mult for the rest of the jar and every tool +1 charge. Citrus merges give every tool +1 charge.',add:c=>(c.zb||0)*.4},
  fondue:{n:'Fondue',r:3,c:12,fu:['bcheese','isculpt'],d:'Mouldy and frozen fruit can merge with any fruit of their size. Those merges, and the next merge of a fruit that has been frozen, get ×2 Mult.',x:c=>c.mo||c.fzm||c.wz?2:1},
+ play:{n:'Playground',r:3,c:12,fu:['nurs','kindl'],d:'+0.3 Mult for every Cherry and Strawberry in the jar. Two Cherries merging get ×2 Mult. Merges that make a Strawberry or Grape give every tool +1 charge, once per drop.',add:c=>(c.ncs||0)*.3,x:c=>c.l===1?2:1},
+ skyscr:{n:'Skyscraper',r:3,c:12,fu:['sky','bbrk'],d:'Starts at ×1 Mult, +0.35 for every different size from 6 up in the jar. The first merge of each jar that makes a size 7 fruit or bigger gets ×4 Mult.',x:c=>(1+.35*(c.sk6||0))*(c.bb1?4:1)},
+ aval:{n:'Avalanche',r:3,c:12,fu:['dom','droll'],d:'The 4th merge of a combo gives 1 drop back. The 3rd merge of every combo gives +0.3 Mult for the rest of the jar.',add:c=>(c.drn||0)*.3},
+ gfin:{n:'Grand Finale',r:3,c:12,fu:['fin','cresc'],d:'In a combo, the 2nd merge and every merge after it get ×2 Mult. When a combo of 2 or more ends, it scores +30 points for every merge in it.',x:c=>c.combo>=1?2:1},
+ bigbang:{n:'Big Bang',r:3,c:12,fu:['bbomb','lslide'],d:'Boom fruit grow the fruit they hit one size instead of destroying them, at full points. Making or growing a size 8 fruit or bigger settles the pile and gives +2 Mult for the rest of the jar.',add:c=>(c.ls||0)*2},
+ fknox:{n:'Fort Knox',r:3,c:12,fu:['gplate','gstd'],d:'Gold fruit never count as over the line. +0.15 Mult for every coin gold fruit have paid you this run (up to +7).',add:c=>Math.min(7,(c.gco||0)*.15)},
+ gdig:{n:'Gold Digger',r:3,c:12,fu:['truffle','pdirt'],d:'Every fruit your Mole eats pays 2 coins and turns a fruit next to it gold. The first gold merge of each jar pays 3 more coins.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
@@ -461,7 +487,7 @@ const RG={
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.npt=R.ch.filter(o=>PLK[o.id]).length;c.nor=R.or.filter(o=>RG.has(R,o.id)).length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.npt=R.ch.filter(o=>PLK[o.id]).length;c.nor=R.or.filter(o=>RG.has(R,o.id)).length;c.gco=R.st&&R.st.goldc||0;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
   for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
@@ -610,11 +636,11 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  if(n==='run')PF.inc('runs');
  else if(n==='start'){R.jst={};}
  else if(n==='drop'){inc('drops');if(d.rt)inc('rdrops');}
- else if(n==='merge'){inc('merges');inc('made.'+d.l);if(d.l>0)inc('fam.'+FAM[d.l-1]);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);if(R.jst){if(!(R.jst.bm>=d.p))R.jst.bm=d.p;if(!(R.jst.bc>=d.combo))R.jst.bc=d.combo;}}
+ else if(n==='merge'){inc('merges');if(d.wd)inc('wilds');inc('made.'+d.l);if(d.l>0)inc('fam.'+FAM[d.l-1]);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);if(R.jst){if(!(R.jst.bm>=d.p))R.jst.bm=d.p;if(!(R.jst.bc>=d.combo))R.jst.bc=d.combo;}}
  else if(n==='tool'){inc('tools');inc('tool.'+d.id);}
  else if(n==='kill')inc('kills',d.n);
  else if(n==='net')inc('nets');
- else if(n==='gold')inc('golds');
+ else if(n==='gold'){inc('golds');if(d.c)inc('goldc',d.c);}
  else if(n==='melons')inc('melons2');
  else if(n==='jar'){inc('jars');for(const c of R.ch)if(PLK[c.id])RG.pxp(R,c,1);top('bestDepth',d.depth);top('bestJar',d.score);if(d.boss){inc('bosses');PF.inc('boss.'+d.boss+'.win');}if(d.win){PF.inc('wins');const j=R.jarId||'classic';PF.d.stakes[j]=Math.max(PF.d.stakes[j]||0,R.stake||1);PF.dirty=1;}}
  else if(n==='end'){PF.inc('end.'+d.why);if(d.why!=='win'&&d.why!=='quit'&&d.boss)PF.inc('boss.'+d.boss+'.loss');PF.max('bestScore',R.total);top('bestCoins',R.coins);}
@@ -729,7 +755,19 @@ const ACH={
  spree:{n:'Big Night Out',d:'Spend 30 coins in one shop.',on:'buy up seed roll',t:R=>(R.sp||0)>=30,un:'ch.spender'},
  edge:{n:'On the Brink',d:'The pile goes over the line in 5 different jars of one run.',on:'overln',t:R=>(R.st.overlns||0)>=5,un:'ch.brink'},
  superst:{n:'Superstitious',d:'Hold Lucky Clover, Snake Eyes and Horseshoe at once.',on:'buy take',t:R=>['lucky','snake','shoe'].every(id=>RG.has(R,id)),un:'ch.foot'},
- reunion:{n:'Family Reunion',d:'Merge 5 different families in one jar.',on:'merge',t:R=>Object.keys(R.jst).filter(k=>k.startsWith('fam.')).length>=5,un:'ch.ftree'}
+ reunion:{n:'Family Reunion',d:'Merge 5 different families in one jar.',on:'merge',t:R=>Object.keys(R.jst).filter(k=>k.startsWith('fam.')).length>=5,un:'ch.ftree'},
+ /* v1.45: awards that open the pool expansion's items */
+ petjar:{n:'Good Boy',d:'Clear a jar while holding a pet.',on:'jar',t:R=>PETS.some(id=>RG.has(R,id)),un:'ch.collar'},
+ cat5:{n:'The Very Hungry Caterpillar',d:'Raise a Pet Caterpillar to level 5.',on:'jar pet',t:R=>!!RG.pob(R,'cat')&&RG.pl(R,'cat')>=5,un:'ch.wfed'},
+ pets4:{n:'Top of the Food Chain',d:'Hold 4 level 5 pets at once.',on:'jar pet hop',t:R=>R.ch.filter(o=>PLK[o.id]&&RG.plv(o)>=5).length>=4,un:'fu.alpha'},
+ goldrun:{n:'Golden Thread',d:'Keep a fruit gold through 6 merges in a row.',on:'gchain',t:(R,d)=>d.n>=6,un:'ch.gstd'},
+ kaboom:{n:'Kaboom',d:'Destroy 5 fruit with a single Boom (chain blasts count).',on:'blast',t:(R,d)=>d.n>=5,un:'ch.cblast'},
+ wild3:{n:'Wild Night',d:'Make 3 Wildcard merges in one jar.',on:'merge',t:R=>(R.jst.wilds||0)>=3,un:'ch.masq'},
+ rotboss:{n:'Cheese Course',d:'Beat The Rot.',on:'jar',t:(R,d)=>!!d.boss&&!!R.cfg&&(R.cfg.rules||[]).includes('rot'),un:'ch.bcheese'},
+ iceboss:{n:'Thaw',d:'Beat Cold Snap.',on:'jar',t:(R,d)=>!!d.boss&&!!R.cfg&&(R.cfg.rules||[]).includes('ice'),un:'ch.isculpt'},
+ small20:{n:'Tiny Army',d:'Make 20 fruit of size 2 to 4 in one jar.',on:'merge',t:R=>[1,2,3].reduce((a,l)=>a+(R.jst['made.'+l]||0),0)>=20,un:'ch.nurs'},
+ tower:{n:'High Rise',d:'Have 3 fruit of size 8 or bigger in the jar at once.',on:'tower',t:()=>true,un:'ch.sky'},
+ combo7:{n:'Domino Effect',d:'Reach a combo of 7.',on:'merge',t:(R,d)=>d.combo>=6,un:'ch.dom'}
 };
 const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
 const ACHQ=[]; /* awards earned and not yet shown */
