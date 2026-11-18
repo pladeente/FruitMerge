@@ -163,6 +163,7 @@ Status key: `planned` (awaiting go-ahead), `doing`, `done`. Update this section 
 
 1. Charm order is irrelevant to scoring. The Thief is the one exception: it switches off the leftmost charms, which players can reorder between jars.
 2. Charms from before the expansion are never locked.
+3. Continuous scaling is welcome, Balatro style (the user, 18 Nov): charms and upgrades that grow without a cap (Abacus, Greenhouse, Watering Can, Snowball, Old Oak, Tiki Bar...) stay uncapped. Endless targets doubling every depth are what end a run. Balance passes cap power only when it is out of line early in a run, not because a late run gets huge.
 
 ## Working rules
 
