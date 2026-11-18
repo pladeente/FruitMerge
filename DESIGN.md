@@ -889,3 +889,25 @@ Pack Leader, Skyline and the Lv5 pet ×1.25 break the "no unconditional ×Mult b
 New + new: Cluster Bomb (Shrapnel + Chain Blast), Citrus Blast (Zest Bomb + Citrus Squeeze), Big Bang (Bloom Bomb + Landslide), Full Deck (Joker Seed + Wild Card), Carnival (Masquerade + Fruit Salad), Alpha (Pack Leader + Pet Collar), Feast (Well Fed + Doggy Bag), Gold Digger (Truffle Hunt + Gold Rush), Honeycomb (Pollen Count + Cross-Pollination), Playground (Nursery + Kindling), Skyscraper (Skyline + Big Break), Avalanche (Domino + Drumroll), Harvest Festival (Harvest Moon + Seed Bank), Fort Knox (Gold Plating + Gold Standard), Workshop (Recycler + Toolsmith), Amphitheatre (Centre Stage + Floor Show), Crystal Cave (Geode + Pebble Polish), Hedge Fund (Compound Interest + Tip Jar), Fondue (Blue Cheese + Ice Sculptor).
 New + existing: Grand Finale (Finisher + Crescendo), All In (Double or Nothing + Lucky Clover), Catapult (Lob + Curveball).
 Each is about both halves plus a bit. Still without a recipe: Short Fuse, Demolition, Wild Card, Ballast, Rapid Fire, Compost Bin, Jump Start, Tremor, Balcony, Tropical Punch, Berry Bowl, Loose Change, Sweet Tooth, Pip Squeak.
+
+
+## Bot pass for the pool expansion (v1.47.1, 18 Nov)
+
+Run once at the end of the expansion, on the user's call. Bot rebuilt the same way as "Tool bot and v1.39 fixes" (kept out of the repo): 33-column aim (about 200 on a fresh jar, like before; it now pre-flips its aim under The Mirror), the same tool policy, Classic Jar, Ripeness 1. Its buyer values a charm or seed by how much it raises the score of a typical merge for sizes 2 to 8, leans 1.3× towards ×Mult charms like buyer B, takes the Orchard items buyer B took, sells its weakest charm for one clearly better, and never takes a crate pick worth nothing to it. The same bot was run on v1.42 (just before the expansion) and on main, so its quirks cancel out.
+
+| Build | Runs | Wins | Depth |
+|---|---|---|---|
+| v1.42 | 800 | 25.6% | 7.09 |
+| v1.47 | 1,100 | 21.6% | 7.03 |
+
+The gap is about 2 standard errors and depth is the same: no real change in power. A small drop would fit the bigger pool thinning out this bot's best buys.
+
+One item given at the start, 50 runs each (±6 points), confirmed at 150 (±3.7) where marked. No item: about 22%. Targets as before: commons and uncommons 20 to 30%, rares 25 to 35%, nothing above 40% (fusions may sit higher).
+
+- **Pets now carry a run**, which was the point: Pet Caterpillar 35.3% (150; was 21.7% before levels), Mole 24.7% (150), Busy Bee 16%. With the Caterpillar: Pet Collar 34%, Doggy Bag 32%, Well Fed 28%, Pack Leader 36%, Demolition 38%, Feast 46%. Bee: Pollen Count 26%, Cross-Pollination 28%. Mole: Truffle Hunt 30%. The Caterpillar sits at the top of the band; watch it in human play before touching it.
+- **Editions**: Juiced Juicer 38% (150) against a plain Juicer 28%; Candied Honey Pot 44% (150) against Honey Pot 28% (150). Candied cut from +15 to +10 points: 32.7% (150). Juiced left at +1.5. Both only turn up on 2 to 4% of offers.
+- **Fusions**: Feast 46%, Skyscraper 38%, All In 32% (150), Grand Finale 32%, Hedge Fund 30%, Amphitheatre 28%.
+- **Charms at or above the line**: Centre Stage 32%, Domino 30%, Drumroll 30%, Recycler 28%, Pip Squeak 28%, Golden Berry 28%, Double or Nothing 26.7% (150), Ballast 26%, Finisher 26%, Pay Dirt 26%, Nursery 24%, Compost Bin 24%, Jump Start 24%, Tremor 24%, Balcony 22%. Lucky Clover for comparison 20% (150).
+- **Low for this bot, and why**: Rapid Fire 14% (it drops every 1.2 s, so 3 drops never land within 2 s), Joker Seed alone 14% (half points; with Wild Card 28%), Kindling 12% and Toolsmith 18% (the bot's tools are worth little to it), Big Break, Landslide, Skyline and Tropical Punch 16 to 18% (the bot rarely makes size 7+ fruit early), Pebble Polish 14% and Geode 10% (with Rock Garden, which alone drops it to 8%), Citrus Squeeze, Berry Bowl, Fruit Salad, Tip Jar, Compound Interest, Gold Plating 16 to 20%. Gold Standard with Prospector 44% = Prospector alone 44%: the bot earns too little gold for it to show.
+- **Orchard, given at the start**: Volunteer Seedlings 34%, Golden Apple Tree 32%, Money Tree 29.3% (150), Seed Rain 28%, Sugar Maple, Frost Pocket, Grafting Vine, Double Blossom, Termite Mound 22%, Spark Bush, Firefly Glade 20%, Maple Tap 18%, Mushroom Ring, Treat Tree (no pet), Gourd Vine 16%, Cherry Orchard, Tropical Breeze, Sinkhole 14%, Gunpowder Tree 10% (the bot can not play Boom fruit, like Fireworks).
+- **Not measured**: the bomb charms (the bot can not play Boom fruit), the boss counters (they need their boss), throwing (the bot never throws), Ripeness above 1, award difficulty.
