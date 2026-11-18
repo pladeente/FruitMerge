@@ -818,7 +818,37 @@ const ACH={
  iceboss:{n:'Thaw',d:'Beat Cold Snap.',ti:'Icebreaker',tr:2,on:'jar',t:(R,d)=>!!d.boss&&!!R.cfg&&(R.cfg.rules||[]).includes('ice'),un:'ch.isculpt'},
  small20:{n:'Tiny Army',d:'Make 20 fruit of size 2 to 4 in one jar.',ti:'Tiny Tyrant',tr:1,on:'merge',t:R=>[1,2,3].reduce((a,l)=>a+(R.jst['made.'+l]||0),0)>=20,un:'ch.nurs'},
  tower:{n:'High Rise',d:'Have 3 fruit of size 8 or bigger in the jar at once.',ti:'Architect',tr:2,on:'tower',t:()=>true,un:'ch.sky'},
- combo7:{n:'Domino Effect',d:'Reach a combo of 7.',ti:'Toppler',tr:1,on:'merge',t:(R,d)=>d.combo>=6,un:'ch.dom'}
+ combo7:{n:'Domino Effect',d:'Reach a combo of 7.',ti:'Toppler',tr:1,on:'merge',t:(R,d)=>d.combo>=6,un:'ch.dom'},
+ /* long-haul ladder (v1.50): lifetime counts, a title each, lh = left out of the Almanac's completion, pg/of = progress shown on the Almanac and Titles screen */
+ w25:{n:'Winning Streak',d:'Win 25 runs.',ti:'Victor',tr:2,lh:1,of:25,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=25},
+ w50:{n:'Half Century',d:'Win 50 runs.',ti:'Conqueror',tr:3,lh:1,of:50,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=50},
+ w100:{n:'Centurion',d:'Win 100 runs.',ti:'Immortal',tr:4,lh:1,of:100,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=100},
+ l50:{n:'Back for More',d:'Lose 50 runs.',ti:'Persistent',tr:1,lh:1,of:50,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=50},
+ l200:{n:'Glutton for Punishment',d:'Lose 200 runs.',ti:'Stubborn',tr:2,lh:1,of:200,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=200},
+ l500:{n:'Never Give Up',d:'Lose 500 runs.',ti:'Unbreakable',tr:3,lh:1,of:500,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=500},
+ r25:{n:'Regular',d:'Start 25 Rogue runs.',ti:'Regular',tr:0,lh:1,of:25,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=25},
+ r100:{n:'Frequent Flyer',d:'Start 100 Rogue runs.',ti:'Devotee',tr:1,lh:1,of:100,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=100},
+ r250:{n:'Lifer',d:'Start 250 Rogue runs.',ti:'Lifer',tr:2,lh:1,of:250,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=250},
+ r500:{n:'No Days Off',d:'Start 500 Rogue runs.',ti:'Fruit Fanatic',tr:3,lh:1,of:500,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=500},
+ m20k:{n:'Merge Machine',d:'Make 20,000 merges (over all your runs).',ti:'Machine',tr:3,lh:1,of:20000,pg:S=>S.merges||0,on:'run merge',t:(R,d,S)=>(S.merges||0)>=20000},
+ m50k:{n:'Fifty Thousand',d:'Make 50,000 merges (over all your runs).',ti:'Unstoppable',tr:4,lh:1,of:50000,pg:S=>S.merges||0,on:'run merge',t:(R,d,S)=>(S.merges||0)>=50000},
+ mel50:{n:'Melon Patch',d:'Make 50 Watermelons (over all your runs).',ti:'Melon Tycoon',tr:2,lh:1,of:50,pg:S=>S['made.10']||0,on:'run merge',t:(R,d,S)=>(S['made.10']||0)>=50},
+ mel150:{n:'Melon Empire',d:'Make 150 Watermelons (over all your runs).',ti:'Melon Mogul',tr:3,lh:1,of:150,pg:S=>S['made.10']||0,on:'run merge',t:(R,d,S)=>(S['made.10']||0)>=150},
+ mel500:{n:'Melon Legend',d:'Make 500 Watermelons (over all your runs).',ti:'Watermelon Royalty',tr:4,lh:1,of:500,pg:S=>S['made.10']||0,on:'run merge',t:(R,d,S)=>(S['made.10']||0)>=500},
+ g500:{n:'Gold Reserve',d:'Merge 500 gold fruit (over all your runs).',ti:'Gold Hoarder',tr:3,lh:1,of:500,pg:S=>S.golds||0,on:'run gold',t:(R,d,S)=>(S.golds||0)>=500},
+ g1500:{n:'El Dorado',d:'Merge 1,500 gold fruit (over all your runs).',ti:'El Dorado',tr:4,lh:1,of:1500,pg:S=>S.golds||0,on:'run gold',t:(R,d,S)=>(S.golds||0)>=1500},
+ cr150:{n:'Crate Collector',d:'Get 150 crates (over all your runs).',ti:'Quartermaster',tr:2,lh:1,of:150,pg:S=>S.crates||0,on:'run crate',t:(R,d,S)=>(S.crates||0)>=150},
+ cr400:{n:'Warehouse',d:'Get 400 crates (over all your runs).',ti:'Warehouse Keeper',tr:3,lh:1,of:400,pg:S=>S.crates||0,on:'run crate',t:(R,d,S)=>(S.crates||0)>=400},
+ pf200:{n:'Feeding Time',d:'Your pets eat 200 fruit (over all your runs).',ti:'Pet Whisperer',tr:2,lh:1,of:200,pg:S=>(S['pet.cat']||0)+(S['pet.mole']||0)+(S['pet.hog']||0),on:'run pet',t:(R,d,S)=>((S['pet.cat']||0)+(S['pet.mole']||0)+(S['pet.hog']||0))>=200},
+ pf750:{n:'Banquet',d:'Your pets eat 750 fruit (over all your runs).',ti:'Beastmaster',tr:3,lh:1,of:750,pg:S=>(S['pet.cat']||0)+(S['pet.mole']||0)+(S['pet.hog']||0),on:'run pet',t:(R,d,S)=>((S['pet.cat']||0)+(S['pet.mole']||0)+(S['pet.hog']||0))>=750},
+ k250:{n:'Wrecking Crew',d:'Destroy 250 fruit (over all your runs).',ti:'Wrecker',tr:1,lh:1,of:250,pg:S=>S.kills||0,on:'run kill',t:(R,d,S)=>(S.kills||0)>=250},
+ k1000:{n:'Demolition Derby',d:'Destroy 1,000 fruit (over all your runs).',ti:'Destroyer',tr:2,lh:1,of:1000,pg:S=>S.kills||0,on:'run kill',t:(R,d,S)=>(S.kills||0)>=1000},
+ k3000:{n:'Scorched Orchard',d:'Destroy 3,000 fruit (over all your runs).',ti:'Fruit Reaper',tr:3,lh:1,of:3000,pg:S=>S.kills||0,on:'run kill',t:(R,d,S)=>(S.kills||0)>=3000},
+ fu25:{n:'Mad Scientist',d:'Make 25 fusions (over all your runs).',ti:'Mad Scientist',tr:2,lh:1,of:25,pg:S=>S.fuses||0,on:'run fuse',t:(R,d,S)=>(S.fuses||0)>=25},
+ fu100:{n:'Grand Alchemist',d:'Make 100 fusions (over all your runs).',ti:'Transmuter',tr:3,lh:1,of:100,pg:S=>S.fuses||0,on:'run fuse',t:(R,d,S)=>(S.fuses||0)>=100},
+ b50:{n:'Boss Rush',d:'Beat 50 bosses (over all your runs).',ti:'Boss Breaker',tr:2,lh:1,of:50,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=50},
+ b200:{n:'Big Game',d:'Beat 200 bosses (over all your runs).',ti:'Big Game Hunter',tr:3,lh:1,of:200,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=200},
+ b500:{n:'Monster Hunter',d:'Beat 500 bosses (over all your runs).',ti:'Bane of Bosses',tr:4,lh:1,of:500,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=500}
 };
 const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
 const ACHQ=[]; /* awards earned and not yet shown */
@@ -828,6 +858,6 @@ function achCheck(R,n,d){for(const id in ACH){const a=ACH[id];if(PF.d.ach[id]||!
 function unName(key){const[k,id]=key.split('.');return k==='ch'?CH[id].n+' (charm)':k==='tl'?TL[id].n+' (tool)':k==='up'?UPG[id].n+' (upgrade)':k==='fu'?(CH[id]||TL[id]).n+' (fusion)':k==='jar'?(typeof JARS!=='undefined'&&JARS[id]?JARS[id].n:'A starting jar')+' (starting jar)':COS[k]&&COS[k][id]?COS[k][id].n+' ('+COSK[k]+')':key;}
 const unKind=key=>({ch:'a charm',tl:'a tool',up:'an upgrade',fu:'a fusion',jar:'a starting jar'}[key.split('.')[0]])||'a '+COSK[key.split('.')[0]];
 /* Almanac completion, 0 to 100: things met (charms, tools, fusions, upgrades, seeds, bosses; locked ones do not count) plus awards earned */
-function alPct(){const P=PF.d||PF.load(),ks=[...Object.keys(CH).filter(k=>!CH[k].dev).map(k=>(CH[k].fu?'fu.':'ch.')+k),...Object.keys(TL).map(k=>(TL[k].fu?'fu.':'tl.')+k),...Object.keys(UPG).map(k=>'up.'+k),...[1,2,3,4,5,6,7,8,9,10].map(l=>'sd.'+l),...Object.keys(BOSS).map(k=>'boss.'+k)],as=Object.keys(ACH).filter(k=>!ACH[k].meta);
+function alPct(){const P=PF.d||PF.load(),ks=[...Object.keys(CH).filter(k=>!CH[k].dev).map(k=>(CH[k].fu?'fu.':'ch.')+k),...Object.keys(TL).map(k=>(TL[k].fu?'fu.':'tl.')+k),...Object.keys(UPG).map(k=>'up.'+k),...[1,2,3,4,5,6,7,8,9,10].map(l=>'sd.'+l),...Object.keys(BOSS).map(k=>'boss.'+k)],as=Object.keys(ACH).filter(k=>!ACH[k].meta&&!ACH[k].lh);
  return Math.floor((ks.filter(k=>P.seen[k]&&!PF.lk(k)).length+as.filter(k=>P.ach[k]).length)/(ks.length+as.length)*100);}
 
