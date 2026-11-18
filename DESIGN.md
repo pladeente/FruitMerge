@@ -624,7 +624,7 @@ Tracking added for them: drop side, airtime, pile over the line this jar, the fr
 
 For awards that should not unlock power (pillar 7). Called Looks in the game, data in `COS`, worn from Options.
 
-- Titles: a tag before the player's name, shown on the leaderboard. First choice for hard awards.
+- Titles: a tag before the player's name, shown on the leaderboard. First choice for hard awards. Since v1.49 most awards carry one, with a rarity by how hard the award is: Common (first steps), Uncommon, Rare (a run goal or a tricky feat), Epic (long-haul or hard boss goals), Legendary (Overripe, Golden, Climber, Professor).
 - Jar skins (8): one for a win with each starting jar (Pink Ceramic, Deep Glass, Velvet, Steel, Planks), Golden for Ripeness 4, Melon Rind for Ripeness 8, Crystal for a full Almanac.
 - Backgrounds (7): one per final boss beaten (Throne Room, Orchard Sky, Midnight), The Deep for the depth 12 boss, Melon Patch for 10 Watermelons, Sunset for 10 wins, Notebook for half the Almanac.
 - Fruit skins (3): Solid Gold (200 gold merges), Past It (25 mouldy fruit), Black and White (a depth 3 boss with no charms). Each is a colour ramp applied to the sprites by brightness, so they need no new drawings. Past It is brown, not green, so mould still shows on it.
