@@ -797,3 +797,58 @@ Items that change how you play, like Slingshot and long combos played fast. No s
 ## Limbo (v1.42)
 
 Rare, 8 coins, the user's idea. ×3 Mult with no condition, paid for with the line sitting 25% of the jar lower (The Lid is 14%, 22% in phase 2, and they stack). Builds: anything that wants a big ×, and the near-the-line pieces, since the gold line comes down with it: Hedgehog (climbs sooner, its gold line is 30% of the room below the line), Phoenix and Safety Net (they clear the top half of the room below the line, so they catch the overflows Limbo causes), High Wire, Brinkmanship, Harvest. The user named Hedgehog and Phoenix as its build. Its risk is a carried pile: bought with a tall pile, the jar starts over the line. Not measured by the bot yet.
+
+## Pool expansion plan (agreed 18 Nov)
+
+The user's call after a build-variety check: late runs converge on the same general rares and Legendaries, pets rarely come together, and fusions should open more builds, hybrids included. Measured over 4,000 simulated runs (shop only): any one uncommon is offered 0.4 times a run, a common 1.8, a rare 0.2. An eating pet (Caterpillar, Mole, Hedgehog) is offered by depth 3 in 41% of runs, and only 36% of those then see a pet payoff by depth 5. 54% of rares offered are build-neutral ×Mult. The Orchard was ruled out as the cause: it has its own shop slot and row.
+
+Order of work: shop changes, editions, pet levels, then items in batches of about 12 (pets and bombs first), each batch with icons, ANIM entries and a bot check.
+
+### Shop and crates
+- 5 charm slots in the shop (was 3), 6 with Bigger Shelf. The rare chance per slot goes from 4% to 2.4%, so rares offered per run stay at about 2.9. With the pool at about 52 commons and 79 uncommons, per-item offer rates come back to today's.
+- Shop crates offer a ready fusion as their first pick, like boss crates: the Charm Crate a charm fusion, the Tool Crate a tool fusion, the Seed Crate a fusion with a seed half (Seed Vault, Greenhouse, Bloom, Honeycomb, Harvest Festival). Fusions free a slot, so getting them sooner eases slot pressure.
+- Build steering (×2 weight on build-mates, like fusion steering) was the other option. Not built: 5 slots chosen instead.
+
+### Editions (the user's idea, Balatro's foil and holographic)
+Any charm, Orchard item or tool can come with an edition, rolled on shop and crate offers. Bonuses are passive and count towards every merge's score while the item is held and working (The Thief's switched-off charms lose it).
+- **Candied** (the foil): +15 points on every merge. Sugar-glaze sheen. 4% of offers, +2 to the price.
+- **Juiced** (the holographic): +1.5 Mult. Rainbow shimmer. 2% of offers, +3 to the price.
+The point is to make a player take an item they would pass on. A fusion keeps the better edition of its halves (Juiced over Candied). Sell value includes the edition's price.
+
+### Pet levels (Vampire Survivors)
+A pet gains 1 XP per jar cleared while held and 1 per 5 actions (meals, pollinations, ladybird hops). Levels at 2, 5, 9 and 14 XP (Lv1 to Lv5). Selling loses the level. Kept in the charm (`v` style field), no save bump. Level pip on the slot, sound and flash on level-up. Every pet at Lv5 also gives ×1.25 Mult (the ×Mult pets lack, earned over time like Snowball). Lv5 effects change how a pet behaves and never copy a fusion (Butterfly Garden's ×4 pollen, Feeding Frenzy, Truffle Hunt's coin). A fusion keeps its pet's level.
+
+| Pet | Lv1 | Lv5 |
+|---|---|---|
+| Caterpillar | size ≤3 every 5 drops, 45 pts | size ≤4 every 4 drops, 70 pts |
+| Mole | size ≤4 every 6 drops, 40 pts | size ≤5 every 4 drops, 65 pts |
+| Hedgehog | size ≤6, at most every 3 drops | size ≤7, at most every 2 drops |
+| Busy Bee | every 4 drops, 3 at a time | every 3 drops, 5 at a time, pollen survives one merge |
+| Ladybird | ×2 | ×2.5 and a second ladybird |
+
+Optional later: evolutions (a Lv5 pet plus a set charm becomes its fusion at the next crate without the other half).
+
+### New items (C common, U uncommon). 24 C, 34 U
+Checked against the pool on 18 Nov for crossovers. Fourteen first ideas clashed and were replaced (Powder Keg/Fireworks, Leftovers/Pet Treats, Cherry Picker/Cherry Pit, Pocket Change/Scratch Card, Swarm/Hoarder, Gold Dust/Alchemy, Aftershock/Cyclone, Overclock/Stage Fright, Corner Pocket/Wallflower, Bank Shot/Trick Shot, Mulch/Abacus, Spare Battery/Battery, Jam Jar/Jam, Hot Hands/Quick Hands).
+
+- **Bombs**: Short Fuse C (Boom fruit go off on landing, +10 per fruit hit), Shrapnel C (blasts 50% further), Demolition C (+3 points to every merge per fruit destroyed this jar), Zest Bomb U (Boom fruit only hit Citrus, each gives +0.3 Mult for the jar), Bloom Bomb U (Boom fruit grow what they hit one size instead, those score half on their next merge), Chain Blast U (a fruit a Boom destroys has 1 in 3 to explode too).
+- **Wildcards** (new special fruit: merges with any size, makes one size up from the bigger, scores half): Joker Seed U (every 10th fruit is a Wildcard), Wild Card C (Wildcard merges score full), Masquerade U (Wildcards count as every family).
+- **Pets**: Pet Collar C (XP ×2), Doggy Bag C (each meal +0.1 Mult for the jar), Pollen Count C (+0.5 Mult per pollinated fruit in the jar), Truffle Hunt C (each Mole meal pays 1 coin), Well Fed U (after 3 meals in a jar, ×2 Mult for the rest of it), Pack Leader U (×1 Mult, +0.25 per pet held), Cross-Pollination U (a pollinated merge levels its size's seed, once per jar).
+- **Small fruit**: Pip Squeak C (merges making a size 2 nudge nearby fruit apart), Piggyback C (the fruit Rewind or Swap puts back is gold 1 in 4), Kindling U (merges making size 2 or 3 give +1 tool charge, once per drop), Nursery U (+0.25 Mult per Cherry and Strawberry in the jar, Cherry merges ×2).
+- **Big fruit**: Big Break C (the first size 7+ merge each jar ×3 Mult), Ballast C (Apples and up sink faster and push harder), Skyline U (×1, +0.25 per different size 6+ in the jar), Landslide U (making a size 8+ settles the pile and gives +2 Mult for the jar).
+- **Combo**: Finisher C (the last merge of a combo +25 points per merge in it), Rapid Fire C (three drops within 2 s, the third +20 points), Domino U (a combo of 4+ gives 1 drop back), Drumroll U (every combo of 3+ gives +0.2 Mult for the jar).
+- **Seeds**: Compost Bin C (a seed level costs 1 less per fruit destroyed this jar, up to 3), Harvest Moon U (the first time each jar you make a size with seed level 3+, ×3), Seed Bank U (seed prices stop rising after level 3).
+- **Gold**: Gold Rush C (the first gold merge each jar pays 3 more), Gold Plating U (gold fruit never count as over the line), Gold Standard U (+0.1 Mult per coin earned from gold this run).
+- **Tools**: Jump Start C (the first merge each jar gives every tool +2 charge), Tremor C (Shake and Rumble give +1 charge to the other tools), Recycler U (a tool used at full charge refunds 1), Toolsmith U (targeted tools can be used twice, at 1.5× the charge).
+- **Position and rocks**: Floor Show C (floor merges +15 points), Balcony C (merges above the gold line +40 points), Pebble Polish C (each rock touching a merge +15), Centre Stage U (middle third ×2 Mult), Geode U (a rock touched by 3 merges cracks into a gold fruit).
+- **Families**: Citrus Squeeze C (Citrus merges +1 tool charge), Tropical Punch C (Pineapple merges pay 3 coins), Berry Bowl C (Berry merges in a combo +20 points), Fruit Salad U (a combo with 3 families ×3 on its last merge), Orchardist U (+0.5 Mult per Orchard item held).
+- **Economy and chance**: Tip Jar C (+1 coin every 10 merges), Loose Change C (selling a charm gives 2 more), Compound Interest U (+0.05 Mult per coin of interest this run), Double or Nothing U (each merge 1 in 2 ×2 Mult, else ×0.75).
+- **Boss counters**: Blue Cheese U (mouldy fruit merge with each other at ×2), Ice Sculptor U (fruit that were frozen ×2 on their next merge), Sweet Tooth C (Sticky fruit +20 points when they merge).
+- **Throwing**: Lob C (thrown fruit fly higher and land 0.5 s later).
+
+Pack Leader, Skyline and the Lv5 pet ×1.25 break the "no unconditional ×Mult below rare" rule on purpose, each earned or gated. Bot-check them.
+
+### New fusions (22)
+New + new: Cluster Bomb (Shrapnel + Chain Blast), Citrus Blast (Zest Bomb + Citrus Squeeze), Big Bang (Bloom Bomb + Landslide), Full Deck (Joker Seed + Wild Card), Carnival (Masquerade + Fruit Salad), Alpha (Pack Leader + Pet Collar), Feast (Well Fed + Doggy Bag), Gold Digger (Truffle Hunt + Gold Rush), Honeycomb (Pollen Count + Cross-Pollination), Playground (Nursery + Kindling), Skyscraper (Skyline + Big Break), Avalanche (Domino + Drumroll), Harvest Festival (Harvest Moon + Seed Bank), Fort Knox (Gold Plating + Gold Standard), Workshop (Recycler + Toolsmith), Amphitheatre (Centre Stage + Floor Show), Crystal Cave (Geode + Pebble Polish), Hedge Fund (Compound Interest + Tip Jar), Fondue (Blue Cheese + Ice Sculptor).
+New + existing: Grand Finale (Finisher + Crescendo), All In (Double or Nothing + Lucky Clover), Catapult (Lob + Curveball).
+Each is about both halves plus a bit. Still without a recipe: Short Fuse, Demolition, Wild Card, Ballast, Rapid Fire, Compost Bin, Jump Start, Tremor, Balcony, Tropical Punch, Berry Bowl, Loose Change, Sweet Tooth, Pip Squeak.
