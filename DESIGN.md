@@ -812,6 +812,35 @@ Order of work: shop changes, editions, pet levels, then items in batches of abou
 
 **Award locks (v1.45, the user's ask):** 11 awards each open one new item: Good Boy (clear a jar holding a pet) Pet Collar, The Very Hungry Caterpillar (Caterpillar level 5) Well Fed, Top of the Food Chain (4 level 5 pets at once) Alpha, Golden Thread (a fruit gold through 6 merges) Gold Standard, Kaboom (5 fruit from one Boom) Chain Blast, Wild Night (3 Wildcard merges in a jar) Masquerade, Cheese Course (beat The Rot) Blue Cheese, Thaw (beat Cold Snap) Ice Sculptor, Tiny Army (20 fruit of size 2 to 4 in a jar) Nursery, High Rise (3 fruit of size 8+ at once) Skyline, Domino Effect (a combo of 7) Domino. The items from before the expansion stay open (standing decision 2).
 
+**Built in v1.46 (18 Nov), batch 4:** seeds, tools, position and rocks, economy and chance, Lob, fusions Harvest Festival, Workshop, Amphitheatre, Crystal Cave, Hedge Fund, All In, Catapult. Changes from the plan: Recycler makes every 4th tool use in a jar free (a tool can only be used at full charge, so "refund 1 when used at full charge" would always fire); Toolsmith makes targeted tools 2 charge cheaper instead of two uses at 1.5× (Workshop: every 3rd use free); Compost Bin reads the jar just played; Compound Interest is capped at +5, Hedge Fund at +7. Double or Nothing counts as a chance charm for Horseshoe and Rabbit's Foot; its chance (and All In's) is capped at 3 in 4 since v1.47, so Horseshoe can not make it certain.
+
+## Orchard expansion (built in v1.47, 18 Nov)
+
+The user's call: the Orchard was thin (17 items, mostly Common) and should grow by about 20, more Uncommons, each quietly feeding one of the new builds. 6 Common, 12 Uncommon, 2 Rare. Every one has a Sour Graft text (`rv`): the periodic ones become a rock, the size ones a Cherry (or a Lemon for Seed Rain). The Orchard shop roll moved from 70/26/4 to 55/41/4.
+
+| Item | Rarity | Does | Feeds |
+|---|---|---|---|
+| Maple Tap | C | every 7th fruit Sticky | Sweet Tooth |
+| Sugar Maple | C | every 10th fruit Candied: +40 points on its merge | any |
+| Cherry Orchard | C | Cherries twice as often | Nursery, Small Fry, Playground |
+| Mushroom Ring | C | every 12th drop mouldy | Blue Cheese, Fondue |
+| Frost Pocket | C | every 10th drop freezes for 3 s | Ice Sculptor, Fondue |
+| Wind Sock | C (needs Slingshot) | throws 25% further | Ricochet, Pinball |
+| Grafting Vine | U | every 12th fruit a Wildcard | Wild Card, Masquerade (no Joker Seed needed) |
+| Gunpowder Tree | U | every 9th fruit a Boom fruit | the bomb charms (no Fireworks needed) |
+| Treat Tree | U (needs a pet) | every 8th fruit a Treat: pets eat it first, +1 XP | pet levels |
+| Double Blossom | U | every 10th drop comes with a free copy | combo, small fruit |
+| Spark Bush | U | every 8th fruit Charged: its merge gives every tool +1 | tools, Stage Fright |
+| Money Tree | U | every 10th fruit carries a coin | economy, Compound Interest |
+| Volunteer Seedlings | U | every 8th fruit one size below the best-seeded size | seeds, Harvest Moon |
+| Termite Mound | U | every 12th fruit Brittle: crumbles 6 s after landing | Bonfire, Demolition, Compost |
+| Tropical Breeze | U | every 20th fruit a Pineapple | Tiki Bar, Tropical Punch |
+| Firefly Glade | U | every 6th fruit Glows: its merge always continues the combo | Finisher, Drumroll, Domino |
+| Sinkhole | U | every 8th drop Heavy | Low Tide, Floor Show, Ballast |
+| Seed Rain | U | every 6th fruit a Cherry or Strawberry | small fruit, Tiny Army |
+| Gourd Vine | R | every 15th fruit a Pear | big fruit, Skyline |
+| Golden Apple Tree | R | every 12th fruit a gold Apple | gold, big fruit |
+
 ### Shop and crates
 - 5 charm slots in the shop (was 3), 6 with Bigger Shelf. The rare chance per slot goes from 4% to 2.4%, so rares offered per run stay at about 2.9. With the pool at about 52 commons and 79 uncommons, per-item offer rates come back to today's.
 - Shop crates offer a ready fusion as their first pick, like boss crates: the Charm Crate a charm fusion, the Tool Crate a tool fusion, the Seed Crate a fusion with a seed half (Seed Vault, Greenhouse, Bloom, Honeycomb, Harvest Festival). Fusions free a slot, so getting them sooner eases slot pressure.
