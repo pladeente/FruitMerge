@@ -21,7 +21,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
 /* pet groups for req: CAT = brings the caterpillar, EAT = a pet that eats fruit, PETS = any pet */
 /* a chance charm missed: counted for Rabbit's Foot (c.mis is only there on a real merge, never in the score table) */
 const miss=c=>{if(c.mis)c.mis.n++;return 1;};
-const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'],BEE=['bee','bfly','nectar'],MOLE=['mole','zoo'],BOMB=['boom','volcano','cbomb'],WILD=['joker','fdeck'];
+const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'],BEE=['bee','bfly','nectar'],MOLE=['mole','zoo'],BOMB=['boom','volcano','cbomb','gtree'],WILD=['joker','fdeck','vine'];
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
@@ -161,9 +161,30 @@ const CH={
  tjar:{n:'Tip Jar',r:0,c:4,d:'Every 10th merge of a jar pays 1 coin.'},
  lchange:{n:'Loose Change',r:0,c:4,d:'Selling a charm gives 2 more coins.'},
  cint:{n:'Compound Interest',r:1,c:7,d:'+0.05 Mult for every coin of interest you have earned this run (up to +5).',add:c=>Math.min(5,(c.intc||0)*.05)},
- dnoth:{n:'Double or Nothing',r:1,c:6,d:'Every merge has a 1 in 2 chance of ×2 Mult. Otherwise it gets ×0.75.',x:c=>c.l<0||c.nr?1:Math.random()<.5*c.luck?2:(miss(c),.75)},
+ dnoth:{n:'Double or Nothing',r:1,c:6,d:'Every merge has a 1 in 2 chance of ×2 Mult. Otherwise it gets ×0.75.',x:c=>c.l<0||c.nr?1:Math.random()<Math.min(.75,.5*c.luck)?2:(miss(c),.75)},
  /* throwing */
  lob:{n:'Lob',r:0,c:4,req:'sling',d:'Thrown fruit fly higher, so they land about half a second later.'},
+ /* Orchard expansion (v1.47): 20 Orchard items, most of them uncommon, each feeding a new build from the side. rv = what Sour Graft makes it do */
+ mtap:{n:'Maple Tap',r:0,c:4,o:1,rv:'Every 7th fruit is a rock.',d:'Every 7th fruit is Sticky and stays where it lands.'},
+ smaple:{n:'Sugar Maple',r:0,c:4,o:1,rv:'Every 10th fruit is a rock.',d:'Every 10th fruit is Candied: when it merges, the merge scores +40 points.'},
+ corch:{n:'Cherry Orchard',r:0,c:4,o:1,rv:'Cherries (1) drop half as often.',d:'Cherries (1) drop twice as often.'},
+ mring:{n:'Mushroom Ring',r:0,c:4,o:1,rv:'Every 12th fruit you drop is a rock.',d:'Every 12th fruit you drop arrives mouldy.'},
+ fpock:{n:'Frost Pocket',r:0,c:4,o:1,rv:'Every 10th fruit you drop is a rock.',d:'Every 10th fruit you drop freezes where it lands for 3 seconds.'},
+ wsock:{n:'Wind Sock',r:0,c:4,o:1,req:'sling',rv:'Thrown fruit fly 25% less far.',d:'Thrown fruit fly 25% further.'},
+ vine:{n:'Grafting Vine',r:1,c:6,o:1,rv:'Every 12th fruit is a rock.',d:'Every 12th fruit is a Wildcard: it merges with a fruit of any size and makes one size up from the bigger, for half the points.'},
+ gtree:{n:'Gunpowder Tree',r:1,c:6,o:1,rv:'Every 9th fruit is a rock.',d:'Every 9th fruit is a Boom fruit that blows up the fruit next to it.'},
+ treat:{n:'Treat Tree',r:1,c:6,o:1,req:PETS,rv:'Every 8th fruit is a rock.',d:'Every 8th fruit is a Treat. Your pets eat Treats first, and every Treat eaten gives that pet 1 XP towards its next level.'},
+ dblos:{n:'Double Blossom',r:1,c:6,o:1,rv:'Every 10th fruit you drop is a rock.',d:'Every 10th fruit you drop comes with a free copy beside it.'},
+ sbush:{n:'Spark Bush',r:1,c:6,o:1,rv:'Every 8th fruit is a rock.',d:'Every 8th fruit is Charged: when it merges, every tool gets +1 charge.'},
+ mtree:{n:'Money Tree',r:1,c:6,o:1,rv:'Every 10th fruit is a rock.',d:'Every 10th fruit carries a coin: when it merges, it pays 1 coin.'},
+ vol:{n:'Volunteer Seedlings',r:1,c:6,o:1,rv:'Every 8th fruit is a Cherry (1).',d:'Every 8th fruit is one size below the size you hold the most seed levels in, so two of them merge into it (up to an Orange).'},
+ term:{n:'Termite Mound',r:1,c:6,o:1,rv:'Every 12th fruit is a rock.',d:'Every 12th fruit is Brittle: if it has not merged 6 seconds after landing, it crumbles away (counts as destroyed).'},
+ tbrz:{n:'Tropical Breeze',r:1,c:6,o:1,rv:'Every 20th fruit is a Cherry (1).',d:'Every 20th fruit is a Pineapple (8).'},
+ glade:{n:'Firefly Glade',r:1,c:6,o:1,rv:'Every 6th fruit is a rock.',d:'Every 6th fruit Glows: a merge with a glowing fruit always counts as part of a combo, however long it has been.'},
+ sink:{n:'Sinkhole',r:1,c:6,o:1,rv:'Every 8th fruit you drop is a rock.',d:'Every 8th fruit you drop is Heavy, like Lead Weight: 8 times the mass, it sinks and pushes other fruit aside.'},
+ srain:{n:'Seed Rain',r:1,c:5,o:1,rv:'Every 6th fruit is a Lemon (4).',d:'Every 6th fruit is a Cherry (1) or a Strawberry (2).'},
+ gourd:{n:'Gourd Vine',r:2,c:8,o:1,rv:'Every 15th fruit is a Cherry (1).',d:'Every 15th fruit is a Pear (7).'},
+ gapple:{n:'Golden Apple Tree',r:2,c:9,o:1,rv:'Every 12th fruit is a Cherry (1).',d:'Every 12th fruit is a gold Apple (6).'},
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance (g = growth). NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores twice its size\'s base points and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes an Orange (5) or bigger gives 1 drop back.',x:()=>1.5}, /* v1.41: growth per drop left and drops from a Lemon measured 80 to 88% with the bot, cut */
@@ -267,7 +288,7 @@ const CH={
  amph:{n:'Amphitheatre',r:3,c:12,fu:['cstage','fshow'],d:'Merges in the middle third of the jar get ×2.5 Mult. Merges touching the floor score +25 points.',x:c=>c.mid?2.5:1,chip:c=>c.floor?25:0},
  ccave:{n:'Crystal Cave',r:3,c:12,fu:['geode','ppol'],d:'A rock touched by 2 merges cracks open into a gold fruit of its size. Every rock touching a merge adds +20 points to it.',chip:c=>(c.rkt||0)*20},
  hfund:{n:'Hedge Fund',r:3,c:12,fu:['cint','tjar'],d:'+0.08 Mult for every coin of interest you have earned this run (up to +7). Every 8th merge of a jar pays 1 coin.',add:c=>Math.min(7,(c.intc||0)*.08)},
- allin:{n:'All In',r:3,c:12,fu:['dnoth','lucky'],d:'Every merge has a 1 in 2 chance of ×2.5 Mult, with no downside.',x:c=>c.l<0||c.nr?1:Math.random()<.5*c.luck?2.5:miss(c)},
+ allin:{n:'All In',r:3,c:12,fu:['dnoth','lucky'],d:'Every merge has a 1 in 2 chance of ×2.5 Mult, with no downside.',x:c=>c.l<0||c.nr?1:Math.random()<Math.min(.75,.5*c.luck)?2.5:miss(c)},
  cpult:{n:'Catapult',r:3,c:12,fu:['lob','curve'],d:'Thrown fruit fly higher and curve towards the nearest fruit of their size.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
@@ -559,7 +580,7 @@ const RG={
  miss(R){const m=new Set(),hasT=id=>R.tl.some(t=>t.id===id),hold=id=>CH[id]?!!RG.has(R,id):hasT(id);for(const D of[CH,TL])for(const id in D){const f=D[id].fu;if(!f||PF.lk('fu.'+id)||hold(id))continue;const a=hold(f[0]),b=hold(f[1]);if(a!==b)m.add(a?f[1]:f[0]);}return m;},
  fwW:(R,m)=>k=>m.has(k)?2+((R.fw||{})[k]||0):1,
  /* n Orchard items the run does not hold, rarity rolled like the charms (70/26/4, Good Taste shifts it) */
- orPick(R,n,not=[],w=()=>1){const o=[],tt=R.up.taste;for(let i=0;i<n;i++){const left=Object.keys(CH).filter(k=>CH[k].o&&!CH[k].fu&&!CH[k].dev&&!PF.lk('ch.'+k)&&!RG.has(R,k)&&!o.includes(k)&&!not.includes(k));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;o.push(RG.pickW(from,1,w)[0]);}return o;},
+ orPick(R,n,not=[],w=()=>1){const o=[],tt=R.up.taste;for(let i=0;i<n;i++){const left=Object.keys(CH).filter(k=>CH[k].o&&!CH[k].fu&&!CH[k].dev&&!PF.lk('ch.'+k)&&!RG.has(R,k)&&!o.includes(k)&&!not.includes(k));if(!left.length)break;const r=Math.random(),rar=r<.55-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;o.push(RG.pickW(from,1,w)[0]);}return o;},
  pick(a,n){const o=[];while(o.length<n&&a.length)o.push(a.splice(rint(a.length),1)[0]);return o;},
  /* the same, with a weight per item: w(item) */
  pickW(a,n,w){const o=[];while(o.length<n&&a.length){let t=0,i=0;for(const k of a)t+=w(k);let r=Math.random()*t;while(i<a.length-1&&(r-=w(a[i]))>=0)i++;o.push(a.splice(i,1)[0]);}return o;},
@@ -614,7 +635,7 @@ const RG={
  sellOr(R,i){const c=R.or[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.or.splice(i,1);return true;},
  sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r)+(RG.has(R,'lchange')?2:0);R.ch.splice(i,1);return true;},
  reroll(R){const fr=R.tg.roll>0&&RG.rrBase(R)>0,p=fr?0:RG.rrBase(R);if(R.coins<p)return false;RG.pay(R,p);const s=RG.stock(R);s.rr=R.shop.rr+(fr?0:1);if(fr&&--R.tg.roll<=0)delete R.tg.roll;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
- ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),pl:k=>RG.has(R,(RG.pob(R,k)||{}).id)?RG.pl(R,k):1,lvq:()=>R.lvq&&R.lvq.shift(),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
+ ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),pl:k=>RG.has(R,(RG.pob(R,k)||{}).id)?RG.pl(R,k):1,lvq:()=>R.lvq&&R.lvq.shift(),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},sdb:()=>R.sd.reduce((b,v,l)=>v>(R.sd[b]||0)?l:b,0),score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
 /* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------
@@ -682,6 +703,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='up'){inc('ups');PF.inc('up.'+d.id+'.buy');}
  else if(n==='seed'){inc('seeds');PF.inc('sd.'+d.l+'.buy');}
  else if(n==='grow')inc('grown');
+ else if(n==='treat'){const o=RG.pob(R,d.k);if(o)RG.pxp(R,o,1);} /* Treat Tree: a Treat eaten gives its pet 1 XP */
  else if(n==='pet'||n==='hop'){if(n==='pet'){inc('pets');inc('pet.'+d.k);}const o=RG.pob(R,n==='hop'?'lady':d.k==='cat'?'cat':d.k);if(o){o.a=(o.a||0)+1;if(o.a>=5){o.a=0;RG.pxp(R,o,1);}}} /* hop: the ladybird moved on, only for pet XP */
  else if(n==='roll')inc('rolls');
  else if(n==='skip'){inc('skips');R.dsk=(R.dsk||0)+1;}
