@@ -21,7 +21,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
 /* pet groups for req: CAT = brings the caterpillar, EAT = a pet that eats fruit, PETS = any pet */
 /* a chance charm missed: counted for Rabbit's Foot (c.mis is only there on a real merge, never in the score table) */
 const miss=c=>{if(c.mis)c.mis.n++;return 1;};
-const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'];
+const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'],BEE=['bee','bfly','nectar'],MOLE=['mole','zoo'],BOMB=['boom','volcano','cbomb'];
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
@@ -94,6 +94,21 @@ const CH={
  treats:{n:'Pet Treats',r:0,c:4,req:EAT,d:'Every fruit your pets eat scores 30 more points.'},
  chrys:{n:'Chrysalis',r:1,c:6,req:CAT,d:'Every 4th fruit your caterpillar eats, it turns into a butterfly: +0.5 Mult for the rest of the run.',add:c=>c.ch.v||0,live:1},
  appetite:{n:'Big Appetite',r:1,c:6,req:EAT,d:'Your pets can eat bigger fruit: the caterpillar and mole up to size 5, the hedgehog up to size 7. Eating a size 4 or bigger fruit scores 3 times as much.'},
+ /* batch 1 of the pool expansion (v1.43, DESIGN.md "Pool expansion plan"): pets */
+ collar:{n:'Pet Collar',r:0,c:4,req:PETS,d:'Your pets gain levels twice as fast.'},
+ dbag:{n:'Doggy Bag',r:0,c:4,req:EAT,d:'+0.1 Mult for every fruit your pets have eaten this jar.',add:c=>(c.ml||0)*.1},
+ pcount:{n:'Pollen Count',r:0,c:5,req:BEE,d:'+0.5 Mult for every pollinated fruit in the jar.',add:c=>(c.pn||0)*.5},
+ truffle:{n:'Truffle Hunt',r:0,c:4,req:MOLE,d:'Every fruit your Mole eats pays 1 coin.'},
+ wfed:{n:'Well Fed',r:1,c:6,req:EAT,d:'Once your pets have eaten 3 fruit in a jar, ×2 Mult for the rest of the jar.',x:c=>(c.ml||0)>=3?2:1},
+ pack:{n:'Pack Leader',r:1,c:7,req:PETS,d:'Starts at ×1 Mult, +0.25 for every pet you hold.',x:c=>1+.25*(c.npt||0)},
+ xpol:{n:'Cross-Pollination',r:1,c:6,req:BEE,d:'The first pollinated merge of each jar gives the seed of the size it makes +1 level.'},
+ /* bombs (Boom fruit come from Fireworks, Volcano and the Cherry Bomb tool) */
+ shortf:{n:'Short Fuse',r:0,c:4,req:BOMB,d:'Boom fruit go off the moment they land, and score +10 points for every fruit they hit.'},
+ shrap:{n:'Shrapnel',r:0,c:4,req:BOMB,d:'Boom blasts reach 50% further and hit up to 5 fruit instead of 3.'},
+ demo:{n:'Demolition',r:0,c:5,d:'Every merge scores +3 points for every fruit destroyed (removed without merging) this jar.',chip:c=>(c.kd||0)*3},
+ zbomb:{n:'Zest Bomb',r:1,c:6,req:BOMB,d:'Boom fruit only hit Citrus (Lemons and Oranges), up to 3 anywhere in the blast. Every Citrus destroyed gives +0.3 Mult for the rest of the jar.',add:c=>(c.zb||0)*.3},
+ bbomb:{n:'Bloom Bomb',r:1,c:6,req:BOMB,d:'Boom fruit grow the fruit they hit one size instead of destroying them. A grown fruit scores half when it next merges.'},
+ cblast:{n:'Chain Blast',r:1,c:6,req:BOMB,d:'1 in 3 fruit destroyed by a Boom explode too.'},
  /* legendaries: each one breaks a rule, or grows ×Mult over the run. Phoenix (no slot, grows on a save) and Cornucopia in makeGame, White Flag in RG.jarCfg and RG.advance, Stowaway in RG.slots, RG.os and RG.score, Heirloom grows in RG.advance (g = growth). NSL = the ones that take no slot */
  phoenix:{n:'Phoenix',r:4,c:15,d:'Takes no charm slot. If the pile overflows, the top half of the jar is cleared instead, once in every jar: each fruit cleared scores twice its size\'s base points and Phoenix gains ×0.5 Mult. Starts at ×1.',x:c=>1+(c.ch.v||0),live:'x'},
  horn:{n:'Cornucopia',r:4,c:15,d:'×1.5 Mult. Every merge that makes an Orange (5) or bigger gives 1 drop back.',x:()=>1.5}, /* v1.41: growth per drop left and drops from a Lemon measured 80 to 88% with the bot, cut */
@@ -177,6 +192,10 @@ const CH={
  jam:{n:'Jam',r:3,c:12,fu:['picker','berry'],d:'Strawberries (2) and Grapes (3) drop twice as often. Berry merges score +25 points and get ×1.5 Mult.',chip:c=>c.fa==='be'?25:0,x:c=>c.fa==='be'?1.5:1},
  mill:{n:'Cider Mill',r:3,c:12,fu:['cider','hothouse'],d:'1 in 12 fruit you drop is an Apple (6). Pome merges get ×4 Mult.',x:c=>c.fa==='po'?4:1},
  zen:{n:'Zen Garden',r:3,c:12,fu:['garg','rgard'],d:'Every 6th fruit is a rock. Rocks never count as over the line. Starts at ×1 Mult, +0.25 for every rock in the jar.',x:c=>1+.25*(c.rk||0)},
+ alpha:{n:'Alpha',r:3,c:12,fu:['pack','collar'],d:'Starts at ×1 Mult, +0.35 for every pet you hold. Your pets gain levels three times as fast.',x:c=>1+.35*(c.npt||0)},
+ feast:{n:'Feast',r:3,c:12,fu:['wfed','dbag'],d:'+0.15 Mult for every fruit your pets have eaten this jar. Once they have eaten 3, ×2.5 Mult for the rest of the jar.',add:c=>(c.ml||0)*.15,x:c=>(c.ml||0)>=3?2.5:1},
+ hcomb:{n:'Honeycomb',r:3,c:12,fu:['pcount','xpol'],d:'+0.6 Mult for every pollinated fruit in the jar. The first 2 pollinated merges of each jar give the seed of the size they make +1 level.',add:c=>(c.pn||0)*.6},
+ cluster:{n:'Cluster Bomb',r:3,c:12,fu:['shrap','cblast'],d:'Boom blasts reach 50% further and hit up to 5 fruit. Every fruit a Boom destroys explodes too, and scores +20 points.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
@@ -241,7 +260,7 @@ const UPG={
  seedbag:{n:'Seed Bag',c:4,max:1,d:'The shop offers 1 more seed.'},
  cata:{n:'Catalogue',c:5,max:1,d:'The shop offers 1 more upgrade.'},
  dice:{n:'Loaded Dice',c:5,max:1,d:'The first reroll in every shop is free.'},
- taste:{n:'Good Taste',c:6,max:2,r:1,d:'Rarer charms turn up in the shop more often. Common, Uncommon and Rare odds go from 70/26/4 to 62.5/30.5/7 (55/35/10 with two).'},
+ taste:{n:'Good Taste',c:6,max:2,r:1,d:'Rarer charms turn up in the shop more often. Common, Uncommon and Rare odds go from 70/27.6/2.4 to 62.5/33.3/4.2 (55/39/6 with two).'},
  haggle:{n:'Haggler',c:4,max:1,d:'Charms and tools sell for their full price.'},
  vault:{n:'Vault',c:5,max:2,d:'Interest can pay 2 more coins per jar.'},
  lunch:{n:'Packed Lunch',c:5,max:3,d:'+1 coin every time you clear a jar.'},
@@ -307,8 +326,14 @@ const TL={
 /* Crates: pick one thing out of a few, for free. r = charm rarity odds, sd = seed levels in one pick, coin = the coin pick, out = coins for leaving it.
    Bosses drop gold (melon every 4th depth), skipping a jar gives wood, the shop sells wood crates of one kind (CRP = price). */
 const CRT={wood:{n:'Wooden crate',r:[.7,.26,.04],sd:1,coin:5,out:2},gold:{n:'Gold crate',r:[.45,.45,.1],sd:2,coin:9,out:3},melon:{n:'Melon crate',r:[0,.65,.3],lg:.05,sd:3,coin:14,out:4}};
-const NSL=['stow','phoenix'],CRL=.04,CRO=.2; /* a bought Charm Crate: the chance that a charm inside is a Legendary. lg on a tier is the same chance for that tier's crates. At most one Legendary in a crate */
-const CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
+const NSL=['stow','phoenix'],CRL=.04,CRO=.2,SHN=5; /* SHN: charms on the shop shelf (v1.43, was 3). The rare chance per slot went from 4% to 2.4% (+1.8% per Good Taste) so rares per run stay the same */ /* a bought Charm Crate: the chance that a charm inside is a Legendary. lg on a tier is the same chance for that tier's crates. At most one Legendary in a crate */
+/* Editions (v1.43, the user's idea after Balatro's foil and holographic): any charm, Orchard item or tool can come Candied or Juiced, rolled on shop and crate offers.
+   The bonus counts on every merge while the item is held and working. p = points, m = Mult, $ = added to the price (and so to the sell value), w = chance per offer */
+const ED={c:{n:'Candied',p:15,$:2,w:.04,d:'+15 points on every merge'},j:{n:'Juiced',m:1.5,$:3,w:.02,d:'+1.5 Mult'}},edR=()=>{const r=Math.random();return r<ED.j.w?'j':r<ED.j.w+ED.c.w?'c':'';},ed$=e=>e&&ED[e]?ED[e].$:0,edB=(a,b)=>a==='j'||b==='j'?'j':a||b||''; /* edB: a fusion keeps the better edition of its halves */
+/* Pet levels (v1.43, Vampire Survivors): a pet item gains 1 XP per jar cleared while held and 1 per 5 actions (meals, pollinations, ladybird hops).
+   PK = the items that carry each pet (fusions keep the level), PLX = XP needed for Lv1 to Lv5. XP lives in the charm as x (a = actions towards the next XP), selling loses it */
+const PK={cat:['pet','frenzy'],bee:['bee','bfly','nectar'],mole:['mole','zoo'],hog:['hog'],lady:['lady']},PLX=[0,2,5,9,14],PLK=Object.fromEntries(Object.entries(PK).flatMap(([k,a])=>a.map(id=>[id,k])));
+const SDF=['svault','green','bloom'],CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
 /* Contracts: an optional handicap on a normal jar (never a boss or mini boss jar), offered from depth 2. Sign it and the jar is harder, clear the jar and it pays.
    One is drawn for every such jar: R.ct = {id, on (signed), sd (the seed tier it pays, for a seed contract)}.
    r = a boss rule switched on at phase 1, dr = drops taken away, q = target multiplier, fz = seconds less the pile may sit over the line.
@@ -418,9 +443,11 @@ const RG={
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
  /* points for a scoring event, plus which charms took part (hit) so the screen can flash them */
- score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
+ score(R,base,c){let chips=base,a=1+R.up.sauce*.25,x=1;const hit=[],ft=c.l>0&&RG.has(R,'ftree')&&R.sd[RG.sib(c.l)]||0,sd=c.l>0?R.sd[c.l]+ft/2:0;if(ft)hit.push('ftree');c.coins=R.coins;c.sdn=R.sd.filter(v=>v>0).length;c.spt=R.sp||0;c.tf=R.tl.length>0&&R.tl.every(t=>t.c>=RG.need(R,t.id));c.nc=R.ch.length;c.npt=R.ch.filter(o=>PLK[o.id]).length;c.luck=RG.luck(R);c.sdl=R.sd.reduce((a,b)=>a+b,0);c.full=R.ch.length>=RG.slots(R);c.nfu=R.ch.filter(x=>CH[x.id].fu).length+R.or.filter(x=>CH[x.id].fu).length+R.tl.filter(x=>TL[x.id].fu).length;if(c.l>=0)chips+=R.up.fert*2;if(c.l>=6)chips+=R.up.trellis*30;const sp=sd&&c.first?(RG.has(R,'svault')?3:RG.has(R,'sprout')?2:1):1;if(sd){chips+=sd*sp*sdP(c.l);a+=sd*sp*SDM;}if(sp>1)hit.push(sp>2?'svault':'sprout');
   for(let i=R.off||0;i<R.ch.length;i++){const ch=R.ch[i],d=CH[ch.id];let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push(ch.id);}
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
+  for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
+  const eds=[...R.ch.slice(R.off||0),...R.or.filter(o=>RG.has(R,o.id)),...R.tl];for(const o of eds)if(o.e&&ED[o.e]){const E=ED[o.e];if(E.p&&c.l>=0)chips+=E.p;if(E.m)a+=E.m;} /* editions: Candied points, Juiced Mult */
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* Family Tree: the other tier of the same family (FAM), or -1 (Pineapple has none). The Peach's is the Cherry, which never has a seed */
  sib:l=>FAM.findIndex((f,i)=>i!==l&&f===FAM[l]),
@@ -452,9 +479,9 @@ const RG={
   if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
  advance(R,sum){R.coins+=sum;const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
- stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:3+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.96-.03*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
+ stock(R){const own=R.ch.map(c=>c.id),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:SHN+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.976-.018*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
   const take=RG.pick,sizes=RG.sizes(R);
-  const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0};if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
+  const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0,ed:{}};for(const k of ['ch','or','tl'])(S[k]||[]).forEach((id,i)=>{const e=id&&edR();if(e)S.ed[k+i]=e;});if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
  /* steering to fusions (v1.35): while the run holds one half of a fusion, the missing half weighs 2 in the shop and in crates, +1 for every shop that has not shown it (R.fw), back to 2 once it shows. Rarity is rolled first, so it only wins within its rarity */
  miss(R){const m=new Set(),hasT=id=>R.tl.some(t=>t.id===id),hold=id=>CH[id]?!!RG.has(R,id):hasT(id);for(const D of[CH,TL])for(const id in D){const f=D[id].fu;if(!f||PF.lk('fu.'+id)||hold(id))continue;const a=hold(f[0]),b=hold(f[1]);if(a!==b)m.add(a?f[1]:f[0]);}return m;},
  fwW:(R,m)=>k=>m.has(k)?2+((R.fw||{})[k]||0):1,
@@ -466,14 +493,19 @@ const RG={
  sizes(R){const a=[];for(let l=1;l<=(R.depth<4?7:10);l++)a.push(l);return a;},
  /* ---- fusions ---- */
  /* every fusion the run holds both halves of: [{id, k (ch or tl), a, b}] */
+ pob:(R,k)=>R.ch.find(c=>PK[k].includes(c.id)), /* the held item that carries pet k */
+ plv:o=>o?PLX.filter(t=>(o.x||0)>=t).length:1, /* its level */
+ pl:(R,k)=>RG.plv(RG.pob(R,k)),
+ pxp(R,o,n){if(!o||!PLK[o.id])return;const a=RG.plv(o);o.x=(o.x||0)+n*(RG.has(R,'alpha')?3:RG.has(R,'collar')?2:1);const b=RG.plv(o);if(b>a)(R.lvq=R.lvq||[]).push({id:o.id,lv:b});}, /* add XP, queue a level-up for the engine to show */
+ fuK(f){const k=[f.k==='tl'?'tl':'ch'];if(SDF.includes(f.id))k.push('sd');return k;}, /* the shop crates that offer this fusion (v1.43): Charm Crate a charm fusion, Tool Crate a tool fusion, Seed Crate one with a seed half */
  fusable(R){const o=[],hasT=id=>R.tl.some(t=>t.id===id);for(const id in CH){const f=CH[id].fu;if(f&&!PF.lk('fu.'+id)&&RG.has(R,f[0])&&RG.has(R,f[1]))o.push({id,k:'ch',a:CH[f[0]].n,b:CH[f[1]].n});}
   for(const id in TL){const f=TL[id].fu;if(f&&!PF.lk('fu.'+id)&&hasT(f[0])&&RG.has(R,f[1]))o.push({id,k:'tl',a:TL[f[0]].n,b:CH[f[1]].n});}return o;},
  /* make it: both halves go, the fusion takes the first half's place. A charm fusion keeps what its halves had grown */
- fuse(R,id){const c=CH[id],t=TL[id];if(c&&c.fu){const row=c.o?R.or:R.ch,at=x=>R.ch.includes(x)?R.ch:R.or,a=RG.has(R,c.fu[0]),b=RG.has(R,c.fu[1]);if(!a||!b)return false;const[k,o]=at(a)===row?[a,b]:[b,a];if(at(k)!==row)return false;const v=(a.v||0)+(b.v||0);row[row.indexOf(k)]=v?{id,v}:{id};const L=at(o);L.splice(L.indexOf(o),1);return true;} /* an Orchard half and a charm half make a charm in the charm's place; two Orchard halves make an Orchard item */
-  if(t&&t.fu){const i=R.tl.findIndex(x=>x.id===t.fu[0]),j=R.ch.findIndex(x=>x.id===t.fu[1]);if(i<0||j<0)return false;R.tl[i]=RG.tool(id,R);R.ch.splice(j,1);return true;}return false;},
+ fuse(R,id){const c=CH[id],t=TL[id];if(c&&c.fu){const row=c.o?R.or:R.ch,at=x=>R.ch.includes(x)?R.ch:R.or,a=RG.has(R,c.fu[0]),b=RG.has(R,c.fu[1]);if(!a||!b)return false;const[k,o]=at(a)===row?[a,b]:[b,a];if(at(k)!==row)return false;const v=(a.v||0)+(b.v||0),e=edB(a.e,b.e),n={id},px=Math.max(a.x||0,b.x||0);if(v)n.v=v;if(e)n.e=e;if(px&&PLK[id])n.x=px;row[row.indexOf(k)]=n;const L=at(o);L.splice(L.indexOf(o),1);return true;} /* an Orchard half and a charm half make a charm in the charm's place; two Orchard halves make an Orchard item */
+  if(t&&t.fu){const i=R.tl.findIndex(x=>x.id===t.fu[0]),j=R.ch.findIndex(x=>x.id===t.fu[1]);if(i<0||j<0)return false;const e=edB(R.tl[i].e,R.ch[j].e);R.tl[i]=RG.tool(id,R);if(e)R.tl[i].e=e;R.ch.splice(j,1);return true;}return false;},
  /* ---- crates ---- */
  /* opts: {k:'ch'|'tl'|'sd'|'coin'|'fu', id, n}. kind = a shop crate of one kind. then = the screen that follows (shop or hub) */
- crate(R,tier,then,kind,lgAll){const w=RG.fwW(R,RG.miss(R)),lg=lgAll?1:kind==='ch'?CRL:kind?0:T0(tier),big=!kind&&tier!=='wood'&&R.tg.boss?2:0,T=CRT[tier],n=3+R.up.crowbar+big,o=[],fu=kind||tier==='wood'?[]:RG.fusable(R);if(fu.length)o.push({k:'fu',id:fu[rint(fu.length)].id});
+ crate(R,tier,then,kind,lgAll){const w=RG.fwW(R,RG.miss(R)),lg=lgAll?1:kind==='ch'?CRL:kind?0:T0(tier),big=!kind&&tier!=='wood'&&R.tg.boss?2:0,T=CRT[tier],n=3+R.up.crowbar+big,o=[],fu=tier==='wood'&&!kind?[]:RG.fusable(R).filter(f=>!kind||RG.fuK(f).includes(kind));if(fu.length)o.push({k:'fu',id:fu[rint(fu.length)].id});
   const all=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&!CH[k].dev&&!PF.lk('ch.'+k)&&!R.ch.some(c=>c.id===k)&&RG.rq(R,CH[k].req)),chs=all.filter(k=>CH[k].r<3),lgs=all.filter(k=>CH[k].r===4),tls=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(t=>t.id===k)&&RG.rq(R,TL[k].req)),sds=RG.sizes(R);let coin=0;
   for(let g=0;o.length<n&&g<60;g++){const r=Math.random(),k=kind||(r<.4?'ch':r<.6?'tl':r<.9?'sd':'coin');
    if(k==='ch'&&lgs.length&&lg&&!o.some(x=>x.lg)&&Math.random()<lg)o.push({k,id:lgs[rint(lgs.length)],lg:1});
@@ -482,10 +514,11 @@ const RG={
    else if(k==='tl'){if(tls.length){const id=RG.pickW(tls.slice(),1,w)[0];tls.splice(tls.indexOf(id),1);o.push({k,id});}}
    else if(k==='sd'){if(sds.length)o.push({k,id:sds.splice(rint(sds.length),1)[0],n:T.sd});}
    else if(!coin){coin=1;o.push({k,n:T.coin});}}
+  for(const x of o)if((x.k==='ch'||x.k==='or'||x.k==='tl')&&!x.lg){const e=edR();if(e)x.e=e;} /* editions on crate picks */
   if(big)delete R.tg.boss;return{tier,then,kind:kind||null,opts:o};},
  /* why a pick can not be taken right now, or '' */
  blocked:(R,o)=>o.k==='ch'&&!NSL.includes(o.id)&&R.ch.length>=RG.slots(R)?'Charms full':o.k==='or'&&R.or.length>=RG.os(R)?'Orchard full':o.k==='tl'&&R.tl.length>=RG.ts(R)?'Tools full':'',
- take(R,i){const o=R.crate&&R.crate.opts[i];if(!o||RG.blocked(R,o))return null;if(o.k==='ch')R.ch.push({id:o.id});else if(o.k==='or')R.or.push({id:o.id});else if(o.k==='tl')R.tl.push(RG.tool(o.id,R));else if(o.k==='sd')R.sd[o.id]+=o.n;else if(o.k==='coin')R.coins+=o.n;else if(!RG.fuse(R,o.id))return null;else if(RG.has(R,'root')){const a=RG.sizes(R),l=a[rint(a.length)];R.sd[l]+=2;o.root=l;} /* Rootstock */
+ take(R,i){const o=R.crate&&R.crate.opts[i];if(!o||RG.blocked(R,o))return null;if(o.k==='ch')R.ch.push(o.e?{id:o.id,e:o.e}:{id:o.id});else if(o.k==='or')R.or.push(o.e?{id:o.id,e:o.e}:{id:o.id});else if(o.k==='tl'){const t=RG.tool(o.id,R);if(o.e)t.e=o.e;R.tl.push(t);}else if(o.k==='sd')R.sd[o.id]+=o.n;else if(o.k==='coin')R.coins+=o.n;else if(!RG.fuse(R,o.id))return null;else if(RG.has(R,'root')){const a=RG.sizes(R),l=a[rint(a.length)];R.sd[l]+=2;o.root=l;} /* Rootstock */
   if(R.shop&&R.shop[o.k]&&(o.k==='ch'||o.k==='tl'||o.k==='or'))R.shop[o.k]=R.shop[o.k].map(x=>x===o.id?null:x); /* the shop was stocked before the crate opened: take that item off its shelf */
   R.at=R.crate.then;R.crate=null;return o;},
  leave(R){const c=R.crate;if(!c)return 0;const n=CRT[c.tier].out;R.coins+=n;R.at=c.then;R.crate=null;return n;},
@@ -496,16 +529,19 @@ const RG={
  skO(R){const a=Object.keys(SKR).filter(k=>k!=='crate'),pre=RG.srw(R)[R.jar],i=a.indexOf(pre);for(let n=0;n<a.length;n++){const x=a[(i+n)%a.length];if(!R.tg[x])return ['crate',x];}return ['crate'];}, /* what skipping the current jar offers: the drawn reward, or the next one along that is not already held, so the map and the hub can name it */
  skip(R){if(R.jar>1||RG.jarCfg(R).boss)return false;R.sk=RG.skO(R);R.jar++;R.coins+=R.up.road*3;RG.offer(R);R.at='skip';return true;},
  skipTake(R,id){if(!R.sk||!R.sk.includes(id))return false;R.sk=null;if(id==='crate'){R.crate=RG.crate(R,'wood','hub');R.at='crate';}else if(id==='detour'){RG.bribe(R);R.at='hub';}else{R.tg[id]=SKR[id].u;R.at='hub';}return true;},
- buy(R,i){const id=R.shop.ch[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;RG.pay(R,p);R.ch.push({id});R.shop.ch[i]=null;return true;},
+ sv:(R,o,tl)=>tl?RG.sellV(R,TL[o.id].c+ed$(o.e)):RG.sellV(R,CH[o.id].c+ed$(o.e),CH[o.id].r), /* sell value of an owned item, edition included */
+ se:(R,k,i)=>R.shop&&R.shop.ed&&R.shop.ed[k+i]||'', /* the edition of shop offer k (ch, or, tl) at i */
+ pr:(R,k,i)=>{const id=R.shop[k][i];return RG.cost(R,(k==='tl'?TL:CH)[id].c+ed$(RG.se(R,k,i)));}, /* its price */
+ buy(R,i){const id=R.shop.ch[i],e=RG.se(R,'ch',i),p=id&&RG.cost(R,CH[id].c+ed$(e));if(!id||R.coins<p||R.ch.length>=RG.slots(R)||R.ch.some(c=>c.id===id))return false;RG.pay(R,p);R.ch.push(e?{id,e}:{id});R.shop.ch[i]=null;return true;},
  buyUp(R,i){const id=R.shop.up[i],p=id&&RG.upCost(R,id);if(!id||R.coins<p||!RG.upOk(R,id))return null;RG.pay(R,p);R.up[id]++;R.shop.up[i]=null;if(id==='bribe')RG.bribe(R);if(id==='whet')for(const t of R.tl)t.c=Math.min(t.c,RG.need(R,t.id));return id;},
  buySd(R,i){const l=R.shop.sd[i],p=l&&RG.sdCost(R,l);if(!l||R.coins<p)return 0;RG.pay(R,p);R.sd[l]++;R.shop.sd[i]=null;return l;},
- buyTl(R,i){const id=R.shop.tl[i],p=id&&RG.cost(R,TL[id].c);if(!id||R.coins<p||R.tl.length>=RG.ts(R)||R.tl.some(t=>t.id===id))return false;RG.pay(R,p);R.tl.push(RG.tool(id,R));R.shop.tl[i]=null;return true;},
- sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=RG.sellV(R,TL[t.id].c);R.tl.splice(i,1);return true;},
- buyOr(R,i){const id=R.shop.or&&R.shop.or[i],p=id&&RG.cost(R,CH[id].c);if(!id||R.coins<p||R.or.length>=RG.os(R)||RG.has(R,id))return false;RG.pay(R,p);R.or.push({id});R.shop.or[i]=null;return true;},
- sellOr(R,i){const c=R.or[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c,CH[c.id].r);R.or.splice(i,1);return true;},
- sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c,CH[c.id].r);R.ch.splice(i,1);return true;},
+ buyTl(R,i){const id=R.shop.tl[i],e=RG.se(R,'tl',i),p=id&&RG.cost(R,TL[id].c+ed$(e));if(!id||R.coins<p||R.tl.length>=RG.ts(R)||R.tl.some(t=>t.id===id))return false;RG.pay(R,p);const t=RG.tool(id,R);if(e)t.e=e;R.tl.push(t);R.shop.tl[i]=null;return true;},
+ sellTl(R,i){const t=R.tl[i];if(!t)return false;R.coins+=RG.sellV(R,TL[t.id].c+ed$(t.e));R.tl.splice(i,1);return true;},
+ buyOr(R,i){const id=R.shop.or&&R.shop.or[i],e=RG.se(R,'or',i),p=id&&RG.cost(R,CH[id].c+ed$(e));if(!id||R.coins<p||R.or.length>=RG.os(R)||RG.has(R,id))return false;RG.pay(R,p);R.or.push(e?{id,e}:{id});R.shop.or[i]=null;return true;},
+ sellOr(R,i){const c=R.or[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.or.splice(i,1);return true;},
+ sell(R,i){const c=R.ch[i];if(!c)return false;R.coins+=RG.sellV(R,CH[c.id].c+ed$(c.e),CH[c.id].r);R.ch.splice(i,1);return true;},
  reroll(R){const fr=R.tg.roll>0&&RG.rrBase(R)>0,p=fr?0:RG.rrBase(R);if(R.coins<p)return false;RG.pay(R,p);const s=RG.stock(R);s.rr=R.shop.rr+(fr?0:1);if(fr&&--R.tg.roll<=0)delete R.tg.roll;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
- ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
+ ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),pl:k=>RG.has(R,(RG.pob(R,k)||{}).id)?RG.pl(R,k):1,lvq:()=>R.lvq&&R.lvq.shift(),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
 
 /* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------
@@ -562,7 +598,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='net')inc('nets');
  else if(n==='gold')inc('golds');
  else if(n==='melons')inc('melons2');
- else if(n==='jar'){inc('jars');top('bestDepth',d.depth);top('bestJar',d.score);if(d.boss){inc('bosses');PF.inc('boss.'+d.boss+'.win');}if(d.win){PF.inc('wins');const j=R.jarId||'classic';PF.d.stakes[j]=Math.max(PF.d.stakes[j]||0,R.stake||1);PF.dirty=1;}}
+ else if(n==='jar'){inc('jars');for(const c of R.ch)if(PLK[c.id])RG.pxp(R,c,1);top('bestDepth',d.depth);top('bestJar',d.score);if(d.boss){inc('bosses');PF.inc('boss.'+d.boss+'.win');}if(d.win){PF.inc('wins');const j=R.jarId||'classic';PF.d.stakes[j]=Math.max(PF.d.stakes[j]||0,R.stake||1);PF.dirty=1;}}
  else if(n==='end'){PF.inc('end.'+d.why);if(d.why!=='win'&&d.why!=='quit'&&d.boss)PF.inc('boss.'+d.boss+'.loss');PF.max('bestScore',R.total);top('bestCoins',R.coins);}
  else if(n==='buy'){inc('buys');PF.inc((d.k||'ch')+'.'+d.id+'.buy');}
  else if(n==='sell'){inc('sells');if(R.jst&&(d.k||'ch')==='ch')R.jst['sold.'+d.id]=1;}
@@ -573,7 +609,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  else if(n==='up'){inc('ups');PF.inc('up.'+d.id+'.buy');}
  else if(n==='seed'){inc('seeds');PF.inc('sd.'+d.l+'.buy');}
  else if(n==='grow')inc('grown');
- else if(n==='pet'){inc('pets');inc('pet.'+d.k);}
+ else if(n==='pet'||n==='hop'){if(n==='pet'){inc('pets');inc('pet.'+d.k);}const o=RG.pob(R,n==='hop'?'lady':d.k==='cat'?'cat':d.k);if(o){o.a=(o.a||0)+1;if(o.a>=5){o.a=0;RG.pxp(R,o,1);}}} /* hop: the ladybird moved on, only for pet XP */
  else if(n==='roll')inc('rolls');
  else if(n==='skip'){inc('skips');R.dsk=(R.dsk||0)+1;}
  else if(n==='crate'){inc('crates');PF.inc('crate.'+d.tier);}
