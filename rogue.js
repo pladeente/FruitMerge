@@ -308,7 +308,7 @@ const TL={
    Bosses drop gold (melon every 4th depth), skipping a jar gives wood, the shop sells wood crates of one kind (CRP = price). */
 const CRT={wood:{n:'Wooden crate',r:[.7,.26,.04],sd:1,coin:5,out:2},gold:{n:'Gold crate',r:[.45,.45,.1],sd:2,coin:9,out:3},melon:{n:'Melon crate',r:[0,.65,.3],lg:.05,sd:3,coin:14,out:4}};
 const NSL=['stow','phoenix'],CRL=.04,CRO=.2,SHN=5; /* SHN: charms on the shop shelf (v1.43, was 3). The rare chance per slot went from 4% to 2.4% (+1.8% per Good Taste) so rares per run stay the same */ /* a bought Charm Crate: the chance that a charm inside is a Legendary. lg on a tier is the same chance for that tier's crates. At most one Legendary in a crate */
-const CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
+const SDF=['svault','green','bloom'],CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
 /* Contracts: an optional handicap on a normal jar (never a boss or mini boss jar), offered from depth 2. Sign it and the jar is harder, clear the jar and it pays.
    One is drawn for every such jar: R.ct = {id, on (signed), sd (the seed tier it pays, for a seed contract)}.
    r = a boss rule switched on at phase 1, dr = drops taken away, q = target multiplier, fz = seconds less the pile may sit over the line.
@@ -466,6 +466,7 @@ const RG={
  sizes(R){const a=[];for(let l=1;l<=(R.depth<4?7:10);l++)a.push(l);return a;},
  /* ---- fusions ---- */
  /* every fusion the run holds both halves of: [{id, k (ch or tl), a, b}] */
+ fuK(f){const k=[f.k==='tl'?'tl':'ch'];if(SDF.includes(f.id))k.push('sd');return k;}, /* the shop crates that offer this fusion (v1.43): Charm Crate a charm fusion, Tool Crate a tool fusion, Seed Crate one with a seed half */
  fusable(R){const o=[],hasT=id=>R.tl.some(t=>t.id===id);for(const id in CH){const f=CH[id].fu;if(f&&!PF.lk('fu.'+id)&&RG.has(R,f[0])&&RG.has(R,f[1]))o.push({id,k:'ch',a:CH[f[0]].n,b:CH[f[1]].n});}
   for(const id in TL){const f=TL[id].fu;if(f&&!PF.lk('fu.'+id)&&hasT(f[0])&&RG.has(R,f[1]))o.push({id,k:'tl',a:TL[f[0]].n,b:CH[f[1]].n});}return o;},
  /* make it: both halves go, the fusion takes the first half's place. A charm fusion keeps what its halves had grown */
@@ -473,7 +474,7 @@ const RG={
   if(t&&t.fu){const i=R.tl.findIndex(x=>x.id===t.fu[0]),j=R.ch.findIndex(x=>x.id===t.fu[1]);if(i<0||j<0)return false;R.tl[i]=RG.tool(id,R);R.ch.splice(j,1);return true;}return false;},
  /* ---- crates ---- */
  /* opts: {k:'ch'|'tl'|'sd'|'coin'|'fu', id, n}. kind = a shop crate of one kind. then = the screen that follows (shop or hub) */
- crate(R,tier,then,kind,lgAll){const w=RG.fwW(R,RG.miss(R)),lg=lgAll?1:kind==='ch'?CRL:kind?0:T0(tier),big=!kind&&tier!=='wood'&&R.tg.boss?2:0,T=CRT[tier],n=3+R.up.crowbar+big,o=[],fu=kind||tier==='wood'?[]:RG.fusable(R);if(fu.length)o.push({k:'fu',id:fu[rint(fu.length)].id});
+ crate(R,tier,then,kind,lgAll){const w=RG.fwW(R,RG.miss(R)),lg=lgAll?1:kind==='ch'?CRL:kind?0:T0(tier),big=!kind&&tier!=='wood'&&R.tg.boss?2:0,T=CRT[tier],n=3+R.up.crowbar+big,o=[],fu=tier==='wood'&&!kind?[]:RG.fusable(R).filter(f=>!kind||RG.fuK(f).includes(kind));if(fu.length)o.push({k:'fu',id:fu[rint(fu.length)].id});
   const all=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&!CH[k].dev&&!PF.lk('ch.'+k)&&!R.ch.some(c=>c.id===k)&&RG.rq(R,CH[k].req)),chs=all.filter(k=>CH[k].r<3),lgs=all.filter(k=>CH[k].r===4),tls=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&!R.tl.some(t=>t.id===k)&&RG.rq(R,TL[k].req)),sds=RG.sizes(R);let coin=0;
   for(let g=0;o.length<n&&g<60;g++){const r=Math.random(),k=kind||(r<.4?'ch':r<.6?'tl':r<.9?'sd':'coin');
    if(k==='ch'&&lgs.length&&lg&&!o.some(x=>x.lg)&&Math.random()<lg)o.push({k,id:lgs[rint(lgs.length)],lg:1});
