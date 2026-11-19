@@ -142,6 +142,39 @@
           ".validate": false
         }
       }
+    },
+    "codes": {
+      "$h": {
+        ".write": "auth != null && auth.uid === 'B9EhMhU76IatbPSjcL2ZktLJq1W2' && !data.exists()",
+        ".validate": "newData.hasChildren(['ti', 'tr', 'max'])",
+        "ti": {
+          ".read": true,
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 16"
+        },
+        "tr": {
+          ".read": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 4"
+        },
+        "max": {
+          ".read": true,
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100000"
+        },
+        "n": {
+          ".read": true,
+          ".write": "auth != null && data.parent().child('max').exists() && !data.parent().child('r').child(auth.uid).exists() && newData.val() === (data.exists() ? data.val() : 0) + 1 && newData.val() <= data.parent().child('max').val() && newData.parent().child('r').child(auth.uid).val() === newData.val()",
+          ".validate": "newData.isNumber()"
+        },
+        "r": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && data.parent().parent().child('max').exists() && newData.val() === (data.parent().parent().child('n').exists() ? data.parent().parent().child('n').val() : 0) + 1 && newData.parent().parent().child('n').val() === newData.val()",
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
     }
   }
 }
