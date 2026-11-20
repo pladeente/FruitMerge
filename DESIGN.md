@@ -943,3 +943,15 @@ The user found the flick throw unclear and asked for pull back and release, with
 The user's idea. **Paring Knife** (tool, 5 coins, 7 charge, not locked): tapped while a fruit is in the air (dropped, thrown, or any fruit that has not landed yet; size 2 or bigger, no special fruit), the most recent one splits into two fruit one size smaller, pushed apart sideways (±150·K), keeping its fall or throw speed. The first half keeps gold, pollen and mould. With nothing in the air it does nothing and spends no charge. Each half carries `kn` = the drop count it was cut on: the halves can not merge with each other until the next drop (otherwise every cut would undo itself on landing), and a merge of a half with another fruit before the next drop is ×3 (in the merge's one-off multipliers, beside gold and Double Down), with "Clean cut! ×3". Like Twin with an extra step: the skill is timing the tap and aiming each half at a match. Builds: aim, throwing (Slingshot), small fruit. Not measured by the bot.
 
 **Teppanyaki** (award, Epic, title Teppan Chef): win a run holding the Paring Knife and the Slingshot. It is the first award that opens two looks (`un` can be a list, `unL(a)`): the Great Wave background (`bg.wave`: a red sun, a far mountain, two rolling seas with foam claws, a koi leaping out every 5 s) and the Oni jar skin (`jk.oni`: red lacquer with seigaiha waves, two horns on the frame, three blue spirit flames drifting round it). Both animated.
+
+## Rock awards (v1.65)
+
+The user's idea: awards for winning a rock build. All three ask for a win holding 5 rock items. Rock items: Rock Garden, Gargoyle, Pebble Polish, Geode, Petrify, Shatter. A fusion counts once for each rock item in it (Zen Garden and Crystal Cave 2, Medusa 1), so fusing never lowers the count. 5 was picked over 6: with Ripeness 7's charm slot gone, 5 still fits without fusions (3 charms, Rock Garden, a tool), and 6 would force fusions on Ripeness 8.
+
+| Award | Ripeness | Rarity | Title | Opens |
+|---|---|---|---|---|
+| You Rock! | any | Rare | Stonemason | Cobblestone jar (`k:'cobble'`, cobbles in three greys in dark mortar, still) |
+| Rock and/or Roll! | 4+ | Epic | Rolling Stone | Rock Concert background (`k:'rock'`, animated: dark stage, three sweeping spotlights, rising notes, a boulder rolling across every 8 s) |
+| Rock and Roll Hall of Fame, you! | 8 | Legendary | Rock Star | Rock Star picture (`pf.rstar`, animated: the rock in sunglasses, singing, with a twinkling star and a bobbing note) |
+
+Not measured: how often a run sees 5 rock items. Gargoyle and Geode are Uncommon, the rest Common or tools.

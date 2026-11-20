@@ -4707,6 +4707,10 @@ const AVD={
  '0':{bg:'#ffd6e0',g:[
 '..........kk....','.........kGGk...','........kk......','.......k..k.....','......k....k....','.....k......k...','..kkkk....kkkk..','.krrrrk..krrrrk.',
 'krwrrrrkkrwrrrrk','krrrrrrkkrrrrrrk','krrrrrRkkrrrrrRk','kRrrrRRkkRrrrRRk','.kRRRRk..kRRRRk.','..kkkk....kkkk..','................','................']},
+ rstar:{bg:'#6b3fb0',t:190,g:[
+'.y........pppp..','yyy.......p..p..','.y.......pp.pp..','................','.....kkkkkk.....','...kkssssssk....','..ksssssssdsk...','.kssdssssssssk..',
+'.kkkkkkkkkkkkkk.','.kskwkksskwkksk.','kssskksssskksdk.','kdssskkkkkkssdk.','kddsskrrrrkssddk','.kdddkkkkkkdddk.','..kkDDDDDDDDkk..','....kkkkkkkk....'],
+  fr:[{},{o:{9:'.kskkwksskkwksk.'}},{o:{0:'................',1:'.w........pppp..',2:'..........p..p..',3:'.........pp.pp..',9:'.kskkkksskkkksk.',11:'kdsssssssssssdk.',12:'kddsskkkkkkssddk',13:'.kdddssssssdddk.'}},{o:{0:'................',1:'.w........pppp..',2:'..........p..p..',3:'.........pp.pp..',9:'.kskkkksskkkksk.',11:'kdsssssssssssdk.',12:'kddsskkkkkkssddk',13:'.kdddssssssdddk.'}},{o:{9:'.kskkkksskkkksk.'}},{o:{9:'.kskkkksskkkksk.'}},{o:{0:'................',1:'.w........pppp..',2:'..........p..p..',3:'.........pp.pp..',9:'.kskkkksskkkksk.',11:'kdsssssssssssdk.',12:'kddsskkkkkkssddk',13:'.kdddssssssdddk.'}},{o:{0:'................',1:'.w........pppp..',2:'..........p..p..',3:'.........pp.pp..',9:'.kskkkksskkkksk.'}}]},
  oni:{bg:'#2a1a3a',t:140,g:[
 '.k............k.','kck..........kck','kcck........kcck','.kcck.kkkk.kcck.','..kkkkrrrrkkkk..','..krrrrrrrrrrk..','.krRRrrrrrrRRrk.','.krkkRrrrrRkkrk.',
 '.kryykrrrrkyyrk.','.krrkkrRRrkkrrk.','.krrrrRkkRrrrrk.','.krkwkkkkkkwkrk.','.krkwkRRRRkwkrk.','..krkkkkkkkkrk..','...krrrrrrrrk...','....kkkkkkkk....'],

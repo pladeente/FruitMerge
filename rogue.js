@@ -664,12 +664,12 @@ for(const n of ['fusable','upOk','miss'])((f)=>{RG[n]=function(R){return RG.at(R
    a = animated: the looks from the hardest awards (Ripeness 4 and 8, the full Almanac, the depth 12 boss, 10 wins, a boss with no charms) move.
    Drawn by drawJar, drawBg and skinBuild in index.html. */
 const COS={
- jk:{piggy:{n:'Pink Ceramic',f:'#ff9db5',i:'#fff1f5',e:'#d8607f',k:'dots'},tall:{n:'Deep Glass',f:'#3d5a80',i:'#eaf3ff',e:'#22395a',k:'shine'},wide:{n:'Velvet',f:'#6b3fb0',i:'#f6efff',e:'#f4bb4a',k:'trim'},kit:{n:'Steel',f:'#aab2bb',i:'#f3f5f7',e:'#5f6770',k:'dots'},bare:{n:'Planks',f:'#a9713a',i:'#fff6e8',e:'#6e4420',k:'planks'},gold:{n:'Golden',f:'#ffd43b',i:'#fffbe6',e:'#e09600',k:'spark',a:1},melon:{n:'Melon Rind',f:'#7fcf4e',i:'#fff0f0',e:'#24711c',k:'stripe',a:1},crystal:{n:'Crystal',f:'#bfefff',i:'#f7fdff',e:'#4cc9f0',k:'prism',a:1},oni:{n:'Oni',f:'#b3262b',i:'#fbf3e4',e:'#2a1416',k:'oni',a:1}},
- bg:{throne:{n:'Throne Room',c:['#1d4d2b','#12331c'],k:'diamond'},orchard:{n:'Orchard Sky',c:['#9fdcff','#e3f7c9'],k:'cloud'},night:{n:'Midnight',c:['#1b1029','#3a2358'],k:'stars'},deep:{n:'The Deep',c:['#06283d','#0f5a6e'],k:'bubbles',a:1},patch:{n:'Melon Patch',c:['#8fd85e','#6fc043'],k:'stripe'},note:{n:'Notebook',c:['#fdfaf0','#fdfaf0'],k:'lines'},sunset:{n:'Sunset',c:['#6b3fb0','#ff8f6b','#ffd1a3'],k:'sun',a:1},wave:{n:'Great Wave',c:['#f3e6c6','#e6d09c'],k:'wave',a:1}},
+ jk:{piggy:{n:'Pink Ceramic',f:'#ff9db5',i:'#fff1f5',e:'#d8607f',k:'dots'},tall:{n:'Deep Glass',f:'#3d5a80',i:'#eaf3ff',e:'#22395a',k:'shine'},wide:{n:'Velvet',f:'#6b3fb0',i:'#f6efff',e:'#f4bb4a',k:'trim'},kit:{n:'Steel',f:'#aab2bb',i:'#f3f5f7',e:'#5f6770',k:'dots'},bare:{n:'Planks',f:'#a9713a',i:'#fff6e8',e:'#6e4420',k:'planks'},gold:{n:'Golden',f:'#ffd43b',i:'#fffbe6',e:'#e09600',k:'spark',a:1},melon:{n:'Melon Rind',f:'#7fcf4e',i:'#fff0f0',e:'#24711c',k:'stripe',a:1},crystal:{n:'Crystal',f:'#bfefff',i:'#f7fdff',e:'#4cc9f0',k:'prism',a:1},oni:{n:'Oni',f:'#b3262b',i:'#fbf3e4',e:'#2a1416',k:'oni',a:1},cobble:{n:'Cobblestone',f:'#a19ca9',i:'#f4f2f6',e:'#4e4958',k:'cobble'}},
+ bg:{throne:{n:'Throne Room',c:['#1d4d2b','#12331c'],k:'diamond'},orchard:{n:'Orchard Sky',c:['#9fdcff','#e3f7c9'],k:'cloud'},night:{n:'Midnight',c:['#1b1029','#3a2358'],k:'stars'},deep:{n:'The Deep',c:['#06283d','#0f5a6e'],k:'bubbles',a:1},patch:{n:'Melon Patch',c:['#8fd85e','#6fc043'],k:'stripe'},note:{n:'Notebook',c:['#fdfaf0','#fdfaf0'],k:'lines'},sunset:{n:'Sunset',c:['#6b3fb0','#ff8f6b','#ffd1a3'],k:'sun',a:1},wave:{n:'Great Wave',c:['#f3e6c6','#e6d09c'],k:'wave',a:1},rock:{n:'Rock Concert',c:['#140b22','#2b1640'],k:'rock',a:1}},
  fs:{gold:{n:'Solid Gold',r:['#3d2400','#b87400','#ffc61a','#fff8d0']},rot:{n:'Past It',r:['#241a12','#6b5230','#b59a62','#efe2b8']},mono:{n:'Black and White',r:['#16101f','#6b6572','#c9c3d4','#ffffff'],k:'film',a:1}},
  ss:{chip:{n:'Chiptune'},mar:{n:'Marimba'},wood:{n:'Wood Block'}},
  /* v1.60 profile pictures: art in AVD (icons.js), shown on profile cards and friends lists, published as pub.av */
- pf:{scroll:{n:'Contract'},pear:{n:'Sad Pear'},rock:{n:'Grumpy Rock'},crown:{n:'Crown'},owl:{n:'Night Owl',a:1},fly:{n:'Fruit Fly',a:1},bfly:{n:'Butterfly',a:1},moon:{n:'Blue Moon',a:1},ghost:{n:'Ghost',a:1},gmel:{n:'Golden Melon',a:1},oni:{n:'Oni Mask',a:1}}
+ pf:{scroll:{n:'Contract'},pear:{n:'Sad Pear'},rock:{n:'Grumpy Rock'},crown:{n:'Crown'},owl:{n:'Night Owl',a:1},fly:{n:'Fruit Fly',a:1},bfly:{n:'Butterfly',a:1},moon:{n:'Blue Moon',a:1},ghost:{n:'Ghost',a:1},gmel:{n:'Golden Melon',a:1},oni:{n:'Oni Mask',a:1},rstar:{n:'Rock Star',a:1}}
 };
 const COSK={jk:'jar skin',bg:'background',fs:'fruit skin',ss:'sound set',pf:'profile picture'};for(const k in COS)for(const id in COS[k])COS[k][id].id=id;
 
@@ -742,6 +742,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
 /* on = the events that can earn it, t(R, d, S) = the test (R the run, d the event's data, S lifetime stats), un = what it unlocks (a LOCK key),
    secret = the description stays hidden until it is earned. Earned awards land in PF.d.ach, in R.got for the run-over screen and in ACHQ for the toast. */
 const fuN=R=>R.ch.filter(c=>CH[c.id].fu).length+R.tl.filter(t=>TL[t.id].fu).length;
+const RKI=['rgard','garg','ppol','geode','petrify','shatter'],rkN=R=>[...R.ch,...(R.or||[]),...R.tl].reduce((n,x)=>{const f=(CH[x.id]||TL[x.id]||{}).fu;return n+(f?f.filter(h=>RKI.includes(h)).length:RKI.includes(x.id)?1:0);},0); /* rock items held, for the rock awards */
 const ACH={
  first:{n:'First Harvest',d:'Beat a boss.',ti:'Farmhand',tr:0,on:'jar',t:(R,d)=>d.boss&&d.jar===2,un:'tl.twin'},
  melon1:{n:'Watermelon!',d:'Make a watermelon in a Rogue run.',ti:'Melon Head',tr:0,on:'merge',t:(R,d)=>d.l===10,un:'up.pouch'},
@@ -878,7 +879,11 @@ const ACH={
  b200:{n:'Big Game',d:'Beat 200 bosses (over all your runs).',ti:'Big Game Hunter',tr:3,lh:1,of:200,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=200},
  b500:{n:'Monster Hunter',d:'Beat 500 bosses (over all your runs).',ti:'Bane of Bosses',tr:4,lh:1,of:500,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=500},
  /* v1.59, the user's idea: un can be a list, every key in it opens */
- teppan:{n:'Teppanyaki',d:'Win a run holding the Paring Knife and the Slingshot.',ti:'Teppan Chef',tr:3,on:'jar',t:(R,d)=>d.win&&R.tl.some(t=>t.id==='knife')&&R.tl.some(t=>t.id==='sling'),un:['bg.wave','jk.oni','pf.oni']}
+ teppan:{n:'Teppanyaki',d:'Win a run holding the Paring Knife and the Slingshot.',ti:'Teppan Chef',tr:3,on:'jar',t:(R,d)=>d.win&&R.tl.some(t=>t.id==='knife')&&R.tl.some(t=>t.id==='sling'),un:['bg.wave','jk.oni','pf.oni']},
+ /* v1.65, the user's idea: win holding 5 rock items (rkN: a fusion counts once per rock item in it, so fusing never lowers the count) */
+ rock1:{n:'You Rock!',d:'Win a run holding 5 rock items: Rock Garden, Gargoyle, Pebble Polish, Geode, Petrify, Shatter. A fusion counts once for each of them in it.',ti:'Stonemason',tr:2,on:'jar',t:(R,d)=>d.win&&rkN(R)>=5,un:'jk.cobble'},
+ rock4:{n:'Rock and/or Roll!',d:'Win a run on Ripeness 4 or higher holding 5 rock items (as in You Rock!).',ti:'Rolling Stone',tr:3,on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=4&&rkN(R)>=5,un:'bg.rock'},
+ rock8:{n:'Rock and Roll Hall of Fame, you!',d:'Win a run on Ripeness 8 holding 5 rock items (as in You Rock!).',ti:'Rock Star',tr:4,on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8&&rkN(R)>=5,un:'pf.rstar'}
 };
 function unL(a){return[].concat(a.un||[]);} /* the keys an award opens (un is one key or a list) */
 const LOCK={};for(const id in ACH)for(const k of unL(ACH[id]))LOCK[k]=id;
