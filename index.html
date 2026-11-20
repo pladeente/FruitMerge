@@ -147,7 +147,7 @@ tr.me td{background:#35c2b42a}
 .px{display:inline-block;width:24px;height:24px;background-size:100% 100%;image-rendering:pixelated;vertical-align:middle;flex:none}
 .px.x3{width:36px;height:36px}
 #hd .t .px{margin-right:4px;vertical-align:-5px}
-.pill .px{vertical-align:-6px}
+.pill .px{vertical-align:-6px}#lbB{display:flex;align-items:center;gap:6px}#lbB[hidden]{display:none}#best{display:flex;flex-direction:column;align-items:flex-start;line-height:1}#best small{font:700 11px var(--body);letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
 .tile,.slot{display:inline-flex;align-items:center;justify-content:center;flex:none;padding:0;background:#f1e2c6;box-shadow:inset 0 0 0 3px #8f8a99}
 .tile{width:46px;height:46px;border-radius:9px}
 .slot{width:34px;height:34px;border-radius:8px;box-shadow:inset 0 0 0 2px #8f8a99}
@@ -991,7 +991,7 @@ function show(html){G.ibk=0;const tp=$('#tip');if(tp){tp.remove();G.tipEl=null;}
 const XBA='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>';
 function xbFix(m){let x=m.querySelector('.xb');if(!x){const bk=[...m.querySelectorAll('button[data-a]')].reverse().find(b=>/^(Back|Menu)$/.test(b.textContent.trim()));if(!bk)return;x=document.createElement('button');x.className='xb';for(const k in bk.dataset)x.dataset[k]=bk.dataset[k];m.prepend(x);}x.innerHTML=XBA;x.setAttribute('aria-label','Back');}
 function hide(){ui.innerHTML=''}
-function setBest(){$('#best').textContent=best()}
+function setBest(md=G.mode){if(!MNAME[md])md='classic';G.bestM=md;const n=best(md),b=$('#lbB');$('#best').innerHTML=`<small>${MNAME[md]} best</small>${n?shortN(n):'None yet'}`;b.title=`Your best ${MNAME[md]} score: ${n?n.toLocaleString():'none yet'}. Tap for the leaderboard.`;b.setAttribute('aria-label',`${MNAME[md]} best ${n||'none yet'}. Open the leaderboard`);} /* v1.63: the header pill says what its number is (the best score of the mode shown) and opens that mode's board */
 /* RPC = one colour per Ripeness level, green (unripe) to deep red */
 const RPC=['#7bc950','#b5e48c','#f9e076','#ffb703','#fb8500','#ff4d6d','#e63946','#a3202c'],rpB=k=>{k=clampN(+k||1,1,8);return `<small class="rp" style="background:${RPC[k-1]}${k>=6?';color:#fff2d8':''}" title="Ripeness ${k}">${k}</small>`;};
 /* board scores, shortened from 10,000 up: 13.5k, 1.4m, 655.4m, 2.1b (v1.47.1). The full number is the cell's title */
@@ -1006,7 +1006,7 @@ function worldBoard(el,m,me,sub){if(!el)return;el.innerHTML='<p class="none">Loa
 
 /* v1.61 main menu (mockup A, the user's pick): profile chip and Options at the top, the Rogue card (Continue with the saved run, or Start), the Daily run card, four tiles (Almanac, Scores, Looks, What's new), Classic and Wild under More modes. The how-to text moved to howto() */
 const GEAR='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"></path></svg>';
-function menu(){G.state='menu';G.g=null;RUN=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;rgTitle('melon','Fruit Merge');fit();setBest();$('#best').textContent=best('rogue');
+function menu(){G.state='menu';G.g=null;RUN=null;FLOAT.length=0;$('#pauseB').hidden=true;pw.hidden=true;rgTitle('melon','Fruit Merge');fit();setBest('rogue');
  const sv=RG.saved(),me=AU&&AU.name,nm=me||lastName||'',ti=curTitle(),d=dayN(),dt=!!(sv&&sv.dly===d),dd=dlyDone(d)&&!dt,nw=store.get('seenLog','')!==LOG[0].v,bl=sv?[...sv.ch,...(sv.or||[])].filter(c=>CH[c.id]).slice(0,8):[];
  const m=show(`<div class="mtop"><button class="mpf" data-a="soprof" data-f="menu">${avH(myAv(),44)}<span>${ti&&nm?`<small>${esc(ti)}</small>`:''}<b>${nm?esc(nm):'Profile'}</b>${me?'':`<small>${LB?(AU?'Pick a username':'Sign in to play with friends'):'Picture and title'}</small>`}</span>${me&&G.ibN?`<i class="ibc">${G.ibN}</i>`:''}</button><button class="mop" data-a="opts" aria-label="Options">${GEAR}</button></div>
 <div class="rgc"><div class="rgl"><span>ROGUE</span>${sv?rpPill(sv.stake||1):''}</div><h4>${sv?(sv.dly?'Continue daily run':'Continue run'):'Rogue'}</h4><p>${sv?`Depth ${sv.depth} · Jar ${sv.jar+1} · ${shortN(sv.total||0)} points`:`Go ${DEPTHS} depths down. Build a run from charms, tools and seeds, and beat the bosses.`}</p>${bl.length?`<div class="rgb">${bl.map(c=>tile(c.id,'r'+CH[c.id].r)).join('')}</div>`:''}<div class="rgk">${sv?'<button class="go c" data-a="rcont">Continue</button><button class="go n" data-a="rnew">New run</button>':'<button class="go c" data-a="rogue">Start</button>'}</div></div>
@@ -1020,6 +1020,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.63',d:'20 Nov 2026',t:'Best score',i:['The trophy at the top now says what its number is: your best score in the mode you are in (Rogue on the menu). Big scores are shortened, like 9.6m. Tap it for that mode\'s leaderboard.']},
  {v:'1.62',d:'20 Nov 2026',t:'Back arrow',i:['Every menu has a back arrow in the top right that stays in view while you scroll, so you no longer have to scroll down to Back.']},
  {v:'1.61',d:'20 Nov 2026',t:'New menu',i:['A new main menu with Rogue first: continue your run or start one, the Daily run under it, then Almanac, Scores, Looks and What\'s new. Classic and Wild are under More modes.','Profile is now where you change how you look to others: profile picture, title, the stats you show and your account. Guests can open it too.','Options only holds game settings now. Looks has its own button on the menu.','How to play moved off the menu to its own screen.']},
  {v:'1.60',d:'20 Nov 2026',t:'Profile pictures',i:['Profile pictures: 11 to earn from awards, 7 of them animated. Pick one in Options, Looks. Friends see it on your profile card and in their friends list.','Teppanyaki now also gives the Oni Mask.','Fixed: leaving the Friends tab between jars no longer drops you at the bottom of the shop.']},
@@ -1599,7 +1600,7 @@ function install(){if(instPrompt){const p=instPrompt;instPrompt=null;p.prompt();
   ?'<ol class="wl"><li><span>1</span><div>Tap <b>Share</b> (the square with an arrow). In Safari it is at the bottom, in Chrome it is in the address bar.</div></li><li><span>2</span><div>Scroll down and tap <b>Add to Home Screen</b>.</div></li><li><span>3</span><div>Tap <b>Add</b>.</div></li></ol>'
   :'<ol class="wl"><li><span>1</span><div>Open your browser menu (<b>⋮</b> or <b>☰</b>).</div></li><li><span>2</span><div>Tap <b>Install app</b> or <b>Add to Home screen</b>.</div></li></ol>'}<button class="go alt" data-a="menu">Back</button>`)}
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});
-$('#lbB').onclick=()=>{if(G.state==='over'&&G.pending!=null)return;snd('ui');if(G.state==='play')pause();G.lbFrom=G.state==='pause'?'pause':G.state==='rogue'&&RUN?'rogue':'menu';showScores()};
+$('#lbB').onclick=()=>{if(G.state==='over'&&G.pending!=null)return;snd('ui');if(G.state==='play')pause();G.lbFrom=G.state==='pause'?'pause':G.state==='rogue'&&RUN?'rogue':'menu';showScores(G.bestM||G.mode)};
 /* volume: a mute button, a slider and the number, in Options and on the pause screen. volUi updates the one on screen in place */
 function volB(){const n=Math.round(VOL*100);return `<div class="vol"><button class="ib" data-a="mute" aria-label="Mute" aria-pressed="${!VOL}">${ic(VOL?'snd_on':'snd_off')}</button><input type="range" id="volR" min="0" max="100" step="5" value="${n}" style="--p:${n}%" aria-label="Volume"><b id="volN">${n}</b></div>`}
 function setVol(v){VOL=v;sndOn=v>0;if(v)G.pv=v;store.set('vol',v);if(master)master.gain.value=.55*v;}
