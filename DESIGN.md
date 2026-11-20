@@ -748,6 +748,8 @@ Phase 1 enchants the stream, phase 2 disenchants the player's Orchard row.
 - Each new item needs an icon grid, `ANIM` entry, Almanac rows, dev panel support and events through `rgEv`.
 
 ### Steering to fusions (added 15 Nov, built in v1.35)
+
+Since v1.58.2 a held fusion's halves are never offered again (`RG.fz`). The five halves shared by two fusions (Lucky Clover, Sprout, Pip Collector, Busy Bee, High Wire) are blocked too, so after making one of those fusions the other can only come from a half held before it.
 Built: the hidden weight as below (rarity is rolled first, the weight only acts within the half's rarity), Grafter (uncommon, 7: +2 Mult per fusion held, started below the +3 first suggested), Rootstock (common, 5: a fusion made gives a random seed 2 levels). The user kept recipes in the Almanac only and turned down the mark on halves in later runs (16 Nov). Measured over 400 runs of 24 shops, one half held, nothing bought: an uncommon half (Hot Streak) never offered in 60% of runs before, 0.5% after, first offered at shop 18.7 on average before, 7.1 after; a common half (Juicer) 8% never before, 0% after, first at 9.0 before, 2.4 after; a rare half (Melon Fever) 75% never before, 14% after.
 Bot, buyer B (now also buying Grafter and Rootstock), Ripeness 1, 400 runs: v1.34 23.0% wins, depth 7.22, 0.69 fusions made a run; v1.35 27.0% wins, depth 7.13, 1.01 fusions a run. The win rate moved within noise, the fusion count by about half.
 

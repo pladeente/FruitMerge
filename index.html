@@ -981,6 +981,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.58.2',d:'20 Nov 2026',t:'Fusion pieces',i:['Rogue: once you make a fusion, its two pieces are no longer offered in the shop or in crates, so you can not hold a piece twice.']},
  {v:'1.58.1',d:'20 Nov 2026',t:'Vibration strength',i:['Vibration has a strength: Off, Light, Normal or Strong. Tap the Vibration button in Options to change it. On iPhone it stays a single light tick.','A short buzz when you buy, take or sell an item.','Rogue: the i button between jars now has tabs too: Run info, Friends, Almanac and Options.']},
  {v:'1.58',d:'20 Nov 2026',t:'Vibration',i:['Your phone vibrates when things happen: merges (stronger for bigger fruit), crates shaking and bursting open, explosions, shakes, rare finds and game over.','Switch it off in Options or on the pause screen. Works on Android. iPhones only allow a light tick, on iOS 18 or later.']},
  {v:'1.57.4',d:'20 Nov 2026',t:'Player cards',i:['A player\'s card no longer runs off the bottom of the screen. It moves to fit once their run loads, and scrolls if it is taller than the screen.']},
