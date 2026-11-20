@@ -165,7 +165,7 @@ const CH={
  cint:{n:'Compound Interest',r:1,c:7,d:'+0.05 Mult for every coin of interest you have earned this run (up to +5).',add:c=>Math.min(5,(c.intc||0)*.05)},
  dnoth:{n:'Double or Nothing',r:1,c:6,d:'Every merge has a 1 in 2 chance of ×2 Mult. Otherwise it gets ×0.75.',x:c=>c.l<0||c.nr?1:Math.random()<Math.min(.75,.5*c.luck)?2:(miss(c),.75)},
  /* throwing */
- lob:{n:'Lob',r:0,c:4,req:'sling',d:'Thrown fruit fly higher, so they land about half a second later.'},
+ lob:{n:'Lob',r:0,c:4,req:'sling',d:'Slingshot throws are 30% faster.'},
  /* Orchard expansion (v1.47): 20 Orchard items, most of them uncommon, each feeding a new build from the side. rv = what Sour Graft makes it do */
  mtap:{n:'Maple Tap',r:0,c:4,o:1,rv:'Every 7th fruit is a rock.',d:'Every 7th fruit is Sticky and stays where it lands.'},
  smaple:{n:'Sugar Maple',r:0,c:4,o:1,rv:'Every 10th fruit is a rock.',d:'Every 10th fruit is Candied: when it merges, the merge scores +40 points.'},
@@ -201,7 +201,7 @@ const CH={
  /* throwing fruit (being tested) */
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else gets ×3 Mult.',x:c=>c.trick?3:1},
  /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
- ricochet:{n:'Ricochet',r:0,c:5,req:'sling',d:'+0.2 Mult for every wall bounce of a thrown fruit this jar.',add:c=>(c.wb||0)*.2},
+ ricochet:{n:'Ricochet',r:0,c:5,req:'sling',d:'+0.2 Mult for every wall bounce of a thrown fruit this jar, up to +3.',add:c=>Math.min(3,(c.wb||0)*.2)},
  curve:{n:'Curveball',r:1,c:6,req:'sling',d:'A thrown fruit curves towards the nearest fruit of its size.'},
  pinball:{n:'Pinball',r:2,c:9,req:'sling',d:'A thrown fruit gets ×1.25 Mult for every wall bounce (up to 4) if it merges before it comes to rest.',x:c=>Math.pow(1.25,Math.min(4,c.pin||0))},
  quick:{n:'Quick Hands',r:0,c:4,d:'You can drop again 0.3 seconds after a drop, instead of 0.55.'},
@@ -291,7 +291,7 @@ const CH={
  ccave:{n:'Crystal Cave',r:3,c:12,fu:['geode','ppol'],d:'A rock touched by 2 merges cracks open into a gold fruit of its size. Every rock touching a merge adds +20 points to it.',chip:c=>(c.rkt||0)*20},
  hfund:{n:'Hedge Fund',r:3,c:12,fu:['cint','tjar'],d:'+0.08 Mult for every coin of interest you have earned this run (up to +7). Every 8th merge of a jar pays 1 coin.',add:c=>Math.min(7,(c.intc||0)*.08)},
  allin:{n:'All In',r:3,c:12,fu:['dnoth','lucky'],d:'Every merge has a 1 in 2 chance of ×2.5 Mult, with no downside.',x:c=>c.l<0||c.nr?1:Math.random()<Math.min(.75,.5*c.luck)?2.5:miss(c)},
- cpult:{n:'Catapult',r:3,c:12,fu:['lob','curve'],d:'Thrown fruit fly higher and curve towards the nearest fruit of their size.'},
+ cpult:{n:'Catapult',r:3,c:12,fu:['lob','curve'],d:'Slingshot throws are 30% faster and curve towards the nearest fruit of their size.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
@@ -303,7 +303,13 @@ const JARS={
  tall:{n:'Deep Jar',d:'+4 drops in every jar. Every target is 15% higher.'},
  wide:{n:'Charm Jar',d:'+1 charm slot. You start with Swap only and hold 1 tool fewer.'},
  kit:{n:'Tool Kit',d:'Start with 3 tools and 3 tool slots. 1 charm slot fewer.'},
- bare:{n:'Crate Jar',d:'The shop sells no charms. Every jar you clear drops a wooden crate.'}
+ bare:{n:'Crate Jar',d:'The shop sells no charms. Every jar you clear drops a wooden crate.'},
+ /* v1.55: jars that change how a jar plays. The engine reads the jar from cfg.jk (JK) */
+ see:{n:'Seesaw Jar',d:'The jar leans towards its heavier side and every fruit slides that way. +3 drops in every jar. Merges made while it is level score ×1.5.'},
+ clock:{n:'Clockwork Jar',d:'No drop count: each jar runs on a clock, 2.5 seconds for every drop it would have had (60 seconds for 24). The held fruit drops by itself after 2 seconds. Time left pays like unused drops.'},
+ giant:{n:'Giant Jar',d:'Drops are Grapes, Lemons and Oranges, never Cherries or Strawberries. The jar is 25% wider. Every target is 50% higher.'},
+ moon:{n:'Moon Jar',d:'Half gravity: fruit fall slowly and bounce higher. You start with Swap and Slingshot.'},
+ hour:{n:'Hourglass Jar',d:'The walls pinch in halfway down. A Pineapple (8) or bigger can not fit through the neck. +1 Orchard slot.'}
 };
 /* Bosses. d = the rule, d2 = what phase 2 adds (at half the target), min = first depth it can show up at, q = score target multiplier,
    fin = a final boss, only met at depth 8 and every 8th depth after. Every rule is a flag in makeGame's B, worth 1 in phase 1 and 2 in phase 2. */
@@ -403,7 +409,7 @@ const TL={
  shatter:{n:'Shatter',c:4,ch:6,tg:1,d:'Tap a rock. It turns into a fruit of the same size.'},
  cash:{n:'Cash Out',c:5,ch:8,d:'Pays 2 coins.'},
  /* v1.36: tog = a toggle (tap on, tap off: switching on costs 1 charge and counts as a use, every drop while on costs 1, it goes off at 0). tm = a timed tool, lasting tm drops (t.n counts down) */
- sling:{n:'Slingshot',s:'Sling',c:6,ch:6,tog:1,d:'Switch on or off. While on, flick as you let go to throw your fruit sideways. The faster the flick, the harder the throw.'},
+ sling:{n:'Slingshot',s:'Sling',c:6,ch:6,tog:1,d:'Switch on or off. While on, press, pull back and let go: your fruit flies the other way, faster the further you pull. A band shows the pull and dots show the path.'},
  moon:{n:'Moon Boots',s:'Moon',c:6,ch:8,tog:1,d:'Switch on or off. While on, fruit fall at half the gravity.'},
  reach:{n:'Long Arm',s:'Arm',c:5,ch:6,tm:3,d:'For your next 3 drops, your fruit drops from where you tap in the jar, not from the top.'}, /* a toggle until v1.40 */
  tilt:{n:'Tilt',c:6,ch:8,tm:3,d:'For your next 3 drops the jar tips towards the side your fruit is on, and the pile slides that way.'},
@@ -480,7 +486,7 @@ const CLASH=[['swarm','gamble'],['swarm','prune'],['swarm','collect']],clash=(a,
 const nice=q=>{const m=Math.pow(10,Math.max(1,Math.floor(Math.log10(q))-1));return Math.round(q*(1+1e-9)/m)*m;};
 const RG={
  new(jar='classic',stake=1){const pool=Object.keys(BOSS).filter(k=>!BOSS[k].fin),bs=[];for(let d=1;d<DEPTHS;d++){const c=pool.filter(k=>BOSS[k].min<=d&&!bs.includes(k));bs.push(c[rint(c.length)]);}bs.push(RG.fin());
-  const tl=[RG.tool('swap')];if(jar!=='wide')tl.push(RG.tool('shake'));if(jar==='kit'){const k=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&k!=='swap'&&k!=='shake');tl.push(RG.tool(k[rint(k.length)]));}
+  const tl=[RG.tool('swap')];if(jar!=='wide')tl.push(RG.tool(jar==='moon'?'sling':'shake'));if(jar==='kit'){const k=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&k!=='swap'&&k!=='shake');tl.push(RG.tool(k[rint(k.length)]));}
   return{v:RV,jarId:jar,stake,depth:1,jar:0,coins:jar==='piggy'?12:4,total:0,ch:[],or:[],tl,up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,ms:{},bq:{},bx:{},off:0,shop:null,crate:null,ct:null,sk:null,tg:{},fw:{},pile:[],at:'hub',won:0,st:{},jst:{}};},
  /* the highest stake the player may pick: one above the best they have won on, with any jar */
  stakeMax:(jar='classic')=>Math.min(STAKES.length,1+((PF.d||PF.load()).stakes[jar]||0)), /* per jar: one above the best Ripeness won with that jar */
@@ -496,7 +502,7 @@ const RG={
  has:(R,id)=>{const i=R.ch.findIndex(c=>c.id===id);if(i>=(R.off||0))return R.ch[i];if(!R.or)return;const j=R.or.findIndex(c=>c.id===id);if(j<0||R.oc&&(R.oc!=='pest'||j===0))return;return R.or[j];},
  /* R.oc = the Orchard curse running in this jar (uproot, pest, sour), set by the engine at phase 2, 0 otherwise. rev = an Orchard item working backwards */
  rev:(R,id)=>R.oc==='sour'&&!!R.or&&R.or.some(c=>c.id===id), /* the Orchard row (R.or) counts too, The Thief never touches it */
- os:R=>OS0+R.up.bed+(R.ch.some(c=>c.id==='stow')?1:0), /* Orchard slots: Stowaway brings one */
+ os:R=>OS0+R.up.bed+(R.ch.some(c=>c.id==='stow')?1:0)+(R.jarId==='hour'?1:0), /* Orchard slots: Stowaway brings one */
  /* tools: {id, c} where c is the charge held. New tools arrive charged */
  tool:(id,R)=>({id,c:R?RG.need(R,id):TL[id].ch}),
  tsMax:R=>TSLOTS-(R.jarId==='wide'?1:0),
@@ -533,7 +539,7 @@ const RG={
  cs:R=>RG.has(R,'bite')||RG.has(R,'snack')?1:0,
  bt:(R,b,k)=>b==='collect'&&RG.cs(R)?(k==='d'?`The jar only clears once you have also made ${fna(6-RG.cs(R))}.`:`If you have not made it yet, it must now be ${fna(7-RG.cs(R))}.`):BOSS[b][k],
  jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):j===1?RG.mid(R,d):null,bd=b&&BOSS[b],rules=b?RG.rules(R,b,d):[],sc=d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(RSCX,d-DEPTHS),J=R.jarId,now=j===R.jar,ct=now&&!b&&R.ct&&R.ct.on?CT[R.ct.id]:null; /* ct = the contract signed for this jar */
-  const fl=RG.has(R,'flag'),quota=nice(RQ[j]*sc*RG.bq(b,rules)*(b&&fl?CH.flag.q:1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
+  const fl=RG.has(R,'flag'),quota=nice(RQ[j]*sc*RG.bq(b,rules)*(b&&fl?CH.flag.q:1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:J==='giant'?1.5:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:J==='see'?3:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
   const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2&&!fl?RG.curse(R,d):null; /* White Flag: no curses */
   const p2=j===2&&!RG.has(R,'flag'); /* White Flag: no phase 2 */
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
@@ -544,6 +550,7 @@ const RG={
   if(RG.has(R,'stow'))for(let i=R.ch.length-1;i>=(R.off||0);i--){const ch=R.ch[i],d=CH[ch.id];if(ch.id==='stow')continue;let on=0,v;c.ch=ch;if(d.chip&&c.l>=0&&(v=d.chip(c))>0){chips+=v;on=1;}if(d.add&&(v=d.add(c))>0){a+=v;on=1;}if(d.x&&(v=d.x(c))>1){x*=v;on=1;}if(on)hit.push('stow');break;} /* Stowaway: the rightmost other working charm scores twice */
   for(let i=R.off||0;i<R.ch.length;i++){const o=R.ch[i];if(PLK[o.id]&&RG.plv(o)>=5){x*=1.25;hit.push(o.id);}} /* a Lv5 pet: ×1.25 Mult */
   const eds=[...R.ch.slice(R.off||0),...R.or.filter(o=>RG.has(R,o.id)),...R.tl];for(const o of eds)if(o.e&&ED[o.e]){const E=ED[o.e];if(E.p&&c.l>=0)chips+=E.p;if(E.m)a+=E.m;if(E.x)x*=E.x;} /* editions: Candied points, Juiced +Mult, Ambrosia ×Mult */
+  if(R.jarId==='see'&&c.lvl)x*=1.5; /* Seesaw Jar: a merge made while the jar is level */
   return{p:Math.ceil(chips*a*x-1e-9),m:a*x,hit,chips};},
  /* Family Tree: the other tier of the same family (FAM), or -1 (Pineapple has none). The Peach's is the Cherry, which never has a seed */
  sib:l=>FAM.findIndex((f,i)=>i!==l&&f===FAM[l]),
@@ -645,7 +652,7 @@ for(const n of ['boss','mid','rules','curse','srw'])((f)=>{RG[n]=function(R,a,b)
 for(const n of ['stock','crate','offer','bribe'])((f)=>{RG[n]=function(R){if(!R||!R.seed||SDQ.d)return f.apply(this,arguments);const q=R.sq||(R.sq={}),k=n+'|'+R.depth+'|'+R.jar;q[k]=(q[k]||0)+1;return RG.at(R,k+'|'+q[k],()=>f.apply(this,arguments));};})(RG[n]);
 for(const n of ['fusable','upOk','miss'])((f)=>{RG[n]=function(R){return RG.at(R,'lk',()=>f.apply(this,arguments));};})(RG[n]);
 ((f)=>{RG.new=function(j,s,seed){if(!seed)return f.call(this,j,s);const R=RG.at({seed},'new',()=>f.call(this,j,s));R.seed=seed;return R;};})(RG.new);
-((f)=>{RG.jarCfg=function(R,j=R.jar){const c=f.call(this,R,j);if(R.seed)c.fs=R.seed+'|f|'+R.depth+'|'+j;return c;};})(RG.jarCfg);
+((f)=>{RG.jarCfg=function(R,j=R.jar){const c=f.call(this,R,j);c.jk=R.jarId;if(R.seed)c.fs=R.seed+'|f|'+R.depth+'|'+j;return c;};})(RG.jarCfg);
 
 
 /* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------
@@ -696,7 +703,7 @@ function rgEv(R,n,d={}){if(!R||R.dev)return;if(!PF.d)PF.load();const rs=R.st||(R
  if(n==='run')PF.inc('runs');
  else if(n==='start'){R.jst={};}
  else if(n==='drop'){inc('drops');if(d.rt)inc('rdrops');}
- else if(n==='merge'){inc('merges');if(d.wd)inc('wilds');inc('made.'+d.l);if(d.l>0)inc('fam.'+FAM[d.l-1]);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);if(R.jst){if(!(R.jst.bm>=d.p))R.jst.bm=d.p;if(!(R.jst.bc>=d.combo))R.jst.bc=d.combo;}}
+ else if(n==='merge'){inc('merges');if(d.trick)inc('tricks');if(d.wd)inc('wilds');inc('made.'+d.l);if(d.l>0)inc('fam.'+FAM[d.l-1]);if(d.bull)inc('bulls');top('bestMerge',d.p);top('bestMult',+d.m.toFixed(2));top('bestFruit',d.l);top('bestCombo',d.combo);if(R.jst){if(!(R.jst.bm>=d.p))R.jst.bm=d.p;if(!(R.jst.bc>=d.combo))R.jst.bc=d.combo;}}
  else if(n==='tool'){inc('tools');inc('tool.'+d.id);}
  else if(n==='kill')inc('kills',d.n);
  else if(n==='net')inc('nets');
@@ -754,6 +761,12 @@ const ACH={
  overkill:{n:'Overkill',d:'Finish a jar with 3 times its target.',ti:'Overachiever',tr:2,on:'jar',t:(R,d)=>d.score>=d.quota*3,un:'tl.ddown',secret:1},
  twomelon:{n:'Double Melon',d:'Have 2 watermelons in the jar at once.',ti:'Melon Magnate',tr:2,on:'melons',t:()=>true,un:'fu.mania',secret:1},
  noshop:{n:'Window Shopper',d:'Beat the depth 3 boss having bought nothing in any shop.',ti:'Window Shopper',tr:2,on:'jar',t:(R,d)=>d.jar===2&&d.depth>=3&&!R.st.buys&&!R.st.ups&&!R.st.seeds,un:'jar.bare',secret:1},
+ /* v1.55: challenges that open the new jars */
+ evenkeel:{n:'Even Keel',d:'Beat a boss with exactly as many drops on the left half of the jar as on the right (12 drops or more).',ti:'Level-Headed',tr:2,on:'jar',t:(R,d)=>{const n=R.jst.drops||0,r=R.jst.rdrops||0;return d.jar===2&&n>=12&&r*2===n;},un:'jar.see'},
+ quickdraw:{n:'Quick Draw',d:'Beat a boss at depth 2 or deeper using 12 drops or fewer.',ti:'Quick Draw',tr:2,on:'jar',t:(R,d)=>d.jar===2&&d.depth>=2&&(R.jst.drops||0)<=12,un:'jar.clock'},
+ bigleague:{n:'Big Leagues',d:'Clear a jar with 10 or more merges without making a Strawberry (2) or a Grape (3).',ti:'Big Leagues',tr:2,on:'jar',t:R=>(R.jst.merges||0)>=10&&!R.jst['made.1']&&!R.jst['made.2'],un:'jar.giant'},
+ liftoff:{n:'Lift-off',d:'Score 3 Trick Shots in one run.',ti:'Moonwalker',tr:2,on:'merge',t:R=>(R.st.tricks||0)>=3,un:'jar.moon'},
+ pineexp:{n:'Pineapple Express',d:'Make 3 Pineapples (8) in one run.',ti:'Pineapple Express',tr:2,on:'merge',t:R=>(R.st['made.7']||0)>=3,un:'jar.hour'},
  pets40:{n:'Picky Eaters',d:'Your pets eat 40 fruit (over all your runs).',ti:'Animal Friend',tr:0,on:'pet',t:(R,d,S)=>(S['pet.cat']||0)+(S['pet.mole']||0)+(S['pet.hog']||0)>=40,un:'ch.appetite'},
  pollen:{n:'Pollinator',d:'Your bees pollinate 30 fruit (over all your runs).',ti:'Beekeeper',tr:1,on:'pet',t:(R,d,S)=>(S['pet.bee']||0)>=30,un:'fu.bfly'},
  zoo3:{n:'Petting Zoo',d:'Hold 3 pets at once.',ti:'Zookeeper',tr:1,on:'buy take fuse',t:R=>PETS.filter(id=>RG.has(R,id)).length>=3,un:'fu.zoo'},
