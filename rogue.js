@@ -416,6 +416,7 @@ const TL={
  tdrop:{n:'Twin Drop',s:'Twins',c:7,ch:10,tm:2,d:'Your next 2 drops each drop two of your fruit side by side. The second one is free.'},
  /* v1.40 */
  shears:{n:'Shears',c:4,ch:5,tg:1,d:'Tap a fruit of size 2 or bigger. It shrinks one size.'},
+ knife:{n:'Paring Knife',s:'Knife',c:5,ch:7,d:'Use it while a fruit is falling or flying (size 2 or bigger). It splits into two fruit one size smaller. A half that merges with another fruit before your next drop scores ×3. The two halves can not merge with each other until then.'}, /* v1.59, the user's idea */
  harvest:{n:'Harvest',c:6,ch:12,d:'Every fruit over the line is removed and scores the points of its size.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:2,fu:['swap','juggle'],d:'Swap the fruit you are holding with the next one. Your other tools each gain 2 charge (a tool can only do this once per drop).'},
@@ -663,8 +664,8 @@ for(const n of ['fusable','upOk','miss'])((f)=>{RG[n]=function(R){return RG.at(R
    a = animated: the looks from the hardest awards (Ripeness 4 and 8, the full Almanac, the depth 12 boss, 10 wins, a boss with no charms) move.
    Drawn by drawJar, drawBg and skinBuild in index.html. */
 const COS={
- jk:{piggy:{n:'Pink Ceramic',f:'#ff9db5',i:'#fff1f5',e:'#d8607f',k:'dots'},tall:{n:'Deep Glass',f:'#3d5a80',i:'#eaf3ff',e:'#22395a',k:'shine'},wide:{n:'Velvet',f:'#6b3fb0',i:'#f6efff',e:'#f4bb4a',k:'trim'},kit:{n:'Steel',f:'#aab2bb',i:'#f3f5f7',e:'#5f6770',k:'dots'},bare:{n:'Planks',f:'#a9713a',i:'#fff6e8',e:'#6e4420',k:'planks'},gold:{n:'Golden',f:'#ffd43b',i:'#fffbe6',e:'#e09600',k:'spark',a:1},melon:{n:'Melon Rind',f:'#7fcf4e',i:'#fff0f0',e:'#24711c',k:'stripe',a:1},crystal:{n:'Crystal',f:'#bfefff',i:'#f7fdff',e:'#4cc9f0',k:'prism',a:1}},
- bg:{throne:{n:'Throne Room',c:['#1d4d2b','#12331c'],k:'diamond'},orchard:{n:'Orchard Sky',c:['#9fdcff','#e3f7c9'],k:'cloud'},night:{n:'Midnight',c:['#1b1029','#3a2358'],k:'stars'},deep:{n:'The Deep',c:['#06283d','#0f5a6e'],k:'bubbles',a:1},patch:{n:'Melon Patch',c:['#8fd85e','#6fc043'],k:'stripe'},note:{n:'Notebook',c:['#fdfaf0','#fdfaf0'],k:'lines'},sunset:{n:'Sunset',c:['#6b3fb0','#ff8f6b','#ffd1a3'],k:'sun',a:1}},
+ jk:{piggy:{n:'Pink Ceramic',f:'#ff9db5',i:'#fff1f5',e:'#d8607f',k:'dots'},tall:{n:'Deep Glass',f:'#3d5a80',i:'#eaf3ff',e:'#22395a',k:'shine'},wide:{n:'Velvet',f:'#6b3fb0',i:'#f6efff',e:'#f4bb4a',k:'trim'},kit:{n:'Steel',f:'#aab2bb',i:'#f3f5f7',e:'#5f6770',k:'dots'},bare:{n:'Planks',f:'#a9713a',i:'#fff6e8',e:'#6e4420',k:'planks'},gold:{n:'Golden',f:'#ffd43b',i:'#fffbe6',e:'#e09600',k:'spark',a:1},melon:{n:'Melon Rind',f:'#7fcf4e',i:'#fff0f0',e:'#24711c',k:'stripe',a:1},crystal:{n:'Crystal',f:'#bfefff',i:'#f7fdff',e:'#4cc9f0',k:'prism',a:1},oni:{n:'Oni',f:'#b3262b',i:'#fbf3e4',e:'#2a1416',k:'oni',a:1}},
+ bg:{throne:{n:'Throne Room',c:['#1d4d2b','#12331c'],k:'diamond'},orchard:{n:'Orchard Sky',c:['#9fdcff','#e3f7c9'],k:'cloud'},night:{n:'Midnight',c:['#1b1029','#3a2358'],k:'stars'},deep:{n:'The Deep',c:['#06283d','#0f5a6e'],k:'bubbles',a:1},patch:{n:'Melon Patch',c:['#8fd85e','#6fc043'],k:'stripe'},note:{n:'Notebook',c:['#fdfaf0','#fdfaf0'],k:'lines'},sunset:{n:'Sunset',c:['#6b3fb0','#ff8f6b','#ffd1a3'],k:'sun',a:1},wave:{n:'Great Wave',c:['#f3e6c6','#e6d09c'],k:'wave',a:1}},
  fs:{gold:{n:'Solid Gold',r:['#3d2400','#b87400','#ffc61a','#fff8d0']},rot:{n:'Past It',r:['#241a12','#6b5230','#b59a62','#efe2b8']},mono:{n:'Black and White',r:['#16101f','#6b6572','#c9c3d4','#ffffff'],k:'film',a:1}},
  ss:{chip:{n:'Chiptune'},mar:{n:'Marimba'},wood:{n:'Wood Block'}}
 };
@@ -682,7 +683,7 @@ const PF={d:null,dirty:0,
  load(){PF.d=PF.heal(PF.fix(store.get('profile',null)));return PF.d;},
  /* an award earned before it unlocked anything (an unlock added to it later) opens its unlock now */
  heal(p){if(p.seen&&p.seen['ch.sling']&&!p.seen['tl.sling'])p.seen['tl.sling']=p.seen['ch.sling']; /* Slingshot moved from charms to tools in v1.36 */
-  for(const id in p.ach){const a=ACH[id];if(a&&a.un&&!p.unlocked[a.un])p.unlocked[a.un]=p.ach[id];}return p;},
+  for(const id in p.ach){const a=ACH[id];if(a)for(const k of unL(a))if(!p.unlocked[k])p.unlocked[k]=p.ach[id];}return p;},
  save(){if(!PF.dirty||!PF.d)return;PF.dirty=0;PF.d.rev++;PF.d.at=Date.now();store.set('profile',PF.d);},
  inc(k,n=1){const s=PF.d.stats;s[k]=(s[k]||0)+n;PF.dirty=1;},
  max(k,v){const s=PF.d.stats;if(!(s[k]>=v)){s[k]=v;PF.dirty=1;}},
@@ -873,15 +874,18 @@ const ACH={
  fu100:{n:'Grand Alchemist',d:'Make 100 fusions (over all your runs).',ti:'Transmuter',tr:3,lh:1,of:100,pg:S=>S.fuses||0,on:'run fuse',t:(R,d,S)=>(S.fuses||0)>=100},
  b50:{n:'Boss Rush',d:'Beat 50 bosses (over all your runs).',ti:'Boss Breaker',tr:2,lh:1,of:50,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=50},
  b200:{n:'Big Game',d:'Beat 200 bosses (over all your runs).',ti:'Big Game Hunter',tr:3,lh:1,of:200,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=200},
- b500:{n:'Monster Hunter',d:'Beat 500 bosses (over all your runs).',ti:'Bane of Bosses',tr:4,lh:1,of:500,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=500}
+ b500:{n:'Monster Hunter',d:'Beat 500 bosses (over all your runs).',ti:'Bane of Bosses',tr:4,lh:1,of:500,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=500},
+ /* v1.59, the user's idea: un can be a list, every key in it opens */
+ teppan:{n:'Teppanyaki',d:'Win a run holding the Paring Knife and the Slingshot.',ti:'Teppan Chef',tr:3,on:'jar',t:(R,d)=>d.win&&R.tl.some(t=>t.id==='knife')&&R.tl.some(t=>t.id==='sling'),un:['bg.wave','jk.oni']}
 };
-const LOCK={};for(const id in ACH)if(ACH[id].un)LOCK[ACH[id].un]=id;
+function unL(a){return[].concat(a.un||[]);} /* the keys an award opens (un is one key or a list) */
+const LOCK={};for(const id in ACH)for(const k of unL(ACH[id]))LOCK[k]=id;
 const ACHQ=[]; /* awards earned and not yet shown */
 function achCheck(R,n,d){for(const id in ACH){const a=ACH[id];if(PF.d.ach[id]||!a.on.split(' ').includes(n))continue;let hit=false;try{hit=!!a.t(R,d,PF.d.stats);}catch(e){}if(!hit)continue;
-  PF.d.ach[id]=Date.now();if(a.un)PF.d.unlocked[a.un]=Date.now();PF.dirty=1;(R.got=R.got||[]).push(id);ACHQ.push(id);}}
+  PF.d.ach[id]=Date.now();for(const k of unL(a))PF.d.unlocked[k]=Date.now();PF.dirty=1;(R.got=R.got||[]).push(id);ACHQ.push(id);}}
 /* the name of what an award unlocks, e.g. "Twin (tool)" */
-function unName(key){const[k,id]=key.split('.');return k==='ch'?CH[id].n+' (charm)':k==='tl'?TL[id].n+' (tool)':k==='up'?UPG[id].n+' (upgrade)':k==='fu'?(CH[id]||TL[id]).n+' (fusion)':k==='jar'?(typeof JARS!=='undefined'&&JARS[id]?JARS[id].n:'A starting jar')+' (starting jar)':COS[k]&&COS[k][id]?COS[k][id].n+' ('+COSK[k]+')':key;}
-const unKind=key=>({ch:'a charm',tl:'a tool',up:'an upgrade',fu:'a fusion',jar:'a starting jar'}[key.split('.')[0]])||'a '+COSK[key.split('.')[0]];
+function unName(key){if(Array.isArray(key))return key.map(unName).join(' and ');const[k,id]=key.split('.');return k==='ch'?CH[id].n+' (charm)':k==='tl'?TL[id].n+' (tool)':k==='up'?UPG[id].n+' (upgrade)':k==='fu'?(CH[id]||TL[id]).n+' (fusion)':k==='jar'?(typeof JARS!=='undefined'&&JARS[id]?JARS[id].n:'A starting jar')+' (starting jar)':COS[k]&&COS[k][id]?COS[k][id].n+' ('+COSK[k]+')':key;}
+const unKind=key=>Array.isArray(key)?key.map(unKind).join(' and '):({ch:'a charm',tl:'a tool',up:'an upgrade',fu:'a fusion',jar:'a starting jar'}[key.split('.')[0]])||'a '+COSK[key.split('.')[0]];
 /* Almanac completion, 0 to 100: things met (charms, tools, fusions, upgrades, seeds, bosses; locked ones do not count) plus awards earned */
 function alPct(){const P=PF.d||PF.load(),ks=[...Object.keys(CH).filter(k=>!CH[k].dev).map(k=>(CH[k].fu?'fu.':'ch.')+k),...Object.keys(TL).map(k=>(TL[k].fu?'fu.':'tl.')+k),...Object.keys(UPG).map(k=>'up.'+k),...[1,2,3,4,5,6,7,8,9,10].map(l=>'sd.'+l),...Object.keys(BOSS).map(k=>'boss.'+k)],as=Object.keys(ACH).filter(k=>!ACH[k].meta&&!ACH[k].lh);
  return Math.floor((ks.filter(k=>P.seen[k]&&!PF.lk(k)).length+as.filter(k=>P.ach[k]).length)/(ks.length+as.length)*100);}

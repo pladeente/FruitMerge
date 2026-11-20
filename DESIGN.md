@@ -56,7 +56,7 @@ Every charm, tool and upgrade sits in one or more builds. A build is thin when i
 | Economy | Piggy Bank, Savings Account, Fat Wallet, Coupon, Golden Touch, Scratch Card, Golden Goose, The Mint, Big Spender | Cash Out | Vault, Packed Lunch, Haggler, Ledger, Overtime, Signing Bonus, Back Road, Crate Key | Plenty |
 | Tools | Juggler, Spark Plug, Showman, Overdrive, Crowd Pleaser, Encore, Battery, Dynamo, Headliner, Stage Fright (rewards not using them) | all, Sleight of Hand | Tool Belt, Whetstone | Plenty |
 | Destruction | Fireworks, Pet Caterpillar, Compost, Ashes, Volcano, Safety Net, Bonfire | Cherry Bomb, Sieve, Harvest | Scrub | Fine |
-| Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin, Shears | | Fine |
+| Aim | Bullseye, Lodestone, Sharpshooter | Lodestar, Swap, Rewind, Twin, Shears, Paring Knife | | Fine |
 | Full jar | Hoarder, High Wire, Brinkmanship | Anchor, Harvest | Slow Fuse, Raised Rim, Spring Clean | Filled in v1.40, needs play (the bot never plays at the line) |
 | Small fruit | Small Fry, Pip Collector, Bite Size, Pet Caterpillar, Hoarder, Crumbs | Sieve | Scrub | Filled, measured (v1.26, see Small fruit measurement) |
 | Seeds | Abacus, Gardener, Seed Packet, Sprout, Polyculture, Family Tree | | Seed Bag | Seeds cut back in v1.23, see Seeds measurement. Needs play |
@@ -937,3 +937,9 @@ Not measured: the upsides are first guesses. Run the bot on each before judging 
 ## Slingshot pull-back (v1.55.2 and v1.55.3)
 
 The user found the flick throw unclear and asked for pull back and release, with a line showing the pull. Press, drag away, let go: the fruit flies the other way from the press point at up to 950·K px/s (the flick capped sideways speed at 450·K), in any direction. A full sideways throw now hits the walls 4 times (2 before), 5 in the Moon Jar, 1 when fired down. Knock-on changes the user approved: the dotted path stops at the first wall (the full path made bank shots close to certain), Ricochet capped at +3 Mult a jar (it grows with every bounce of the jar and roughly doubled), Lob became Slingshot throws ×1.3 (aiming high made its extra lift pointless; Catapult follows). Left alone: Pinball (capped at 4 bounces already), Curveball, Wind Sock (now scales height too), the Trick Shot awards (easier, not broken).
+
+## Paring Knife and Teppanyaki (v1.59)
+
+The user's idea. **Paring Knife** (tool, 5 coins, 7 charge, not locked): tapped while a fruit is in the air (dropped, thrown, or any fruit that has not landed yet; size 2 or bigger, no special fruit), the most recent one splits into two fruit one size smaller, pushed apart sideways (±150·K), keeping its fall or throw speed. The first half keeps gold, pollen and mould. With nothing in the air it does nothing and spends no charge. Each half carries `kn` = the drop count it was cut on: the halves can not merge with each other until the next drop (otherwise every cut would undo itself on landing), and a merge of a half with another fruit before the next drop is ×3 (in the merge's one-off multipliers, beside gold and Double Down), with "Clean cut! ×3". Like Twin with an extra step: the skill is timing the tap and aiming each half at a match. Builds: aim, throwing (Slingshot), small fruit. Not measured by the bot.
+
+**Teppanyaki** (award, Epic, title Teppan Chef): win a run holding the Paring Knife and the Slingshot. It is the first award that opens two looks (`un` can be a list, `unL(a)`): the Great Wave background (`bg.wave`: a red sun, a far mountain, two rolling seas with foam claws, a koi leaping out every 5 s) and the Oni jar skin (`jk.oni`: red lacquer with seigaiha waves, two horns on the frame, three blue spirit flames drifting round it). Both animated.
