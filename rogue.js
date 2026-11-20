@@ -1,6 +1,8 @@
 /* Fruit Merge: Rogue mode rules and the player profile. Loaded before the main script in index.html.
    Nothing here touches the page. It uses rint and store from index.html, but only inside functions, so load order is fine. */
 /* ---------- rogue mode: rules (charms, bosses, shop, scoring) ---------- */
+/* seeded runs (v1.53): sdH hashes a string to 32 bits, mb32 is a small seeded generator, sdW runs fn with Math.random swapped for it. SDQ.d > 0 while a seeded draw runs: every lock is open then, so all players draw from the same pool */
+const sdH=s=>{let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;},mb32=a=>()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;},SDQ={d:0},sdW=(fn,rng)=>{const o=Math.random;Math.random=rng;SDQ.d++;try{return fn();}finally{Math.random=o;SDQ.d--;}};
 const DEPTHS=8,SLOTS=5,RDROPS=24,TS0=2,TSLOTS=4,RV=12,OS0=2; /* RV = run save version. Bump it when the run object changes shape, older saved runs are dropped */
 /* fruit names by tier: a single size is written 'Orange (5)' (fnm), ranges stay numeric ('size 3 or smaller'). Rockmelon is the Australian name. The Lemon (4) was the Mandarin until v1.31 (players read the sprite as a lemon). Size 11 is the Watermelon: it was called Watermelon Queen from v1.31 to v1.32.1 by mistake, the Queen is the boss */
 const FN=['Cherry','Strawberry','Grape','Lemon','Orange','Apple','Pear','Pineapple','Peach','Rockmelon','Watermelon'],fnm=l=>FN[l]+' ('+(l+1)+')',fna=l=>(/^[AEIOU]/.test(FN[l])?'an ':'a ')+fnm(l);
@@ -637,6 +639,14 @@ const RG={
  reroll(R){const fr=R.tg.roll>0&&RG.rrBase(R)>0,p=fr?0:RG.rrBase(R);if(R.coins<p)return false;RG.pay(R,p);const s=RG.stock(R);s.rr=R.shop.rr+(fr?0:1);if(fr&&--R.tg.roll<=0)delete R.tg.roll;if(!R.shop.cr)s.cr=null;R.shop=s;return true;},
  ro:(R,clear,fail,fx)=>({get coins(){return R.coins},set coins(v){R.coins=v},get total(){return R.total},set total(v){R.total=v},has:id=>RG.has(R,id),pl:k=>RG.has(R,(RG.pob(R,k)||{}).id)?RG.pl(R,k):1,lvq:()=>R.lvq&&R.lvq.shift(),luck:()=>RG.luck(R),chrys:()=>RG.chrys(R),seed:l=>{R.sd[l]++;},sdb:()=>R.sd.reduce((b,v,l)=>v>(R.sd[b]||0)?l:b,0),score:(b,c)=>RG.score(R,b,c),made:l=>RG.made(R,l),kill:n=>RG.kill(R,n),net:()=>RG.net(R),get tools(){return R.tl},off:n=>{R.off=n;},oc:v=>{R.oc=v;},rev:id=>RG.rev(R,id),up:id=>R.up[id]||0,need:id=>RG.need(R,id),charge:(n,skip)=>RG.charge(R,n,skip),fill:()=>RG.fill(R),acts:()=>R.ch.filter((c,i)=>i>=(R.off||0)&&CH[c.id].act),grow:(id,d)=>{const c=RG.has(R,id);if(c)c.v=+((c.v||0)+d).toFixed(2);},fx:fx||(()=>{}),ev:(n,d)=>rgEv(R,n,d),clear,fail})
 };
+/* seeded runs: every draw in a seeded run (R.seed) gets its own stream, from the seed, the draw's name, the depth and jar, and how many times that draw has run there (R.sq, filled lazily), so two players get the same shops, crates, bosses and contracts as long as they make the same calls. Draws cached in the run (bosses, curses, skip rewards) are keyed by the depth they are for. Calls that only read locks (fusable, upOk, miss) run inside so locks stay open. jarCfg carries fs, the seed of the jar's fruit order (read by the engine's gen) */
+RG.at=(R,k,fn)=>{if(!R||!R.seed||SDQ.d)return fn();return sdW(fn,mb32(sdH(R.seed+'|'+k)));};
+for(const n of ['boss','mid','rules','curse','srw'])((f)=>{RG[n]=function(R,a,b){const d=n==='rules'?(b===undefined?R.depth:b):(a===undefined?R.depth:a);return RG.at(R,n+'|'+d,()=>f.apply(this,arguments));};})(RG[n]);
+for(const n of ['stock','crate','offer','bribe'])((f)=>{RG[n]=function(R){if(!R||!R.seed||SDQ.d)return f.apply(this,arguments);const q=R.sq||(R.sq={}),k=n+'|'+R.depth+'|'+R.jar;q[k]=(q[k]||0)+1;return RG.at(R,k+'|'+q[k],()=>f.apply(this,arguments));};})(RG[n]);
+for(const n of ['fusable','upOk','miss'])((f)=>{RG[n]=function(R){return RG.at(R,'lk',()=>f.apply(this,arguments));};})(RG[n]);
+((f)=>{RG.new=function(j,s,seed){if(!seed)return f.call(this,j,s);const R=RG.at({seed},'new',()=>f.call(this,j,s));R.seed=seed;return R;};})(RG.new);
+((f)=>{RG.jarCfg=function(R,j=R.jar){const c=f.call(this,R,j);if(R.seed)c.fs=R.seed+'|f|'+R.depth+'|'+j;return c;};})(RG.jarCfg);
+
 
 /* ---------- looks: cosmetics worn from Options, opened by awards (LOCK keys jk.id, bg.id, fs.id, ss.id). They change nothing about play ----------
    jk = jar skins: f frame, i inside, e edge line, k pattern. bg = backgrounds: c colours top to bottom, k pattern.
@@ -671,7 +681,7 @@ const PF={d:null,dirty:0,
  see(kind,ids){const nu=[];for(const id of [].concat(ids)){const k=kind+'.'+id;if(id&&!PF.d.seen[k]){PF.d.seen[k]=Date.now();PF.dirty=1;nu.push(id);}}return nu;},
  saw:(kind,id)=>!!PF.d.seen[kind+'.'+id],
  /* is this thing (ch.id, tl.id, up.id, fu.id, jar.id) still locked behind an award */
- lk:key=>!!LOCK[key]&&!(PF.d||PF.load()).unlocked[key]
+ lk:key=>!SDQ.d&&!!LOCK[key]&&!(PF.d||PF.load()).unlocked[key]
 };
 function mergeProfile(a,b){a=PF.fix(a);b=PF.fix(b);const o=PF.blank(),first=(x,y)=>{const r={...x};for(const k in y)r[k]=r[k]?Math.min(r[k],y[k]):y[k];return r;},most=(x,y)=>{const r={...x};for(const k in y)r[k]=Math.max(r[k]||0,y[k]);return r;};
  o.seen=first(a.seen,b.seen);o.unlocked=first(a.unlocked,b.unlocked);o.ach=first(a.ach,b.ach);o.stats=most(a.stats,b.stats);o.stakes=most(a.stakes,b.stakes);o.rev=Math.max(a.rev,b.rev)+1;o.at=Math.max(a.at,b.at);return PF.heal(o);}
