@@ -747,7 +747,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  nudge(d){cx=clampN(cx+(B.mirror?-d:d),L,Rw);},
  down(x,y){cx=mx(x);sp0=ro&&!arm&&ton('sling')?[x,y]:null;spl=[0,0];},
  move(x,y){if(sp0){spl=[x-sp0[0],y-sp0[1]];return;}cx=mx(x);}, /* while pulling the Slingshot the aim stays where the press began */
- up(x,y,vx){if(over||(ro&&(!J||done))){sp0=null;return;}let sl=null;if(sp0){const d=Math.hypot(spl[0],spl[1]);if(d>18*K){const k=Math.min(d,SPM)/SPM*SPV/d;sl=[-spl[0]*k,-spl[1]*k];}x=sp0[0];y=null;sp0=null;spl=[0,0];} /* Slingshot: launch opposite the pull */
+ up(x,y,vx){if(over||(ro&&(!J||done))){sp0=null;return;}let sl=null;if(sp0){const d=Math.hypot(spl[0],spl[1]);if(d>18*K){const k=Math.min(d,SPM)/SPM*SPV/d;sl=[-spl[0]*k,-spl[1]*k];}x=sp0[0];if(sl)y=null;sp0=null;spl=[0,0];} /* Slingshot: launch opposite the pull */
   if(arm){if(x==null||y==null)return;const f=pick(x,y),t=ro.tools.find(t=>t.id===arm);if(!t){arm=null;return;}
    if(arm==='lead'&&!f&&!curHv){const r=rad(cur),hx=clampN(cx,L+r,Rw-r),hy=line-r-6;if(Math.hypot(mx(x)-hx,y-hy)<r+14*K){curHv=1;arm=null;spent(t);burst(hx,hy,'#8f8a99',14);snd('land',10);return;}} /* Lead Weight on the fruit you hold: it drops heavy */if(!f||!okTg(arm,f)){floatTxt(f?'Not that one':'Tap a fruit',W/2,line+48,'#1f9c90',18);snd('nope');return;}tool(arm,f);arm=null;spent(t);return;}
   if(cool>0||(ro&&dl<=0&&free<=0))return;if(x!=null)cx=mx(x);ck=0;const r=rad(cur),o={x:clampN(cx,L+r,Rw-r),y:line-r-6,vx:0,vy:60*K,l:cur,age:0,sp:curSp};if(ro&&y!=null&&y>line+r&&tmd('reach'))o.y=Math.min(y,bot-r); /* Long Arm: drop from where you tap */
