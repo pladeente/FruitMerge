@@ -4700,3 +4700,51 @@ Y:'#...#/#...#/.#.#./..#../..#../..#../..#..',Z:'#####/....#/...#./..#../.#.../#
 '×':'...../...../#...#/.#.#./..#../.#.#./#...#','/':'....#/....#/...#./..#../.#.../#..../#....',"'":'#/#/././././.',':':'././#/././#/.',' ':'.../.../.../.../.../.../...'
 };
 const PXFB={M:'##...##/###.###/#######/##.#.##/##...##/##...##/##...##',W:'##...##/##...##/##...##/##.#.##/#######/###.###/##...##',N:'##..##/###.##/######/##.###/##..##/##..##/##..##'};
+
+/* Profile pictures (v1.60): 16x16 grids in PXP letters. bg = tile colour, t = ms per frame, fr = frames: o = rows replaced {row: string}, sx = width scale, dy = pixels down.
+   '0' is the default everyone has, the rest are opened by awards (COS.pf in rogue.js, LOCK keys pf.id). Built into animated CSS strips by avBuild in index.html. */
+const AVD={
+ '0':{bg:'#ffd6e0',g:[
+'..........kk....','.........kGGk...','........kk......','.......k..k.....','......k....k....','.....k......k...','..kkkk....kkkk..','.krrrrk..krrrrk.',
+'krwrrrrkkrwrrrrk','krrrrrrkkrrrrrrk','krrrrrRkkrrrrrRk','kRrrrRRkkRrrrRRk','.kRRRRk..kRRRRk.','..kkkk....kkkk..','................','................']},
+ oni:{bg:'#2a1a3a',t:140,g:[
+'.k............k.','kck..........kck','kcck........kcck','.kcck.kkkk.kcck.','..kkkkrrrrkkkk..','..krrrrrrrrrrk..','.krRRrrrrrrRRrk.','.krkkRrrrrRkkrk.',
+'.kryykrrrrkyyrk.','.krrkkrRRrkkrrk.','.krrrrRkkRrrrrk.','.krkwkkkkkkwkrk.','.krkwkRRRRkwkrk.','..krkkkkkkkkrk..','...krrrrrrrrk...','....kkkkkkkk....'],
+  fr:[{},{},{o:{8:'.krYYkrrrrkYYrk.'}},{o:{8:'.krwwkrrrrkwwrk.'}},{o:{8:'.krYYkrrrrkYYrk.'}},{},{},{o:{8:'.krRRkrrrrkRRrk.'}}]},
+ owl:{bg:'#1b1029',t:260,g:[
+'................','..k..........k..','..kk........kk..','..knkkkkkkkknk..','..knnnnnnnnnnk..','.knyyynnnnyyynk.','.knykkynnykkynk.','.knykkynnykkynk.',
+'.knyyynoonyyynk.','.knnnnnoonnnnnk.','.kncccnnnncccnk.','.knccNccccNccnk.','..knccccccccnk..','...knnccccnnk...','....kookkook....','................'],
+  fr:[{},{},{},{},{},{o:{6:'.knyyynnnnyyynk.',7:'.knkkknnnnkkknk.'}},{},{},{o:{6:'.knyyynnnnyyynk.',7:'.knkkknnnnkkknk.'}}]},
+ bfly:{bg:'#9fdcff',t:150,g:[
+'................','......k..k......','.kkkk..kk..kkkk.','kmmmmk.kk.kmmmmk','kmyymmkkkkmmyymk','kmyymmmkkmmmyymk','kmmmmmmkkmmmmmmk','.kmmmmmkkmmmmmk.',
+'..kkkkkkkkkkkk..','..kPPPPkkPPPPk..','.kPPwPPkkPPwPPk.','.kPPPPPkkPPPPPk.','..kPPPkkkkPPPk..','...kkk.kk.kkk...','................','................'],
+  fr:[{},{sx:.7},{sx:.35},{sx:.7},{},{dy:-1}]},
+ fly:{bg:'#fff2d8',t:70,g:[
+'................','..kkk......kkk..','.kbwbk....kbwbk.','.kbbwbk..kbwbbk.','..kbbbkkkkbbbk..','...kkkrkkrkkk...','....krrkkrrk....','.....kDDDDk.....',
+'....kDyDDyDk....','....kDDDDDDk....','....kyDDDDyk....','.....kDDDDk.....','......kkkk......','................','................','................'],
+  fr:[{dy:1},{dy:1,o:{1:'................',2:'..kkk......kkk..',3:'.kbwbk....kbwbk.',4:'.kbbbkkkkkkbbbk.'}},{dy:2},{dy:1,o:{1:'................',2:'..kkk......kkk..',3:'.kbwbk....kbwbk.',4:'.kbbbkkkkkkbbbk.'}}]},
+ ghost:{bg:'#2a1a3a',t:220,g:[
+'................','.....kkkkkk.....','....kwwwwwwk....','...kwwwwwwwwk...','..kwwwwwwwwwwk..','..kwwkkwwkkwwk..','..kwwkkwwkkwwk..','..kwwwwwwwwwwk..',
+'..kwwppwwwppwk..','..kwwwwkkwwwwk..','..kwwwwwwwwwwk..','..kwwwwwwwwwwk..','..kwwwwwwwwwwk..','..kwkwwkwwkwwk..','..k.kk.kk.kk.k..','................'],
+  fr:[{},{dy:-1},{dy:-2},{dy:-2},{dy:-1},{},{o:{5:'..kwwwkkwwwkkk..',6:'..kwwwkkwwwkkk..'}},{o:{5:'..kwwwkkwwwkkk..',6:'..kwwwkkwwwkkk..'}}]},
+ moon:{bg:'#1b1029',t:300,g:[
+'................','......kkkk......','....kkbbbbk.....','...kbbbbkk..y...','..kbbbbk........','..kbbbk.........','.kbbbBk...y.....','.kbkbBk.........',
+'.kbbbBk.........','.kbbbbBk......y.','..kbbbbBk.......','..kbbbbbBkk.....','...kbbbbbBBkkk..','....kkbbbbbbbk..','......kkkkkkk...','................'],
+  fr:[{},{o:{3:'...kbbbbkk..w...',6:'.kbbbBk...Y.....'}},{o:{3:'...kbbbbkk......',9:'.kbbbbBk......w.'}},{o:{6:'.kbbbBk...w.....',9:'.kbbbbBk......Y.'}}]},
+ gmel:{bg:'#3d2400',t:160,g:[
+'................','.....kkkkkk.....','...kkyyyyyykk...','..kyywyyyYyyyk..','.kyywyyyYyyyYyk.','.kywyyyYyyyYyyk.','kyyyyyYyyyYyyyYk','kyyyyYyyyYyyyYyk',
+'kyyyyYyyyYyyyYyk','kyyyyYyyyYyyyYyk','kYyyyyYyyyYyyyYk','.kYyyyYyyyYyyYk.','.kYYyyyYyyyYYYk.','..kYYYYYYYYYYk..','...kkYYYYYYkk...','.....kkkkkk.....'],
+  fr:[{},{},{o:{0:'..............w.',1:'.....kkkkkk..www',2:'...kkyyyyyykk.w.'}},{},{},{o:{12:'wkYYyyyYyyyYYYk.',13:'wwkYYYYYYYYYYk..',14:'w..kkYYYYYYkk...'}}]},
+ pear:{bg:'#e3f7c9',g:[
+'.......k........','.......kNkGGk...','......kgNgk.....','.....kggggk.....','.....kggggk.....','....kggggggk....','...kggggggggk...','...kgkggggkgk...',
+'..kggbggggbggk..','..kggbgkkgbggk..','..kgggkggkgggk..','..kggggggggggk..','..kGggggggggGk..','...kGGggggGGk...','....kkkkkkkk....','................']},
+ rock:{bg:'#c9c3d4',g:[
+'................','................','................','.....kkkkkk.....','...kkssssssk....','..ksssssssdsk...','.kssdssssssssk..','.kskkssssskkdsk.',
+'.kssksssssksssk.','kssssssssssssdk.','kdsssskkkksssdk.','kddssssssssssddk','.kdddssssssdddk.','..kkDDDDDDDDkk..','....kkkkkkkk....','................']},
+ scroll:{bg:'#f4bb4a',g:[
+'................','.kkkkkkkkkkkkkk.','knnnnnnnnnnnnnnk','.kkkkkkkkkkkkkk.','..kcccccccccck..','..kcDDDDDDDDck..','..kcccccccccck..','..kcDDDDDDccck..',
+'..kcccccccccck..','..kcDDDDDcrrrk..','..kcccccccrRrk..','..kcccccccrrrk..','.kkkkkkkkkkkkkk.','knnnnnnnnnnnnnnk','.kkkkkkkkkkkkkk.','................']},
+ crown:{bg:'#6b3fb0',g:[
+'................','................','................','..k....kk....k..','.kyk..kyyk..kyk.','.kyyk.kyyk.kyyk.','.kyyykkyykkyyyk.','.kyyyyyyyyyyyyk.',
+'.kyryyybyyyryyk.','.kyyyyyyyyyyyyk.','.kYYYYYYYYYYYYk.','..kkkkkkkkkkkk..','................','................','................','................']}
+};

@@ -667,9 +667,11 @@ const COS={
  jk:{piggy:{n:'Pink Ceramic',f:'#ff9db5',i:'#fff1f5',e:'#d8607f',k:'dots'},tall:{n:'Deep Glass',f:'#3d5a80',i:'#eaf3ff',e:'#22395a',k:'shine'},wide:{n:'Velvet',f:'#6b3fb0',i:'#f6efff',e:'#f4bb4a',k:'trim'},kit:{n:'Steel',f:'#aab2bb',i:'#f3f5f7',e:'#5f6770',k:'dots'},bare:{n:'Planks',f:'#a9713a',i:'#fff6e8',e:'#6e4420',k:'planks'},gold:{n:'Golden',f:'#ffd43b',i:'#fffbe6',e:'#e09600',k:'spark',a:1},melon:{n:'Melon Rind',f:'#7fcf4e',i:'#fff0f0',e:'#24711c',k:'stripe',a:1},crystal:{n:'Crystal',f:'#bfefff',i:'#f7fdff',e:'#4cc9f0',k:'prism',a:1},oni:{n:'Oni',f:'#b3262b',i:'#fbf3e4',e:'#2a1416',k:'oni',a:1}},
  bg:{throne:{n:'Throne Room',c:['#1d4d2b','#12331c'],k:'diamond'},orchard:{n:'Orchard Sky',c:['#9fdcff','#e3f7c9'],k:'cloud'},night:{n:'Midnight',c:['#1b1029','#3a2358'],k:'stars'},deep:{n:'The Deep',c:['#06283d','#0f5a6e'],k:'bubbles',a:1},patch:{n:'Melon Patch',c:['#8fd85e','#6fc043'],k:'stripe'},note:{n:'Notebook',c:['#fdfaf0','#fdfaf0'],k:'lines'},sunset:{n:'Sunset',c:['#6b3fb0','#ff8f6b','#ffd1a3'],k:'sun',a:1},wave:{n:'Great Wave',c:['#f3e6c6','#e6d09c'],k:'wave',a:1}},
  fs:{gold:{n:'Solid Gold',r:['#3d2400','#b87400','#ffc61a','#fff8d0']},rot:{n:'Past It',r:['#241a12','#6b5230','#b59a62','#efe2b8']},mono:{n:'Black and White',r:['#16101f','#6b6572','#c9c3d4','#ffffff'],k:'film',a:1}},
- ss:{chip:{n:'Chiptune'},mar:{n:'Marimba'},wood:{n:'Wood Block'}}
+ ss:{chip:{n:'Chiptune'},mar:{n:'Marimba'},wood:{n:'Wood Block'}},
+ /* v1.60 profile pictures: art in AVD (icons.js), shown on profile cards and friends lists, published as pub.av */
+ pf:{scroll:{n:'Contract'},pear:{n:'Sad Pear'},rock:{n:'Grumpy Rock'},crown:{n:'Crown'},owl:{n:'Night Owl',a:1},fly:{n:'Fruit Fly',a:1},bfly:{n:'Butterfly',a:1},moon:{n:'Blue Moon',a:1},ghost:{n:'Ghost',a:1},gmel:{n:'Golden Melon',a:1},oni:{n:'Oni Mask',a:1}}
 };
-const COSK={jk:'jar skin',bg:'background',fs:'fruit skin',ss:'sound set'};for(const k in COS)for(const id in COS[k])COS[k][id].id=id;
+const COSK={jk:'jar skin',bg:'background',fs:'fruit skin',ss:'sound set',pf:'profile picture'};for(const k in COS)for(const id in COS[k])COS[k][id].id=id;
 
 /* ---------- player profile: everything that outlives a run ---------- */
 /* One object, one storage key, so a sign-in later only has to sync this.
@@ -776,7 +778,7 @@ const ACH={
  gold6:{n:'Treasure Trove',d:'Merge 6 gold fruit in one jar.',ti:'Goldsmith',tr:2,on:'gold',t:R=>R.jst.golds>=6,un:'fu.phil'},
  small15:{n:'Small Wonders',d:'Make 15 Strawberries (2) or Grapes (3) in one jar.',ti:'Small Wonder',tr:1,on:'merge',t:R=>(R.jst['made.1']||0)+(R.jst['made.2']||0)>=15,un:'fu.snack'},
  seeds15:{n:'Orchard',d:'Hold 15 seed levels at once.',ti:'Head Gardener',tr:2,on:'seed take grow',t:R=>R.sd.reduce((a,b)=>a+b,0)>=15,un:'fu.svault'},
- dark:{n:'Night Owl',d:'Beat The Blackout.',ti:'Night Owl',tr:1,on:'jar',t:(R,d)=>d.boss==='dark'},
+ dark:{un:'pf.owl',n:'Night Owl',d:'Beat The Blackout.',ti:'Night Owl',tr:1,on:'jar',t:(R,d)=>d.boss==='dark'},
  bank:{n:'Bank Shot',d:'Score a Trick Shot.',ti:'Hotshot',tr:1,on:'merge',t:(R,d)=>d.trick,secret:1},
  win:{n:'To the Bottom',d:'Win a run.',ti:'Champion',tr:2,on:'jar',t:(R,d)=>d.win,un:'jar.piggy'},
  endless:{n:'Still Going',d:'Beat the depth 10 boss.',ti:'Deep Diver',tr:2,on:'jar',t:(R,d)=>d.jar===2&&d.depth>=10,un:'jar.wide'},
@@ -786,22 +788,22 @@ const ACH={
  stake8:{n:'Juiced',d:'Win a run on Ripeness 8.',ti:'Overripe',tr:4,on:'jar',t:(R,d)=>d.win&&(R.stake||1)>=8,un:'jk.melon'},
  /* hard and obscure ones (ti = the title they give, shown before the player's name) */
  bugtest:{n:'Bugtest',d:'Hold Pet Caterpillar, Pet Bowl, Pet Treats, Chrysalis and Big Appetite at once. Their fusions count.',on:'buy take fuse',t:R=>[['pet','frenzy'],['bowl','zoo'],['treats','nectar'],['chrys','bfly'],['appetite']].every(g=>g.some(id=>RG.has(R,id))),ti:'Bugtester',tr:3},
- bfly5:{n:'Butterfly Effect',d:'Chrysalis reaches +5 Mult in one run.',on:'pet jar fuse',t:R=>R.ch.some(c=>(c.id==='chrys'||c.id==='bfly')&&(c.v||0)>=5),ti:'Lepidopterist',tr:3},
+ bfly5:{un:'pf.bfly',n:'Butterfly Effect',d:'Chrysalis reaches +5 Mult in one run.',on:'pet jar fuse',t:R=>R.ch.some(c=>(c.id==='chrys'||c.id==='bfly')&&(c.v||0)>=5),ti:'Lepidopterist',tr:3},
  rainbow:{n:'Rainbow Jar',d:'Have one of every fruit from Cherry (1) to Rockmelon (10) in the jar at once.',on:'rainbow',t:()=>true,ti:'Rainbow',tr:3},
- gmelon:{n:'Golden Melon',d:'Make a Watermelon (11) out of a gold Rockmelon (10).',on:'merge',t:(R,d)=>d.l===10&&d.gold,ti:'Golden',tr:4},
+ gmelon:{un:'pf.gmel',n:'Golden Melon',d:'Make a Watermelon (11) out of a gold Rockmelon (10).',on:'merge',t:(R,d)=>d.l===10&&d.gold,ti:'Golden',tr:4},
  exact:{n:'Exact Change',d:'Reach a jar\'s target exactly, not a point over.',on:'exact',t:()=>true,ti:'Accountant',tr:2},
  shave:{n:'Close Shave',d:'Clear a jar while the pile is over the line.',on:'shave',t:()=>true,ti:'Daredevil',tr:2},
  south:{n:'Southpaw',d:'Clear a jar of 10 or more drops with every fruit dropped in the left half.',on:'jar',t:R=>R.jst.drops>=10&&!R.jst.rdrops,ti:'Southpaw',tr:2},
  ladder:{n:'Full Ladder',d:'Make every fruit from Strawberry (2) to Watermelon (11) in one combo.',on:'ladder',t:()=>true,ti:'Climber',tr:4},
  untouch:{n:'Untouchable',d:'Beat a boss at depth 5 or deeper without the pile ever going over the line.',on:'jar',t:(R,d)=>d.boss&&d.jar===2&&d.depth>=5&&!R.jst.overlns,ti:'Untouchable',tr:3},
  medusa:{n:'Medusa\'s Garden',d:'Petrify 5 Oranges (5) in one run.',on:'petr',t:R=>(R.st['petr.4']||0)>=5,ti:'Medusa',tr:2},
- rocks:{n:'Rock Bottom',d:'Have 6 rocks in the jar at once.',on:'rocks6',t:()=>true,ti:'Geologist',tr:2},
+ rocks:{un:'pf.rock',n:'Rock Bottom',d:'Have 6 rocks in the jar at once.',on:'rocks6',t:()=>true,ti:'Geologist',tr:2},
  mouldy:{n:'Mouldy Oldie',d:'Let 3 fruit go mouldy in one jar and still clear it.',ti:'Mouldy Oldie',tr:1,on:'jar',t:R=>(R.jst.moulds||0)>=3},
  remorse:{n:'Seller\'s Remorse',d:'Sell a charm, then buy the same charm back before the next jar.',ti:'Indecisive',tr:1,on:'buy',t:(R,d)=>(!d.k||d.k==='ch')&&!!(R.jst&&R.jst['sold.'+d.id])},
  broke:{n:'Empty Pockets',d:'Beat a final boss holding 0 coins.',on:'jar',t:(R,d)=>d.jar===2&&d.boss&&BOSS[d.boss].fin&&R.coins===0,ti:'Pauper',tr:3},
  noint:{n:'Not Interested',d:'Leave 5 crates unopened in one run.',ti:'Not Interested',tr:1,on:'leave',t:R=>(R.st.leaves||0)>=5},
- pear:{n:'Pear-Shaped',d:'Lose a run with a Pear (7) over the line.',on:'overf',t:(R,d)=>d.l===6,secret:1,ti:'Pear-Shaped',tr:1},
- fly:{n:'Fruit Fly',d:'Keep a fruit in the air for 2.5 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly',tr:2},
+ pear:{un:'pf.pear',n:'Pear-Shaped',d:'Lose a run with a Pear (7) over the line.',on:'overf',t:(R,d)=>d.l===6,secret:1,ti:'Pear-Shaped',tr:1},
+ fly:{un:'pf.fly',n:'Fruit Fly',d:'Keep a fruit in the air for 2.5 seconds without it touching anything.',on:'fly',t:()=>true,ti:'Fruit Fly',tr:2},
  /* awards that open looks (COS). Cosmetic only. Most read lifetime stats, so they are also checked when a run starts (on 'run') and count what was done before they existed */
  jwpiggy:{n:'Piggy Banked',d:'Win a run with the Piggy Jar.',ti:'Piggy Banker',tr:3,on:'run jar',t:()=>PF.d.stakes.piggy>=1,un:'jk.piggy'},
  jwtall:{n:'Deep End',d:'Win a run with the Deep Jar.',ti:'Deep Sea',tr:3,on:'run jar',t:()=>PF.d.stakes.tall>=1,un:'jk.tall'},
@@ -824,8 +826,8 @@ const ACH={
  al50:{n:'Bookworm',d:'Fill half of the Almanac.',ti:'Bookworm',tr:2,on:'run start jar',t:()=>alPct()>=50,un:'bg.note',meta:1},
  al100:{n:'Encyclopedia',d:'Fill the whole Almanac.',on:'run start jar',t:()=>alPct()>=100,un:'jk.crystal',ti:'Professor',tr:4,meta:1},
  /* contracts */
- legend:{n:'Once in a Blue Moon',d:'Take a Legendary charm from a crate.',on:'take',t:(R,d)=>d.k==='ch'&&!!CH[d.id]&&CH[d.id].r===4,ti:'Legend',tr:3},
- ct1:{n:'Signed and Sealed',d:'Clear a jar with a contract signed.',ti:'Signatory',tr:0,on:'ct',t:()=>true},
+ legend:{un:'pf.moon',n:'Once in a Blue Moon',d:'Take a Legendary charm from a crate.',on:'take',t:(R,d)=>d.k==='ch'&&!!CH[d.id]&&CH[d.id].r===4,ti:'Legend',tr:3},
+ ct1:{un:'pf.scroll',n:'Signed and Sealed',d:'Clear a jar with a contract signed.',ti:'Signatory',tr:0,on:'ct',t:()=>true},
  ct6:{n:'Fine Print',d:'Clear 6 jars with a contract signed in one run.',on:'ct',t:R=>R.st.cts>=6,ti:'Contractor',tr:2},
  /* v1.40: they open the new charms. Jailbreak reads the jar's rules, so The Orchard Queen with The Padlock or The Miser counts, and so does either as a mini boss */
  jail:{n:'Jailbreak',d:'Beat The Padlock or The Miser.',ti:'Escape Artist',tr:2,on:'jar',t:(R,d)=>!!d.boss&&!!R.cfg&&(R.cfg.rules||[]).some(k=>k==='lock'||k==='miser'),un:'ch.fright'},
@@ -846,12 +848,12 @@ const ACH={
  tower:{n:'High Rise',d:'Have 3 fruit of size 8 or bigger in the jar at once.',ti:'Architect',tr:2,on:'tower',t:()=>true,un:'ch.sky'},
  combo7:{n:'Domino Effect',d:'Reach a combo of 7.',ti:'Toppler',tr:1,on:'merge',t:(R,d)=>d.combo>=6,un:'ch.dom'},
  /* long-haul ladder (v1.50): lifetime counts, a title each, lh = left out of the Almanac's completion, pg/of = progress shown on the Almanac and Titles screen */
- w25:{n:'Winning Streak',d:'Win 25 runs.',ti:'Victor',tr:2,lh:1,of:25,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=25},
+ w25:{un:'pf.crown',n:'Winning Streak',d:'Win 25 runs.',ti:'Victor',tr:2,lh:1,of:25,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=25},
  w50:{n:'Half Century',d:'Win 50 runs.',ti:'Conqueror',tr:3,lh:1,of:50,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=50},
  w100:{n:'Centurion',d:'Win 100 runs.',ti:'Immortal',tr:4,lh:1,of:100,pg:S=>S.wins||0,on:'run jar',t:(R,d,S)=>(S.wins||0)>=100},
  l50:{n:'Back for More',d:'Lose 50 runs.',ti:'Persistent',tr:1,lh:1,of:50,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=50},
  l200:{n:'Glutton for Punishment',d:'Lose 200 runs.',ti:'Stubborn',tr:2,lh:1,of:200,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=200},
- l500:{n:'Never Give Up',d:'Lose 500 runs.',ti:'Unbreakable',tr:3,lh:1,of:500,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=500},
+ l500:{un:'pf.ghost',n:'Never Give Up',d:'Lose 500 runs.',ti:'Unbreakable',tr:3,lh:1,of:500,pg:S=>(S['end.over']||0)+(S['end.drops']||0),on:'run end',t:(R,d,S)=>((S['end.over']||0)+(S['end.drops']||0))>=500},
  r25:{n:'Regular',d:'Start 25 Rogue runs.',ti:'Regular',tr:0,lh:1,of:25,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=25},
  r100:{n:'Frequent Flyer',d:'Start 100 Rogue runs.',ti:'Devotee',tr:1,lh:1,of:100,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=100},
  r250:{n:'Lifer',d:'Start 250 Rogue runs.',ti:'Lifer',tr:2,lh:1,of:250,pg:S=>S.runs||0,on:'run',t:(R,d,S)=>(S.runs||0)>=250},
@@ -876,7 +878,7 @@ const ACH={
  b200:{n:'Big Game',d:'Beat 200 bosses (over all your runs).',ti:'Big Game Hunter',tr:3,lh:1,of:200,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=200},
  b500:{n:'Monster Hunter',d:'Beat 500 bosses (over all your runs).',ti:'Bane of Bosses',tr:4,lh:1,of:500,pg:S=>S.bosses||0,on:'run jar',t:(R,d,S)=>(S.bosses||0)>=500},
  /* v1.59, the user's idea: un can be a list, every key in it opens */
- teppan:{n:'Teppanyaki',d:'Win a run holding the Paring Knife and the Slingshot.',ti:'Teppan Chef',tr:3,on:'jar',t:(R,d)=>d.win&&R.tl.some(t=>t.id==='knife')&&R.tl.some(t=>t.id==='sling'),un:['bg.wave','jk.oni']}
+ teppan:{n:'Teppanyaki',d:'Win a run holding the Paring Knife and the Slingshot.',ti:'Teppan Chef',tr:3,on:'jar',t:(R,d)=>d.win&&R.tl.some(t=>t.id==='knife')&&R.tl.some(t=>t.id==='sling'),un:['bg.wave','jk.oni','pf.oni']}
 };
 function unL(a){return[].concat(a.un||[]);} /* the keys an award opens (un is one key or a list) */
 const LOCK={};for(const id in ACH)for(const k of unL(ACH[id]))LOCK[k]=id;

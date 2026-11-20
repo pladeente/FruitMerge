@@ -232,6 +232,9 @@
         "on": {
           ".validate": "newData.val() === now"
         },
+        "av": {
+          ".validate": "newData.isString() && newData.val().length <= 12"
+        },
         "m": {
           ".validate": "newData.isString() && newData.val().length <= 8"
         },
