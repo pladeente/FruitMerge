@@ -46,6 +46,10 @@ Run summaries (v1.39) use the same database. A player who switches them on (Opti
 
 Note: any browser game that submits its own score can be cheated by someone who edits the request. The rules stop junk data and overwrites, not a determined cheater.
 
+Title codes (v1.52) use the same database. Paste `database.rules.json` into the Rules tab again and publish, or redeeming and making codes is refused. A code gives a title (up to 16 characters, rarity Common to Legendary) to a set number of accounts. To make one, sign in as the owner account, open the game with `?dev`, go to the menu and press Make code in the dev panel: pick the title, rarity and number of uses and it saves the code and shows it. Copy it then, it is not shown again: the database keeps only a hash of it, under `codes`. If saving is refused, the screen shows the name and value to add under `codes` by hand in the console. Players redeem codes in Options, Redeem code, and must be signed in. The rules allow one claim per account and stop at the number of uses. To end a code early, delete its node in the console.
+
+Daily runs, profiles and friends (v1.53) use the same database: `daily/<day>/<uid>` (one score per account per day, day = days since 1 Jan 1970 UTC), `pub/<uid>` (each player's public profile: username, title, three stats, best scores), `freq` (friend requests) and `frd` (friend lists, written in pairs when a request is accepted). Paste `database.rules.json` into the Rules tab again and publish, or none of them can be written. Old days' daily boards stay in the database; delete `daily/<day>` nodes in the console to tidy up.
+
 ## Accounts (Firebase Authentication, email and password)
 
 Signing in is optional. An account keeps a player's Rogue profile (awards, unlocks, stats, Ripeness wins), saved run, local scores and title online, merges them when they sign in on another device, and reserves their username so nobody else can post scores under it.
