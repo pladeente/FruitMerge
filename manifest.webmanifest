@@ -1,6 +1,6 @@
 {
-  "name": "Fruit Merge",
-  "short_name": "Fruit Merge",
+  "name": "Overripe",
+  "short_name": "Overripe",
   "description": "Drop fruit, merge matching ones, make a watermelon.",
   "start_url": "./",
   "scope": "./",

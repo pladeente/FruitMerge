@@ -1,4 +1,4 @@
-# Fruit Merge
+# Overripe
 
 Drop fruit, merge matching ones, make a watermelon. The game lives in `index.html`, the Rogue rules in `rogue.js`, the pixel art in `icons.js`.
 
