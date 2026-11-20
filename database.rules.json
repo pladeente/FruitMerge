@@ -229,6 +229,45 @@
         "t": {
           ".validate": "newData.val() === now"
         },
+        "on": {
+          ".validate": "newData.val() === now"
+        },
+        "m": {
+          ".validate": "newData.isString() && newData.val().length <= 8"
+        },
+        "run": {
+          ".validate": "newData.hasChildren(['j', 'k', 'd', 'a', 's'])",
+          "j": {
+            ".validate": "newData.isString() && newData.val().length <= 8"
+          },
+          "k": {
+            ".validate": "newData.isNumber()"
+          },
+          "d": {
+            ".validate": "newData.isNumber()"
+          },
+          "a": {
+            ".validate": "newData.isNumber()"
+          },
+          "s": {
+            ".validate": "newData.isNumber()"
+          },
+          "ch": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "or": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "tl": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "y": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
         "$other": {
           ".validate": false
         }
@@ -241,6 +280,18 @@
           ".read": "auth != null && auth.uid === $from",
           ".write": "auth != null && ((auth.uid === $from && $from !== $to && !data.exists() && newData.exists()) || ((auth.uid === $to || auth.uid === $from) && !newData.exists()))",
           ".validate": "newData.hasChildren(['n', 't']) && newData.child('n').isString() && root.child('usernames').child(newData.child('n').val().toLowerCase()).val() === auth.uid && newData.child('t').val() === now",
+          "$other": {
+            ".validate": "$other === 'n' || $other === 't'"
+          }
+        }
+      }
+    },
+    "frs": {
+      "$from": {
+        ".read": "auth != null && auth.uid === $from",
+        "$to": {
+          ".write": "auth != null && ((auth.uid === $from && $from !== $to && newData.exists()) || ((auth.uid === $from || auth.uid === $to) && !newData.exists()))",
+          ".validate": "newData.hasChildren(['n', 't']) && newData.child('n').isString() && newData.child('n').val().length <= 12 && newData.child('t').val() === now",
           "$other": {
             ".validate": "$other === 'n' || $other === 't'"
           }
