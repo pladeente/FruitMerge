@@ -963,3 +963,7 @@ The user meant the Paring Knife to be a Fruit Ninja swipe, and v1.59 built it as
 ## Paring Knife: 2 swipes per charge (v1.67)
 
 The user's pick after comparing 1 and 2. A full charge (7) now buys 2 swipes, and a fast swipe that misses uses one, so missing costs something and a sharp player gets up to twice the old value. The second swipe is a retry on the same falling fruit, which is what makes it feel like Fruit Ninja. The knife does not charge while a swipe is left, and a leftover swipe is lost when the jar ends. 1 swipe at charge 4 or 5 was the alternative (simpler, no retry). Not measured by the bot.
+
+## Hibachi (v1.68)
+
+The user's pick of three proposed knife fusions (Hibachi, Julienne = Paring Knife + Small Fry, Fillet = Paring Knife + Bullseye). **Hibachi** (tool fusion, Paring Knife + Trick Shot, 12 coins, 7 charge): everything the knife does with 3 swipes per charge instead of 2, plus Trick Shot's ×3 for a thrown fruit that bounces off a wall and merges before touching anything else. Cutting a thrown fruit makes both halves count as wall-bounced, so a half that merges on its first contact gets the cut's ×3 and the trick's ×3: ×9. Only turns up in a Slingshot run (Trick Shot needs it), on purpose a rare find. Builds: throwing, aim. Not measured by the bot. Also in v1.68: a fast knife swipe that misses counts as a swipe even with the Slingshot on, so a miss no longer throws the held fruit.
