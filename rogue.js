@@ -416,7 +416,7 @@ const TL={
  tdrop:{n:'Twin Drop',s:'Twins',c:7,ch:10,tm:2,d:'Your next 2 drops each drop two of your fruit side by side. The second one is free.'},
  /* v1.40 */
  shears:{n:'Shears',c:4,ch:5,tg:1,d:'Tap a fruit of size 2 or bigger. It shrinks one size.'},
- knife:{n:'Paring Knife',s:'Knife',c:5,ch:7,d:'Use it while a fruit is falling or flying (size 2 or bigger). It splits into two fruit one size smaller. A half that merges with another fruit before your next drop scores ×3. The two halves can not merge with each other until then.'}, /* v1.59, the user's idea */
+ knife:{n:'Paring Knife',s:'Knife',c:5,ch:7,d:'Tap to ready it, then swipe through a fruit that is falling or flying (size 2 or bigger). It splits into two fruit one size smaller. One swipe can cut every falling fruit it crosses. A tap that cuts nothing still drops your fruit. A half that merges with another fruit before your next drop scores ×3. The two halves can not merge with each other until then.'}, /* v1.59, the user's idea */
  harvest:{n:'Harvest',c:6,ch:12,d:'Every fruit over the line is removed and scores the points of its size.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:2,fu:['swap','juggle'],d:'Swap the fruit you are holding with the next one. Your other tools each gain 2 charge (a tool can only do this once per drop).'},

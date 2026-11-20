@@ -955,3 +955,7 @@ The user's idea: awards for winning a rock build. All three ask for a win holdin
 | Rock and Roll Hall of Fame, you! | 8 | Legendary | Rock Star | Rock Star picture (`pf.rstar`, animated: the rock in sunglasses, singing, with a twinkling star and a bobbing note) |
 
 Not measured: how often a run sees 5 rock items. Gargoyle and Geode are Uncommon, the rest Common or tools.
+
+## Paring Knife as a swipe (v1.66)
+
+The user meant the Paring Knife to be a Fruit Ninja swipe, and v1.59 built it as a button. Now: tap the tool to ready it, then swipe through a fruit in the air to cut it. A swipe cuts every falling fruit it crosses for one charge (usually one, two with Twin Drop or Double Blossom). Halves can not be re-cut by the same swipe. The knife stays ready until a swipe cuts, so you can drop, then slice. A tap or slow aiming drag still drops your fruit. A fast swipe that misses does nothing, so a miss does not also waste a drop. The Slingshot works while it is ready (throw, then slice). The ×3 for a half merging before the next drop is unchanged. Not measured by the bot: the skill is now aiming the swipe, not timing a button.
