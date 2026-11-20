@@ -913,3 +913,20 @@ One item given at the start, 50 runs each (±6 points), confirmed at 150 (±3.7)
 - **Low for this bot, and why**: Rapid Fire 14% (it drops every 1.2 s, so 3 drops never land within 2 s), Joker Seed alone 14% (half points; with Wild Card 28%), Kindling 12% and Toolsmith 18% (the bot's tools are worth little to it), Big Break, Landslide, Skyline and Tropical Punch 16 to 18% (the bot rarely makes size 7+ fruit early), Pebble Polish 14% and Geode 10% (with Rock Garden, which alone drops it to 8%), Citrus Squeeze, Berry Bowl, Fruit Salad, Tip Jar, Compound Interest, Gold Plating 16 to 20%. Gold Standard with Prospector 44% = Prospector alone 44%: the bot earns too little gold for it to show.
 - **Orchard, given at the start**: Volunteer Seedlings 34%, Golden Apple Tree 32%, Money Tree 29.3% (150), Seed Rain 28%, Sugar Maple, Frost Pocket, Grafting Vine, Double Blossom, Termite Mound 22%, Spark Bush, Firefly Glade 20%, Maple Tap 18%, Mushroom Ring, Treat Tree (no pet), Gourd Vine 16%, Cherry Orchard, Tropical Breeze, Sinkhole 14%, Gunpowder Tree 10% (the bot can not play Boom fruit, like Fireworks).
 - **Not measured**: the bomb charms (the bot can not play Boom fruit), the boss counters (they need their boss), throwing (the bot never throws), Ripeness above 1, award difficulty.
+
+
+## Jars that change play (v1.55)
+
+The user's ask: jars that genuinely change how a jar plays, with a challenge, opened by challenges. The six before them change money and slots; these change the physics or the stream.
+
+| Jar | Twist | Upside | Opened by |
+|---|---|---|---|
+| Seesaw | The jar leans towards the heavier side, every fruit slides that way | +3 drops, ×1.5 on merges made while level | Even Keel: beat a boss with as many drops on each half (12+) |
+| Clockwork | No drop count: 2.5 s per drop on a clock, the fruit drops by itself after 2 s | Time left pays as unused drops | Quick Draw: beat a boss at depth 2+ in 12 drops or fewer |
+| Giant | Drops are Grape to Orange only, the jar 25% wider | Bigger merges, worth more points; targets ×1.5 to match | Big Leagues: a jar of 10+ merges with no Strawberry or Grape made |
+| Moon | Half gravity, bouncier floor | Starts with the Slingshot | Lift-off: 3 Trick Shots in a run |
+| Hourglass | The walls pinch halfway down; a Pineapple (8) or bigger can not pass the neck | +1 Orchard slot | Pineapple Express: 3 Pineapples in a run |
+
+Builds: Seesaw favours placement and position charms (Wallflower, Low Tide, Centre Stage). Clockwork favours combo and Rapid Fire, and hurts Slow Cook. Giant kills the small-fruit build and feeds big fruit (Trellis, Old Oak, Skyline). Moon is the throwing jar (Trick Shot, Ricochet, Pinball, Curveball). Hourglass splits the jar in two rooms, so the Hedgehog and the over-the-line tools (Harvest, Phoenix) matter more.
+
+Not measured: the upsides are first guesses. Run the bot on each before judging them; Giant's ×1.5 targets are the likeliest to be off.
