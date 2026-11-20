@@ -190,6 +190,71 @@
           }
         }
       }
+    },
+    "pub": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['n']) && newData.child('n').isString() && root.child('usernames').child(newData.child('n').val().toLowerCase()).val() === auth.uid",
+        "n": {
+          ".validate": "newData.isString()"
+        },
+        "ti": {
+          ".validate": "newData.isString() && newData.val().length <= 16"
+        },
+        "st": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "v": {
+          "$k": {
+            ".validate": "newData.isNumber() && $k.length <= 8"
+          }
+        },
+        "b": {
+          "c": {
+            ".validate": "newData.isNumber()"
+          },
+          "w": {
+            ".validate": "newData.isNumber()"
+          },
+          "r": {
+            "$k": {
+              ".validate": "newData.isNumber() && $k.matches(/^k[1-8]$/)"
+            }
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "t": {
+          ".validate": "newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "freq": {
+      "$to": {
+        ".read": "auth != null && auth.uid === $to",
+        "$from": {
+          ".read": "auth != null && auth.uid === $from",
+          ".write": "auth != null && ((auth.uid === $from && $from !== $to && !data.exists() && newData.exists()) || ((auth.uid === $to || auth.uid === $from) && !newData.exists()))",
+          ".validate": "newData.hasChildren(['n', 't']) && newData.child('n').isString() && root.child('usernames').child(newData.child('n').val().toLowerCase()).val() === auth.uid && newData.child('t').val() === now",
+          "$other": {
+            ".validate": "$other === 'n' || $other === 't'"
+          }
+        }
+      }
+    },
+    "frd": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$o": {
+          ".write": "auth != null && (auth.uid === $uid || auth.uid === $o) && (!newData.exists() || root.child('freq').child(auth.uid).child(auth.uid === $uid ? $o : $uid).exists())",
+          ".validate": "newData.isString() && newData.val().length <= 12"
+        }
+      }
     }
   }
 }
