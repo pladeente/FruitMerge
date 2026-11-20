@@ -759,7 +759,7 @@ const ACH={
  scorch:{n:'Scorched Earth',d:'Destroy 20 fruit in one jar.',ti:'Pyro',tr:1,on:'kill',t:R=>R.jst.kills>=20,un:'ch.ash'},
  jackpot:{n:'Jackpot',d:'Score 5,000 points with a single merge.',ti:'Jackpot',tr:2,on:'merge',t:(R,d)=>d.p>=5000,un:'ch.crit'},
  overkill:{n:'Overkill',d:'Finish a jar with 3 times its target.',ti:'Overachiever',tr:2,on:'jar',t:(R,d)=>d.score>=d.quota*3,un:'tl.ddown',secret:1},
- twomelon:{n:'Double Melon',d:'Have 2 watermelons in the jar at once.',ti:'Melon Magnate',tr:2,on:'melons',t:()=>true,un:'fu.mania',secret:1},
+ twomelon:{n:'Double Melon',d:'Make 2 Watermelons in one jar.',ti:'Melon Magnate',tr:2,on:'melons',t:()=>true,un:'fu.mania',secret:1},
  noshop:{n:'Window Shopper',d:'Beat the depth 3 boss having bought nothing in any shop.',ti:'Window Shopper',tr:2,on:'jar',t:(R,d)=>d.jar===2&&d.depth>=3&&!R.st.buys&&!R.st.ups&&!R.st.seeds,un:'jar.bare',secret:1},
  /* v1.55: challenges that open the new jars */
  evenkeel:{n:'Even Keel',d:'Beat a boss with exactly as many drops on the left half of the jar as on the right (12 drops or more).',ti:'Level-Headed',tr:2,on:'jar',t:(R,d)=>{const n=R.jst.drops||0,r=R.jst.rdrops||0;return d.jar===2&&n>=12&&r*2===n;},un:'jar.see'},
