@@ -883,7 +883,7 @@ Checked against the pool on 18 Nov for crossovers. Fourteen first ideas clashed 
 - **Families**: Citrus Squeeze C (Citrus merges +1 tool charge), Tropical Punch C (Pineapple merges pay 3 coins), Berry Bowl C (Berry merges in a combo +20 points), Fruit Salad U (a combo with 3 families ×3 on its last merge), Orchardist U (+0.5 Mult per Orchard item held).
 - **Economy and chance**: Tip Jar C (+1 coin every 10 merges), Loose Change C (selling a charm gives 2 more), Compound Interest U (+0.05 Mult per coin of interest this run), Double or Nothing U (each merge 1 in 2 ×2 Mult, else ×0.75).
 - **Boss counters**: Blue Cheese U (mouldy fruit merge with each other at ×2), Ice Sculptor U (fruit that were frozen ×2 on their next merge), Sweet Tooth C (Sticky fruit +20 points when they merge).
-- **Throwing**: Lob C (thrown fruit fly higher and land 0.5 s later).
+- **Throwing**: Lob C (thrown fruit fly higher and land 0.5 s later). Changed in v1.55.3: Slingshot throws ×1.3.
 
 Pack Leader, Skyline and the Lv5 pet ×1.25 break the "no unconditional ×Mult below rare" rule on purpose, each earned or gated. Bot-check them.
 
@@ -930,3 +930,8 @@ The user's ask: jars that genuinely change how a jar plays, with a challenge, op
 Builds: Seesaw favours placement and position charms (Wallflower, Low Tide, Centre Stage). Clockwork favours combo and Rapid Fire, and hurts Slow Cook. Giant kills the small-fruit build and feeds big fruit (Trellis, Old Oak, Skyline). Moon is the throwing jar (Trick Shot, Ricochet, Pinball, Curveball). Hourglass splits the jar in two rooms, so the Hedgehog and the over-the-line tools (Harvest, Phoenix) matter more.
 
 Not measured: the upsides are first guesses. Run the bot on each before judging them; Giant's ×1.5 targets are the likeliest to be off.
+
+
+## Slingshot pull-back (v1.55.2 and v1.55.3)
+
+The user found the flick throw unclear and asked for pull back and release, with a line showing the pull. Press, drag away, let go: the fruit flies the other way from the press point at up to 950·K px/s (the flick capped sideways speed at 450·K), in any direction. A full sideways throw now hits the walls 4 times (2 before), 5 in the Moon Jar, 1 when fired down. Knock-on changes the user approved: the dotted path stops at the first wall (the full path made bank shots close to certain), Ricochet capped at +3 Mult a jar (it grows with every bounce of the jar and roughly doubled), Lob became Slingshot throws ×1.3 (aiming high made its extra lift pointless; Catapult follows). Left alone: Pinball (capped at 4 bounces already), Curveball, Wind Sock (now scales height too), the Trick Shot awards (easier, not broken).

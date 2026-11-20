@@ -165,7 +165,7 @@ const CH={
  cint:{n:'Compound Interest',r:1,c:7,d:'+0.05 Mult for every coin of interest you have earned this run (up to +5).',add:c=>Math.min(5,(c.intc||0)*.05)},
  dnoth:{n:'Double or Nothing',r:1,c:6,d:'Every merge has a 1 in 2 chance of ×2 Mult. Otherwise it gets ×0.75.',x:c=>c.l<0||c.nr?1:Math.random()<Math.min(.75,.5*c.luck)?2:(miss(c),.75)},
  /* throwing */
- lob:{n:'Lob',r:0,c:4,req:'sling',d:'Thrown fruit fly higher, so they land about half a second later.'},
+ lob:{n:'Lob',r:0,c:4,req:'sling',d:'Slingshot throws are 30% faster.'},
  /* Orchard expansion (v1.47): 20 Orchard items, most of them uncommon, each feeding a new build from the side. rv = what Sour Graft makes it do */
  mtap:{n:'Maple Tap',r:0,c:4,o:1,rv:'Every 7th fruit is a rock.',d:'Every 7th fruit is Sticky and stays where it lands.'},
  smaple:{n:'Sugar Maple',r:0,c:4,o:1,rv:'Every 10th fruit is a rock.',d:'Every 10th fruit is Candied: when it merges, the merge scores +40 points.'},
@@ -201,7 +201,7 @@ const CH={
  /* throwing fruit (being tested) */
  trick:{n:'Trick Shot',r:1,c:6,req:'sling',d:'A thrown fruit that bounces off a wall and merges before touching anything else gets ×3 Mult.',x:c=>c.trick?3:1},
  /* style (v1.36): throwing charms need the Slingshot tool (req). c.wb = wall bounces of thrown fruit this jar, c.pin = wall bounces of the thrown fruit in this merge, c.wt = seconds waited before the last drop */
- ricochet:{n:'Ricochet',r:0,c:5,req:'sling',d:'+0.2 Mult for every wall bounce of a thrown fruit this jar.',add:c=>(c.wb||0)*.2},
+ ricochet:{n:'Ricochet',r:0,c:5,req:'sling',d:'+0.2 Mult for every wall bounce of a thrown fruit this jar, up to +3.',add:c=>Math.min(3,(c.wb||0)*.2)},
  curve:{n:'Curveball',r:1,c:6,req:'sling',d:'A thrown fruit curves towards the nearest fruit of its size.'},
  pinball:{n:'Pinball',r:2,c:9,req:'sling',d:'A thrown fruit gets ×1.25 Mult for every wall bounce (up to 4) if it merges before it comes to rest.',x:c=>Math.pow(1.25,Math.min(4,c.pin||0))},
  quick:{n:'Quick Hands',r:0,c:4,d:'You can drop again 0.3 seconds after a drop, instead of 0.55.'},
@@ -291,7 +291,7 @@ const CH={
  ccave:{n:'Crystal Cave',r:3,c:12,fu:['geode','ppol'],d:'A rock touched by 2 merges cracks open into a gold fruit of its size. Every rock touching a merge adds +20 points to it.',chip:c=>(c.rkt||0)*20},
  hfund:{n:'Hedge Fund',r:3,c:12,fu:['cint','tjar'],d:'+0.08 Mult for every coin of interest you have earned this run (up to +7). Every 8th merge of a jar pays 1 coin.',add:c=>Math.min(7,(c.intc||0)*.08)},
  allin:{n:'All In',r:3,c:12,fu:['dnoth','lucky'],d:'Every merge has a 1 in 2 chance of ×2.5 Mult, with no downside.',x:c=>c.l<0||c.nr?1:Math.random()<Math.min(.75,.5*c.luck)?2.5:miss(c)},
- cpult:{n:'Catapult',r:3,c:12,fu:['lob','curve'],d:'Thrown fruit fly higher and curve towards the nearest fruit of their size.'},
+ cpult:{n:'Catapult',r:3,c:12,fu:['lob','curve'],d:'Slingshot throws are 30% faster and curve towards the nearest fruit of their size.'},
  fortune:{n:'Fortune Teller',r:3,c:12,o:1,rv:'The Next box is hidden. Every 4th fruit is never the same as the one before it.',fu:['fore','second'],d:'Shows the 3 fruit that come after Next. Every 4th fruit is the same as the one before it.'}
 };
 /* Stakes: difficulty levels that stack. Stake n plays with every line from 2 to n. Winning on the highest stake you have opens the next. */
