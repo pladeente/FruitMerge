@@ -71,7 +71,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-o
 .tlb.e{background:#ffffff0c;box-shadow:inset 0 0 0 2px var(--line);color:var(--line);min-height:74px}
 .msg{pointer-events:auto;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--plum);border:3px solid var(--line);border-radius:18px;padding:16px 18px;width:94%;max-width:380px;text-align:center;box-shadow:0 10px 40px #0008;max-height:94%;overflow-y:auto;box-sizing:border-box}
 .msg{zoom:var(--tz,1);max-width:calc(380px/var(--tz,1))}.tip{zoom:var(--tz,1)} /* text size (Options): the panel keeps its place and width, everything in it scales */
-.xb{position:sticky;top:0;float:right;z-index:2;margin:-6px -8px 0 6px;width:38px;height:38px;padding:0;border:0;border-radius:10px;background:var(--panel);color:var(--cream);font:700 28px/38px var(--display);box-shadow:0 3px 0 #1b1029;cursor:pointer}.xb:active{transform:translateY(2px);box-shadow:0 1px 0 #1b1029}
+.xb{position:sticky;top:0;float:right;z-index:2;margin:-6px -8px 0 6px;width:38px;height:38px;padding:0;border:0;border-radius:10px;background:var(--panel);color:var(--cream);font:700 28px/38px var(--display);box-shadow:0 3px 0 #1b1029;cursor:pointer}.xb svg{display:block;margin:auto}.xb:active{transform:translateY(2px);box-shadow:0 1px 0 #1b1029}
 .msg h3{margin:0 0 6px;font:700 37px var(--display);color:var(--brass)}
 .msg h4{margin:12px 0 0;font:700 23px var(--display);color:var(--teal)}
 .msg p{margin:6px 0;font-size:18px}
@@ -986,7 +986,10 @@ function curL(c,p2){const e=c.en,o=c.de,hd=RUN.up.hardy;return e||o?`<div class=
 function bossMsg(){const c=RUN.cfg,p2=G.g.peek().ph>1;if(!c.boss)return show(`<div class="mode">Depth ${RUN.depth} · Jar ${RUN.jar+1}</div><h3>Contract</h3>${curL(c,p2)}<button class="go" data-a="resume">Keep playing</button>`);
  show(`<div class="mode">${RUN.jar===2?'Boss':'Mini boss'} · Depth ${RUN.depth}</div>${tile(c.boss,'big boss')}<h3>${BOSS[c.boss].n}</h3><p class="rule">${RG.bossD0(RUN,c.boss,RUN.depth)}</p>${c.p2?`<p class="rule"><i>${p2?'Phase 2 is on:':p2T()}</i> ${RG.bossD0(RUN,c.boss,RUN.depth,1)}</p>`:''}${curL(c,p2)}<p class="tg">Score ${c.quota} in ${c.drops} drops.</p><button class="go" data-a="resume">Keep playing</button>`);}
 function drawIdle(){drawBg(ctx,G.W,G.H,performance.now()/1000,G.H*.62);const r=G.W*.09;for(let i=0;i<7;i++){const l=(i*3)%11;drawFruit(ctx,(i+.5)*G.W/7,G.H-r*1.1-(i%2)*r*.9,r*(.55+l*.05),l)}}
-function show(html){G.ibk=0;const tp=$('#tip');if(tp){tp.remove();G.tipEl=null;}let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');ui.appendChild(m)}m.className='msg';m.innerHTML=html;m.scrollTop=0;return m}
+function show(html){G.ibk=0;const tp=$('#tip');if(tp){tp.remove();G.tipEl=null;}let m=ui.querySelector('.msg');if(!m){m=document.createElement('div');ui.appendChild(m)}m.className='msg';m.innerHTML=html;m.scrollTop=0;xbFix(m);return m}
+/* v1.62: every screen with a Back (or Menu) button gets a back arrow that stays at the top while the screen scrolls (.xb, sticky), doing the same as that button. Screens that already had a × get the arrow too */
+const XBA='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>';
+function xbFix(m){let x=m.querySelector('.xb');if(!x){const bk=[...m.querySelectorAll('button[data-a]')].reverse().find(b=>/^(Back|Menu)$/.test(b.textContent.trim()));if(!bk)return;x=document.createElement('button');x.className='xb';for(const k in bk.dataset)x.dataset[k]=bk.dataset[k];m.prepend(x);}x.innerHTML=XBA;x.setAttribute('aria-label','Back');}
 function hide(){ui.innerHTML=''}
 function setBest(){$('#best').textContent=best()}
 /* RPC = one colour per Ripeness level, green (unripe) to deep red */
@@ -1017,6 +1020,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.62',d:'20 Nov 2026',t:'Back arrow',i:['Every menu has a back arrow in the top right that stays in view while you scroll, so you no longer have to scroll down to Back.']},
  {v:'1.61',d:'20 Nov 2026',t:'New menu',i:['A new main menu with Rogue first: continue your run or start one, the Daily run under it, then Almanac, Scores, Looks and What\'s new. Classic and Wild are under More modes.','Profile is now where you change how you look to others: profile picture, title, the stats you show and your account. Guests can open it too.','Options only holds game settings now. Looks has its own button on the menu.','How to play moved off the menu to its own screen.']},
  {v:'1.60',d:'20 Nov 2026',t:'Profile pictures',i:['Profile pictures: 11 to earn from awards, 7 of them animated. Pick one in Options, Looks. Friends see it on your profile card and in their friends list.','Teppanyaki now also gives the Oni Mask.','Fixed: leaving the Friends tab between jars no longer drops you at the bottom of the shop.']},
  {v:'1.59',d:'20 Nov 2026',t:'Paring Knife',i:['Rogue: a new tool, the Paring Knife. Use it while a fruit is falling or flying and it splits into two fruit one size smaller. A half that merges with another fruit before your next drop scores ×3.','A new award, Teppanyaki: win a run holding the Paring Knife and the Slingshot. It opens two new looks, the Great Wave background and the Oni jar.']},
