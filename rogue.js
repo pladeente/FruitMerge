@@ -1,4 +1,4 @@
-/* Fruit Merge: Rogue mode rules and the player profile. Loaded before the main script in index.html.
+/* Overripe: Rogue mode rules and the player profile. Loaded before the main script in index.html.
    Nothing here touches the page. It uses rint and store from index.html, but only inside functions, so load order is fine. */
 /* ---------- rogue mode: rules (charms, bosses, shop, scoring) ---------- */
 /* seeded runs (v1.53): sdH hashes a string to 32 bits, mb32 is a small seeded generator, sdW runs fn with Math.random swapped for it. SDQ.d > 0 while a seeded draw runs: every lock is open then, so all players draw from the same pool */
