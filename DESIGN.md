@@ -959,3 +959,7 @@ Not measured: how often a run sees 5 rock items. Gargoyle and Geode are Uncommon
 ## Paring Knife as a swipe (v1.66)
 
 The user meant the Paring Knife to be a Fruit Ninja swipe, and v1.59 built it as a button. Now: tap the tool to ready it, then swipe through a fruit in the air to cut it. A swipe cuts every falling fruit it crosses for one charge (usually one, two with Twin Drop or Double Blossom). Halves can not be re-cut by the same swipe. The knife stays ready until a swipe cuts, so you can drop, then slice. A tap or slow aiming drag still drops your fruit. A fast swipe that misses does nothing, so a miss does not also waste a drop. The Slingshot works while it is ready (throw, then slice). The ×3 for a half merging before the next drop is unchanged. Not measured by the bot: the skill is now aiming the swipe, not timing a button.
+
+## Paring Knife: 2 swipes per charge (v1.67)
+
+The user's pick after comparing 1 and 2. A full charge (7) now buys 2 swipes, and a fast swipe that misses uses one, so missing costs something and a sharp player gets up to twice the old value. The second swipe is a retry on the same falling fruit, which is what makes it feel like Fruit Ninja. The knife does not charge while a swipe is left, and a leftover swipe is lost when the jar ends. 1 swipe at charge 4 or 5 was the alternative (simpler, no retry). Not measured by the bot.

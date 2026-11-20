@@ -416,7 +416,7 @@ const TL={
  tdrop:{n:'Twin Drop',s:'Twins',c:7,ch:10,tm:2,d:'Your next 2 drops each drop two of your fruit side by side. The second one is free.'},
  /* v1.40 */
  shears:{n:'Shears',c:4,ch:5,tg:1,d:'Tap a fruit of size 2 or bigger. It shrinks one size.'},
- knife:{n:'Paring Knife',s:'Knife',c:5,ch:7,d:'Tap to ready it, then swipe through a fruit that is falling or flying (size 2 or bigger). It splits into two fruit one size smaller. One swipe can cut every falling fruit it crosses. A tap that cuts nothing still drops your fruit. A half that merges with another fruit before your next drop scores ×3. The two halves can not merge with each other until then.'}, /* v1.59, the user's idea */
+ knife:{n:'Paring Knife',s:'Knife',c:5,ch:7,d:'Tap to ready it, then swipe through a fruit that is falling or flying (size 2 or bigger). It splits into two fruit one size smaller. A full charge gives 2 swipes, and a fast swipe that misses uses one. One swipe can cut every falling fruit it crosses. A tap still drops your fruit. Swipes left over are lost when the jar ends. A half that merges with another fruit before your next drop scores ×3. The two halves can not merge with each other until then.'}, /* v1.59, the user's idea */
  harvest:{n:'Harvest',c:6,ch:12,d:'Every fruit over the line is removed and scores the points of its size.'},
  cyclone:{n:'Cyclone',c:12,ch:9,fu:['whirl','metro'],d:'Swirl the whole pile around the jar. Every merge scores ×2 for 6 seconds.'},
  sleight:{n:'Sleight of Hand',s:'Sleight',c:12,ch:2,fu:['swap','juggle'],d:'Swap the fruit you are holding with the next one. Your other tools each gain 2 charge (a tool can only do this once per drop).'},
@@ -517,7 +517,7 @@ const RG={
  /* active legendaries: the charge a charm holds (none saved = full) */
  ac:c=>c.c==null?CH[c.id].act:c.c,
  luck:R=>RG.has(R,'shoe')||RG.has(R,'fourleaf')?2:1,
- charge(R,n,skip){const k=n*(RG.has(R,'battery')?2:1);for(const t of R.tl)if(t!==skip)t.c=Math.min(RG.need(R,t.id),t.c+k);},
+ charge(R,n,skip){const k=n*(RG.has(R,'battery')?2:1);for(const t of R.tl)if(t!==skip&&!t.k)t.c=Math.min(RG.need(R,t.id),t.c+k);},
  fill(R){for(const t of R.tl)t.c=RG.need(R,t.id);},
  /* swap this depth's boss for another that is allowed here */
  bribe(R){const d=R.depth,cur=RG.boss(R),k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==cur&&BOSS[k].min<=d&&k!==R.bs[d-2]&&k!==R.ms[d]);R.bs[d-1]=k[rint(k.length)];return R.bs[d-1];},
