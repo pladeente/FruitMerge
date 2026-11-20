@@ -50,6 +50,8 @@ Title codes (v1.52) use the same database. Paste `database.rules.json` into the 
 
 Daily runs, profiles and friends (v1.53) use the same database: `daily/<day>/<uid>` (one score per account per day, day = days since 1 Jan 1970 UTC), `pub/<uid>` (each player's public profile: username, title, three stats, best scores), `freq` (friend requests) and `frd` (friend lists, written in pairs when a request is accepted). Paste `database.rules.json` into the Rules tab again and publish, or none of them can be written. Old days' daily boards stay in the database; delete `daily/<day>` nodes in the console to tidy up.
 
+The inbox and online status (v1.57) add `frs` (requests you sent, so the Inbox can show them) and three fields on `pub/<uid>`: `on` (last time the game was open, refreshed every minute), `m` (Rogue, Classic, Wild or menus) and `run` (the Rogue run in progress: jar, Ripeness, depth, score and items). Publish the rules again for them. Until then the game falls back to the v1.53 fields, sent requests do not show and nobody shows as online.
+
 ## Accounts (Firebase Authentication, email and password)
 
 Signing in is optional. An account keeps a player's Rogue profile (awards, unlocks, stats, Ripeness wins), saved run, local scores and title online, merges them when they sign in on another device, and reserves their username so nobody else can post scores under it.
