@@ -19,6 +19,8 @@ button{border:0;background:none;cursor:pointer;touch-action:manipulation}
 button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 #app{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));box-sizing:border-box}
 #hd{width:100%;max-width:480px;display:flex;align-items:center;gap:6px}
+#hd .t .logo{display:block;width:146px;height:24px;background:url(logo.png) -24px -4px/800px 128px no-repeat;image-rendering:pixelated}
+#spl{position:fixed;inset:0;z-index:999;background:#120a1f;display:flex;align-items:center;justify-content:center;transition:opacity .35s;cursor:pointer}#spl.out{opacity:0;pointer-events:none}#spl i{display:block;background:url(logo.png) 0 0 no-repeat;image-rendering:pixelated}
 #hd .t{flex:1;font:700 clamp(17px,5.6vw,26px) var(--display);color:var(--brass);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pill{font:800 17px var(--body);background:var(--plum);min-height:44px;padding:0 12px;border-radius:22px;color:var(--teal);white-space:nowrap;font-variant-numeric:tabular-nums;box-shadow:inset 0 0 0 2px var(--line)}
 .pill:active{transform:translateY(1px)}
@@ -250,9 +252,10 @@ details.dd>summary h5{margin-bottom:4px}details.dd .dpk{display:inline-flex;gap:
 .mech{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.mech button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:0;border-radius:12px;background:#ffffff0d;color:inherit;font:inherit;cursor:pointer;min-width:0}.mech button:active{background:#ffffff1f}.mech small{font-size:13px;line-height:1.1;text-align:center;color:var(--cream)}.mech .tile{width:40px;height:40px}.mech .tile .px{width:28px;height:28px}.mi{font:900 24px var(--body);color:#2a1a3a}
 .pxp{position:absolute;left:3px;right:3px;bottom:2px;height:4px;border-radius:2px;background:#2a1a3a;box-shadow:0 0 0 1px #173d0f;pointer-events:none;z-index:2;overflow:hidden;font-style:normal}.pxp b{display:block;height:100%;background:#7bc950;transition:width .3s}.pxp.max b{background:#ffd43b}.tile.pt{position:relative}#hd .pxp{right:13px}.tile .plv{left:-3px;top:-3px}
 </style></head><body>
+<div id="spl"><i></i></div>
 <div id="app">
  <div id="hd">
-  <span class="t"><i class="px px-melon"></i> Overripe</span>
+  <span class="t"><i class="logo" role="img" aria-label="Overripe"></i></span>
   <button class="pill" id="lbB" title="Leaderboard (your best score)" aria-label="Open leaderboard"><i class="px px-trophy"></i> <span id="best">0</span></button>
   <button class="ib" id="pauseB" aria-label="Pause" hidden>II</button>
  </div>
@@ -1040,6 +1043,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.71',d:'21 Nov 2026',t:'New logo',i:['Overripe has a pixel art logo at the top of the screen, and opening the game plays a short intro of it. Tap to skip it.']},
  {v:'1.70',d:'21 Nov 2026',t:'Pixel shine',i:['Tools with an edition (Candied, Juiced, Ambrosia) look calmer on the tool bar: a thin pixel frame and a small blinking pixel sparkle instead of a glow.']},
  {v:'1.69',d:'20 Nov 2026',t:'Sky high',i:['A fruit fired upwards with the Slingshot no longer hits an invisible roof. It flies off the top of the screen and falls back, and an arrow at the top shows where it is.']},
  {v:'1.68',d:'20 Nov 2026',t:'Hibachi',i:['A new tool fusion to discover in Slingshot runs. Look for it in the Almanac once you find it.','With the Slingshot on, a fast knife swipe that misses no longer throws your fruit.']},
@@ -1382,7 +1386,7 @@ const plD=c=>{const L=RG.plv(c),k=PLK[c.id],m=1+.14*(L-1),g=L>=3?1:0,sz=L>=4?1:0
 const edc=o=>o&&o.e&&ED[o.e]?' ed-'+o.e:'',edT=e=>e&&ED[e]?` <small class="chip edk ed-${e}">${ED[e].n}</small>`:'',edD=e=>e&&ED[e]?`<br><span class="edd">${ED[e].n}: ${ED[e].d}.</span>`:''; /* editions (v1.43): tile class, name chip, bonus line */
 const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id),1)}</${tag}>`;
 const chip=r=>`<small class="chip r${r}">${RAR[r]}</small>`;
-function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
+function rgTitle(icon,s){const t=$('#hd .t');t.className='t';t.innerHTML=s==='Overripe'?'<i class="logo" role="img" aria-label="Overripe"></i>':ic(icon)+' '+s;$('#lbB').hidden=false;G.chKey=null;}
 /* during a run the header shows the five charm slots. Tap one to inspect or sell it */
 function rgHead(){const t=$('#hd .t');t.className='t ch';let h='';for(let i=0;i<RG.slots(RUN);i++){const c=RUN.ch[i];h+=c?`<button class="slot r${CH[c.id].r}${edc(c)}${i<(RUN.off||0)?' off':''}" data-i="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}${plB(c)}</button>`:'<span class="slot e"></span>';}
  {let o='';for(let i=0;i<Math.max(RG.os(RUN),RUN.or.length);i++){const c=RUN.or[i];o+=c?`<button class="slot r${CH[c.id].r}${edc(c)}" data-o="${i}" aria-label="${CH[c.id].n}">${ic(icn(c.id))}</button>`:'<span class="slot e"></span>';}h+=`<span class="orc${RUN.oc?' c-'+RUN.oc:''}" title="Orchard">${o}</span>`;} /* the Orchard row: far right, green border */
@@ -1701,6 +1705,8 @@ if(/[?&]dev\b/.test(location.search))(function(){
   RUN.dev=1;redraw();say('Done. This run no longer counts.');});})();
 
 PF.load();lookSync();cosIcons();setBest();menu();G.raf=requestAnimationFrame(loop);
+/* opening splash: logo.png is 16 frames of 100x16 (4x4), played at 10 fps (frames 1-4 and 13-16 are holds), the last frame held 0.9s more, then a 0.35s fade. Tap or key skips. Still frame 1 under reduced motion, none with ?dev */
+(function(){const e=$('#spl'),i=e.firstChild;if(/[?&]dev\b/.test(location.search))return e.remove();const z=Math.max(2,Math.min(5,Math.floor((innerWidth-32)/100)));Object.assign(i.style,{width:100*z+'px',height:16*z+'px',backgroundSize:400*z+'px '+64*z+'px'});let n=0,tm=0,dn=0;const fin=()=>{if(dn)return;dn=1;clearTimeout(tm);e.classList.add('out');removeEventListener('keydown',fin);setTimeout(()=>e.remove(),400);},fr=k=>i.style.backgroundPosition=-(k%4)*100*z+'px '+-(k>>2)*16*z+'px',st=()=>{if(dn)return;if(RMO){fr(0);tm=setTimeout(fin,1000);return;}const t=()=>{if(dn)return;fr(n);tm=n<15?setTimeout(t,100,n++):setTimeout(fin,1000);};t();};e.onclick=fin;addEventListener('keydown',fin);const im=new Image();im.onload=st;im.onerror=fin;im.src='logo.png';setTimeout(fin,4500);})();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(G.state==='menu')menu()});
 </script>
 </body></html>
