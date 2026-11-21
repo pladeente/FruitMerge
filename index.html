@@ -1043,6 +1043,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.71.1',d:'21 Nov 2026',t:'Bigger intro',i:['The opening logo now fills the width of the screen.']},
  {v:'1.71',d:'21 Nov 2026',t:'New logo',i:['Overripe has a pixel art logo at the top of the screen, and opening the game plays a short intro of it. Tap to skip it.']},
  {v:'1.70',d:'21 Nov 2026',t:'Pixel shine',i:['Tools with an edition (Candied, Juiced, Ambrosia) look calmer on the tool bar: a thin pixel frame and a small blinking pixel sparkle instead of a glow.']},
  {v:'1.69',d:'20 Nov 2026',t:'Sky high',i:['A fruit fired upwards with the Slingshot no longer hits an invisible roof. It flies off the top of the screen and falls back, and an arrow at the top shows where it is.']},
@@ -1705,8 +1706,8 @@ if(/[?&]dev\b/.test(location.search))(function(){
   RUN.dev=1;redraw();say('Done. This run no longer counts.');});})();
 
 PF.load();lookSync();cosIcons();setBest();menu();G.raf=requestAnimationFrame(loop);
-/* opening splash: logo.png is 16 frames of 100x16 (4x4), played at 10 fps (frames 1-4 and 13-16 are holds), the last frame held 0.9s more, then a 0.35s fade. Tap or key skips. Still frame 1 under reduced motion, none with ?dev */
-(function(){const e=$('#spl'),i=e.firstChild;if(/[?&]dev\b/.test(location.search))return e.remove();const z=Math.max(2,Math.min(5,Math.floor((innerWidth-32)/100)));Object.assign(i.style,{width:100*z+'px',height:16*z+'px',backgroundSize:400*z+'px '+64*z+'px'});let n=0,tm=0,dn=0;const fin=()=>{if(dn)return;dn=1;clearTimeout(tm);e.classList.add('out');removeEventListener('keydown',fin);setTimeout(()=>e.remove(),400);},fr=k=>i.style.backgroundPosition=-(k%4)*100*z+'px '+-(k>>2)*16*z+'px',st=()=>{if(dn)return;if(RMO){fr(0);tm=setTimeout(fin,1000);return;}const t=()=>{if(dn)return;fr(n);tm=n<15?setTimeout(t,100,n++):setTimeout(fin,1000);};t();};e.onclick=fin;addEventListener('keydown',fin);const im=new Image();im.onload=st;im.onerror=fin;im.src='logo.png';setTimeout(fin,4500);})();
+/* opening splash: logo.png is 16 frames of 100x16 (4x4), cropped to the art (x 4 to 85, y 2 to 14) and scaled to fill the screen width less 16px each side (whole device pixels per art pixel), played at 10 fps (frames 1-4 and 13-16 are holds), the last frame held 0.9s more, then a 0.35s fade. Tap or key skips. Still frame 1 under reduced motion, none with ?dev */
+(function(){const e=$('#spl'),i=e.firstChild;if(/[?&]dev\b/.test(location.search))return e.remove();const d=devicePixelRatio||1,z=Math.max(1,Math.floor(Math.min((innerWidth-32)/81,innerHeight*.6/12)*d))/d;Object.assign(i.style,{width:81*z+'px',height:12*z+'px',backgroundSize:400*z+'px '+64*z+'px'});let n=0,tm=0,dn=0;const fin=()=>{if(dn)return;dn=1;clearTimeout(tm);e.classList.add('out');removeEventListener('keydown',fin);setTimeout(()=>e.remove(),400);},fr=k=>i.style.backgroundPosition=-((k%4)*100+4)*z+'px '+-((k>>2)*16+2)*z+'px',st=()=>{if(dn)return;if(RMO){fr(0);tm=setTimeout(fin,1000);return;}const t=()=>{if(dn)return;fr(n);tm=n<15?setTimeout(t,100,n++):setTimeout(fin,1000);};t();};e.onclick=fin;addEventListener('keydown',fin);const im=new Image();im.onload=st;im.onerror=fin;im.src='logo.png';setTimeout(fin,4500);})();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(G.state==='menu')menu()});
 </script>
 </body></html>
