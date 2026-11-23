@@ -1,6 +1,6 @@
 # Overripe
 
-Drop fruit, merge matching ones, make a watermelon. The game lives in `index.html`, the Rogue rules in `rogue.js`, the pixel art in `icons.js`.
+Drop fruit, merge matching ones, make a watermelon. The game is plain HTML, CSS and JavaScript with no build step: `index.html` is the shell, `style.css` the styles, the code is split into scripts loaded in order (`core.js`, `draw.js`, `engine.js`, `app.js`, `social.js`, `rogue-ui.js`, `glue.js`, `tutorial.js`, `dev.js`, `boot.js`), the Rogue rules are in `rogue.js` and the pixel art in `icons.js`.
 
 ## Modes
 
@@ -20,7 +20,7 @@ For testing, open the page with `?dev` on the end of the address. A panel lets y
 
 No image files. Every icon is a 12x12 grid of letters in `icons.js`, one letter per pixel, drawn at load time. To change an icon, edit its letters. To add one, add a grid and use it as `<i class="px px-NAME"></i>`. A charm, tool, boss or upgrade uses the grid with the same name as its id, unless `ICN` in `index.html` points it at another one. The score pop-up font is in the same file.
 
-The text font is [Jersey 15](https://github.com/scfried/soft-type-jersey) (SIL Open Font License 1.1), embedded in `index.html`.
+The text font is [Jersey 15](https://github.com/scfried/soft-type-jersey) (SIL Open Font License 1.1), embedded as base64 in `font.css`.
 
 ## World leaderboard setup (Firebase, free tier)
 
@@ -30,7 +30,7 @@ Without this the game still works and keeps scores on the device only.
 2. **Build → Realtime Database → Create database**. Pick a region, start in **locked mode**.
 3. Open the **Rules** tab, paste the contents of `database.rules.json`, click **Publish**.
 4. Copy the database URL shown at the top of the **Data** tab, e.g. `https://fruit-merge-1234-default-rtdb.firebaseio.com`.
-5. In `index.html`, set it on this line:
+5. In `core.js`, set it on this line:
    ```js
    const LB_URL='https://fruit-merge-1234-default-rtdb.firebaseio.com';
    ```
@@ -60,7 +60,7 @@ Signing in is optional. An account keeps a player's Rogue profile (awards, unloc
 
 1. In the Firebase console: Authentication, Sign-in method, enable **Email/Password** (leave the passwordless link off).
 2. Paste `database.rules.json` into Realtime Database, Rules, and publish. The rules add `users` (each player reads and writes only their own) and `usernames` (one owner per name), refuse the worst slurs in any name, and refuse a claimed username from anyone but its owner.
-3. The game uses the project's Web API key (`FB_KEY` in `index.html`) and talks to Firebase over REST, with no SDK. The key is not a secret: it only identifies the project, the rules protect the data.
+3. The game uses the project's Web API key (`FB_KEY` in `core.js`) and talks to Firebase over REST, with no SDK. The key is not a secret: it only identifies the project, the rules protect the data.
 
 Usernames and leaderboard names are 1 to 12 letters, numbers, spaces, `-` or `_` (usernames at least 3). The game filters slurs, swears and staff-sounding names (`nameBad`), the database rules repeat the worst of it. If something slips through, delete it under Realtime Database, Data.
 
