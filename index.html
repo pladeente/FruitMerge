@@ -163,7 +163,6 @@ tr.me td{background:#35c2b42a}
 .tile.e,.slot.e{background:#ffffff10;box-shadow:inset 0 0 0 2px var(--line)}
 .tile.big{width:64px;height:64px;border-radius:12px;margin-top:8px}.tile.big .px{width:48px;height:48px}
 .tabs.al{flex-wrap:wrap}.tabs button:disabled{opacity:.3;cursor:default}.tabs.al button{padding:5px 9px;font-size:16px}
-.ctb{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:#ffffff14;box-shadow:inset 0 0 0 2px var(--line);text-align:left;font-size:16px;line-height:1.2}.ctb.on{box-shadow:inset 0 0 0 2px var(--brass);background:#f4bb4a22}.ctb b{font:700 18px var(--display);color:var(--brass)}.ctb .go{display:block;margin:6px 0 0}
 .stamp{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:46px;height:46px;border-radius:50%;border:2px dashed var(--brass);color:var(--brass);transform:rotate(-12deg);font:800 11px/1 var(--body);white-space:nowrap}.stamp .px{width:18px;height:18px}.alp{position:relative;height:18px;margin:6px 0;border-radius:9px;background:#0000004d;overflow:hidden}.alp i{position:absolute;left:0;top:0;bottom:0;background:var(--teal);opacity:.75}.alp span{position:relative;font:800 13px/18px var(--body);color:var(--cream)}
 .tile.un .px{filter:brightness(0);opacity:.3}.it li.un b,.it li.lk b{color:var(--muted)}.it small.st{color:var(--muted);font-size:14px}
 #toast{position:absolute;left:8px;right:8px;bottom:8px;z-index:5;padding:8px 10px;border-radius:12px;background:#2f1e47f7;box-shadow:0 0 0 2px var(--brass),0 6px 18px #0008;display:flex;gap:10px;align-items:center;text-align:left;font-size:16px;line-height:1.15;pointer-events:none;animation:toast 4s ease both}
@@ -221,6 +220,26 @@ details.dd>summary h5{margin-bottom:4px}details.dd .dpk{display:inline-flex;gap:
 .it li b{font:700 18px var(--display);color:var(--brass)}
 .it li>.go{margin:0;flex:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .own{display:flex;gap:6px;justify-content:center}
+.wp{position:relative;margin:12px auto 4px;max-width:280px;padding:12px 14px 22px;background:#ecd39c;color:#5a3a1c;text-align:center;box-shadow:inset 0 0 0 3px #5a3a1c,inset 0 0 0 6px #ecd39c,inset 0 0 0 8px #c4955a;clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));font-size:15px;line-height:1.15}
+.wp::before,.wp::after{content:'';position:absolute;top:12px;width:6px;height:6px;background:#3a2410;box-shadow:2px 2px 0 #c4955a}.wp::before{left:12px}.wp::after{right:12px}
+.wph{font:700 30px/1 var(--display);letter-spacing:3px;text-transform:uppercase;color:#5a3a1c;padding:2px 0 4px;margin:0 14px;border-bottom:3px solid #5a3a1c;box-shadow:0 3px 0 #ecd39c,0 5px 0 #c4955a}
+.wpi{width:56px;height:56px;margin:10px auto 4px;display:grid;place-items:center;background:#d9b878;box-shadow:inset 0 0 0 3px #5a3a1c,inset 0 0 0 5px #b38245}.wpi .px{width:36px;height:36px;filter:sepia(.35)}
+.wpn{font:700 24px/1 var(--display);text-transform:uppercase;letter-spacing:1px}
+.msg p.wpd{margin:4px 0 6px;color:#6e4420;font-size:15px}
+.wpr{display:flex;flex-direction:column;align-items:center;padding:4px 0;border-top:2px dashed #b38245;border-bottom:2px dashed #b38245}.wpr small{font:700 13px var(--display);text-transform:uppercase;letter-spacing:2px;color:#8a5a2c}.wpr b{font:700 20px/1.1 var(--display);color:#a3202c}.wpr b *{color:inherit}
+.wps{display:flex;align-items:flex-end;gap:4px;width:100%;margin:10px 0 2px;padding:0 4px;background:none;border:0;cursor:pointer;color:#5a3a1c;font:700 22px/1 var(--display);position:relative}.wps i{font-style:normal}.wps u{flex:1;height:24px;border-bottom:3px solid #5a3a1c;text-decoration:none;text-align:left;overflow:hidden}.wps small{position:absolute;right:6px;bottom:-14px;font:700 12px var(--display);letter-spacing:1px;text-transform:uppercase;color:#8a5a2c}
+.wps em{display:inline-block;font:700 24px/24px var(--display);font-style:italic;color:#1f3f8a;padding-left:6px;transform:skewX(-12deg);animation:wpsg .5s steps(8) both}
+.wp:not(.on) .wps u{animation:wpsl 1.4s steps(2) infinite}
+@keyframes wpsg{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes wpsl{50%{border-bottom-color:#a3202c}}
+.wpst{position:absolute;right:10px;top:76px;padding:2px 6px;font:700 20px/1 var(--display);text-transform:uppercase;letter-spacing:2px;color:#a3202c;box-shadow:inset 0 0 0 3px #a3202c;transform:rotate(-12deg);opacity:.85;animation:wpst .25s steps(3) both}
+@keyframes wpst{from{transform:rotate(-12deg) scale(1.8);opacity:0}}
+.wp.on{padding-bottom:10px}.wpt{display:block;margin-top:14px;color:#8a5a2c;font-size:12px}
+.dmap{display:flex;align-items:center;gap:3px;width:100%;margin:2px 0 8px;padding:4px 6px;background:#00000038;border:0;border-radius:10px;box-shadow:inset 0 0 0 2px var(--line);cursor:pointer;color:var(--cream)}
+.dp{flex:1;display:flex;flex-direction:column;align-items:center;font-style:normal;opacity:.55}.dp .px{width:22px;height:22px}.dp small{font:700 12px/1 var(--display);color:var(--muted)}
+.dp.done{opacity:.4}.dp.cur{opacity:1}.dp.cur small{color:var(--teal)}.dp.cur .px{outline:2px solid var(--teal);outline-offset:1px}.dp.fin .px{filter:drop-shadow(0 0 2px var(--coral))}
+.dmap span{font:700 16px var(--display);color:var(--teal);padding:0 2px 0 4px}.dmap span::after{content:' ›'}
+@media (prefers-reduced-motion:reduce){.wps em,.wpst,.wp:not(.on) .wps u{animation:none}}
 .trk{display:flex;gap:6px}
 .nd{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;background:#00000038;box-shadow:inset 0 0 0 2px var(--line);font-size:15px}
 .nd b{font:700 17px var(--display);color:var(--cream)}
@@ -1047,6 +1066,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.73',d:'23 Nov 2026',t:'Wanted',i:['Contracts are now a poster in the hub and shop, right under the next jar. Sign on the line to take it on, tap the line again to tear it up.','A strip under the depth shows every depth of the run with its boss. Tap it for the map.']},
  {v:'1.72.3',d:'22 Nov 2026',t:'Fusion badge',i:['The F is a button again: tap it for the fusion. Shop and crate rows no longer open up when tapped.']},
  {v:'1.72.2',d:'22 Nov 2026',t:'Fusion badge',i:['The fusion F has new pixel art and animates when you hold the other half.','Tap the item itself to see its fusion under its description: a shop or crate row opens below, and your own items show it on their card. No more aiming for the tiny F.']},
  {v:'1.72.1',d:'21 Nov 2026',t:'Fusion badge',i:['Items that are half of a fusion you have found carry a red F, in the shop, in crates and on your own items. It lights up when you already hold the other half. Tap the F to see the recipe.']},
@@ -1427,11 +1447,14 @@ function rgSave(){RUN.pile=G.g?G.g.snap():[];store.set('run',RUN);PF.save();clou
 const rgSee=(k,ids)=>{if(RUN&&!RUN.dev)PF.see(k,ids);}; /* glossary: the player has now met these */
 function rgBar(){const m=RG.score(RUN,0,{l:-1,combo:0,n:0,idle:1,jd:99,dl:99,jm:0,pu:0,tu:0,high:false}).m;return `<p class="tg">Base Mult ×${m.toFixed(1)} · ${cn(RUN.coins)} · Run score ${RUN.total}</p>`;}
 function rgTrack(){let h='';for(let j=0;j<3;j++){const c=RG.jarCfg(RUN,j),done=j<RUN.jar;h+=`<div class="nd${done?' done':j===RUN.jar?' cur':''}${c.boss?' boss':''}">${done?ic('check'):c.boss?`<i class="slot boss">${ic(icn(c.boss))}</i>`:`<u>${j+1}</u>`}<b>${c.boss?(j===2?'Boss':'Mini boss'):'Jar '+(j+1)}</b><small>${done?'Done':'Score '+c.quota}</small></div>`;}
- const nx=RG.jarCfg(RUN);return `<div class="trk">${h}</div>${rgBossP()}<button class="go alt sm" data-a="rmap">Map of the run</button><p class="nxt">Next: <b>${nx.boss?BOSS[nx.boss].n:'Jar '+(RUN.jar+1)}</b>. Score <b>${nx.quota}</b> in <b>${nx.drops}</b> drops for ${cn(nx.pay)}</p>${rgCt()}`;}
+ const nx=RG.jarCfg(RUN);return `${rgDm()}<div class="trk">${h}</div><p class="nxt">Next: <b>${nx.boss?BOSS[nx.boss].n:'Jar '+(RUN.jar+1)}</b>. Score <b>${nx.quota}</b> in <b>${nx.drops}</b> drops for ${cn(nx.pay)}</p>${rgCt()}${rgBossP()}`;}
+/* the run at a glance (v1.73): one pip per depth with its boss, a tap opens the map */
+function rgDm(){const d=RUN.depth,top=Math.max(DEPTHS,d+1),a=d<=DEPTHS?1:d-6;let h='';for(let i=a;i<=Math.min(top,a+7);i++)h+=`<i class="dp${i<d?' done':i===d?' cur':''}${BOSS[RG.boss(RUN,i)].fin?' fin':''}">${i<d?ic('check'):ic(icn(RG.boss(RUN,i)))}<small>${i}</small></i>`;return `<button class="dmap" data-a="rmap" aria-label="Map of the run">${h}<span>Map</span></button>`;}
 /* the contract on offer for the jar that is up next (hub and shop). Signing it changes the jar (RG.jarCfg), so the Next line above it updates */
 const p2T=()=>RUN&&RUN.up.thick?`At ${Math.round(RG.p2at(RUN)*100)}% of the target:`:'At half the target:'; /* when a boss reaches phase 2 (Thick Skin moves it) */
 function rgCt(){const c=RUN.ct;if(!c)return '';const d=CT[c.id],[k,n]=d.pay,cr=RUN.jarId==='bare',sb=RUN.up.sign*2,pay=k==='coin'?cn(n+sb):(k==='sd'?`${n} level of the ${fnm(c.sd)} seed`:cr?'a gold crate in place of the wooden one':'a wooden crate')+(sb?' and '+cn(sb):'');
- return `<div class="ctb${c.on?' on':''}"><b>Contract: ${d.n}</b>${c.on?' <small class="chip r2">Signed</small>':''}<br>${d.cu?RG.curD(d.cu,c.f):d.d} Clear the jar and it pays ${pay}.<button class="go sm${c.on?' alt':''}" data-a="rct">${c.on?'Tear it up':'Sign it'}</button></div>`;}
+ const pic={short:'hour',high:'sky',thin:'ice'}[c.id]||icn(d.r||d.cu),sg=(lastName||'You').slice(0,16);
+ return `<div class="wp${c.on?' on':''}"><div class="wph">Contract</div><div class="wpi">${ic(pic)}</div><div class="wpn">${d.n}</div><p class="wpd">${d.cu?RG.curD(d.cu,c.f):d.d}</p><div class="wpr"><small>Reward</small><b>${pay}</b><small>for clearing the jar</small></div><button class="wps" data-a="rct" aria-label="${c.on?'Tear it up':'Sign it'}"><i>x</i><u>${c.on?`<em>${sg}</em>`:''}</u>${c.on?'':'<small>sign here</small>'}</button>${c.on?'<b class="wpst">Signed</b><small class="wpt">Tap the line to tear it up</small>':''}</div>`;}
 const rgTags=()=>Object.keys(RUN.tg).map(id=>`<p class="nxt">Skip reward: <b>${SKR[id].n}</b>. ${SKR[id].d}${SKR[id].u>1?` ${RUN.tg[id]} left.`:''}</p>`).join('');
 /* this depth's boss rules in words: the mini boss if there is one still to come, then the boss with its phase 2 */
 function rgBossP(){const bid=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,nd=RUN.depth+1,nb=RG.boss(RUN,nd),[ne,no,nf]=RG.curse(RUN,nd),nx=`<p class="tg">Depth ${nd}: <b>${BOSS[nb].n}</b>, with ${CUR[ne].n} (${RG.curD(ne,nf)}) and ${CUR[no].n} at phase 2.</p>`;return nx+ (mid?`<p class="rule"><b>Mini boss: ${BOSS[mid].n}.</b> ${RG.bossD0(RUN,mid)}</p>`:'')+`<p class="rule"><b>Boss: ${BOSS[bid].n}.</b> ${RG.bossD(RUN,bid)}<br>${RG.has(RUN,'flag')?'<i>White Flag: it never reaches phase 2.</i>':`<i>${p2T()}</i> ${RG.bossD(RUN,bid,RUN.depth,1)}`}</p>`;}
