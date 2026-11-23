@@ -145,6 +145,17 @@ Taken from what makes Balatro and Vampire Survivors work, applied to a physics m
 7. **Meta progression is content, not power.** Unlocks add options and harder stakes. No permanent stat boosts that make old stakes trivial.
 8. **Active play.** Clickable tools should fire often and visibly change the jar.
 
+## Design intent (the user's, 23 Nov 2026)
+
+Read this before judging an item, the pool or the odds.
+
+- **The run:** go down 8 depths and beat the final boss. The build grows from a few cheap picks into an engine that can keep up with multiplying targets. Endless is for pushing a finished engine further.
+- **The pool is large on purpose.** You can not always get what you want, so each run asks you to build around what turns up. The game should feel creative, not like following a recipe. Overlapping items are not duplicates to cut: two items for the same zone, size or family are meant to be stacked or combined.
+- **The Orchard is the deck.** Instead of a fruit bag, Orchard items skew the odds of what drops. Stacking items that push the same fruit is how you shape your drops, like stacking a suit in Balatro. It is still a chance, never a certainty.
+- **Fusions reward committing to a pair.** Hidden steering makes the missing half turn up more often, and crates offer a ready fusion first, so the odds lean the player's way once they hold one half. Recipes are found by playing, not shown in advance.
+- **Cheap early picks have a job.** An item that is weak later (Seed Packet, flat points) can carry the early game and be sold when something better turns up.
+- **Creative builds are the goal.** Physics, position, pets, rocks, throwing, mould and frost all count as build pieces. New items should open new combinations, not make an existing best build stronger.
+
 ## Roadmap
 
 Ask before starting anything under Later. One stage per commit series, each stage leaves the game playable.
