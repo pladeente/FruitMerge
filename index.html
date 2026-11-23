@@ -240,6 +240,11 @@ details.dd>summary h5{margin-bottom:4px}details.dd .dpk{display:inline-flex;gap:
 .dp.done{opacity:.4}.dp.cur{opacity:1}.dp.cur small{color:var(--teal)}.dp.cur .px{outline:2px solid var(--teal);outline-offset:1px}.dp.fin .px{filter:drop-shadow(0 0 2px var(--coral))}
 .dmap span{font:700 16px var(--display);color:var(--teal);padding:0 2px 0 4px}.dmap span::after{content:' ›'}
 @media (prefers-reduced-motion:reduce){.wps em,.wpst,.wp:not(.on) .wps u{animation:none}}
+.bxs{margin:10px 0 0;text-align:left}.bxs h5{margin:8px 0 4px;font:700 15px var(--display);color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.bxr{display:flex;gap:6px}.bxt{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px 5px;background:#00000038;border:0;border-radius:10px;box-shadow:inset 0 0 0 2px var(--line);cursor:pointer;color:var(--cream)}
+.bxt b{font:700 15px/1 var(--display);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bxt small{font:700 12px/1 var(--display);color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.bxt.bb{box-shadow:inset 0 0 0 2px var(--coral)}.bxt.bb b{color:var(--coral)}.bxt.cu small{color:#fb8500}.bxt.cu2 small{color:#e63946}.bxt.off{opacity:.45}
+.bxr.nx .bxt{padding:4px 2px;opacity:.75}.bxr.nx .tile{transform:scale(.8);margin:-4px 0}
 .trk{display:flex;gap:6px}
 .nd{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;background:#00000038;box-shadow:inset 0 0 0 2px var(--line);font-size:15px}
 .nd b{font:700 17px var(--display);color:var(--cream)}
@@ -1066,7 +1071,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.73',d:'23 Nov 2026',t:'Wanted',i:['Contracts are now a poster in the hub and shop, right under the next jar. Sign on the line to take it on, tap the line again to tear it up.','A strip under the depth shows every depth of the run with its boss. Tap it for the map.','A merge worth half the jar\'s target pops up bigger, in gold.','Clear a jar past its target and the score bar catches fire, with how far over you went.','The Daily run is half the length: 4 depths, double the coins. Each depth is as hard as the middle of two normal ones.']},
+ {v:'1.73',d:'23 Nov 2026',t:'Wanted',i:['Contracts are now a poster in the hub and shop, right under the next jar. Sign on the line to take it on, tap the line again to tear it up.','A strip under the depth shows every depth of the run with its boss. Tap it for the map.','The boss, mini boss and curses are now tiles in the hub and shop, this depth and the next. Tap one to read what it does.','A merge worth half the jar\'s target pops up bigger, in gold.','Clear a jar past its target and the score bar catches fire, with how far over you went.','The Daily run is half the length: 4 depths, double the coins. Each depth is as hard as the middle of two normal ones.']},
  {v:'1.72.3',d:'22 Nov 2026',t:'Fusion badge',i:['The F is a button again: tap it for the fusion. Shop and crate rows no longer open up when tapped.']},
  {v:'1.72.2',d:'22 Nov 2026',t:'Fusion badge',i:['The fusion F has new pixel art and animates when you hold the other half.','Tap the item itself to see its fusion under its description: a shop or crate row opens below, and your own items show it on their card. No more aiming for the tiny F.']},
  {v:'1.72.1',d:'21 Nov 2026',t:'Fusion badge',i:['Items that are half of a fusion you have found carry a red F, in the shop, in crates and on your own items. It lights up when you already hold the other half. Tap the F to see the recipe.']},
@@ -1457,7 +1462,14 @@ function rgCt(){const c=RUN.ct;if(!c)return '';const d=CT[c.id],[k,n]=d.pay,cr=R
  return `<div class="wp${c.on?' on':''}"><div class="wph">Contract</div><div class="wpi">${ic(pic)}</div><div class="wpn">${d.n}</div><p class="wpd">${d.cu?RG.curD(d.cu,c.f):d.d}</p><div class="wpr"><small>Reward</small><b>${pay}</b><small>for clearing the jar</small></div><button class="wps" data-a="rct" aria-label="${c.on?'Tear it up':'Sign it'}"><i>x</i><u>${c.on?`<em>${sg}</em>`:''}</u>${c.on?'':'<small>sign here</small>'}</button>${c.on?'<b class="wpst">Signed</b><small class="wpt">Tap the line to tear it up</small>':''}</div>`;}
 const rgTags=()=>Object.keys(RUN.tg).map(id=>`<p class="nxt">Skip reward: <b>${SKR[id].n}</b>. ${SKR[id].d}${SKR[id].u>1?` ${RUN.tg[id]} left.`:''}</p>`).join('');
 /* this depth's boss rules in words: the mini boss if there is one still to come, then the boss with its phase 2 */
-function rgBossP(){const bid=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,nd=RUN.depth+1,nb=RG.boss(RUN,nd),[ne,no,nf]=RG.curse(RUN,nd),nx=`<p class="tg">Depth ${nd}: <b>${BOSS[nb].n}</b>, with ${CUR[ne].n} (${RG.curD(ne,nf)}) and ${CUR[no].n} at phase 2.</p>`;return nx+ (mid?`<p class="rule"><b>Mini boss: ${BOSS[mid].n}.</b> ${RG.bossD0(RUN,mid)}</p>`:'')+`<p class="rule"><b>Boss: ${BOSS[bid].n}.</b> ${RG.bossD(RUN,bid)}<br>${RG.has(RUN,'flag')?'<i>White Flag: it never reaches phase 2.</i>':`<i>${p2T()}</i> ${RG.bossD(RUN,bid,RUN.depth,1)}`}</p>`;}
+function rgBossP(){const d=RUN.depth,bid=RG.boss(RUN),mid=RUN.jar<2?RG.mid(RUN):null,[e,o]=RG.curse(RUN,d),fl=RG.has(RUN,'flag'),nd=d+1,nb=RG.boss(RUN,nd),[ne,no]=RG.curse(RUN,nd); /* v1.73: icon tiles, a tap shows the rule (rbx) */
+ const bt=(k,id,lb,tg,cl='',dd=d)=>`<button class="bxt${cl}" data-a="rbx" data-k="${k}" data-i="${id}" data-d="${dd}">${tile(k==='b'||k==='m'?id:id,'boss')}<b>${lb.replace(/^The /,'')}</b><small>${tg}</small></button>`,cu=(dd,e,o,x)=>bt('e',e,CUR[e].n,'Curse',' cu',dd)+bt('o',o,CUR[o].n,'Phase 2',' cu2'+(x&&RUN.up.hardy?' off':''),dd);
+ return `<div class="bxs"><h5>This depth</h5><div class="bxr">${mid?bt('m',mid,BOSS[mid].n,'Mini boss'):''}${bt('b',bid,BOSS[bid].n,'Boss',' bb')}${fl?'':cu(d,e,o,1)}</div><h5>Next: depth ${nd}</h5><div class="bxr nx">${bt('b',nb,BOSS[nb].n,'Boss','',nd)}${cu(nd,ne,no,1)}</div></div>`;}
+function bxCard(b){const k=b.dataset.k,id=b.dataset.i,d=+b.dataset.d,f=RG.curse(RUN,d)[2],t=b.querySelector('.tile').outerHTML;let h;
+ if(k==='e')h=`<div class="th">${t}<div><b>${CUR[id].n}</b> <small class="chip">From the start</small></div></div><p>${RG.curD(id,f)}</p><p class="tg">A curse on the boss jar of depth ${d}.</p>`;
+ else if(k==='o')h=`<div class="th">${t}<div><b>${CUR[id].n}</b> <small class="chip">${RUN.up.hardy?'Hardy stops it':'From phase 2'}</small></div></div><p>${CUR[id].d()}</p><p class="tg">A curse on the boss jar of depth ${d}, once the boss reaches phase 2.</p>`;
+ else h=`<div class="th">${t}<div><b>${BOSS[id].n}</b> <small class="chip">${k==='m'?'Mini boss':'Boss'} · depth ${d}</small></div></div><p>${RG.bossD0(RUN,id,d)}</p>${k==='b'?(RG.has(RUN,'flag')?'<p><i>White Flag: it never reaches phase 2.</i></p>':`<p><i>${p2T()}</i> ${RG.bossD0(RUN,id,d,1)}</p>`):''}`;
+ tipShow(b,h);}
 /* the Rogue intro (v1.44): one tile per mechanic, tap for the card (rmech). t = tile class when it needs one */
 const MECH=[{ic:'gold',n:'Points × Mult',d:'A merge scores its points times your <b>Mult</b>. Bigger fruit give more points. Charms push both up, and the right pairs combo.'},
  {ic:'bull',n:'Targets',d:'Hit the jar\'s <b>score target</b> before your <b>drops</b> run out. Run dry, or let the pile sit over the line, and the run is over.'},
@@ -1620,6 +1632,7 @@ function rgAct(a,b){if(a.slice(0,2)==='so'){socAct(a,b);return true;}const i=+b.
  else if(a==='rjar'){G.su.jar=b.dataset.j;rgSetup();}
  else if(a==='rstake'){G.su.stake=+b.dataset.s;rgSetup();}
  else if(a==='rsut'){G.suT=b.dataset.t;rgSetup();}
+ else if(a==='rbx'){if(G.tipSkip){G.tipSkip=0;return true;}bxCard(b);}
  else if(a==='rjlk'){if(G.tipSkip){G.tipSkip=0;return true;}const k='jar.'+b.dataset.j,A=ACH[LOCK[k]];tipShow(b,`<div class="th">${tile('lock','e')}<div><b>Locked jar</b></div></div><p>${A.secret?'A secret award unlocks this.':`Award <b>${A.n}</b>: ${A.d}`}</p>`);}
  else if(a==='rdaily'){const d=dayN();if(dlyDone(d))return rgSetup();if(!sure('Tap again: one attempt a day'))return;PF.max('dly.'+d,1);PF.save();cloudPush();const R=RG.new(dlyJ(d),dlyK(d),dlyS(d),4);R.dly=d;rgEv(R,'run');rgStart(R);}
  else if(a==='rbegin'){store.set('jar',G.su.jar);store.set('stake',G.su.stake);const R=RG.new(G.su.jar,G.su.stake);rgEv(R,'run');rgStart(R);}
