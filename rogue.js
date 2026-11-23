@@ -9,7 +9,7 @@ const FN=['Cherry','Strawberry','Grape','Lemon','Orange','Apple','Pear','Pineapp
 /* fruit families (v1.34): a tag on each size. A family merge is two fruit of that family merging, so FAM[l-1] for the fruit made at tier l. Pineapple is Tropical only */
 const FAM=['st','be','be','ci','ci','po','po','tr','st','me','me'],FMN={st:'Stone fruit',be:'Berries',ci:'Citrus',po:'Pome',tr:'Tropical',me:'Melons'};
 const RQ=[100,130,160]; /* depth 1 score targets: jar 1, jar 2, boss */
-const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2; /* target multiplier per depth, then ×RSCX for every endless depth */
+const RSC=[1,2.6,6,13,27,55,100,180],RSCX=2,RSCH=[1.6,8.8,38.5,134];/* RSCH (v1.73): the short daily run's 4 depths, each the middle of two normal depths (geometric mean of RSC[2d-2] and RSC[2d-1]) */ /* target multiplier per depth, then ×RSCX for every endless depth */
 const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
 /* Charms. r = rarity, c = price, d = description. Scoring hooks get a context c:
    l = fruit tier made (-1 when not a merge), combo, bull, enc, n = fruit in the jar, jd/dl = drops made/left this jar, jm = merges this jar, sm = merges this jar that made a size 4 fruit or smaller,
@@ -487,9 +487,11 @@ const icn=id=>ICN[id]||id,T0=t=>CRT[t].lg||0;
 const CLASH=[['swarm','gamble'],['swarm','prune'],['swarm','collect']],clash=(a,b)=>a!==b&&CLASH.some(p=>p.includes(a)&&p.includes(b));
 const nice=q=>{const m=Math.pow(10,Math.max(1,Math.floor(Math.log10(q))-1));return Math.round(q*(1+1e-9)/m)*m;};
 const RG={
- new(jar='classic',stake=1){const pool=Object.keys(BOSS).filter(k=>!BOSS[k].fin),bs=[];for(let d=1;d<DEPTHS;d++){const c=pool.filter(k=>BOSS[k].min<=d&&!bs.includes(k));bs.push(c[rint(c.length)]);}bs.push(RG.fin());
+ /* nd = how many depths (v1.73: 4 for the short daily run, R.nd; missing = DEPTHS). RG.ed = the normal depth a depth counts as for boss min depths and the shop's seed sizes */
+ nd:R=>R.nd||DEPTHS,ed:(R,d=R.depth)=>R.nd?d*2:d,
+ new(jar='classic',stake=1,nd=0){const pool=Object.keys(BOSS).filter(k=>!BOSS[k].fin),bs=[];for(let d=1;d<(nd||DEPTHS);d++){const c=pool.filter(k=>BOSS[k].min<=(nd?d*2:d)&&!bs.includes(k));bs.push(c[rint(c.length)]);}bs.push(RG.fin());
   const tl=[RG.tool('swap')];if(jar!=='wide')tl.push(RG.tool(jar==='moon'?'sling':'shake'));if(jar==='kit'){const k=Object.keys(TL).filter(k=>!TL[k].fu&&!PF.lk('tl.'+k)&&k!=='swap'&&k!=='shake');tl.push(RG.tool(k[rint(k.length)]));}
-  return{v:RV,jarId:jar,stake,depth:1,jar:0,coins:jar==='piggy'?12:4,total:0,ch:[],or:[],tl,up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,ms:{},bq:{},bx:{},off:0,shop:null,crate:null,ct:null,sk:null,tg:{},fw:{},pile:[],at:'hub',won:0,st:{},jst:{}};},
+  return{v:RV,jarId:jar,stake,depth:1,jar:0,coins:(jar==='piggy'?12:4)*(nd?2:1),...(nd?{nd}:{}),total:0,ch:[],or:[],tl,up:Object.fromEntries(Object.keys(UPG).map(k=>[k,0])),sd:Array(11).fill(0),bs,ms:{},bq:{},bx:{},off:0,shop:null,crate:null,ct:null,sk:null,tg:{},fw:{},pile:[],at:'hub',won:0,st:{},jst:{}};},
  /* the highest stake the player may pick: one above the best they have won on, with any jar */
  stakeMax:(jar='classic')=>Math.min(STAKES.length,1+((PF.d||PF.load()).stakes[jar]||0)), /* per jar: one above the best Ripeness won with that jar */
  fin(){const f=Object.keys(BOSS).filter(k=>BOSS[k].fin);return f[rint(f.length)];},
@@ -521,10 +523,10 @@ const RG={
  charge(R,n,skip){const k=n*(RG.has(R,'battery')?2:1);for(const t of R.tl)if(t!==skip&&!t.k)t.c=Math.min(RG.need(R,t.id),t.c+k);},
  fill(R){for(const t of R.tl)t.c=RG.need(R,t.id);},
  /* swap this depth's boss for another that is allowed here */
- bribe(R){const d=R.depth,cur=RG.boss(R),k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==cur&&BOSS[k].min<=d&&k!==R.bs[d-2]&&k!==R.ms[d]);R.bs[d-1]=k[rint(k.length)];return R.bs[d-1];},
- boss(R,d=R.depth){while(R.bs.length<d){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==R.bs[R.bs.length-1]);R.bs.push(R.bs.length%DEPTHS===DEPTHS-1?RG.fin():k[rint(k.length)]);}return R.bs[d-1];},
+ bribe(R){const d=R.depth,cur=RG.boss(R),k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==cur&&BOSS[k].min<=RG.ed(R,d)&&k!==R.bs[d-2]&&k!==R.ms[d]);R.bs[d-1]=k[rint(k.length)];return R.bs[d-1];},
+ boss(R,d=R.depth){while(R.bs.length<d){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==R.bs[R.bs.length-1]);R.bs.push(R.bs.length%RG.nd(R)===RG.nd(R)-1?RG.fin():k[rint(k.length)]);}return R.bs[d-1];},
  /* the mini boss on jar 2 of some depths (every depth 4 of 8), or null. It has no phase 2 and drops a wooden crate */
- mid(R,d=R.depth){if(d%8!==4&&!(R.stake>=6&&d>=5))return null;if(!R.ms[d]){const b=RG.boss(R,d),k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==b&&BOSS[k].min<=d&&k!=='hour');R.ms[d]=k[rint(k.length)];}return R.ms[d];},
+ mid(R,d=R.depth){if((R.nd?d%4!==2:d%8!==4)&&!(R.stake>=6&&RG.ed(R,d)>=5))return null;if(!R.ms[d]){const b=RG.boss(R,d),k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!==b&&BOSS[k].min<=RG.ed(R,d)&&k!=='hour');R.ms[d]=k[rint(k.length)];}return R.ms[d];},
  /* the rule flags a boss switches on. The Orchard Queen runs two other bosses, picked once per depth */
  rules(R,b,d=R.depth){let r=[b];if(b==='queen'){if(R.bq[d]&&clash(R.bq[d][0],R.bq[d][1]))delete R.bq[d]; /* a pair drawn before v1.38 that is no longer allowed is drawn again */
   if(!R.bq[d]){const k=Object.keys(BOSS).filter(k=>!BOSS[k].fin&&k!=='hour'),a=k.splice(rint(k.length),1)[0],c=k.filter(x=>!clash(a,x));R.bq[d]=[a,c[rint(c.length)]];}r=R.bq[d];}
@@ -540,9 +542,9 @@ const RG={
  /* one rule's text in this run: The Collector asks for one size smaller while the run holds Bite Size or Snack Pack (RG.cs = how many sizes smaller) */
  cs:R=>RG.has(R,'bite')||RG.has(R,'snack')?1:0,
  bt:(R,b,k)=>b==='collect'&&RG.cs(R)?(k==='d'?`The jar only clears once you have also made ${fna(6-RG.cs(R))}.`:`If you have not made it yet, it must now be ${fna(7-RG.cs(R))}.`):BOSS[b][k],
- jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):j===1?RG.mid(R,d):null,bd=b&&BOSS[b],rules=b?RG.rules(R,b,d):[],sc=d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(RSCX,d-DEPTHS),J=R.jarId,now=j===R.jar,ct=now&&!b&&R.ct&&R.ct.on?CT[R.ct.id]:null; /* ct = the contract signed for this jar */
+ jarCfg(R,j=R.jar){const d=R.depth,b=j===2?RG.boss(R):j===1?RG.mid(R,d):null,bd=b&&BOSS[b],rules=b?RG.rules(R,b,d):[],sc=R.nd?(d<=R.nd?RSCH[d-1]:RSCH[R.nd-1]*Math.pow(RSCX*RSCX,d-R.nd)):d<=DEPTHS?RSC[d-1]:RSC[DEPTHS-1]*Math.pow(RSCX,d-DEPTHS),J=R.jarId,now=j===R.jar,ct=now&&!b&&R.ct&&R.ct.on?CT[R.ct.id]:null; /* ct = the contract signed for this jar */
   const fl=RG.has(R,'flag'),quota=nice(RQ[j]*sc*RG.bq(b,rules)*(b&&fl?CH.flag.q:1)*(R.stake>=3?1.25:1)*(J==='tall'?1.15:J==='giant'?1.5:1)*(ct&&ct.q||1));let drops=RDROPS+R.up.can*2+(RG.has(R,'bag')?5:0)-(rules.includes('hour')?6:0)+(J==='tall'?4:J==='see'?3:0)-(R.stake>=4?3:0)-(ct&&ct.dr||0)+(now&&R.tg.drops?6:0);if(b==='reaper')drops=Math.ceil(drops/2);drops=Math.max(8,drops);if(ct&&ct.r)rules.push(ct.r);
-  const cr0=j===2?(d%4===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2&&!fl?RG.curse(R,d):null; /* White Flag: no curses */
+  const cr0=j===2?(d%(R.nd?2:4)===0?'melon':'gold'):b||J==='bare'?'wood':'',cs=j===2&&!fl?RG.curse(R,d):null; /* White Flag: no curses */
   const p2=j===2&&!RG.has(R,'flag'); /* White Flag: no phase 2 */
   return{quota,drops,boss:b,rules,en:cs?cs[0]:ct&&ct.cu||'',de:cs?cs[1]:'',fam:cs?cs[2]:ct&&R.ct.f!=null?R.ct.f:'',ct:ct?R.ct.id:'',fz:ct&&ct.fz||0,p2,p2s:p2&&R.stake>=8,crate:ct&&ct.pay[0]==='cr'?(cr0?'gold':'wood'):cr0,pay:Math.max(1,RPAY[j]+(b&&j<2?2:0)-(R.stake>=2?1:0)-(J==='piggy'?1:0)),tag:`D${d} · ${bd?bd.n:'Jar '+(j+1)+'/3'}`,name:bd?bd.n:`Depth ${d} · Jar ${j+1}`,ic:b?icn(b):null,
    rule:(b?RG.bossD(R,b,d)+' ':'')+(ct?`Contract: ${ct.cu?RG.curD(ct.cu,R.ct.f):ct.d} `:'')+`Score ${quota} in ${drops} drops.`,rule2:b?RG.bossD(R,b,d,1):''};},
@@ -582,9 +584,9 @@ const RG={
  /* draw the contract for the jar that is up next: none on depth 1, none on a boss or mini boss jar */
  offer(R){R.ct=null;if(R.depth<2||R.jar>1||(R.jar===1&&RG.mid(R)))return;const k=Object.keys(CT).filter(k=>!CT[k].r||BOSS[CT[k].r].min<=R.depth),id=k[rint(k.length)],c={id,on:0};if(CT[id].cu==='blight')c.f=rint(3);if(CT[id].pay[0]==='sd'){const a=RG.sizes(R);c.sd=a[rint(a.length)];}R.ct=c;},
  payout(R,cfg,left){const rows=[['Jar cleared',cfg.pay]],ct=cfg.ct&&CT[cfg.ct],u=Math.min(3+R.up.ot*2,Math.floor(left/4)),i=Math.min((RG.has(R,'goose')?10:RG.has(R,'bank')?8:4)+R.up.vault*2+(R.jarId==='piggy'?2:0),Math.floor(R.coins/RG.intN(R)));R.lint=i; /* Compound Interest counts it in advance */
-  if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return rows;},
+  if(R.tg.pay)rows.push(['Double Pay (skip reward)',cfg.pay]);if(ct&&ct.pay[0]==='coin')rows.push(['Contract: '+ct.n,ct.pay[1]]);if(ct&&R.up.sign)rows.push(['Signing Bonus',R.up.sign*2]);if(u)rows.push([`Unused drops (${left})`,u]);if(i)rows.push([`Interest (1 per ${RG.intN(R)} coins held)`,i]);if(RG.has(R,'piggy'))rows.push(['Piggy Bank',3]);if(RG.has(R,'goose'))rows.push(['Golden Goose',4]);if(R.up.lunch)rows.push(['Packed Lunch',R.up.lunch]);return R.nd?rows.map(([n,v])=>[n,v*2]):rows;}, /* the short daily run pays double */
  /* bank the payout and move on to the next jar. Returns true when the last depth has just been beaten */
- advance(R,sum){R.coins+=sum;if(R.lint){R.st.intc=(R.st.intc||0)+R.lint;R.lint=0;}const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===DEPTHS&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
+ advance(R,sum){R.coins+=sum;if(R.lint){R.st.intc=(R.st.intc||0)+R.lint;R.lint=0;}const wf=R.cfg&&R.cfg.boss&&RG.has(R,'flag');if(wf)wf.v=+((wf.v||0)+CH.flag.g).toFixed(2);const v=RG.has(R,'keep')||RG.has(R,'vintage'),hl=RG.has(R,'heir');if(v)v.v=+((v.v||0)+(v.id==='keep'?.12:.08)).toFixed(2);if(hl)hl.v=+((hl.v||0)+CH.heir.g).toFixed(2);let win=false;delete R.tg.pay;delete R.tg.drops;if(++R.jar>2){R.jar=0;if(R.depth===RG.nd(R)&&!R.won){R.won=1;win=true;}R.depth++;}RG.offer(R);R.sp=0;R.shop=RG.stock(R);R.at='shop';return win;},
  stock(R){const own=R.ch.map(c=>c.id),fz=RG.fz(R),ch=[],tt=R.up.taste,m=RG.miss(R),w=RG.fwW(R,m);for(let i=0;i<(R.jarId==='bare'?0:SHN+R.up.shelf);i++){const left=Object.keys(CH).filter(k=>!CH[k].fu&&!CH[k].o&&CH[k].r<3&&!CH[k].dev&&!PF.lk('ch.'+k)&&!own.includes(k)&&!fz.has(k)&&!ch.includes(k)&&RG.rq(R,CH[k].req));if(!left.length)break;const r=Math.random(),rar=r<.7-.075*tt?0:r<.976-.018*tt?1:2,c=left.filter(k=>CH[k].r===rar),from=c.length?c:left;ch.push(RG.pickW(from,1,w)[0]);}
   const take=RG.pick,sizes=RG.sizes(R);
   const S={ch,or:RG.orPick(R,1,[],w),cr:Object.keys(CRP)[rint(3)],tl:RG.pickW(Object.keys(TL).filter(k=>!TL[k].fu&&!fz.has(k)&&!PF.lk('tl.'+k)&&!R.tl.some(o=>o.id===k)&&RG.rq(R,TL[k].req)),2,w),up:RG.pickW(Object.keys(UPG).filter(k=>RG.upOk(R,k)),2+R.up.cata,k=>UPW[UPG[k].r||0]),sd:take(sizes,2+R.up.seedbag),rr:0,ed:{}};for(const k of ['ch','or','tl'])(S[k]||[]).forEach((id,i)=>{const e=id&&edR();if(e)S.ed[k+i]=e;});if(!R.fw)R.fw={};for(const k in R.fw)if(!m.has(k))delete R.fw[k];for(const k of m)R.fw[k]=S.ch.includes(k)||S.or.includes(k)||S.tl.includes(k)?0:(R.fw[k]||0)+1;return S;},
@@ -598,7 +600,7 @@ const RG={
  pick(a,n){const o=[];while(o.length<n&&a.length)o.push(a.splice(rint(a.length),1)[0]);return o;},
  /* the same, with a weight per item: w(item) */
  pickW(a,n,w){const o=[];while(o.length<n&&a.length){let t=0,i=0;for(const k of a)t+=w(k);let r=Math.random()*t;while(i<a.length-1&&(r-=w(a[i]))>=0)i++;o.push(a.splice(i,1)[0]);}return o;},
- sizes(R){const a=[];for(let l=1;l<=(R.depth<4?7:10);l++)a.push(l);return a;},
+ sizes(R){const a=[];for(let l=1;l<=(RG.ed(R)<4?7:10);l++)a.push(l);return a;},
  /* ---- fusions ---- */
  /* every fusion the run holds both halves of: [{id, k (ch or tl), a, b}] */
  pob:(R,k)=>R.ch.find(c=>PK[k].includes(c.id)), /* the held item that carries pet k */
@@ -656,7 +658,7 @@ RG.at=(R,k,fn)=>{if(!R||!R.seed||SDQ.d)return fn();return sdW(fn,mb32(sdH(R.seed
 for(const n of ['boss','mid','rules','curse','srw'])((f)=>{RG[n]=function(R,a,b){const d=n==='rules'?(b===undefined?R.depth:b):(a===undefined?R.depth:a);return RG.at(R,n+'|'+d,()=>f.apply(this,arguments));};})(RG[n]);
 for(const n of ['stock','crate','offer','bribe'])((f)=>{RG[n]=function(R){if(!R||!R.seed||SDQ.d)return f.apply(this,arguments);const q=R.sq||(R.sq={}),k=n+'|'+R.depth+'|'+R.jar;q[k]=(q[k]||0)+1;return RG.at(R,k+'|'+q[k],()=>f.apply(this,arguments));};})(RG[n]);
 for(const n of ['fusable','upOk','miss'])((f)=>{RG[n]=function(R){return RG.at(R,'lk',()=>f.apply(this,arguments));};})(RG[n]);
-((f)=>{RG.new=function(j,s,seed){if(!seed)return f.call(this,j,s);const R=RG.at({seed},'new',()=>f.call(this,j,s));R.seed=seed;return R;};})(RG.new);
+((f)=>{RG.new=function(j,s,seed,nd){if(!seed)return f.call(this,j,s,nd);const R=RG.at({seed},'new',()=>f.call(this,j,s,nd));R.seed=seed;return R;};})(RG.new);
 ((f)=>{RG.jarCfg=function(R,j=R.jar){const c=f.call(this,R,j);c.jk=R.jarId;if(R.seed)c.fs=R.seed+'|f|'+R.depth+'|'+j;return c;};})(RG.jarCfg);
 
 
