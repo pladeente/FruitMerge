@@ -996,4 +996,28 @@ Each level after the first gives 1 point (4 at most), against 9 nodes in three b
 | | Flyer | hops to the biggest fruit | a second ladybird | her fruit never over the line | big fruit, safety |
 | | Garden | +1 tool charge a hop | 1 XP to other pets a hop | her fruit is pollinated | pollen, pets |
 
-Not measured by the bot. Watch: Social at Lv2 already equals the old Lv5 ×1.25; Strike Gold and Spiky Ball add free fruit or free points per meal; the Ladybird's Garden 3 stacks pollen ×3 on her ×2.
+### Bot measurement (v1.74.1, 24 Nov)
+
+Bot kept out of the repo: one Lv5 pet (4 points) plus Juicer, 24-drop jars with an endless target, aims at the highest fruit of the held size, else the lowest of 8 columns. 120 jars per setup. A branch = its 3 skills plus the first skill of the next branch. "Old" = the pet with its tree removed, so the old fixed Lv3 to Lv5 perks apply. No pet (Juicer only): 379. The bot never plays at the line, so safety skills (Hedge Wall, Royal Guard, Guardian Wings), XP, tool charge and seeds show no value here. Coins = coins earned per jar beyond the payout.
+
+First pass (as built):
+
+| Pet | Old | Branch 1 | Branch 2 | Branch 3 |
+|---|---|---|---|---|
+| Caterpillar | 945 | Glutton 752 | Gardener 877 | Butterfly 1185 |
+| Bee | 623 | Swarm 644 | Honey 903 | Queen 624 |
+| Mole | 1153 | Digger 883 (4.4 coins) | Prospector 866 (7.4 coins) | Tremor 1052 |
+| Hedgehog | 485 | Guard 377 | Spiky 490 | Forager 412 |
+| Ladybird | 650 | Lucky 750 (3.1 coins) | Flyer 651 | Garden 1049 |
+
+Changes: Social ×1.2 to ×1.1 per pet, Rich Pollen ×4 to ×3.5, Honey Rush +0.3 to +0.1, Quick Dig 1 to 2 drops sooner (the old perks gave the mole two), Nugget and Spot of Gold a coin every 2nd action (flag `coin:.5`, fractions kept per jar in `jcf`), Strike Gold every 2nd meal, Pollinator every 3rd hop (`ldP`). After:
+
+| Pet | Old | Branch 1 | Branch 2 | Branch 3 |
+|---|---|---|---|---|
+| Caterpillar | 947 | Glutton 753 | Gardener 809 | Butterfly 1091 |
+| Bee | 651 | Swarm 618 | Honey 747 | Queen 602 |
+| Mole | 1146 | Digger 941 (2.2 coins) | Prospector 843 (3.8 coins) | Tremor 1207 |
+| Hedgehog | 485 | Guard 377 | Spiky 490 | Forager 412 |
+| Ladybird | 641 | Lucky 750 (1.3 coins) | Flyer 657 | Garden 626 |
+
+Every branch is now within about 25% of the old perks. The plain-power branch of each pet (the one ending in ×1.25) sits 5 to 17% above, the rule-bend branches up to about 25% below, which is the price of their utility (pile control, coins, seeds, safety). Glutton and Guard were left below on purpose: they are missing exactly the ×1.25 they do not carry, and what they give (pile control, safety) the bot can not see. Next check with human run data.
