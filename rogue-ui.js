@@ -302,7 +302,7 @@ function pspr(c,lk,t,s,k='cat'){const P=PXP,T=RMO?0:t,px=(x,y,k)=>{c.fillStyle=P
  ell=(cx,cy,rx,ry,f,ol)=>{cx=Math.round(cx);cy=Math.round(cy);for(let y=-ry-1;y<=ry+1;y++)for(let x=-Math.ceil(rx)-1;x<=Math.ceil(rx)+1;x++){const d=(x*x)/(rx*rx||.01)+(y*y)/(ry*ry);if(d<=1.05)px(cx+x,cy+y,f(x,y));else if(ol&&(x*x)/((rx+1)*(rx+1))+(y*y)/((ry+1)*(ry+1))<=1.05)px(cx+x,cy+y,'k');}};
  c.clearRect(0,0,56*s,34*s);if(k!=='cat')return pspr2(c,k,lk,T,s,px,ell,blk);
  if(catOk()&&lk!=='fly'){const h=s/2,g=lk==='glut'?1.12:1,N=6,hr=12*h*g*1.1,rs=[hr],xs=[0];for(let i=1;i<=N;i++){rs[i]=12*h*g*(1-i*.07);xs[i]=xs[i-1]+(rs[i-1]+rs[i])*.56;} /* head on the left, the body trailing right and shrinking toward the tail (the art faces left) */
-  const x0=(56*s-(xs[N]+rs[N]+hr))/2+hr,y0=24*s;for(let i=N;i>=1;i--){const bob=Math.round(Math.sin(T*5-i*.9))*h;catS(c,i%2?(RMO?0:(Math.floor(T*6)+i)%2):2,1,x0+xs[i],y0+bob+(hr-rs[i])*.4,rs[i]);}
+  const x0=(56*s-(xs[N]+rs[N]+hr))/2+hr,y0=24*s;for(let i=N;i>=1;i--){const bob=Math.round(Math.sin(T*5-i*.9))*h;catS(c,2,1,x0+xs[i],y0+bob+(hr-rs[i])*.4,rs[i]);}
   const hx=x0,hy=y0-3*h+Math.round(Math.sin(T*5))*h,hf=lk==='glut'?(RMO?1:Math.floor(T*4)%2?1:2):blk?2:0;catS(c,hf,0,hx,hy,hr);
   if(lk==='gard'){const ty=Math.round((hy-hr*.95)/s);const X=Math.round(hx/s),R=7;for(let x=-R-3;x<=R+3;x++)px(X+x,ty,Math.abs(x)===R+3?'k':'Y');for(let y=1;y<=3;y++)for(let x=-R+y;x<=R-y;x++)px(X+x,ty-y,y===1?'n':Math.abs(x)===R-y?'k':'y');for(let x=-2;x<=2;x++)px(X+x,ty-4,'k');}
   if(lk==='gard'){const sw=Math.round(Math.sin(T*2)),tx=Math.round((x0+xs[N])/s),tyy=Math.round((y0-rs[N])/s)+1;px(tx,tyy-1,'G');px(tx,tyy-2,'G');px(tx-1+sw,tyy-3,'g');px(tx+1+sw,tyy-3,'g');}return;} /* the user's sprite (v1.74.3), drawn at s/2 so its pixels stay whole */
