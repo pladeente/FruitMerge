@@ -971,3 +971,17 @@ The user's pick of three proposed knife fusions (Hibachi, Julienne = Paring Knif
 ## Slingshot: no roof for thrown fruit (v1.69)
 
 The user found the roof janky: a fruit fired upwards hit an invisible ceiling, lost its speed (×-0.3) and dropped almost straight down. The roof never counted as a wall bounce (Trick Shot, Ricochet and Pinball read only the side walls) and still does not. Now a thrown fruit in flight ignores the roof, leaves the screen and falls back under gravity, with an arrow and a dot in its colour at the top edge. A full-power throw straight up rises about 0.7 of a jar width above the line and takes about 2 s to come back. Guards: a thrown fruit in flight is never over the line (`ovl`), so a high throw can not start an overflow or count for On the Brink, and Fruit Fly's airtime pauses off screen so it is not made trivial. Other fruit (Shake, Rumble, Whirl, bouncy) still stop at the roof.
+
+## Pet skill trees (v1.74, 24 Nov)
+
+The user's idea: pets should feel like yours. A tree per pet (Pokémon Gen 5 animated sprite plus a simplified Borderlands tree), points spent between jars, the look changing with the build. The Caterpillar is first; more pets will get trees, and more pets will be added.
+
+Each level after the first gives 1 point (4 at most), against 9 nodes in three branches, so a run fills one branch and dips into another. The fixed Lv3 to Lv5 perks of a pet with a tree move into its nodes.
+
+| Branch | 1 | 2 | 3 | Build it feeds |
+|---|---|---|---|---|
+| Glutton | Big Eater: 1 drop sooner | Stretchy: eats one size bigger | Favourite Food: picks the size it hunts, up to one past its reach | Destruction, pile control, small fruit |
+| Gardener | Compost: every meal 1 XP to the other pets | Sower: every 3rd meal in a jar levels the eaten size's seed | Harvest Feast: meals of seeded sizes ×2 | Seeds, Pets |
+| Butterfly | Social: ×1.2 Mult per pet held | Wingbeat: +0.25 Mult per meal this jar | Monarch: ×1.25 Mult | Pets, generic ×Mult |
+
+Not measured by the bot. Butterfly is the plain-power branch (Social with one pet equals the old Lv5 ×1.25 at Lv2 already, so watch it once run data is in). Glutton and Gardener are the rule-bending ones.
