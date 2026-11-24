@@ -989,9 +989,9 @@ Each level after the first gives 1 point (4 at most), against 9 nodes in three b
 | Mole | Digger | 1 drop sooner | one size bigger | 2 meals a visit | destruction |
 | | Prospector | 1 coin a meal | every 3rd meal gilds the nearest fruit | leaves a gold fruit one size smaller | gold, economy |
 | | Tremor | +1 tool charge a meal | +0.2 Mult a meal this jar | ×1.25 | tools |
-| Hedgehog | Guard | waits 1 drop less | one size bigger | overflow timer +1 s | safety |
+| Hedgehog | Guard | 1 drop sooner | one size bigger | overflow timer +1 s | safety |
 | | Spiky | +0.3 Mult a meal this jar | pops the smallest fruit touching its meal | ×1.25 | destruction |
-| | Forager | climbs at half height | Apples first, ×3 | 1 XP to other pets a meal | pets, big fruit |
+| | Forager | at the gold line, no wait | Apples first, ×2 | 1 XP to other pets a meal | pets, big fruit |
 | Ladybird | Lucky | +0.1 Mult a hop this jar | 1 coin a hop | ×1.25 | economy |
 | | Flyer | hops to the biggest fruit | a second ladybird | her fruit never over the line | big fruit, safety |
 | | Garden | +1 tool charge a hop | 1 XP to other pets a hop | her fruit is pollinated | pollen, pets |
@@ -1021,3 +1021,5 @@ Changes: Social ×1.2 to ×1.1 per pet, Rich Pollen ×4 to ×3.5, Honey Rush +0.
 | Ladybird | 641 | Lucky 750 (1.3 coins) | Flyer 657 | Garden 626 |
 
 Every branch is now within about 25% of the old perks. The plain-power branch of each pet (the one ending in ×1.25) sits 5 to 17% above, the rule-bend branches up to about 25% below, which is the price of their utility (pile control, coins, seeds, safety). Glutton and Guard were left below on purpose: they are missing exactly the ×1.25 they do not carry, and what they give (pile control, safety) the bot can not see. Next check with human run data.
+
+Hedgehog rework (v1.74.2, the user's call: the pile hardly ever reaches the gold line, so the hedgehog barely acted and the caterpillar was the better buy). It now also comes every 7 drops and eats the highest fruit it can; the gold line still calls it. Alert became 1 drop sooner, Sniffer comes at the gold line with no wait. Every 6 drops at 50 points measured 1173 with the old perks (25% over the caterpillar at the same price); every 7 drops, 40 points and Apple Carrier ×2 measured: old 1032, Guard 899, Spiky 964, Forager 965 (caterpillar, same run: old 942, branches 752 to 1081).

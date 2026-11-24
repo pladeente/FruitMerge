@@ -90,7 +90,7 @@ const CH={
  /* pets (DESIGN.md): creatures in the jar, handled in makeGame. Pet combos need a pet (req) */
  bee:{n:'Busy Bee',r:1,c:6,d:'Every 4 drops a bee pollinates a fruit (up to 3 at a time). A pollinated fruit scores ×3 when it merges. Your pets leave pollinated fruit alone.'},
  mole:{n:'Mole',r:1,c:6,d:'Every 6 drops a mole eats a fruit on the floor (size 4 or less) for 40 points.'},
- hog:{n:'Hedgehog',r:1,c:6,d:'When the pile reaches the gold line near the top of the jar, a hedgehog climbs up and eats the highest fruit (size 6 or less) for 50 points. At most once every 3 drops.'},
+ hog:{n:'Hedgehog',r:1,c:6,d:'Every 7 drops a hedgehog climbs the pile and eats the highest fruit (size 6 or less) for 40 points. It also comes when the pile reaches the gold line, at most once every 3 drops.'},
  lady:{n:'Ladybird',r:0,c:4,d:'A ladybird rides one fruit. When that fruit merges, the merge scores ×2 and she moves to the new fruit.'},
  bowl:{n:'Pet Bowl',r:0,c:4,req:EAT,d:'+0.3 Mult for every fruit your pets have eaten this jar.',add:c=>(c.ml||0)*.3},
  treats:{n:'Pet Treats',r:0,c:4,req:EAT,d:'Every fruit your pets eat scores 30 more points.'},
@@ -452,9 +452,9 @@ const PTR={
  {id:'t',n:'Prospector',lk:'miner',nd:[{n:'Nugget',d:'Every 2nd meal pays 1 coin.',ic:'truffle',coin:.5},{n:'Gold Vein',d:'Every 3rd meal in a jar turns the nearest fruit gold.',ic:'pdirt'},{n:'Strike Gold',d:'Every 2nd meal leaves a gold fruit one size smaller behind.',ic:'gdig'}]},
  {id:'e',n:'Tremor',lk:'rumble',nd:[{n:'Undermine',d:'Every meal gives every tool +1 charge.',ic:'rumble',chg:1},{n:'Aftershock',d:'+0.2 Mult for every meal it has eaten this jar.',ic:'lslide',am:.2},{n:'Mole King',d:'×1.25 Mult. The ground cracks around him.',ic:'king',x:1.25}]}]},
  hog:{n:'Hedgehog',br:[
- {id:'g',n:'Guard',lk:'helm',nd:[{n:'Alert',d:'Waits 1 drop less between climbs.',ic:'hog',soon:1},{n:'Big Bite',d:'Eats fruit one size bigger.',ic:'feast',reach:1},{n:'Hedge Wall',d:'The pile can sit over the line 1 second longer.',ic:'net',wall:1}]},
+ {id:'g',n:'Guard',lk:'helm',nd:[{n:'Alert',d:'Comes 1 drop sooner.',ic:'hog',soon:1},{n:'Big Bite',d:'Eats fruit one size bigger.',ic:'feast',reach:1},{n:'Hedge Wall',d:'The pile can sit over the line 1 second longer.',ic:'net',wall:1}]},
  {id:'s',n:'Spiky',lk:'spike',nd:[{n:'Roll Out',d:'+0.3 Mult for every meal it has eaten this jar.',ic:'whirl',am:.3},{n:'Spiky Ball',d:'Its meal also pops the smallest fruit touching it, for points.',ic:'bomb'},{n:'Pincushion',d:'×1.25 Mult. Bigger, redder spikes.',ic:'shrap',x:1.25}]},
- {id:'f',n:'Forager',lk:'apple',nd:[{n:'Sniffer',d:'Climbs up once the pile is halfway up, not only at the gold line.',ic:'fore',sniff:1},{n:'Apple Carrier',d:'Goes for Apples (6) first, and Apples it eats score ×3.',ic:'fr5',apple:1},{n:'Forest Friend',d:'Every meal gives your other pets 1 XP.',ic:'treats',xpo:1}]}]},
+ {id:'f',n:'Forager',lk:'apple',nd:[{n:'Sniffer',d:'When the pile reaches the gold line it comes at once, with no wait.',ic:'fore',sniff:1},{n:'Apple Carrier',d:'Goes for Apples (6) first, and Apples it eats score ×2.',ic:'fr5',apple:1},{n:'Forest Friend',d:'Every meal gives your other pets 1 XP.',ic:'treats',xpo:1}]}]},
  lady:{n:'Ladybird',br:[
  {id:'l',n:'Lucky',lk:'clover',nd:[{n:'Hop Hop',d:'+0.1 Mult for every hop this jar.',ic:'lady',am:.1},{n:'Spot of Gold',d:'Every 2nd hop pays 1 coin.',ic:'coin',coin:.5},{n:'Seven Spot',d:'×1.25 Mult. She carries a four-leaf clover.',ic:'fourleaf',x:1.25}]},
  {id:'f',n:'Flyer',lk:'wings',nd:[{n:'Long Hop',d:'When her fruit merges she hops to the biggest fruit in the jar.',ic:'lob'},{n:'Sister',d:'A second ladybird rides another fruit.',ic:'twin'},{n:'Guardian Wings',d:'A fruit with a ladybird never counts as over the line.',ic:'net',lg:1}]},
