@@ -974,14 +974,26 @@ The user found the roof janky: a fruit fired upwards hit an invisible ceiling, l
 
 ## Pet skill trees (v1.74, 24 Nov)
 
-The user's idea: pets should feel like yours. A tree per pet (Pokémon Gen 5 animated sprite plus a simplified Borderlands tree), points spent between jars, the look changing with the build. The Caterpillar is first; more pets will get trees, and more pets will be added.
+The user's idea: pets should feel like yours. A tree per pet (Pokémon Gen 5 animated sprite plus a simplified Borderlands tree), points spent between jars, the look changing with the build. Every pet has one; more pets will be added.
 
-Each level after the first gives 1 point (4 at most), against 9 nodes in three branches, so a run fills one branch and dips into another. The fixed Lv3 to Lv5 perks of a pet with a tree move into its nodes.
+Each level after the first gives 1 point (4 at most), against 9 nodes in three branches, so a run fills one branch and dips into another. The old fixed Lv3 to Lv5 perks moved into the nodes (sooner, reach, bee capacity, the ×1.25). Each tree has one plain-power branch ending in ×1.25 and two that bend rules or feed another build.
 
-| Branch | 1 | 2 | 3 | Build it feeds |
-|---|---|---|---|---|
-| Glutton | Big Eater: 1 drop sooner | Stretchy: eats one size bigger | Favourite Food: picks the size it hunts, up to one past its reach | Destruction, pile control, small fruit |
-| Gardener | Compost: every meal 1 XP to the other pets | Sower: every 3rd meal in a jar levels the eaten size's seed | Harvest Feast: meals of seeded sizes ×2 | Seeds, Pets |
-| Butterfly | Social: ×1.2 Mult per pet held | Wingbeat: +0.25 Mult per meal this jar | Monarch: ×1.25 Mult | Pets, generic ×Mult |
+| Pet | Branch | 1 | 2 | 3 | Feeds |
+|---|---|---|---|---|---|
+| Caterpillar | Glutton | 1 drop sooner | one size bigger | Favourite Food (pick a size) | destruction, small fruit |
+| | Gardener | 1 XP to other pets a meal | every 3rd meal levels that seed | seeded sizes ×2 | seeds, pets |
+| | Butterfly | ×1.2 per pet held | +0.25 Mult a meal this jar | ×1.25 | pets, ×Mult |
+| Busy Bee | Swarm | 1 drop sooner | +2 pollinated at a time | 2 fruit a visit | pollen |
+| | Honey | pollen ×4 | pollinated merge pollinates the nearest | +0.3 Mult a pollination this jar | pollen, combo |
+| | Queen | +1 tool charge a pollination | pollinated fruit never over the line | ×1.25 | tools, safety |
+| Mole | Digger | 1 drop sooner | one size bigger | 2 meals a visit | destruction |
+| | Prospector | 1 coin a meal | every 3rd meal gilds the nearest fruit | leaves a gold fruit one size smaller | gold, economy |
+| | Tremor | +1 tool charge a meal | +0.2 Mult a meal this jar | ×1.25 | tools |
+| Hedgehog | Guard | waits 1 drop less | one size bigger | overflow timer +1 s | safety |
+| | Spiky | +0.3 Mult a meal this jar | pops the smallest fruit touching its meal | ×1.25 | destruction |
+| | Forager | climbs at half height | Apples first, ×3 | 1 XP to other pets a meal | pets, big fruit |
+| Ladybird | Lucky | +0.1 Mult a hop this jar | 1 coin a hop | ×1.25 | economy |
+| | Flyer | hops to the biggest fruit | a second ladybird | her fruit never over the line | big fruit, safety |
+| | Garden | +1 tool charge a hop | 1 XP to other pets a hop | her fruit is pollinated | pollen, pets |
 
-Not measured by the bot. Butterfly is the plain-power branch (Social with one pet equals the old Lv5 ×1.25 at Lv2 already, so watch it once run data is in). Glutton and Gardener are the rule-bending ones.
+Not measured by the bot. Watch: Social at Lv2 already equals the old Lv5 ×1.25; Strike Gold and Spiky Ball add free fruit or free points per meal; the Ladybird's Garden 3 stacks pollen ×3 on her ×2.

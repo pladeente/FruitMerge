@@ -31,9 +31,9 @@ const orC='<small class="chip orc">Orchard</small>',chD=c=>CH[c.id].d+(PLK[c.id]
 const rareCue=ids=>{const n=ids.filter(id=>CH[id]&&CH[id].r===2&&!(G.rare||[]).includes(id)),lg=ids.filter(id=>CH[id]&&CH[id].r===4&&!(G.rare||[]).includes(id));G.rare=ids.slice();if(lg.length)snd('legend');else if(n.length)snd('rare');};
 /* pet level pip and XP bar (v1.47.1): the bar fills from this level's XP to the next, counting actions as fifths of an XP, gold at level 5 */
 const plP=c=>{const L=RG.plv(c);if(L>=5)return 1;const a=PLX[L-1],b=PLX[L];return clampN(((c.x||0)+(c.a||0)/5-a)/(b-a),0,1);},plB=c=>PLK[c.id]?`${RG.pp(c)>0?'<i class="ppt">!</i>':''}<i class="plv">${RG.plv(c)}</i><i class="pxp${RG.plv(c)>=5?' max':''}"><b style="width:${Math.round(plP(c)*100)}%"></b></i>`:'';
-const plD=c=>{const L=RG.plv(c),k=PLK[c.id],m=1+.14*(L-1),g=L>=3?1:0,sz=L>=4?1:0,id=c.id,n=L<5?` (${c.x||0}/${PLX[L]} XP to level ${L+1})`:'',P=v=>Math.round(v*m);
- const now=k==='cat'?`eats every ${(id==='frenzy'?4:5)-g} drops, size ${3+sz} or less, ${P(id==='frenzy'?90:45)} points`:k==='mole'?`eats every ${(id==='zoo'?5:6)-g-(L>=5?1:0)} drops, size ${4+sz} or less, ${P(id==='zoo'?60:40)} points`:k==='hog'?`eats at most every ${3-g} drops, size ${6+sz} or less, ${P(50)} points`:k==='bee'?`every ${(id==='bfly'?3:4)-g} drops, up to ${L>=5?5:L>=4?4:3} at a time`:`×${num(2+.125*(L-1))} on her fruit's merge`;
- return ` <b>Level ${L}${n}.</b> Now: ${now}${L>=5?', and ×1.25 Mult':''}. It gains a level as you clear jars and as it works.`;}; /* pet levels (v1.43): what the pet does at its level */
+const plD=c=>{const L=RG.plv(c),k=PLK[c.id],m=1+.14*(L-1),g=RG.skc(c,'soon'),sz=RG.skc(c,'reach'),id=c.id,n=L<5?` (${c.x||0}/${PLX[L]} XP to level ${L+1})`:'',P=v=>Math.round(v*m);
+ const now=k==='cat'?`eats every ${(id==='frenzy'?4:5)-g} drops, size ${3+sz} or less, ${P(id==='frenzy'?90:45)} points`:k==='mole'?`eats every ${(id==='zoo'?5:6)-g-(L>=5?1:0)} drops, size ${4+sz} or less, ${P(id==='zoo'?60:40)} points`:k==='hog'?`eats at most every ${3-g} drops, size ${6+sz} or less, ${P(50)} points`:k==='bee'?`every ${(id==='bfly'?3:4)-g} drops, up to ${3+RG.skc(c,'cap')} at a time`:`×${num(2+.125*(L-1))} on her fruit's merge`;
+ const p=RG.pp(c),sk=(c.sk||[]).map(id=>RG.node(k,id).n);return ` <b>Level ${L}${n}.</b> Now: ${now}.${sk.length?' Skills: '+sk.join(', ')+'.':''} ${p?`<b>${p} ability point${p>1?'s':''} to spend</b> in its skill tree.`:'Every level gives an ability point for its skill tree.'}`;}; /* pet levels (v1.43): what the pet does at its level */
 const edc=o=>o&&o.e&&ED[o.e]?' ed-'+o.e:'',edT=e=>e&&ED[e]?` <small class="chip edk ed-${e}">${ED[e].n}</small>`:'',edD=e=>e&&ED[e]?`<br><span class="edd">${ED[e].n}: ${ED[e].d}.</span>`:''; /* editions (v1.43): tile class, name chip, bonus line */
 const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id),1)}</${tag}>`;
 /* fusion badge (v1.51): a red F on any item that is a half of a fusion the player has found (seen in the Almanac, not locked). Lit when the run holds the other half and not the fusion; a tap opens the recipe card (rfu) */
@@ -104,7 +104,7 @@ const MECH=[{ic:'gold',n:'Points × Mult',d:'A merge scores its points times you
  {ic:'citrus',n:'Orchard',d:'The <b>Orchard</b>, the green slots at the top right, holds items that change <b>what drops</b>: more Lemons, a gold fruit now and then, a look at the fruit after Next.'},
  {ic:'zest',n:'Families',d:'Every fruit has a <b>family</b> (Stone fruit, Berries, Citrus, Pome, Tropical, Melons). Some charms score family merges: two Lemons merging is a Citrus merge. The Almanac\'s Fruit tab lists them.'},
  {ic:'juicer',t:'r0 ed-j',n:'Editions',d:'Some items come <b>Candied</b> (sugar glaze, +10 points on every merge), <b>Juiced</b> (rainbow shimmer, +1.5 Mult) or, very rarely, <b>Ambrosia</b> (golden glow, ×1.5 Mult). They cost a little more and sell for more.'},
- {ic:'cat',n:'Pet levels',d:'Pets <b>level up</b>, from 1 to 5, as you clear jars and as they work. Each level makes them act more often, eat bigger fruit and score more. At level 5 they also give ×1.25 Mult. The Caterpillar has a <b>skill tree</b> instead: every level after the first gives an ability point to spend between jars, on three branches (Glutton, Gardener, Butterfly). Tap it in the header for its tree.'},
+ {ic:'cat',n:'Pet levels',d:'Pets <b>level up</b>, from 1 to 5, as you clear jars and as they work. Each level makes them act more often, eat bigger fruit and score more. Each pet also has a <b>skill tree</b>: every level after the first gives an ability point to spend between jars, on three branches. Tap the pet in the header for its tree. Its look follows the branch you build.'},
  {ic:'joker',n:'Wildcards',d:'A <b>Wildcard</b> has a rainbow ring. It merges with a fruit of any size and makes one size up from the bigger of the two, for half the points.'},
  {ic:'i',n:'Info button',d:'The <b>i</b> button under the jar pauses and opens Run info (with a score table), the Almanac and Options.'}];
 function rgIntro(){if(G.state!=='menu'||RUN)menu();G.mode='rogue';store.set('mode','rogue');setBest();const sv=RG.saved(),ok=!!sv;
@@ -298,9 +298,9 @@ ui.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)retur
 $('#pauseB').onclick=pause;$('#bossB').onclick=$('#cuB').onclick=()=>{if(G.state!=='play')return;snd('ui');G.state='pause';$('#pauseB').hidden=true;bossMsg();}; /* the curse icons open the same card */
 
 /* ---------- pet skill trees (v1.74): rgPet(i) is the screen for the pet in charm slot i (layout from the user's sketch: name, sprite, scrolling tree, points). pspr draws the placeholder portrait (until the user's sprites land) on a 56x34 pixel grid in the PXP palette, by look: '' plain, glut, gard, fly. Spent between jars only ---------- */
-function pspr(c,lk,t,s){const P=PXP,T=RMO?0:t,px=(x,y,k)=>{c.fillStyle=P[k]||k;c.fillRect(Math.round(x)*s,Math.round(y)*s,s,s);},blk=(T%3.4)>3.22,
+function pspr(c,lk,t,s,k='cat'){const P=PXP,T=RMO?0:t,px=(x,y,k)=>{c.fillStyle=P[k]||k;c.fillRect(Math.round(x)*s,Math.round(y)*s,s,s);},blk=(T%3.4)>3.22,
  ell=(cx,cy,rx,ry,f,ol)=>{cx=Math.round(cx);cy=Math.round(cy);for(let y=-ry-1;y<=ry+1;y++)for(let x=-Math.ceil(rx)-1;x<=Math.ceil(rx)+1;x++){const d=(x*x)/(rx*rx||.01)+(y*y)/(ry*ry);if(d<=1.05)px(cx+x,cy+y,f(x,y));else if(ol&&(x*x)/((rx+1)*(rx+1))+(y*y)/((ry+1)*(ry+1))<=1.05)px(cx+x,cy+y,'k');}};
- c.clearRect(0,0,56*s,34*s);
+ c.clearRect(0,0,56*s,34*s);if(k!=='cat')return pspr2(c,k,lk,T,s,px,ell,blk);
  if(lk==='fly'){const bob=Math.round(Math.sin(T*3)),fl=RMO?1:[1,.75,.45,.75][Math.floor(T*8)%4];
   for(const sd of[-1,1]){ell(28+sd*(2+7*fl),11+bob,7*fl+.6,6,(x,y)=>x*x/(25*fl*fl+.3)+y*y/12<1?'p':(y>2&&Math.abs(x)<3?'w':'m'),1);ell(28+sd*(2+4*fl),21+bob,4*fl+.6,4,()=> 'P',1);px(28+sd*(2+7*fl),9+bob,'w');}
   for(let y=7;y<=23;y++){px(27,y+bob,'k');px(28,y+bob,y%3?'V':'P');px(29,y+bob,'k');}ell(28,6+bob,2,2,()=> 'V',1);px(27,5+bob,'w');px(29,5+bob,'w');
@@ -314,11 +314,41 @@ function pspr(c,lk,t,s){const P=PXP,T=RMO?0:t,px=(x,y,k)=>{c.fillStyle=P[k]||k;c
  else{px(hx+1,hy+2,'k');px(hx+2,hy+3,'k');px(hx+3,hy+3,'k');px(hx+4,hy+2,'k');}
  if(lk==='gard'){const ty=hy-hr-1;for(let x=-hr-3;x<=hr+3;x++)px(hx+x,ty,Math.abs(x)===hr+3?'k':'Y');for(let y=1;y<=3;y++)for(let x=-hr+y;x<=hr-y;x++)px(hx+x,ty-y,y===1?'n':Math.abs(x)===hr-y?'k':'y');for(let x=-2;x<=2;x++)px(hx+x,ty-4,'k');}
  else{const ay=hy-hr;for(let i=1;i<=3;i++){px(hx-1-Math.floor(i/2),ay-i,'k');px(hx+2+Math.floor(i/2),ay-i,'k');}px(hx-3,ay-4,'r');px(hx+4,ay-4,'r');}}
-function petGo(){document.querySelectorAll('canvas.psc:not([data-on])').forEach(cv=>{cv.dataset.on=1;const lk=cv.dataset.lk||'',dp=Math.min(2,devicePixelRatio||1),s=Math.max(1,Math.round(4*dp));cv.width=56*s;cv.height=34*s;const c=cv.getContext('2d'),f=()=>{if(!cv.isConnected)return;pspr(c,lk,performance.now()/1000,s);if(!RMO)requestAnimationFrame(f);};f();});}
-function rgPet(i,keep){const c=RUN.ch[i];if(!c||!PTR[PLK[c.id]])return RUN.at==='shop'?rgShop():rgHub();const k=PLK[c.id],T=PTR[k],L=RG.plv(c),pts=RG.pp(c),sel=G.pnS&&G.pnS[0]===i?G.pnS[1]:null,old=ui.querySelector('.ptb'),sy=keep&&old?old.scrollTop:0,lk=RG.skl(c,'b3')?'fly':RG.look(c);
+function petGo(){document.querySelectorAll('canvas.psc:not([data-on])').forEach(cv=>{cv.dataset.on=1;const lk=cv.dataset.lk||'',dp=Math.min(2,devicePixelRatio||1),s=Math.max(1,Math.round(4*dp));cv.width=56*s;cv.height=34*s;const c=cv.getContext('2d'),f=()=>{if(!cv.isConnected)return;pspr(c,lk,performance.now()/1000,s,cv.dataset.k||'cat');if(!RMO)requestAnimationFrame(f);};f();});}
+function rgPet(i,keep){const c=RUN.ch[i];if(!c||!PTR[PLK[c.id]])return RUN.at==='shop'?rgShop():rgHub();const k=PLK[c.id],T=PTR[k],L=RG.plv(c),pts=RG.pp(c),sel=G.pnS&&G.pnS[0]===i?G.pnS[1]:null,old=ui.querySelector('.ptb'),sy=keep&&old?old.scrollTop:0,lk=RG.look(c);
  const cols=T.br.map(b=>`<div class="pbr pb-${b.id}"><b class="pbh">${b.n}</b>${b.nd.map((n,j)=>{const id=b.id+(j+1),own=RG.skl(c,id),ok=!own&&pts>0&&(j===0||RG.skl(c,b.id+j));return `<button class="pnd${own?' own':ok?' ok':' lk'}${sel===id?' sel':''}" data-a="rpn" data-i="${i}" data-n="${id}">${ic(n.ic)}<small>${n.n}</small></button>`;}).join('')}</div>`).join('');
  let det='<p class="tg">Tap a skill to read it. You get 1 ability point for every level after the first.</p>';if(sel){const b=T.br.find(x=>x.id===sel[0]),j=+sel.slice(1)-1,n=b.nd[j],own=RG.skl(c,sel),ok=!own&&pts>0&&(j===0||RG.skl(c,b.id+j)),cap=(RG.has(RUN,'appetite')?4:2)+(RG.skl(c,'g2')?1:0);
-  det=`<p><b>${n.n}</b> <small class="chip">${b.n} ${j+1}</small> ${n.d}</p>${own?'<p class="tg">Learned.</p>':ok?`<button class="go sm" data-a="rpl" data-i="${i}" data-n="${sel}">Learn (1 point)</button>`:`<p class="tg">${pts<1?'No ability points left. Level up to get more.':'Learn the skill above it first.'}</p>`}${own&&sel==='g3'?`<div class="pfv">${Array.from({length:cap+2},(_,l)=>`<button class="${c.fav===l?'on':''}" data-a="rpf" data-i="${i}" data-l="${l}" aria-label="${fnm(l)}">${ic('fr'+l)}</button>`).join('')}</div><p class="tg">${c.fav!=null?'Favourite: '+fnm(c.fav)+'.':'Pick its favourite size.'}</p>`:''}`;}
- const m=show(`<div class="mode">Level ${L}${L<5?` · ${c.x||0}/${PLX[L]} XP`:' · max'}</div><h3>${T.n}</h3><div class="psb"><canvas class="psc" data-lk="${lk}"></canvas></div><div class="ptb"><div class="ptg">${cols}</div></div><div class="ptd">${det}</div><div class="ptp">Ability points: <b>${pts}</b></div><button class="go alt" data-a="rback">Back</button>`);const nb=m.querySelector('.ptb');if(nb)nb.scrollTop=sy;setTimeout(petGo,0);}
+  det=`<p><b>${n.n}</b> <small class="chip">${b.n} ${j+1}</small> ${n.d}</p>${own?'<p class="tg">Learned.</p>':ok?`<button class="go sm" data-a="rpl" data-i="${i}" data-n="${sel}">Learn (1 point)</button>`:`<p class="tg">${pts<1?'No ability points left. Level up to get more.':'Learn the skill above it first.'}</p>`}${own&&sel==='g3'&&k==='cat'?`<div class="pfv">${Array.from({length:cap+2},(_,l)=>`<button class="${c.fav===l?'on':''}" data-a="rpf" data-i="${i}" data-l="${l}" aria-label="${fnm(l)}">${ic('fr'+l)}</button>`).join('')}</div><p class="tg">${c.fav!=null?'Favourite: '+fnm(c.fav)+'.':'Pick its favourite size.'}</p>`:''}`;}
+ const m=show(`<div class="mode">Level ${L}${L<5?` · ${c.x||0}/${PLX[L]} XP`:' · max'}</div><h3>${T.n}</h3><div class="psb"><canvas class="psc" data-k="${k}" data-lk="${lk}"></canvas></div><div class="ptb"><div class="ptg">${cols}</div></div><div class="ptd">${det}</div><div class="ptp">Ability points: <b>${pts}</b></div><button class="go alt" data-a="rback">Back</button>`);const nb=m.querySelector('.ptb');if(nb)nb.scrollTop=sy;setTimeout(petGo,0);}
 /* the Jar cleared line for a pet with points to spend (G.ptL = levels at the start of the jar, set by rgGo) */
 function ptMsg(){return RUN.ch.map((c,i)=>{const T=PTR[PLK[c.id]],p=T&&RG.pp(c);if(!p)return '';const up=G.ptL&&RG.plv(c)>(G.ptL[c.id]||9);return `<div class="ptm">${tile(c.id,'r'+CH[c.id].r+' pt')}<div><b>${up?T.n+' levelled up!':T.n+' has '+p+' ability point'+(p>1?'s':'')+'.'}</b> Spend your ability points.</div><button class="go sm" data-a="rpt" data-i="${i}">Skill tree</button></div>`;}).join('');}
+
+/* placeholder portraits for the other pets (v1.74), same grid and palette as the caterpillar's */
+function pspr2(c,k,lk,T,s,px,ell,blk){const bob=Math.round(Math.sin(T*3));
+ if(k==='bee'){const fl=RMO?1:[1,.55][Math.floor(T*14)%2],y0=16+bob;
+  ell(25,y0-8,4,Math.max(1,3*fl),()=> 'w',1);ell(31,y0-8,4,Math.max(1,3*fl),()=> 'w',1);
+  ell(27,y0,10,7,(x,y)=>(x>=-5&&x<=-3)||(x>=1&&x<=3)?'k':y>=3?'Y':'y',1);px(16,y0,'k');px(15,y0,'k');
+  ell(39,y0-1,4,4,()=> 'k',1);if(!blk){px(40,y0-2,'w');px(41,y0-2,'w');}px(41,y0+1,'p');for(let i=1;i<=3;i++){px(38+i,y0-5-i,'k');}px(42,y0-9,'y');
+  if(lk==='queen'){for(let x=-3;x<=3;x++)px(39+x,y0-6,'Y');for(const x of[-3,0,3]){px(39+x,y0-7,'y');px(39+x,y0-8,'y');}px(39,y0-7,'r');}
+  else if(lk==='swarm'){for(let q=0;q<2;q++){const a=T*3+q*3.14,x=Math.round(27+Math.cos(a)*21),y=Math.round(16+Math.sin(a)*11);ell(x,y,2,1.5,(u)=>u===0?'k':'y',1);px(x,y-3,'w');px(x+1,y-3,'w');}}
+  else if(lk==='honey'){const d=Math.floor((T*6)%8);px(16,y0+1+d,'Y');px(16,y0+2+d,'o');for(let x=10;x<=20;x++)px(x,32,x%3?'Y':'o');}return;}
+ if(k==='mole'){const dy=Math.round(Math.sin(T*2)),y0=21+dy;
+  ell(28,22+dy,8,8,(x,y)=>y>=3&&Math.abs(x)<4?'d':'D',1);ell(28,33,17,5,(x,y)=>y<-2?'n':'N',1);
+  if(blk){px(25,y0-2,'k');px(31,y0-2,'k');}else{px(25,y0-3,'k');px(25,y0-2,'k');px(31,y0-3,'k');px(31,y0-2,'k');}ell(28,y0+2,2,1,()=> 'p',1);
+  for(const sx of[-1,1])ell(28+sx*10,28,2,2,()=> 'p',1);
+  if(lk==='goggle'){for(let x=-6;x<=6;x++)px(28+x,y0-2,'k');for(const sx of[-3,3]){ell(28+sx,y0-2,1.5,1.5,(x,y)=>x===0&&y===0?'w':'b',1);}}
+  else if(lk==='miner'){for(let y=0;y<4;y++)for(let x=-6+y;x<=6-y;x++)px(28+x,y0-6-y,y===0?'Y':'y');ell(28,y0-10,1,1,()=> 'w',1);if(!RMO&&Math.floor(T*2)%2){for(let i=1;i<6;i++)px(28+i*2,y0-11-i,'y');}}
+  else if(lk==='rumble'){for(const [x,y] of[[9,27],[12,24],[45,26],[48,29],[42,22]])ell(x,y+(RMO?0:Math.round(Math.sin(T*9+x)*.6)),1,1,()=> 's',1);for(let i=0;i<5;i++){px(14+i,30-i%2,'k');px(42-i,30-i%2,'k');}}return;}
+ if(k==='hog'){const y0=25,sp=lk==='spike';
+  for(let x=-11;x<=9;x+=2){const h=sp?5:3,top=y0-Math.round(7*Math.sqrt(Math.max(0,1-(x*x)/144)));for(let i=1;i<=h;i++)px(27+x+(i>h-2?1:0),top-i+(i===1?1:0),sp&&i>=h-1?'r':'N');}
+  ell(27,y0,12,7,(x,y)=>y<1?'N':'n',1);ell(38,y0+2,5,4,()=> 'c',1);px(43,y0+2,'k');px(44,y0+2,'k');if(!blk){px(39,y0,'k');px(39,y0-1,'k');}px(40,y0+3,'p');
+  for(const x of[20,25,32,36])px(x,32,'N');
+  if(lk==='helm'){for(let y=0;y<4;y++)for(let x=-5+y;x<=5-y;x++)px(37+x,y0-3-y,y===0?'D':'d');px(35,y0-5,'s');for(let i=1;i<=3;i++)px(37,y0-7-i,'r');}
+  else if(lk==='apple'){ell(26,y0-11,3,3,(x,y)=>x===-1&&y===-1?'w':'r',1);px(26,y0-15,'N');px(27,y0-16,'g');px(28,y0-16,'g');}return;}
+ if(k==='lady'){const wg=lk==='wings',y0=24-(wg?Math.abs(bob):0);
+  if(wg){const fl=RMO?1:[1,.6][Math.floor(T*12)%2];ell(18,y0-6,7*fl,3,()=> 'w',1);ell(38,y0-6,7*fl,3,()=> 's',1);}
+  const spt=[[-6,-3],[5,-3],[-4,2],[4,2],[-8,1],[8,1]];ell(27,y0,11,8,(x,y)=>x===0||spt.some(([a,b])=>Math.abs(x-a)+Math.abs(y-b)<=1)?'k':y>=4?'R':'r',1);
+  ell(39,y0+2,4,4,()=> 'k',1);if(!blk){px(40,y0+1,'w');px(42,y0+1,'w');}for(let i=1;i<=3;i++){px(39+i,y0-2-i,'k');}px(43,y0-6,'k');
+  for(const x of[19,24,30,35])px(x,32,'k');
+  if(lk==='clover'){for(const [dx,dy] of[[-2,0],[2,0],[0,-2],[0,2]])ell(27+dx,y0-12+dy,1.6,1.6,()=> 'g',1);px(27,y0-9,'G');px(28,y0-8,'G');}
+  else if(lk==='flower'){for(const [dx,dy] of[[-2,0],[2,0],[0,-2],[0,2]])ell(40+dx,y0-6+dy,1.4,1.4,()=> 'p',1);px(40,y0-6,'y');}return;}}
