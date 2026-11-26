@@ -188,6 +188,20 @@ kfFfffk....
 ....kwwwk..
 ....kwwwk..
 ....kkkkk..`,
+hg:`
+...kkkk....
+..kwwwwk...
+.kwwwwwwk..
+.kwswswwk..
+.kwswswwk..
+.kwswswwkk.
+.kwwwwwwkwk
+.kswwwwwkwk
+.kswwwwwwwk
+..kswwwwwk.
+...kkkkkk..
+...kssssk..
+...kkkkkk..`,
 hdu:`
 .kkk..
 kfffk.
@@ -422,7 +436,7 @@ const FXS={
  /* Encore (and Headliner): after a tool use, a pair of hands claps up from each bottom corner. The merge it scores on: roses are thrown onto the fruit and the hands burst into applause */
  enc:{tick(s,g,dt){if(s.ap>0)s.ap-=dt;s.h=fxA(s.h||0,(s.on||s.ap>0)?1:0,dt*5);},
   front(c,g,s,t){if(!(s.h>0))return;const P=g.P,fast=s.ap>0,u=(RMO?.5:t)%.9,ph=fast?fst(t,14)%3:(u<.06?2:u<.12?1:(u>.2&&u<.26)?2:(u>.26&&u<.32)?1:0),gap=[6,3,0][ph],y=g.bot+5+Math.round((1-s.h)*12)*P;c.save();c.globalAlpha=s.p;
-   for(const cx of[g.L+14*P,g.R-14*P]){if(ph===2){fxS(c,'hdu',cx-3*P,y,P,{ax:.5});fxS(c,'hdu',cx+3*P,y,P,{ax:.5,fl:1});}else{fxS(c,'hd',cx-(gap/2+5)*P,y,P,{ax:.5,fl:1});fxS(c,'hd',cx+(gap/2+5)*P,y,P,{ax:.5});}if(ph===2)for(const[a,b]of[[-7,-15],[-3,-17],[3,-17],[7,-15]]){fxR(c,cx+a*P,y+b*P,P,'k');fxR(c,cx+a*P,y+(b-1)*P,P,'y');}}c.restore();},
+   for(const cx of[g.L+14*P,g.R-14*P]){const gp=[6,2,-2][ph],ly=ph===2?-P:0; /* white gloves, palms facing, thumbs on the inside (like a helping hand): they meet palm to palm, overlapping a cell on the clap */fxS(c,'hg',cx-gp/2*P,y+ly,P,{ax:1});fxS(c,'hg',cx+gp/2*P,y+ly,P,{ax:1,fl:1});if(ph===2)for(const[a,b]of[[-6,-15],[-3,-17],[2,-17],[5,-15]]){fxR(c,cx+a*P,y+b*P,P,'k');fxR(c,cx+a*P,y+(b-1)*P,P,'y');}}c.restore();},
   hit(s,o,A,g){s.ap=1.1;const P=g.P;for(const x0 of[g.L+14*P,g.R-14*P])for(let k=0;k<3;k++){const T=.5+k*.07,x=x0,y=g.bot-12*P,tx=o.x+(k-1)*5*P,ty=o.y,gr=900;A.add({k:'spr',sp:'rose',x,y,vx:(tx-x)/T,vy:(ty-y-.5*gr*T*T)/T,g:gr,T,dl:k*.08,spin:10,fa:.95,end:(A)=>{A.burst(tx,ty,['p','m','r','q'],6,{v:120,vy:-60,T:.55,g:250});}});}}},
  /* Bonfire: while its merges last, flames burn along the jar floor and three logs sit on the frame, one burning to ash with each merge it scores on */
  bon:{tick(s,g,dt,A){const n=Math.min(3,s.l.n||0);s.r=fxA(s.r||0,[0,.7,1.15,1.7][n],dt*2.5);s.n=n;if(n>0&&!RMO&&Math.random()<dt*n*5)A.add({k:'sq',x:g.L+Math.random()*(g.R-g.L),y:g.bot-10,vx:(Math.random()-.5)*20,vy:-60-Math.random()*60,T:1.4+Math.random(),col:Math.random()<.5?'o':'y',sw:4,sf:4,ph:Math.random()*6,fa:.4});},
