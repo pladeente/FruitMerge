@@ -332,6 +332,7 @@ function fxNew(){const S={},pp=[];let t=0;
    for(let i=pp.length-1;i>=0;i--){const q=pp[i];q.t+=dt;if(q.dl&&q.t<q.dl)continue;if(q.t>=q.T){pp.splice(i,1);if(q.end)q.end(A,g,q);continue;}const d=dt;q.vy+=(q.g||0)*d;q.x+=q.vx*d;q.y+=q.vy*d;if(q.dr){q.vx*=1-q.dr*d;q.vy*=1-q.dr*d;}if(q.fy!=null&&q.y>q.fy){q.y=q.fy;q.vy=-q.vy*(q.bo||0);q.vx*=.6;}}},
   back(c,g){for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].back)FXS[id].back(c,g,s,t,A);}fxPP(c,g,pp,t,0);},
   front(c,g){for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].front)FXS[id].front(c,g,s,t,A);}fxPP(c,g,pp,t,1);},
+  top(c,g){for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].top)FXS[id].top(c,g,s,t,A);}}, /* over the HUD (The Fog hides the Next box) */
   hit(id,o={}){if(id==='marathon'){A.hit(S.early&&S.early.on?'early':'clutch',o);return;}const ks=[].concat(FXH[id]||id),q=Object.assign({src:id},o);for(const k of ks){const s=S[k];if(s&&s.p>0&&FXS[k]&&FXS[k].hit&&A.g)FXS[k].hit(s,q,A,A.g);}},
   ev(n,o={}){if(!A.g)return;for(const id in FXS){const s=S[id];if(s&&FXS[id].ev)FXS[id].ev(s,n,o,A,A.g);}}};
  return A;}
@@ -790,29 +791,37 @@ kyryybyybyryk
 kyyyyyyyyyyyk
 kYYYYYYYYYYYk
 .kkkkkkkkkkk.`});
-function fxSack(c,x,y,P,z,on){x=fq(x,P);y=fq(y,P);const r=z;for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){if(i*i+j*j>r*r+r*.6)continue;const e=(i+1)**2+j*j>r*r+r*.6||(i-1)**2+j*j>r*r+r*.6||i*i+(j+1)**2>r*r+r*.6||i*i+(j-1)**2>r*r+r*.6;fxR(c,x+i*P,y+j*P,P,e?'k':(i+j>r*.6?'N':i+j<-r*.6?'E':'e'));}fxR(c,x-P,y-(r+1)*P,P,'k',3,1);fxR(c,x-2*P,y-(r+2)*P,P,'k',1,1);fxR(c,x+2*P,y-(r+2)*P,P,'k',1,1);if(on){fxR(c,x,y-P,P,'y');fxR(c,x,y+P,P,'y');fxR(c,x-P,y,P,'y',3,1);}}
+function fxSack(c,x,y,P,z,on,open){x=fq(x,P);y=fq(y,P);const r=z;for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){if(i*i+j*j>r*r+r*.6)continue;const e=(i+1)**2+j*j>r*r+r*.6||(i-1)**2+j*j>r*r+r*.6||i*i+(j+1)**2>r*r+r*.6||i*i+(j-1)**2>r*r+r*.6;fxR(c,x+i*P,y+j*P,P,e?'k':(i+j>r*.6?'N':i+j<-r*.6?'E':'e'));}if(open){fxR(c,x-3*P,y-(r+1)*P,P,'k',7,1);fxR(c,x-3*P,y-r*P,P,'k');fxR(c,x+3*P,y-r*P,P,'k');fxR(c,x-2*P,y-r*P,P,'x',5,1);fxR(c,x-2*P,y-(r+1)*P,P,'E',5,1);}else{fxR(c,x-P,y-(r+1)*P,P,'k',3,1);fxR(c,x-2*P,y-(r+2)*P,P,'k',1,1);fxR(c,x+2*P,y-(r+2)*P,P,'k',1,1);}if(on){fxR(c,x,y-P,P,'y');fxR(c,x,y+P,P,'y');fxR(c,x-P,y,P,'y',3,1);}}
 /* a storm cloud: overlapping blobs, dark underneath, with a face; m = mood 0 grumpy, 1 shouting, 2 furious */
 function fxCloud(c,x,y,P,w,m,t,tint){const bl=[[0,0,w*.32],[-w*.3,w*.06,w*.22],[w*.3,w*.05,w*.24],[-w*.12,-w*.14,w*.24],[w*.15,-w*.12,w*.2]],R=bl.map(b=>b.map(v=>v/P));const cx=Math.round(x/P),cy=Math.round(y/P),ins=(i,j)=>R.some(([a,b,r])=>(i-a)**2+(j-b)**2<=r*r);const W2=Math.ceil(w/P*.62),H2=Math.ceil(w/P*.42);
  for(let j=-H2;j<=H2;j++)for(let i=-W2;i<=W2;i++){if(!ins(i,j))continue;const e=!ins(i+1,j)||!ins(i-1,j)||!ins(i,j+1)||!ins(i,j-1);const sh=j>H2*.25?(tint?'U':'D'):j<-H2*.4?(tint?'s':'d'):(tint?'u':'D');fxR(c,(cx+i)*P,(cy+j)*P,P,e?'k':(j<-H2*.5&&FBY[((i+40)&3)*4+((j+40)&3)]<5?'s':sh));}
  if(m<0)return;const ey=cy-1,bl2=fst(t,1)%4===0&&m===0;for(const d of[-1,1]){const ex=cx+d*4;fxR(c,(ex-1)*P,(ey-3)*P+(m?P*(d>0?-1:-1):0),P,'k',3,1);if(m)fxR(c,(ex+(d>0?-1:1))*P,(ey-2)*P,P,'k');if(bl2)fxR(c,(ex-1)*P,ey*P,P,'k',3,1);else{fxR(c,(ex-1)*P,(ey-1)*P,P,m>1?'r':'w',3,3);fxR(c,(ex-d*0)*P,ey*P,P,'k');}}
  if(m)fxR(c,(cx-2)*P,(cy+3)*P,P,'k',5,m>1?3:2);else fxR(c,(cx-2)*P,(cy+3)*P,P,'k',5,1);}
 Object.assign(FXS,{
- /* The Taxman: walks in along the rim, his sack over his shoulder, and writes in his ledger. Each tax he catches a coin from your counter and tosses it over his shoulder into the sack, which fattens.
-    Phase 2: his monocle flashes dollar signs and he stamps the ledger. Beaten: he drops the ledger, papers fly, and he runs off holding his hat */
- B_tax:{home(g){return fq(g.L+(g.R-g.L)*.74,fxBP(g));},
-  tick(s,g,dt,A){bossT(s,dt);const P=fxBP(g),home=FXS.B_tax.home(g);if(s.age<.05||s.x==null){s.x=g.W+50;s.bag=2;s.dir=-1;s.drop=0;}
-   if(s.dnt!=null){s.dir=1;s.x+=dt*200;if(!s.drop){s.drop=1;for(let k=0;k<7;k++)A.add({k:'fn',x:s.x-6*P,y:fxRim(g)-12*P,vx:-30-Math.random()*90,vy:-90-Math.random()*60,g:150,dr:.5,T:2.6,fa:.6,sw:12,sf:2.5+Math.random(),ph:k,d:(c,q,g)=>{const P=g.P;fxR(c,q.x,q.y,P,'k',5,1);fxR(c,q.x,q.y+P,P,'w',5,3);fxR(c,q.x,q.y+4*P,P,'k',5,1);fxR(c,q.x+P,q.y+2*P,P,'s',3,1);}});}}
-   else if(s.x>home){s.x=Math.max(home,s.x-dt*95);s.dir=-1;}
-   for(const k of['cat','tos','bmp','stp'])if(s[k]>0)s[k]-=dt;if(s.p2t!=null&&s.p2t<dt*1.5)s.stp=.5;},
-  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),home=FXS.B_tax.home(g),walk=s.x!==home,x=s.x,p2=s.p2t!=null,run=s.dnt!=null;c.save();c.globalAlpha=s.p;
-   let fr='txS';if(walk)fr=['txW1','txW2','txW3','txW2'][fst(t,run?13:7)%4];else if(s.cat>0||s.tos>0)fr='txC';else if(p2&&(s.p2t<1.4||(t%3)<.35))fr='txD';
-   const fl=s.dir>0,bz=Math.round(Math.min(6,s.bag+(p2?1:0)))+(s.bmp>0?1:0),sd=fl?-1:1,sx=x+sd*(3+bz)*P,sy=rim-(10+Math.round(bz*.3))*P-(walk&&fst(t,run?13:7)%4%2?P:0);if(!run||s.dnt<.1){fxSack(c,sx,sy,P,bz,1);fxLn(c,x+sd*2*P,rim-9*P,sx-sd*P,sy-(bz+1)*P,P,FXP.k);}
-   fxS(c,fr,x,rim,P,{fl});
-   if(!walk&&!run){const bx=x-5*P,by=rim-5*P,st=s.stp>0;fxR(c,bx-2*P,by-4*P,P,'k',4,5);fxR(c,bx-2*P,by-4*P,P,'R',4,4);fxR(c,bx-P,by-4*P,P,'w',2,3);if(st){fxR(c,bx-2*P,by-7*P,P,'k',3,3);fxR(c,bx-P,by-6*P,P,'r');}else if(fst(t,3)%2)fxR(c,bx,by-5*P,P,'k',1,2);}
-   if(run&&s.dnt<.6){fxR(c,x+P,rim-(22+Math.round(s.dnt*20))*P,P,'k',3,1);}c.restore();},
-  ev(s,n,o,A,g){if(n!=='tax'||!s.l.p||s.dnt!=null)return;const P=fxBP(g),hx=s.x-6*P,hy=fxRim(g)-6*P,T1=.5,G=1400;s.cat=T1+.35;
-   A.add({k:'fn',x:g.L+8,y:g.H-12,vx:(hx-g.L-8)/T1,vy:(hy-g.H+12-.5*G*T1*T1)/T1,g:G,T:T1,fa:1,d:(c,q,g)=>fxCoin(c,q.x,q.y,fxBP(g),[2,1,0,1][fst(q.t,16)%4],0,2),end:(A)=>{s.tos=.35;const bz=Math.round(Math.min(6,s.bag)),sx=s.x+(3+bz)*P,sy=fxRim(g)-(10+bz)*P,T2=.32;A.add({k:'fn',x:hx,y:hy,vx:(sx-hx)/T2,vy:(sy-hy-.5*G*T2*T2)/T2,g:G,T:T2,fa:1,d:(c,q,g)=>fxCoin(c,q.x,q.y,fxBP(g),[2,1,0,1][fst(q.t,16)%4],0,2),end:(A)=>{s.bag=Math.min(6,s.bag+.6);s.bmp=.18;A.burst(sx,sy,['y','Y','w'],7,{v:100,T:.4});}});}});
-   A.add({k:'fn',x:hx,y:hy-8*P,vy:-28,T:1,dl:.5,fa:.5,d:(c,q,g)=>T(c,'-1',q.x,q.y,18,'#e63946','center',FD)});}},
+ /* The Taxman: walks in at the left end of the rim, nearest your coin counter, and writes in his ledger, sack on his back. Each tax he turns to the wall and holds the sack open,
+    a coin shoots up the edge of the jar from your counter and drops in, and he pats it. Phase 2: his monocle flashes dollar signs and he stamps the ledger.
+    Beaten: he drops the ledger, papers fly, and he runs off the way he came */
+ B_tax:{home(g){return fq(g.L+(g.R-g.L)*.15,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);const P=fxBP(g),home=FXS.B_tax.home(g);if(s.age<.05||s.x==null){s.x=-50;s.bag=3;s.drop=0;s.cl=0;}
+   if(s.dnt!=null){s.x-=dt*190;if(!s.drop){s.drop=1;for(let k=0;k<7;k++)A.add({k:'fn',x:s.x+6*P,y:fxRim(g)-12*P,vx:30+Math.random()*90,vy:-90-Math.random()*60,g:150,dr:.5,T:2.6,fa:.6,sw:12,sf:2.5+Math.random(),ph:k,d:(c,q,g)=>{const P=g.P;fxR(c,q.x,q.y,P,'k',5,1);fxR(c,q.x,q.y+P,P,'w',5,3);fxR(c,q.x,q.y+4*P,P,'k',5,1);fxR(c,q.x+P,q.y+2*P,P,'s',3,1);}});}}
+   else if(s.x<home)s.x=Math.min(home,s.x+dt*95);
+   if(s.cl>0)s.cl-=dt;for(const k of['bmp','stp'])if(s[k]>0)s[k]-=dt;if(s.p2t!=null&&s.p2t<dt*1.5)s.stp=.5;},
+  /* his ledger: an open book held at his chest, two pages and a spine, lines of writing, a quill scratching across the right-hand page (a red stamp in phase 2) */
+  book(c,x,y,P,t,st){const R=(a,b,col,w=1,h=1)=>fxR(c,x+a*P,y+b*P,P,col,w,h);R(-4,-1,'k',4,1);R(1,-1,'k',4,1);R(0,0,'k');R(-5,0,'k');R(5,0,'k');R(-4,0,'w',4,1);R(1,0,'w',4,1);R(-5,1,'k');R(5,1,'k');R(0,1,'k');R(-4,1,'w',4,1);R(1,1,'w',4,1);R(-3,1,'s',2,1);R(2,1,'s',2,1);R(-5,2,'k');R(5,2,'k');R(-4,2,'R',9,1);R(-4,3,'k',9,1);
+   if(st){R(1,-4,'k',3,3);R(2,-3,'r');R(2,-1,'r',2,1);}else{const q=fst(t,4)%3;R(2+q,-3,'w');R(1+q,-2,'w');R(1+q,-1,'k');R(3+q,-4,'s');}},
+  /* the open sack he holds out at the wall, its mouth at (mx, my) */
+  mouth(s,g,bz){const P=fxBP(g),r=fxRim(g);bz=bz==null?Math.round(Math.min(6,s.bag+(s.p2t!=null?1:0))):bz;return[s.x-9*P,Math.min(r-9*P,r-(2*bz+2)*P)];},
+  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),home=FXS.B_tax.home(g),walk=s.x!==home,x=s.x,p2=s.p2t!=null,run=s.dnt!=null,col=s.cl>0&&!run;c.save();c.globalAlpha=s.p;
+   const faceL=run||col,fl=!faceL;let fr='txS';if(walk)fr=['txW1','txW2','txW3','txW2'][fst(t,run?13:7)%4];else if(col)fr='txC';else if(p2&&(s.p2t<1.4||(t%3)<.35))fr='txD';
+   const bz=Math.round(Math.min(6,s.bag+(p2?1:0)))+(s.bmp>0?1:0);
+   if(col){fxS(c,fr,x,rim,P,{fl});const[mx,my]=FXS.B_tax.mouth(s,g,bz),sx=mx,sy=my+(bz+1)*P;fxSack(c,sx,sy,P,bz,1,1);fxR(c,x-6*P,rim-7*P,P,'f',1,1);fxLn(c,x-6*P,rim-6*P,sx+3*P,my,P,FXP.k);if(s.cl<.35&&fst(t,10)%2)fxR(c,x-5*P,rim-7*P,P,'f');}
+   else{const sd=fl?-1:1,bob=walk&&fst(t,run?13:7)%4%2?P:0,sx=x+sd*(3+bz)*P,sy=rim-(10+Math.round(bz*.3))*P-bob;if(!run||s.dnt<.1){fxSack(c,sx,sy,P,bz,1);fxLn(c,x+sd*2*P,rim-9*P,sx-sd*P,sy-(bz+1)*P,P,FXP.k);}fxS(c,fr,x,rim,P,{fl});
+    if(!walk&&!run){FXS.B_tax.book(c,x-sd*5*P,rim-7*P,P,t,s.stp>0);}}
+   if(run&&s.dnt<.6)fxR(c,x-P,rim-(22+Math.round(s.dnt*20))*P,P,'k',3,1);c.restore();},
+  ev(s,n,o,A,g){if(n!=='tax'||!s.l.p||s.dnt!=null)return;const P=fxBP(g);s.cl=1.15;const x0=g.L-3,y0=g.H+14,top=FXS.B_tax.mouth(s,g)[1]-7*P,T1=.5,T2=.26;
+   /* the coin: up the left edge of the jar from the counter below, then a short hop into the open sack */
+   A.add({k:'fn',x:x0,y:y0,T:T1+T2,dl:.18,fa:1,d:(c,q,g)=>{const u=q.t-.18;let x,y;const[mx,my]=FXS.B_tax.mouth(s,g);if(u<T1){const e=1-Math.pow(1-u/T1,2.2);x=x0;y=y0+(top-y0)*e;for(let k=1;k<4;k++){const ek=1-Math.pow(1-Math.max(0,u-k*.05)/T1,2.2);c.save();c.globalAlpha*=.5-k*.12;fxCoin(c,x0,y0+(top-y0)*ek,fxBP(g),1,0,2);c.restore();}}else{const v=(u-T1)/T2;x=x0+(mx-x0)*v;y=top+(my-top)*v*v-Math.sin(v*Math.PI)*3*fxBP(g);}fxCoin(c,x,y,fxBP(g),[2,1,0,1][fst(q.t,16)%4],0,2);},
+    end:(A)=>{const[mx,my]=FXS.B_tax.mouth(s,g);s.bag=Math.min(6,s.bag+.6);s.bmp=.2;A.burst(mx,my,['y','Y','w'],8,{v:110,vy:-40,T:.45});A.add({k:'fn',x:mx,y:my-4*P,vy:-30,T:.9,fa:.5,d:(c,q,g)=>T(c,'-1',q.x,q.y,18,'#e63946','center',FD)});}});}},
  /* The Storm: a scowling storm cloud rolls over the jar and rains into it. Each whirlpool it throws a lightning bolt at the jar. Phase 2: bigger, darker, red-eyed, heavier rain. Beaten: it breaks up and a rainbow arcs over the jar */
  B_storm:{tick(s,g,dt,A){bossT(s,dt);if(s.bt>0)s.bt-=dt;if(s.fl>0)s.fl-=dt;const P=g.P,heavy=s.p2t!=null;if(s.dnt==null&&s.age>.6&&!RMO){const n=heavy?55:28;for(let k=0;k<n*dt;k++)A.add({k:'fn',x:g.L+Math.random()*(g.R-g.L+80)-40,y:fxRim(g)-95,vx:heavy?-140:-70,vy:520,T:.9,fa:.9,ly:1,d:(c,q,g)=>{if(q.y>g.bot)return;const P=g.P;c.globalAlpha*=.6;fxR(c,q.x,q.y,P,'b',1,2);fxR(c,q.x-P,q.y+2*P,P,'B');}});}},
   cx(s,g){const u=Math.min(1,(s.age||0)/1.2),e=1-Math.pow(1-u,3);return g.L-120+(g.L+(g.R-g.L)*.5+120-g.L)*e;},
@@ -862,3 +871,104 @@ Object.assign(FXS,{
   ev(s,n,o,A,g){if(n!=='mrock'||!s.l.p||s.qx==null)return;const P=g.P,x0=s.qx,y0=s.qy-(s.qr||60),T=.5;A.add({k:'fn',x:x0,y:y0,vx:(o.x-x0)/T,vy:(o.y-y0-.5*1300*T*T)/T,g:1300,T,fa:1,d:(c,q,g)=>{if(typeof drawStone==='function')drawStone(c,q.x,q.y,(o.r||20));},end:A2=>A2.burst(o.x,o.y,['d','D','s'],10,{v:150,T:.5,s:2})});}}});
 const fxBP=g=>Math.round(g.P*4/3); /* boss characters: a 4px grid, a third chunkier than the charm scenes */
 function fxIcon(c,id,x,y,P){const k=typeof icn==='function'?icn(id):id;if(!PXD[k])return;const key='ic_'+k;if(!FXI[key])FXI[key]=fxGrid(PXD[k],PXP);const im=FXI[key];c.save();c.imageSmoothingEnabled=false;c.fillStyle=FXP.k;c.fillRect(fq(x-7*P/1.5,P),fq(y-7*P/1.5,P),Math.round(14*P/1.5),Math.round(14*P/1.5));c.drawImage(im,fq(x-6*P/1.5,P),fq(y-6*P/1.5,P),Math.round(12*P/1.5),Math.round(12*P/1.5));c.restore();}
+/* ---------- bosses, batch 2 (v1.79) ---------- */
+Object.assign(FXD,{
+lock:`
+...kkkkk...
+..kdssddk..
+.kdk...kdk.
+.ksk...kdk.
+.kdk...kdk.
+kkkkkkkkkkk
+kYhyYYYYYYk
+kYyYYkYYYYk
+kYyYkkkYYYk
+kYYYYkYYYYk
+kYYYYkYYYYk
+kYYYYYYYYYk
+.kkkkkkkkk.`,
+lockO:`
+...kkkkk...
+..kdssddk..
+.kdk...kdk.
+.ksk...kdk.
+.kdk.......
+.kdk.......
+.kkk.......
+kkkkkkkkkkk
+kYhyYYYYYYk
+kYyYYkYYYYk
+kYyYkkkYYYk
+kYYYYYYYYYk
+.kkkkkkkkk.`,
+key:`
+.kkk.......
+kyyyk......
+kykyk......
+kyyykkkkkk.
+.kkkyyyyyyk
+....kkykkyk
+.....kk.kk.`});
+function fxGear(c,x,y,P,r,a){for(let k=0;k<8;k++){const q=a+k*Math.PI/4;fxR(c,x+Math.round(Math.cos(q)*r)*P,y+Math.round(Math.sin(q)*r)*P,P,'k');}for(let j=-r+1;j<r;j++)for(let i=-r+1;i<r;i++){const d=i*i+j*j;if(d<(r-1)*(r-1))fxR(c,x+i*P,y+j*P,P,d<1.5?'k':'Y');}}
+Object.assign(FXS,{
+ /* The Clock: a cuckoo clock lands on the rim. Its red hand sweeps once in the time your fruit has before it drops by itself, the pendulum ticks, and the cuckoo pops out each time it drops your fruit for you.
+    Phase 2: the face flushes red, the hand races and the clock rattles. Beaten: it bursts its gears and the cuckoo flops out on its spring */
+ B_clock:{x(g){return fq(g.L+(g.R-g.L)*.8,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);if(s.cu>0)s.cu-=dt;if(s.dnt!=null&&!s.br){s.br=1;const P=fxBP(g),x0=FXS.B_clock.x(g),y0=fxRim(g)-8*P;for(let k=0;k<6;k++){const a=Math.random()*Math.PI*2,v=120+Math.random()*120;A.add({k:'fn',x:x0,y:y0,vx:Math.cos(a)*v,vy:Math.sin(a)*v-120,g:700,T:1.3,fa:.6,r:1+k%2,sp:Math.random()*8,d:(c,q,g)=>fxGear(c,q.x,q.y,fxBP(g)*.75,q.r+1,q.t*q.sp)});}A.burst(x0,y0,['k','d','Y'],10,{v:160,T:.5});}},
+  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),x0=FXS.B_clock.x(g),u=Math.min(1,s.age/.7),p2=s.p2t!=null,dead=s.dnt!=null,fade=dead?Math.max(0,1-Math.max(0,s.dnt-1.4)/.6):1;if(fade<=0)return;
+   const drop=u<1?Math.round(Math.pow(1-u,2)*50)*P:0,bnc=u>=1&&s.age<.9?-P:0,sh=p2&&!dead&&(t%1.2)<.35?(fst(t,16)%2?P:-P):0,x=x0+sh,y=rim-drop+bnc;c.save();c.globalAlpha=s.p*fade;
+   for(let r=0;r<7;r++){const hw=r===6?8:Math.round(1+r*1.25),yy=y-(19-r)*P;for(let i=-hw;i<=hw;i++)fxR(c,x+i*P,yy,P,(i===-hw||i===hw||r===0)?'k':((i+r)%3===0?'e':'N'));}
+   const dy=y-16*P;if(s.cu>0&&!dead){fxR(c,x-2*P,dy-P,P,'k',4,4);fxR(c,x-P,dy,P,'x',2,2);const o=s.cu>.55?1:s.cu>.15?3:1;fxR(c,x-(o+1)*P,dy,P,'b',3,2);fxR(c,x-(o+2)*P,dy+P,P,'y');fxR(c,x-o*P,dy,P,'k');}else{fxR(c,x-P,dy-P,P,'k',3,3);fxR(c,x,dy,P,'n');}
+   for(let j=0;j<12;j++)for(let i=-6;i<=6;i++)fxR(c,x+i*P,y-(12-j)*P,P,(i===-6||i===6||j===11)?'k':i===-5?'E':'n');
+   const fx=x,fy=y-8*P,fc=p2&&!dead?'q':'c';for(let j=-4;j<=4;j++)for(let i=-4;i<=4;i++){const d=i*i+j*j;if(d>20)continue;fxR(c,fx+i*P,fy+j*P,P,d>13?'k':fc);}for(const[a,b]of[[0,-3],[3,0],[0,3],[-3,0]])fxR(c,fx+a*P,fy+b*P,P,'D');
+   const ang=dead?t*14:-Math.PI/2+(s.l.ck||0)*Math.PI*2,ah=-Math.PI/2+t*.2;fxLn(c,fx,fy,fx+Math.cos(ah)*1.6*P,fy+Math.sin(ah)*1.6*P,P,FXP.k);fxLn(c,fx,fy,fx+Math.cos(ang)*3*P,fy+Math.sin(ang)*3*P,P,FXP.R);fxR(c,fx,fy,P,'k');
+   fxR(c,x-3*P,y-4*P,P,'k',7,4);fxR(c,x-2*P,y-3*P,P,'x',5,2);const sw=Math.round(Math.sin(t*Math.PI*(p2?4:2))*1.4);fxR(c,x+sw*P,y-3*P,P,'Y',1,1);fxR(c,x+sw*P,y-2*P,P,'y',1,1);
+   if(dead&&s.dnt>.1){const ly=Math.min(5,Math.floor(s.dnt*12));fxLn(c,x-2*P,dy,x-4*P,dy+ly*P,P,FXP.d);fxR(c,x-6*P,dy+ly*P,P,'b',3,2);fxR(c,x-7*P,dy+(ly+1)*P,P,'y');fxR(c,x-5*P,dy+ly*P,P,'k');}c.restore();},
+  ev(s,n,o,A,g){if(n!=='cuckoo'||!s.l.p)return;s.cu=.7;const P=fxBP(g),x=FXS.B_clock.x(g),y=fxRim(g)-17*P;A.add({k:'spr',sp:'nt2',x:x-4*P,y,vx:-30,vy:-50,T:.9,dl:.15,fa:.5,sw:4,sf:6});A.add({k:'spr',sp:'nt',x:x-5*P,y,vx:-50,vy:-40,T:.9,dl:.35,fa:.5,sw:4,sf:6});}},
+ /* The Fog: a fog bank rolls over the Next box with two yellow eyes blinking inside it. Phase 2: it creeps down over the fruit you are holding and the eyes turn to watch it. Beaten: a gust blows it away */
+ B_fog:{tick(s,g,dt){bossT(s,dt);},
+  bank(c,g,s,t,cx,cy,rx,ry,den,ox){const P=g.P,i0=Math.floor((cx-rx)/P),i1=Math.ceil((cx+rx)/P),j0=Math.floor((cy-ry)/P),j1=Math.ceil((cy+ry)/P),dr=RMO?0:Math.floor(t*3);for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const dx=(i*P-cx)/rx,dy=(j*P-cy)/ry,d=Math.sqrt(dx*dx+dy*dy),n=fhs(Math.floor((i+dr)/3),Math.floor(j/3)),v=(1-d)*1.6+(n-.5)*.9;if(v<=0)continue;const th=Math.min(1,v)*den;if(FBY[((i+40)&3)*4+((j+40)&3)]/16<th){c.globalAlpha=Math.min(.92,.55+th*.4);fxR(c,(i)*P+ox,j*P,P,v>1.1?'w':v>.6?'s':'d');}}},
+  /* soft fog: overlapping puffs, white on top, grey underneath, a grey rim only on their lower edge, each drifting a little on its own */
+  puffs(c,g,t,list,a,ox){const P=g.P;c.save();c.globalAlpha=a;const cells=new Map();list.forEach(([x0,y0,r],k)=>{const x=Math.round((x0+ox+(RMO?0:Math.sin(t*.55+k*1.7)*4))/P),y=Math.round((y0+(RMO?0:Math.sin(t*.7+k*2.3)*2))/P),R=Math.round(r/P);for(let j=-R;j<=R;j++)for(let i=-R;i<=R;i++){const d=Math.sqrt(i*i+j*j);if(d>R+.3)continue;const key=(x+i)+','+(y+j),edge=d>R-1,col=edge?(j>0?'d':'s'):(j>R*.35?'s':'w'),pr=cells.get(key);if(!pr||pr==='d'||(pr==='s'&&col==='w'))cells.set(key,col);}});
+   for(const[key,col]of cells){const[i,j]=key.split(',').map(Number);fxR(c,i*P,j*P,P,col);}c.restore();},
+  top(c,g,s,t){const P=g.P,u=Math.min(1,s.age/1.3),dead=s.dnt!=null,gone=dead?Math.min(1,s.dnt/1.1):0,ox=(1-u)*(1-u)*160+gone*gone*300,a=dead?1-gone:Math.min(1,s.age/.5);if(a<=0)return;const W=g.W;
+   FXS.B_fog.puffs(c,g,t,[[W-28,48,12],[W-52,46,11],[W-80,80,10],[W-70,64,14],[W-16,80,11],[W-26,66,14],[W-48,58,17],[W-58,82,13],[W-34,84,13]],a*.96,ox);
+   if(s.p2t!=null){const k=Math.min(1,s.p2t/1.2)*a,y=fxRim(g)-30,list=[];for(let x=g.L+6,i=0;x<g.R;x+=24,i++)list.push([x,y+(i%2?-6:4),15+(i%3)*2]);FXS.B_fog.puffs(c,g,t,list,k*.95,ox);}
+   if(u>=1&&!dead){const bl=(t%3.1)<.14,lk=s.p2t!=null?-1:0;for(const ex of[W-56,W-38]){const x=fq(ex,P),y=fq(70,P);if(bl)fxR(c,x-P,y,P,'Y',3,1);else{fxR(c,x-P,y-P,P,'y',3,2);fxR(c,x+lk*P,y,P,'k');fxR(c,x-P,y-P,P,'h');}}}
+   if(dead&&s.dnt<1.2){c.save();c.globalAlpha=.85;for(let k=0;k<7;k++){const y=24+k*30,x=((s.dnt*700+k*90)%(W+120))-60;fxR(c,x,y,P,'d',8,1);fxR(c,x+2*P,y+P,P,'s',5,1);}c.restore();}}},
+ /* The Hourglass: an hourglass stands on the rim, its top bulb holding the drops you have left and the sand running down. Phase 2: it flips over and two drops fall through at once. Beaten: the glass cracks and shatters and the sand spills into the jar */
+ B_hour:{x(g){return fq(g.L+(g.R-g.L)*.42,fxBP(g));},HW:[4,4,4,3,3,2,2,1,1],
+  tick(s,g,dt,A){bossT(s,dt);if(s.p2t!=null&&s.p2t<dt*1.5){A.add({k:'fn',x:FXS.B_hour.x(g)+5*fxBP(g),y:fxRim(g)-24*fxBP(g),vy:-30,T:1.1,dl:.6,fa:.5,d:(c,q,g)=>T(c,'-2',q.x,q.y,20,'#e63946','center',FD)});}
+   if(s.dnt!=null&&s.dnt>.55&&!s.sh){s.sh=1;const P=fxBP(g),x0=FXS.B_hour.x(g),y0=fxRim(g)-11*P;for(let k=0;k<14;k++){const a=Math.random()*Math.PI*2,v=80+Math.random()*160;A.add({k:'sq',x:x0+(Math.random()-.5)*30,y:y0+(Math.random()-.5)*40,vx:Math.cos(a)*v,vy:Math.sin(a)*v-80,g:700,T:.9,col:k%3?'i':'w',s:1});}for(let k=0;k<24;k++)A.add({k:'sq',x:x0+(Math.random()-.5)*14,y:y0,vx:(Math.random()-.5)*60,vy:-20+Math.random()*40,g:500,T:1.6,col:k%2?'y':'Y',fa:.7});}},
+  glass(c,x,y,P,f,t,cr){const HW=FXS.B_hour.HW,cap=HW.reduce((a,h)=>a+2*h+1,0);let top=Math.round(f*cap),bot=cap-top;
+   for(const sd of[-1,1])for(let j=0;j<2;j++){fxR(c,x-7*P,y+(sd<0?j:20+j)*P,P,'k',15,1);if(j===(sd<0?1:0))fxR(c,x-6*P,y+(sd<0?j:20+j)*P,P,'N',13,1);}fxR(c,x-6*P,y,P,'E',13,1);
+   for(const px of[-6,6])for(let j=2;j<20;j++){fxR(c,x+(px-1)*P,y+j*P,P,'k',3,1);fxR(c,x+px*P,y+j*P,P,px<0?'E':'N');}
+   const rows=[];for(let r=0;r<9;r++)rows.push([2+r,HW[r]]);rows.push([11,0]);for(let r=0;r<9;r++)rows.push([12+r,HW[8-r]]);
+   const tf=new Map(),bf=new Map();for(let r=8;r>=0&&top>0;r--){const n=Math.min(top,2*HW[r]+1);tf.set(2+r,n);top-=n;}for(let j=19;j>=12&&bot>0;j--){const n=Math.min(bot,2*HW[8-(j-12)]+1);bf.set(j,n);bot-=n;}
+   for(const[j,hw]of rows){if(j>19)continue;fxR(c,x-(hw+1)*P,y+j*P,P,'k');fxR(c,x+(hw+1)*P,y+j*P,P,'k');for(let i=-hw;i<=hw;i++){let col='i';if(j<11){const n=tf.get(j)||0;if(Math.abs(i)<=(n-1)/2)col='y';}else if(j>11){const n=bf.get(j)||0;if(Math.abs(i)<=(n-1)/2)col=i%2?'Y':'y';}if(col==='i'&&i===-hw&&hw>0)col='w';fxR(c,x+i*P,y+j*P,P,col);}}
+   if(f>0&&f<1){for(let j=11;j<19;j++)if((j+fst(t,10))%2===0&&!(bf.get(j)>0))fxR(c,x,y+j*P,P,'y');}
+   if(cr){c.globalAlpha*=1;for(const[a,b]of[[-2,4],[-1,5],[0,6],[1,5],[2,7],[-1,14],[0,15],[1,16],[0,17]])fxR(c,x+a*P,y+b*P,P,'w');}},
+  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),x0=FXS.B_hour.x(g),u=Math.min(1,s.age/.7),dead=s.dnt!=null;if(dead&&s.dnt>.55)return;const y0=rim-22*P-(u<1?Math.round(Math.pow(1-u,2)*60)*P:0);c.save();c.globalAlpha=s.p;
+   let q=0;if(s.p2t!=null&&s.p2t<.6)q=Math.min(2,Math.floor(s.p2t/.2)+1)%3;const f=s.p2t!=null&&s.p2t<.6?1-(s.l.f||0):(s.l.f==null?1:s.l.f);
+   if(q){c.translate(x0,y0+11*P);c.rotate(q*Math.PI/2);c.translate(-x0,-(y0+11*P));}FXS.B_hour.glass(c,x0,y0,P,f,t,dead);c.restore();}},
+ /* The Wilt: a wilting flower droops in a pot on the rim. Every time it shrinks your biggest fruit it sighs and a sickly puff drifts onto that fruit. Phase 2: it sheds petals. Beaten: it perks up and blooms */
+ B_wilt:{x(g){return fq(g.L+(g.R-g.L)*.64,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);const tgt=s.dnt!=null?0:s.p2t!=null?.85:.55;s.dr=fxA(s.dr==null?.3:s.dr,s.sg>0?1:tgt,dt*(s.sg>0?3:1));if(s.sg>0)s.sg-=dt;if(s.p2t!=null&&s.p2t<dt*1.5){const[hx,hy]=FXS.B_wilt.head(s,g);for(let k=0;k<4;k++)A.add({k:'sq',x:hx+(k-2)*6,y:hy,vx:(Math.random()-.5)*30,vy:10,T:2.4,col:k%2?'N':'e',sw:7,sf:2.4,ph:k,fa:.7,s:1});}if(s.dnt!=null&&!s.bl){s.bl=1;const[hx,hy]=FXS.B_wilt.head(s,g);for(let k=0;k<6;k++)A.add({k:'star',x:hx+Math.cos(k)*28,y:hy+Math.sin(k)*24,T:.6,dl:.3+k*.07,col:k%2?'p':'y'});}},
+  head(s,g){const P=fxBP(g),x=FXS.B_wilt.x(g),y=fxRim(g)-7*P,d=s.dr||0;const k=14;return[x-Math.round(Math.pow(Math.max(0,k-6),2)*.14*d)*P,y-Math.round(k-(k>6?Math.pow(k-6,2)*.08*d:0))*P];},
+  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),x=FXS.B_wilt.x(g),u=Math.min(1,s.age/.6),d=s.dr||0,bloom=s.dnt!=null&&s.dnt>.25;c.save();c.globalAlpha=s.p*u;
+   for(let r=0;r<6;r++){const hw=r===0?5:4-Math.floor((r-1)/2);for(let i=-hw;i<=hw;i++)fxR(c,x+i*P,rim-(6-r)*P,P,(i===-hw||i===hw||r===5)?'k':r===0?(i%2?'n':'N'):(i>=hw-1?'R':i===-hw+1?'q':'o'));}
+   let px=x,py=rim-7*P;const pts=[];for(let k=1;k<=14;k++){const bx=x-Math.round(Math.pow(Math.max(0,k-6),2)*.14*(bloom?0:d))*P,by=rim-7*P-Math.round(k-(k>6?Math.pow(k-6,2)*.08*(bloom?0:d):0))*P;pts.push([bx,by]);}for(const[bx,by]of pts){fxR(c,bx-P,by,P,'k');fxR(c,bx,by,P,bloom?'g':'G');fxR(c,bx+P,by,P,'k');}if(!bloom){fxR(c,x+P,rim-11*P,P,'G',2,1);fxR(c,x+3*P,rim-12*P,P,'k');}else{fxR(c,x-3*P,rim-11*P,P,'g',2,1);fxR(c,x+2*P,rim-12*P,P,'g',2,1);}
+   const[hx,hy]=pts[pts.length-1],dr=bloom?0:d,np=bloom?6:5,gone=!bloom&&s.p2t!=null?[1,3]:[],pet=[];for(let k=0;k<np;k++){if(gone.includes(k))continue;let a=-Math.PI/2+k*Math.PI*2/np+(bloom?0:.3);if(!bloom)a=a+(Math.cos(a)>0?.18:-.18)*dr*Math.max(0,Math.sin(a));const dist=bloom?4.4:4.1+(Math.sin(a)>0?dr*.4:0);pet.push([Math.cos(a)*dist,Math.sin(a)*dist+(bloom?0:dr*.7*Math.max(0,Math.sin(a))),bloom?2.6:2.5]);}
+   const cen=(i,j)=>i*i+j*j<=2.8*2.8,pIn=(i,j)=>{for(let k=0;k<pet.length;k++){const[px,py,r]=pet[k];if((i-px)**2+(j-py)**2<=r*r+.4)return k;}return -1;},fill=(i,j)=>cen(i,j)||pIn(i,j)>=0;
+   for(let j=-9;j<=10;j++)for(let i=-9;i<=9;i++){if(!fill(i,j))continue;const out=!fill(i+1,j)||!fill(i-1,j)||!fill(i,j+1)||!fill(i,j-1);let col;if(cen(i,j)){const rim=!cen(i+1,j)||!cen(i-1,j)||!cen(i,j+1)||!cen(i,j-1);col=out||rim?'k':(i<0&&j<0?(bloom?'h':'y'):(bloom?'y':'Y'));}else{const k=pIn(i,j),[px,py,r]=pet[k],sep=pet.some((q,n)=>n!==k&&(i-q[0])**2+(j-q[1])**2<=q[2]*q[2]+.4)&&Math.hypot(i-px,j-py)>r-1;col=out?'k':sep?(bloom?'m':'N'):(Math.hypot(i,j)>Math.hypot(px,py)+.6?(bloom?'m':'N'):(bloom?'p':'e'));if(!out&&bloom&&Math.hypot(i-px+.8,j-py+.8)<.7)col='w';}fxR(c,hx+i*P,hy+j*P,P,col);}
+   if(bloom){fxR(c,hx-P,hy-P,P,'k');fxR(c,hx+P,hy-P,P,'k');fxR(c,hx-2*P,hy+P,P,'k');fxR(c,hx+2*P,hy+P,P,'k');fxR(c,hx-P,hy+2*P,P,'k',3,1);fxR(c,hx-2*P,hy,P,'p');fxR(c,hx+2*P,hy,P,'p');}else{fxR(c,hx-2*P,hy,P,'k',2,1);fxR(c,hx+P,hy,P,'k',2,1);fxR(c,hx-P,hy+2*P,P,'k',3,1);fxR(c,hx-2*P,hy+3*P,P,'k');fxR(c,hx+2*P,hy+3*P,P,'k');if(s.sg>0&&fst(t,6)%2){fxR(c,hx+2*P,hy+P,P,'b');fxR(c,hx+2*P,hy+2*P,P,'b');}}c.restore();},
+  ev(s,n,o,A,g){if(n!=='wilt'||!s.l.p)return;s.sg=.9;const[hx,hy]=FXS.B_wilt.head(s,g),T1=.7;A.add({k:'fn',x:hx,y:hy,vx:(o.x-hx)/T1,vy:(o.y-hy)/T1-60,g:170,T:T1,fa:.8,d:(c,q,g)=>{const P=g.P,r=3+Math.floor(q.t*5);for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){const dd=i*i+j*j;if(dd>r*r||fhs(i+Math.floor(q.t*8),j)<.35)continue;c.globalAlpha=.75;fxR(c,q.x+i*P,q.y+j*P,P,dd>r*r*.6?'G':fhs(i,j)>.5?'e':'g');}},end:(A)=>A.burst(o.x,o.y,['G','e','g'],10,{v:90,T:.6,g:60})});}},
+ /* The Padlock: chains rattle round the top corner of the jar and a padlock slams shut on them. Phase 2: it wrenches the charge out of your tools in a burst of sparks. Beaten: a key flies in, it springs open and the chains fall away */
+ B_lock:{tick(s,g,dt,A){bossT(s,dt);if(s.p2t!=null&&s.p2t<dt*1.5){const P=fxBP(g);for(let k=0;k<18;k++){const a=-Math.PI*(.05+.9*Math.random()),v=140+Math.random()*180;A.add({k:'sq',x:g.L+5*P,y:g.top+4*P,vx:Math.cos(a)*v*(Math.random()<.5?-1:1)+60,vy:Math.sin(a)*v,g:500,T:.8,col:k%3?'t':'w',dl:k*.02});}}
+   if(s.dnt!=null&&s.dnt>.65&&!s.fall){s.fall=1;for(const[x,y]of FXS.B_lock.links(g,1))A.add({k:'fn',x,y,vx:(Math.random()-.5)*60,vy:-40-Math.random()*60,g:900,T:1.2,fa:.6,d:(c,q,g)=>{const P=g.P;fxR(c,q.x-P,q.y-P,P,'k',3,3);fxR(c,q.x,q.y,P,'d');}});}},
+  links(g,u){const o=[],P=g.P,nt=Math.round((g.R-g.L)*.42/(2*P)),nl=Math.round((g.bot-g.top)*.38/(2*P));for(let k=0;k<Math.round(nt*u);k++)o.push([g.L+8*P+k*2*P,g.top-5,0]);for(let k=0;k<Math.round(nl*u);k++)o.push([g.L-3,g.top+8*P+k*2*P,1]);return o;},
+  front(c,g,s,t){const P=g.P,BP=fxBP(g),u=Math.min(1,s.age/.8),dead=s.dnt!=null;c.save();c.globalAlpha=s.p;if(!(dead&&s.dnt>.65)){const rt=s.p2t!=null&&s.p2t<.6?fst(t,16)%2:0;for(const[x,y,v]of FXS.B_lock.links(g,u)){const k=Math.round((x+y)/P/2)%2,xx=x+(v?rt*P:0),yy=y+(v?0:rt*P);if(k){fxR(c,xx-P,yy-P,P,'k',3,3);fxR(c,xx,yy,P,'d');}else{fxR(c,xx-P,yy,P,'k',3,1);fxR(c,xx,yy-P,P,'k',1,3);fxR(c,xx,yy,P,'s');}}}
+   const lu=Math.min(1,Math.max(0,(s.age-.6)/.35)),lx=g.L+5*P,ly0=g.top+18*P,ly=ly0-(lu<1?Math.round(Math.pow(1-lu,2)*40)*P:0)+(dead&&s.dnt>.65?Math.round(Math.pow(s.dnt-.65,2)*900):0),sw=!dead&&(t%2.6)<.3?(fst(t,10)%2?P:0):0,shk=s.p2t!=null&&s.p2t<.6?(fst(t,20)%2?2:-2)*P/2:0;
+   if(lu>0)fxS(c,dead&&s.dnt>.5?'lockO':'lock',lx+sw+shk,ly,BP);
+   if(dead&&s.dnt<.6){const k=s.dnt/.5,kx=g.L-60+(lx+6*BP-g.L+60)*Math.min(1,k),ky=-20+(ly-6*BP+20)*Math.min(1,k);fxS(c,'key',kx,ky,BP,{ay:.5,r:Math.min(3,Math.floor(s.dnt*8))%4});}
+   if(!dead&&(t%3.3)<.2&&lu>=1)fxStar(c,lx-3*BP,ly-10*BP,P,[1,2,1][Math.min(2,Math.floor((t%3.3)/.07))],'y');c.restore();}}});
