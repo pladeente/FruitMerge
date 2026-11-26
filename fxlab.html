@@ -1,0 +1,86 @@
+<meta charset="utf-8">
+<title>Overripe Charm Scenes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="font.css">
+<style>
+/* Layout: one column of jar cards on a phone, a grid on wider screens; the game's own dark world, single theme on purpose */
+:root{--bg:#120a1f;--panel:#2a1a3a;--line:#3d2a52;--cream:#fff2d8;--dim:#c9c3d4;--brass:#f4bb4a;--teal:#35c2b4;--pink:#ff4d8d;--display:'Jersey 15',ui-monospace,monospace;color-scheme:dark}
+body{background:var(--bg);color:var(--cream);font:17px/1.3 var(--display);letter-spacing:.2px}
+.wrap{max-width:1260px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:40px;line-height:1;margin:0;color:var(--brass);font-weight:400;text-wrap:balance}
+.sub{color:var(--dim);max-width:62ch;margin:8px 0 0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0 20px}
+button{font:inherit;font-size:16px;color:var(--cream);background:var(--panel);border:2px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer}
+button:hover{border-color:var(--teal)}button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#1b1029}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.hd{display:flex;align-items:center;gap:8px}
+.hd canvas.ic{width:30px;height:30px;image-rendering:pixelated;flex:none}
+.nm{font-size:22px;flex:1;min-width:0}
+.chip{font-size:14px;padding:1px 8px;border-radius:6px;background:#1b1029;color:var(--dim);white-space:nowrap}
+.chip.live{background:var(--teal);color:#1b1029}.chip.hit{background:var(--pink);color:#fff}
+canvas.jar{width:100%;max-width:100%;aspect-ratio:388/725;border-radius:8px;background:#1b1029;display:block}
+.tx{font-size:15px;color:var(--dim);margin:0}
+.tx b{color:var(--cream);font-weight:400}
+.row{display:flex;gap:6px}
+</style>
+<div class="wrap">
+<h1>Charm scenes</h1>
+<p class="sub">Each charm plays its own scene in the jar while it is working, so you can see your build without reading the header. Every card loops a short script: the charm held but idle, its condition coming true, then merges it scores on.</p>
+<div class="bar"><button id="slow" aria-pressed="false">Slow motion</button><button id="pause" aria-pressed="false">Pause</button><button id="all">Replay all</button></div>
+<div class="grid" id="grid"></div>
+</div>
+<script src="icons.js"></script>
+<script src="rogue.js"></script>
+<script src="core.js"></script>
+<script src="draw.js"></script>
+<script src="fx.js"></script>
+<script>
+const W=388,H=725,TOP=325,BOT=H-12,L=12,R=W-12,K=W/400,P=Math.max(2,Math.round(3*K)),HY=TOP+(BOT-TOP)*.3;
+const geo=()=>({L,R,top:TOP,bot:BOT,W,H,K,P,hy:HY}),rd=l=>FRUIT[l][1]*W;
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+/* a settled pile: fruit dropped one by one and pushed apart until they rest */
+function pile(seed,sizes,until){const r=rng(seed),fr=[];let k=0;const step=()=>{for(let it=0;it<3;it++){for(const f of fr){f.y=Math.min(BOT-f.r,f.y+2);f.x=Math.max(L+f.r,Math.min(R-f.r,f.x));}for(let i=0;i<fr.length;i++)for(let j=i+1;j<fr.length;j++){const a=fr[i],b=fr[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.01,o=a.r+b.r-d;if(o>0){const ma=a.r*a.r,mb=b.r*b.r,s=o/(ma+mb);a.x-=dx/d*s*mb;a.y-=dy/d*s*mb;b.x+=dx/d*s*ma;b.y+=dy/d*s*ma;}}}};
+ const addOne=l=>{const rr=rd(l);fr.push({l,r:rr,x:L+rr+r()*(R-L-2*rr),y:TOP-rr});for(let s=0;s<160;s++)step();};
+ if(until){while(k<60){addOne(sizes[k%sizes.length]);k++;if(Math.min(...fr.map(f=>f.y-f.r))<until)break;}}else for(const l of sizes)addOne(l);for(let s=0;s<200;s++)step();return fr;}
+function landY(fr,x,r){let y=BOT-r;for(const f of fr){const dx=Math.abs(f.x-x),s=f.r+r;if(dx<s)y=Math.min(y,f.y-Math.sqrt(s*s-dx*dx));}return y;}
+const MID=[5,4,3,3,2,2,1,1,0,0,4,2,1,0,3,1],FEW=[3,2,1,4,0];
+/* each demo: what the charm does (tx), the pile, the loop length, its live state over time (lv), and timed events */
+const D=[
+ {id:'wire',ch:'wire',tx:'Pile at the gold line: <b>×3 Mult</b>. The golden rope is the gold line, the acrobat walks it while the pile reaches it.',pile:()=>pile(3,MID,HY+6),dur:11,x:'×3',lv:t=>({wire:{p:1,on:t>2&&t<8.5}}),ev:[[4.2,c=>drop(c,W*.38,2,'wire')],[6.6,c=>drop(c,W*.62,1,'wire')]]},
+ {id:'brink',ch:'brink',tx:'Merges while the pile is over the line: <b>×3 Mult</b>. The line turns to hazard tape and the top of the jar beats red.',pile:()=>pile(5,MID,TOP-8),dur:8,x:'×3',lv:t=>({brink:{p:1,on:t>1.2&&t<7}}),ev:[[3,c=>drop(c,W*.45,1,'brink')],[5.2,c=>drop(c,W*.6,0,'brink')]]},
+ {id:'tidy',ch:'tidy',tx:'6 fruit or fewer: <b>×2 Mult</b>. The floor becomes a willow plate, the glass twinkles and a shine sweeps across it.',pile:()=>pile(7,FEW),dur:8,x:'×2',lv:t=>({tidy:{p:1,on:t>1&&t<7.2}}),ev:[[3,c=>drop(c,W*.4,2,'tidy')],[5.2,c=>drop(c,W*.66,1,'tidy')]]},
+ {id:'crew',ch:'crew',tx:'Every charm slot filled: <b>×2 Mult</b>. Marquee bulbs light up one after another, then chase around the frame.',pile:()=>pile(11,MID),dur:9,x:'×2',lv:t=>({crew:{p:1,on:t>1.5&&t<8}}),ev:[[4,c=>drop(c,W*.45,2,'crew')],[6.3,c=>drop(c,W*.3,1,'crew')]]},
+ {id:'fright',ch:'fright',tx:'Every tool full: <b>×2 Mult</b>. The curtains tie back and the footlights come on.',pile:()=>pile(13,MID),dur:9,x:'×2',lv:t=>({fright:{p:1,on:t>1.5&&t<8}}),ev:[[4,c=>drop(c,W*.5,2,'fright')],[6.3,c=>drop(c,W*.35,1,'fright')]]},
+ {id:'lime',ch:'lime',tx:'Next 8 merges: <b>×4</b>. The jar dims and a spotlight follows the fruit you just dropped. Each merge flares the beam.',pile:()=>pile(17,MID),dur:10,x:'×4',lv:(t,c)=>({lime:Object.assign({p:1,on:t>1&&t<9},c.tg||{})}),ev:[[1.6,c=>drop(c,W*.3,1,'lime')],[3.4,c=>drop(c,W*.72,2,'lime')],[5.2,c=>drop(c,W*.5,0,'lime')],[7,c=>drop(c,W*.2,3,'lime')]]},
+ {id:'early',ch:'early',tx:'First 6 drops: <b>×2 Mult</b>. A robin sits on the rim, hops at every drop, sings when it scores, then flies off.',pile:()=>pile(19,MID.slice(0,10)),dur:9,x:'×2',lv:t=>({early:{p:1,on:t>.4&&t<6.5}}),ev:[[2,c=>drop(c,W*.35,1,'early')],[3.6,c=>drop(c,W*.55,0,'early')],[5.1,c=>drop(c,W*.75,2,'early')]]},
+ {id:'clutch',ch:'clutch',tx:'Last 5 drops: <b>×2.5 Mult</b>. A chequered flag runs up the pole and the frame becomes a finish line. Each merge it scores on is a photo.',pile:()=>pile(23,MID),dur:8.5,x:'×2.5',lv:t=>({clutch:{p:1,on:t>1&&t<7.4}}),ev:[[3,c=>drop(c,W*.42,2,'clutch')],[5.3,c=>drop(c,W*.62,1,'clutch')]]},
+ {id:'enc',ch:'encore',tx:'After a tool use, the next merge: <b>×3 Mult</b>. Hands clap up from the corners, then roses land on the fruit.',pile:()=>pile(29,MID),dur:9,x:'×3',lv:t=>({enc:{p:1,on:(t>1&&t<3.6)||(t>5&&t<7.6)}}),ev:[[3.1,c=>drop(c,W*.48,2,'enc')],[7.1,c=>drop(c,W*.3,1,'enc')]]},
+ {id:'bon',ch:'bonfire',tx:'After a fruit is destroyed, the next 3 merges: <b>×2 Mult</b>. Flames burn along the floor and a log burns to ash with each merge.',pile:()=>pile(31,MID),dur:8.5,x:'×2',lv:(t,c)=>({bon:{p:1,on:true,n:t<1?0:t<3?3:t<4.6?2:t<6.2?1:0}}),ev:[[2.5,c=>drop(c,W*.4,2,'bon')],[4.1,c=>drop(c,W*.6,1,'bon')],[5.7,c=>drop(c,W*.5,0,'bon')]]},
+ {id:'oak',ch:'oak',tx:'Grows <b>×0.06</b> every size 7+ fruit made. The oak behind the pile grows with it: sapling, young tree, full tree, old oak.',pile:()=>pile(37,MID.slice(0,9)),dur:16,x:'Oak +×0.06',lv:(t,c)=>({oak:{p:1,on:true,v:c.v||0}}),ev:Array.from({length:12},(_,k)=>[1+k*1.2,c=>{c.v=+((c.v||0)+.06).toFixed(2);drop(c,W*(.25+.5*((k*37)%10)/10),6,'oakg');}])},
+ {id:'tiki',ch:'tiki',tx:'Grows <b>×0.25</b> every Pineapple merge. A totem behind the pile gains a carved face each time, torches lit on top.',pile:()=>pile(41,MID.slice(0,8)),dur:11,x:'Tiki +×0.25',lv:(t,c)=>({tiki:{p:1,on:true,v:c.v||0}}),ev:Array.from({length:6},(_,k)=>[1+k*1.5,c=>{c.v=+((c.v||0)+.25).toFixed(2);drop(c,W*(.3+.08*k),7,'tikig');}])},
+ {id:'snow',ch:'snow',tx:'Grows <b>×0.04</b> every jar cleared with 5+ drops left. The snowball on the rim rolls and grows at the start of the next jar, and snow falls.',pile:()=>pile(43,MID.slice(0,9)),dur:12,x:'',lv:(t,c)=>({snow:{p:1,on:true,v:c.v||0}}),ev:[[1.2,c=>{c.v=.08;c.fx.ev('grow',{id:'snow'});}],[5,c=>{c.v=.2;c.fx.ev('grow',{id:'snow'});}],[8.8,c=>{c.v=.36;c.fx.ev('grow',{id:'snow'});}]]}];
+let SLOW=0,PAUSE=0;const cards=[];
+function drop(c,x,l,id){const r=rd(l);c.fall={x,y:TOP-r-6,vy:0,l,r,ty:landY(c.fr,x,r),id};c.fx.ev('drop',{x});}
+function reset(c){c.t=0;c.fx=fxNew();c.v=0;c.fall=null;c.pops=[];c.tg=null;c.ei=0;c.hitT=0;}
+function build(){const g=document.getElementById('grid');for(const d of D){const el=document.createElement('div');el.className='card';const nm=(CH[d.ch]||{}).n||d.ch;el.innerHTML=`<div class="hd"><canvas class="ic" width="12" height="12"></canvas><div class="nm">${nm}</div><span class="chip">Waiting</span></div><canvas class="jar"></canvas><p class="tx">${d.tx}</p><div class="row"><button>Replay</button></div>`;g.appendChild(el);
+ const ic=el.querySelector('.ic'),gk=PXD[d.ch]?d.ch:null;if(gk)ic.getContext('2d').drawImage(fxGrid(PXD[gk],PXP),0,0);else ic.remove();
+ const cv=el.querySelector('canvas.jar'),dp=Math.min(2,devicePixelRatio||1);cv.width=W*dp;cv.height=H*dp;const c={d,cv,ctx:cv.getContext('2d'),dp,chip:el.querySelector('.chip'),fr:d.pile(),vis:true};reset(c);el.querySelector('button').onclick=()=>reset(c);cards.push(c);}
+ const io=new IntersectionObserver(es=>{for(const e of es){const c=cards.find(k=>k.cv===e.target);if(c)c.vis=e.isIntersecting;}});cards.forEach(c=>io.observe(c.cv));}
+function frame(c,dt){const d=c.d;if(!PAUSE){c.t+=dt;if(c.t>=d.dur)reset(c);while(c.ei<d.ev.length&&c.t>=d.ev[c.ei][0]){d.ev[c.ei][1](c);c.ei++;}
+  if(c.fall){const f=c.fall;f.vy+=1100*dt;f.y+=f.vy*dt;if(f.y>=f.ty){f.y=f.ty;c.pops.push({x:f.x,y:f.y,r:f.r,t:0});if(/g$/.test(f.id))c.fx.ev('grow',{id:f.id.slice(0,-1),x:f.x,y:f.y});else c.fx.hit(f.id,{x:f.x,y:f.y,l:f.l,r:f.r});c.hitT=.6;c.last={x:f.x,y:f.y,r:f.r};c.fall=null;}}
+  c.tg=c.fall?{tx:c.fall.x,ty:c.fall.y,tr:c.fall.r}:c.last?{tx:c.last.x,ty:c.last.y,tr:c.last.r}:{tx:W*.5,ty:TOP+40,tr:20};
+  const lv=d.lv(c.t,c);c.fx.tick(dt,geo(),lv);c.hitT-=dt;for(const p of c.pops)p.t+=dt;c.pops=c.pops.filter(p=>p.t<.9);
+  const on=Object.values(lv).some(o=>o.on&&(o.n==null||o.n>0)&&o.v==null);c.chip.textContent=c.hitT>0?'Scored':on?'Live':d.id==='oak'||d.id==='tiki'||d.id==='snow'?'Growing':'Waiting';c.chip.className='chip'+(c.hitT>0?' hit':on?' live':'');}
+ const x=c.ctx,g=geo();x.setTransform(c.dp,0,0,c.dp,0,0);x.clearRect(0,0,W,H);drawBg(x,W,H,c.t,TOP);drawJar(x,L,R,TOP,BOT,c.t);x.strokeStyle='#ff8fab';x.setLineDash([8,6]);x.lineWidth=2;x.beginPath();x.moveTo(L,TOP);x.lineTo(R,TOP);x.stroke();x.setLineDash([]);
+ c.fx.back(x,g);for(const f of c.fr)drawFruit(x,f.x,f.y,f.r,f.l);if(c.fall)drawFruit(x,c.fall.x,c.fall.y,c.fall.r,c.fall.l);
+ c.fx.front(x,g);if(!c.fall){const r=rd(1);drawFruit(x,W/2,TOP-r-6,r,1);}hud(x);
+ for(const p of c.pops){const u=p.t/.9;x.globalAlpha=Math.max(0,1-u*1.6);x.strokeStyle='#fff';x.lineWidth=3;x.beginPath();x.arc(p.x,p.y,p.r*(1+u*1.2),0,7);x.stroke();x.globalAlpha=Math.max(0,1-Math.max(0,u-.5)*2);if(d.x)T(x,d.x,p.x,p.y-p.r-10-u*26,22,'#7a2fe0','center',FD);x.globalAlpha=1;}}
+/* the in-jar HUD as the game draws it, so the scenes can be judged against it */
+function hud(x){x.fillStyle='#fff3e6dd';rr(x,6,6,84,40,10);x.fill();T(x,'Depth 3',14,19,12,'#3b2346aa','left');T(x,'Jar 2/3',14,36,13,'#3b2346','left');x.fillStyle='#fff3e6dd';rr(x,W/2-68,6,136,52,12);x.fill();T(x,'1240',W/2-30,26,24,'#3b2346','left',FD);T(x,'/ 2100',W/2+22,29,13,'#3b2346aa','left');x.fillStyle='#3b234626';rr(x,W/2-59,40,118,7,3.5);x.fill();x.fillStyle='#ff4d8d';rr(x,W/2-59,40,70,7,3.5);x.fill();x.fillStyle='#fff3e6dd';rr(x,W-90,6,84,94,12);x.fill();T(x,'Mult ×6.5',W-48,22,15,'#7a2fe0','center',FB,900);T(x,'Next',W-66,55,13,'#3b2346aa');drawFruit(x,W-27,54,13,2);}
+let last=0;function loop(ts){const dt=Math.min(.05,(ts-last)/1000||0)*(SLOW?.35:1);last=ts;for(const c of cards)if(c.vis)frame(c,dt);requestAnimationFrame(loop);}
+document.getElementById('slow').onclick=e=>{SLOW^=1;e.target.setAttribute('aria-pressed',!!SLOW);};document.getElementById('pause').onclick=e=>{PAUSE^=1;e.target.setAttribute('aria-pressed',!!PAUSE);};document.getElementById('all').onclick=()=>cards.forEach(reset);
+if(typeof frIcons!=="function")window.frIcons=()=>{};if(typeof cosIcons!=="function")window.cosIcons=()=>{};
+artLoad();build();requestAnimationFrame(loop);
+</script>

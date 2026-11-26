@@ -13,6 +13,8 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 | `font.css` | Jersey 15 as base64. Never open or grep it with output: one 22 KB line. |
 | `core.js` | `$`, `store`, scores (`SC`, `qualifies`), the name filter (`NF`, `nameBad`, `nameClean`), leaderboard (`LB_URL`, `FB_KEY`, `lbTop`, `lbSubmit`), daily run (`dayN`, `dlyS`, `dlyPost`...), run summaries (`teleRun`, `teleSend`), accounts (`authReq`, `cloudPull`, `cloudPush`). |
 | `draw.js` | Sound (`SFX`, `snd`, `hap`, `VBS`), drawing helpers (`T`, `rr`, `DMG`, `dmg`, `floatTxt`, `flm`, `ovkGo`), fruit art (`drawFruit`, `artLoad`, `SPR`), looks (`drawBg`, `drawJar`, `skinBuild`, `lookSync`). |
+| `fx.js` | Charm scenes in the jar (v1.75): `fxNew()` (one per Rogue game, held by `makeGame` as `fx`), scenes in `FXS` (ambient while a charm's condition holds, moments when it scores or grows), pixel sprites as letter grids in `FXD` (palette `FXP` = `PXP` plus a few), helpers `fxS` (sprite), `fxR` (cell), `fxLn`, `fxStar`. The engine feeds it `fxLv()` (each charm's live state) every frame, draws `fx.back` behind the fruit and `fx.front` over them, and calls `fx.hit(id)` for every charm in a merge's `r.hit`, `fx.ev('drop'/'jar'/'grow')`. A new scene: an `FXS` entry, its live state in `fxLv`, a card in `fxlab.html`. |
+| `fxlab.html` | Dev page that loops every charm scene on a mock jar with the game's HUD (open `/fxlab.html` on the local server). Not in `sw.js`. |
 | `engine.js` | `makeGame`: the engine for all three modes (physics, merging, specials, tools, bosses, pets, the in-jar HUD). |
 | `app.js` | The runner: icon CSS build, `G`, `avBuild`, `loop`, canvas input, `menu`, `opts`, `looks`, `news` and `LOG` (What's new), scores and leaderboard screens, pause, `show`, `gameOver`, `showOver`. |
 | `social.js` | Profiles, friends, inbox, presence (`pub`, `beat`), Titles screen, codes. |
@@ -42,7 +44,7 @@ Rogue mode is a full roguelite: charms, tools, fusions, seeds, crates, bosses wi
 
 ## Working with the split files (23 Nov 2026, after v1.73.1)
 
-- The scripts are plain `<script src>` tags sharing one global scope: a top-level `const`/`let`/`function` in one file is visible in every file loaded after it, and from inside functions in any file once loading is done. Order in `index.html`: `icons.js`, `rogue.js`, `core.js`, `draw.js`, `engine.js`, `app.js`, `social.js`, `rogue-ui.js`, `glue.js`, `tutorial.js`, `dev.js`, `boot.js`.
+- The scripts are plain `<script src>` tags sharing one global scope: a top-level `const`/`let`/`function` in one file is visible in every file loaded after it, and from inside functions in any file once loading is done. Order in `index.html`: `icons.js`, `rogue.js`, `core.js`, `draw.js`, `fx.js`, `engine.js`, `app.js`, `social.js`, `rogue-ui.js`, `glue.js`, `tutorial.js`, `dev.js`, `boot.js`.
 - Function declarations are only hoisted within their own file now. Code that runs at load time (top-level calls, not code inside functions) can only use what earlier files and its own file define. Put new startup calls in `boot.js`. A ReferenceError on load means something ran too early.
 - Wrapping a screen function from a later file works (`tutorial.js` does it: `window.rgHub=...`), because top-level function declarations are properties of `window`.
 - A new file needs a `<script>` tag in order, an entry in `sw.js` `CORE`, a bump of `CACHE`, and a row in the Files table above.
