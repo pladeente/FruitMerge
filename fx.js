@@ -869,9 +869,13 @@ Object.assign(FXS,{
    fxS(c,fr,x,y,P,{fl});if(s.st==='jump'&&s.vy<0&&!RMO){c.globalAlpha=s.p*.5;for(let k=1;k<4;k++)fxR(c,x+(k%2?-3:3)*P,y+k*5*P,P,'s',1,3);}c.restore();
    if(s.st==='jump'&&s.y<-rim+10){c.save();for(let k=0;k<3;k++)fxStar(c,x+(k-1)*14,6+(k%2)*8,g.P,[1,2,3,2][fst(t,12)%4],'y');c.restore();}},
   ev(){}},
- /* The Melon Queen: royal pennants unfurl from the rim corners and a crown comes down onto her Watermelon. Phase 2: the crown glows red-hot as she hurls her rock. Beaten: her crown pops off and rolls away across the floor */
+ /* The Melon Queen: royal pennants unfurl from the rim corners, a crown comes down onto her Watermelon, an ermine-trimmed cape spreads behind her and a sceptre stands at her side (v1.81.1). Phase 2: the crown glows red-hot, the sceptre's orb burns and she hurls her rock. Beaten: her crown pops off and rolls away, the sceptre topples and the cape slips away */
  B_melon:{tick(s,g,dt,A){bossT(s,dt);const q=s.l.q;if(q){s.qx=q.x;s.qy=q.y;s.qr=q.r;}if(s.dnt!=null&&!s.cr){s.cr={x:s.qx,y:s.qy-(s.qr||60)*.9,vx:150,vy:-260,r:0};A.burst(s.qx,s.qy-(s.qr||60),['y','Y','w'],12,{v:180,T:.6});}if(s.cr){const c=s.cr;c.vy+=900*dt;c.x+=c.vx*dt;c.y+=c.vy*dt;if(c.y>g.bot-8*g.P){c.y=g.bot-8*g.P;c.vy=-c.vy*.35;c.vx*=.85;}if(c.x>g.R-8*g.P){c.x=g.R-8*g.P;c.vx=-c.vx*.6;}c.r+=c.vx*dt/14;}if(s.cf>0)s.cf-=dt;if(s.age<.05)for(let k=0;k<20;k++)A.add({k:'sq',x:g.L+Math.random()*(g.R-g.L),y:fxRim(g)-60-Math.random()*60,vx:(Math.random()-.5)*60,vy:40+Math.random()*60,T:2+Math.random(),col:['y','r','m','b','g'][k%5],sw:6,sf:3,ph:k,fa:.7,dl:.6+Math.random()*.6});},
+  back(c,g,s,t){if(s.qx==null)return;const Q=2*g.P,r=Math.round((s.qr||60)/Q),u=Math.min(1,s.age/1.4),cx=fq(s.qx,Q),cy=fq(s.qy,Q),dn=s.dnt!=null?Math.min(1,s.dnt/.6):0,R2=r+3,fl=fst(t,4)%2;if(dn>=1)return;c.save();c.beginPath();c.rect(g.L,g.top-200,g.R-g.L,g.bot-g.top+200);c.clip();c.globalAlpha=s.p*Math.ceil((1-dn)*3)/3;
+   for(let j=-R2;j<=r;j++){if(j<-R2+Math.round((1-u)*R2*2))continue;const hw=j<=0?Math.round(Math.sqrt(Math.max(0,R2*R2-j*j))):R2+(fl&&j>r-3?1:0);for(let i=-hw;i<=hw;i++){const d=i*i+j*j;if(d<(r-1)*(r-1))continue;const e=i===-hw||i===hw||(j<=0&&(i*i+(j-1)*(j-1)>R2*R2))||j===r,trim=!e&&(Math.abs(i)>=hw-1||(j<=0&&(Math.abs(i)+1)*(Math.abs(i)+1)+(j-1)*(j-1)>R2*R2));fxR(c,cx+i*Q,cy+j*Q,Q,e?'k':trim?((i*3+j)%4===0?'k':'w'):(i<0&&j<-r*.3?'P':'V'));}}c.restore();},
   front(c,g,s,t){const P=g.P,rim=fxRim(g),u=Math.min(1,s.age/1.2);c.save();c.globalAlpha=s.p;
+   if(s.qx!=null){const Q=2*P,r=(s.qr||60),dn=s.dnt!=null?s.dnt:0,ang=dn>0?Math.min(1.45,dn*2.4):0,bx=s.qx+r*1.02,by=s.qy+r*.55,L2=Math.round(r*1.5/Q),hot=s.p2t!=null&&!dn,cs=Math.cos(ang),sn=Math.sin(ang);if(u>.4){for(let k=0;k<L2;k++){const xx=bx+Math.round(sn*k)*Q,yy=by-Math.round(cs*k)*Q;fxR(c,xx-Q,yy,Q,'k',3,1);fxR(c,xx,yy,Q,k%4===0?'Y':'y');}
+     const ox=bx+Math.round(sn*L2)*Q,oy=by-Math.round(cs*L2)*Q;fxEl(c,fq(ox,Q),fq(oy-Q,Q),Q,2,2,(i,j,e)=>e?'k':i<0&&j<0?'h':hot&&fst(t,6)%2?'o':'y');fxR(c,ox,oy-4*Q,Q,'k');fxR(c,ox,oy-5*Q,Q,hot?'r':'m');if(hot&&!RMO)for(let k=0;k<2;k++){const q=(t*1.8+k/2)%1;fxR(c,ox+(k?Q:-Q),oy-(6+q*6)*Q,Q,q<.5?'o':'r');}}}
    for(const sd of[-1,1]){const px=sd<0?g.L-2:g.R+2,len=Math.round(14*Math.min(1,s.age/.9)*(s.dnt!=null?Math.max(0,1-s.dnt):1));fxR(c,px-P,rim-24*P,P,'k',3,24);fxR(c,px,rim-24*P,P,'Y',1,24);fxR(c,px-P,rim-26*P,P,'y',3,2);for(let i=0;i<len;i++){const w=Math.round(8*(1-i/16)),dy=Math.round(Math.sin(i*.5-fst(t,6)*.9)*1);for(let j=0;j<w;j++){const x=px-sd*(i+2)*P,y=rim-22*P+(j+dy)*P;fxR(c,x,y,P,j===0||j===w-1||i===len-1?'k':(j<w/2?'r':'R'));}if(i%4===1)fxR(c,px-sd*(i+2)*P,rim-22*P+(Math.round(w/2)+dy)*P,P,'y');}}
    if(s.qx!=null&&!s.cr){const cy=s.qy-(s.qr||60)*.86-Math.round((1-u)*(1-u)*120)*P,hot=s.p2t!=null;if(hot&&!RMO){for(let k=0;k<3;k++){const q=(t*2+k/3)%1;fxR(c,s.qx+(k-1)*4*P,cy-(10+q*8)*P,P,q<.5?'o':'r');}}fxS(c,'crown',s.qx,cy,2*P);if(hot&&fst(t,6)%2){c.globalCompositeOperation='lighter';c.globalAlpha=s.p*.5;fxS(c,'crown',s.qx,cy,2*P);}
     if(u<1){c.globalAlpha=s.p;fxStar(c,s.qx,cy-10*P,P,[0,1,2,3,2,1][Math.floor(u*6)],'y');}}
@@ -1107,6 +1111,54 @@ Object.assign(FXS,{
 const fxDrop=(s,P,T=.6)=>{const u=Math.min(1,(s.age||0)/T);return u<1?-Math.round(Math.pow(1-u,2)*40)*P:0;},fxPt=(c,x0,y0,P)=>(i,j,col,w,h)=>fxR(c,x0+i*P,y0+j*P,P,col,w,h);
 function fxEl(c,x0,y0,P,rx,ry,fn){const d=(a,b)=>(a*a)/(rx*rx+rx*.7)+(b*b)/(ry*ry+ry*.7)<=1;for(let j=-ry-1;j<=ry+1;j++)for(let i=-rx-1;i<=rx+1;i++){if(!d(i,j))continue;const col=fn(i,j,!d(i+1,j)||!d(i-1,j)||!d(i,j+1)||!d(i,j-1));if(col)fxR(c,x0+i*P,y0+j*P,P,col);}}
 Object.assign(FXD,{
+oqA:`
+......k.k.k......
+.....kykykyk.....
+.....kyyyyyk.....
+.....kyrybyk.....
+....kNNNNNNNk....
+...kNNfffffNNk...
+...kNfkfffkfNk...
+...kNfffffffNk...
+...kNffrrrffNk...
+....kNfffffNk....
+.....kkfffkk.....
+..kPPkwwwwwkPPk..
+.kPPkwkwwkwwkPPk.
+.kPVkrrrgrrrkVPk.
+kPVkrrrrgrrrrkVPk
+kPVkrrrrrgrrrkVPk
+kPVkRrrrrrgrrkVPk
+kPVkRrrrrrrgrkVPk
+kPVkRRrrrrrrrkVPk
+kPVkRRrrrrrrRkVPk
+kPVkRRRrrrrRRkVPk
+kVVkkkkkkkkkkkVVk
+.kkk.........kkk.`,
+oqB:`
+......k.k.k......
+.....kykykyk.....
+.....kyyyyyk.....
+.....kyrybyk.....
+....kNNNNNNNk....
+...kNNfffffNNk...
+...kNfkkfkkfNk...
+...kNfffffffNk...
+...kNffrrrffNk...
+....kNfffffNk....
+.....kkfffkk.....
+..kPPkwwwwwkPPk..
+.kPPkwkwwkwwkPPk.
+.kPVkrrrgrrrkVPk.
+kPVkrrrrgrrrrkVPk
+kPVkrrrrrgrrrkVPk
+kPVkRrrrrrgrrkVPk
+kPVkRrrrrrrgrkVPk
+kPVkRRrrrrrrrkVPk
+kPVkRRrrrrrrRkVPk
+kPVkRRRrrrrRRkVPk
+kVVkkkkkkkkkkkVVk
+.kkk.........kkk.`,
 slS:`
 ..kkkkkkk..
 ..kyyyyyk..
@@ -1349,20 +1401,42 @@ Object.assign(FXS,{
    const H=fxPt(c,x-(rx+1)*P,cy+(ry-2)*P,P);H(-1,-1,'k',2,4);H(-2,0,'k',1,2);H(-1,0,'R',1,2);H(0,0,'r',1,2);
    const E=fxPt(c,x-(rx-3)*P,cy-(ry-1)*P,P);E(-1,-1,'k',3,3);E(0,0,'w');E(-1,0,'w');E(-1,0,p2?'r':'k');if(p2&&fst(t,3)%2)E(0,-3,'r');
    if(gl){const D=fxPt(c,x-(rx+2)*P,cy+(ry-2)*P,P);D(-1,0,'q');}c.restore();}},
- /* The Reaper (final boss): a hooded reaper floats over the jar, robe tattered at the hem, scythe in hand. Every merge that wins a drop back, it swings, and a soul floats down out of the jar to your drops. Phase 2: its eyes burn red and the jar's edges darken. Beaten: the robe collapses and the scythe falls */
- B_reaper:{x(g){return fq(fxRX('B_reaper',.8,70,g),fxBP(g));},
-  tick(s,g,dt){bossT(s,dt);if(s.sw>0)s.sw-=dt;},
-  back(c,g,s,t){if(s.p2t==null||s.dnt!=null)return;const P=g.P,a=Math.min(1,s.p2t/1.5);c.save();for(let y=g.top,j=0;y<g.bot;y+=P,j++)for(let i=0;i<4;i++){if(FBY[(i&3)*4+(j&3)]/16<(4-i)/5*a*.7){fxR(c,g.L+i*P,y,P,'x');fxR(c,g.R-(i+1)*P,y,P,'x');}}c.restore();},
-  front(c,g,s,t){const P=fxBP(g),x=FXS.B_reaper.x(g),dead=s.dnt!=null,dn=dead?s.dnt:0,p2=s.p2t!=null,u=Math.min(1,s.age/1.2),bob=dead?0:(fst(t,2)%2?-1:0),fl=dead?Math.min(1,dn/.8):0,y0=fq(fxRim(g)-(dead?Math.round(5*(1-fl))*P:5*P)+bob*P,P);c.save();c.globalAlpha=s.p*u;const R=fxPt(c,x,y0,P);
-   if(dead&&dn>.8){for(let i=-8;i<=8;i++){const h=Math.round(3-Math.abs(i)*.3);for(let j=0;j<h;j++)R(i,-j-1,j===h-1||Math.abs(i)===8?'k':'x');}R(-2,-5,'k',5,4);R(-1,-4,'c',3,2);R(-1,-4,'k');R(1,-4,'k');for(let k=0;k<14;k++)R(6+k,-1-Math.round(k*.1),'n');R(18,-4,'k',3,4);R(19,-3,'s',2,2);c.restore();return;}
-   const hem=fst(t,6);for(let j=-22;j<=0;j++){const hw=j<-16?Math.round(3+(j+22)*.5):Math.round(5+(j+16)*.32),sk=j>-3?((hem+j)%2?1:0):0;for(let i=-hw;i<=hw;i++){if(j>-2&&(i+hem)%3===0)continue;const e=i===-hw||i===hw||j===0||j===-22||(j>-2&&((i+1+hem)%3===0||(i-1+hem)%3===0));R(i+sk,j,e?'k':i>hw-2?'k':i<-hw+2?'V':'x');}}
-   R(-3,-19,'k',7,6);R(-2,-18,'c',5,5);R(-2,-18,'w',2,1);const ey=p2?'r':'g',gb=fst(t,3)%2;R(-2,-16,'k',2,2);R(1,-16,'k',2,2);R(-2,-16,ey);R(1,-16,ey);if(gb||p2){R(-2,-15,ey==='r'?'q':'l');R(1,-15,ey==='r'?'q':'l');}R(0,-14,'k');R(-2,-13,'k',5,1);R(-1,-13,'c');R(1,-13,'c');
-   R(-6,-11,'k',3,3);R(-5,-10,'c');
-   const sw=s.sw>0?Math.min(2,Math.floor((1-s.sw/.6)*3)):0,hx=x-5*P,hy=y0-9*P,ang=[.2,-.55,1.15][sw],cs=Math.cos(ang),sn=Math.sin(ang),pt=(a,b)=>[hx+Math.round(a*cs-b*sn)*P,hy+Math.round(a*sn+b*cs)*P];
-   for(let k=-6;k<=18;k++){const[px,py]=pt(0,-k);fxR(c,px-P,py,P,'k');fxR(c,px+P,py,P,'k');}for(let k=-6;k<=18;k++){const[px,py]=pt(0,-k);fxR(c,px,py,P,k<0?'N':'n');}
-   const bl=[];for(let k=0;k<=10;k++){const yb=-18+Math.round(k*k*.07);bl.push([-k,yb,'w'],[-k,yb+1,k>8?'k':'s']);if(k<8)bl.push([-k,yb+2,'k']);}for(const[a,b]of bl){const[px,py]=pt(a,b-1);fxR(c,px,py,P,'k');}for(const[a,b,col]of bl){const[px,py]=pt(a,b);fxR(c,px,py,P,col);}
-   if(s.sw>0&&sw===2){c.globalAlpha=s.p*.5;for(let k=0;k<8;k++){const[px,py]=pt(-6-k*.4,-18+k*2.2);fxR(c,px-3*P,py,P,'w');}}c.restore();},
-  ev(s,n,o,A,g){if(n!=='reap'||!s.l.p||s.dnt!=null)return;s.sw=.6;const x0=o.x,y0=o.y,T1=1.5;A.add({k:'fn',x:x0,y:y0,T:T1,fa:.75,d:(c,q,g)=>{const P=fxBP(g),u=q.t/T1,rise=Math.min(1,q.t/.35),yy=u<.23?y0-rise*30:y0-30+(g.H+40-(y0-30))*Math.pow((u-.23)/.77,1.6),xx=fq(x0+Math.sin(q.t*7)*8,P),y1=fq(yy,P),wv=fst(q.t,8)%2,G=fxPt(c,xx,y1,P);
+ /* The Reaper (final boss, v1.81.1 bigger and darker, the user's ask): a towering hooded reaper hangs in the sky over the right of the jar, a black void under its hood with two burning eyes, a bony hand reaching for your fruit, a huge scythe over its head and smoke dripping from its tattered hem. It fades in out of the dark. Every merge that wins a drop back, its eyes flare, it swings the scythe in a wide arc and a soul floats down out of the jar to your drops. Phase 2: the eyes burn red, the blade's edge glows, lost souls circle it and the jar's edges darken. Beaten: the eyes go out, the robe crumples onto the rim and the scythe falls */
+ B_reaper:{x(g){return fq(fxRX('B_reaper',.74,118,g),fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);if(s.sw>0)s.sw-=dt;if(s.fl>0)s.fl-=dt;const P=fxBP(g),x=FXS.B_reaper.x(g),y0=fxRim(g)-5*P;
+   if(!RMO&&s.dnt==null&&s.age>.8&&Math.random()<dt*9)A.add({k:'sq',x:x+(Math.random()*24-13)*P,y:y0-Math.random()*2*P,vx:(Math.random()-.6)*20,vy:14+Math.random()*16,T:1.1+Math.random()*.6,col:Math.random()<.5?'x':'V',s:Math.random()<.3?2:1,fa:.3,ly:1});},
+  back(c,g,s,t){if(s.p2t==null||s.dnt!=null)return;const P=g.P,a=Math.min(1,s.p2t/1.5);c.save();for(let y=g.top,j=0;y<g.bot;y+=P,j++)for(let i=0;i<5;i++){if(FBY[(i&3)*4+(j&3)]/16<(5-i)/6*a*.75){fxR(c,g.L+i*P,y,P,'x');fxR(c,g.R-(i+1)*P,y,P,'x');}}c.restore();},
+  front(c,g,s,t){const P=fxBP(g),x=FXS.B_reaper.x(g),rim=fxRim(g),dead=s.dnt!=null,dn=dead?s.dnt:0,p2=s.p2t!=null,u=Math.min(1,s.age/1.4);if(dead&&dn>3.2)return;
+   const bob=dead?0:Math.round(Math.sin(t*1.6)*1.4),vs=dead?Math.max(.18,1-Math.max(0,dn-.25)/.6*.82):1,y0=fq(rim-(dead?Math.round(5*(1-Math.min(1,dn/.85))):5)*P+bob*P,P),hem=fst(t,7),fade=dead&&dn>2.4?Math.max(0,1-(dn-2.4)/.8):1;
+   c.save();c.globalAlpha=s.p*fade;
+   const R=(i,j,col)=>{if(u<1&&FBY[((i+64)&3)*4+((j+64)&3)]/16>=u*1.15-.1)return;fxR(c,x+i*P,y0+Math.round(j*vs)*P,P,col);};
+   /* the scythe: pole behind the robe, blade in front over the hood; swings around the far hand */
+   const sw=s.sw>0?Math.min(3,Math.floor((1-s.sw/.75)*4)):0,ang=dead?.12-Math.min(1.69,dn*3.2):[.12,-.45,.7,1.25][sw],cs=Math.cos(ang),sn=Math.sin(ang),hx=6,hy=-17,pt=(a,b)=>[hx+Math.round(a*cs-b*sn),hy+Math.round(a*sn+b*cs)];
+   const pole=[];for(let k=-9;k<=24;k++)pole.push(pt(0,-k));for(const[i,j]of pole){R(i-1,j,'k');R(i+1,j,'k');}for(const[i,j]of pole)R(i,j,'N');for(const[i,j]of pole.filter((q,k)=>k%3===0))R(i,j,'n');
+   /* robe */
+   const top=-24;for(let j=top;j<=0;j++){const hw=Math.round(7+(j-top)*.38),sk=j>-7?Math.round(Math.sin(t*2.4+j*.5)*(j+7)*.18):0;for(let i=-hw;i<=hw;i++){const cut=j>-4&&fhs(i+hem*3,j)<(j+4)*.22;if(cut)continue;const e=i===-hw||i===hw||j===0||(j>-4&&fhs(i+hem*3,j+1)<(j+5)*.22);const fold=j>top+5&&((i+40)%5===0);R(i+sk,j,e?'k':i<-hw+2?'V':fold?'k':i>hw-3?'k':'x');}}
+   for(let i=-5;i<=5;i++){R(i,top-1,'k');}
+   /* the hood: a peaked cowl leaning towards the jar, a void inside */
+   const hc=-30;for(let j=-39;j<=top;j++)for(let i=-9;i<=8;i++){const dy=j-hc,dx=i+1,inH=(dx*dx)/56+(dy*dy)/64<=1||(j<-36&&i>=-4+(j+39)&&i<=-1-(j+39)*0)||(j>=-36&&j<-35&&i>=-6&&i<=2);if(!inH)continue;const ed=((dx+1)*(dx+1))/56+(dy*dy)/64>1||((dx-1)*(dx-1))/56+(dy*dy)/64>1||(dx*dx)/56+((dy+1)*(dy+1))/64>1||(dx*dx)/56+((dy-1)*(dy-1))/64>1;R(i,j,ed?'k':i<-5?'V':'x');}
+   for(let j=-34;j<=-23;j++)for(let i=-8;i<=2;i++){const dx=i+3,dy=j+28,e1=(dx*dx)/17+(dy*dy)/24,e2=(dx*dx)/27+(dy*dy)/36;if(e1<=1)R(i,j,'k');else if(e2<=1&&(i<-2||j<-31))R(i,j,'V');}
+   /* the face in the void: a pale jaw, burning eyes with a halo */
+   if(!dead||dn<.25){R(-5,-25,'s');R(-4,-25,'c');R(-3,-25,'s');R(-2,-25,'c');R(-1,-25,'s');R(-4,-24,'k');R(-2,-24,'k');
+    const fl=s.fl>0,ey=p2?['R','r','q']:['G','g','l'],ea=Math.min(1,Math.max(0,(s.age-1)/.4));if(ea>0){c.globalAlpha=s.p*fade*ea;for(const ex of[-5,-2]){R(ex,-29,ey[2]);R(ex+1,-29,ey[1]);R(ex,-28,ey[0]);if(fl){R(ex-1,-29,ey[1]);R(ex+2,-29,ey[0]);R(ex,-30,ey[1]);R(ex+1,-30,ey[0]);R(ex+1,-28,ey[0]);}}if(fl||(t%2.6)<1.6){c.globalAlpha=s.p*fade*ea*.5;for(const ex of[-5,-2]){R(ex,-30,ey[0]);R(ex-1,-28,ey[0]);}}c.globalAlpha=s.p*fade;}}
+   /* the reaching hand: a sleeve out towards the jar and long bony fingers that curl */
+   if(!dead){const cl=fst(t,1.6)%2,reach=s.sw>0?2:0;for(let k=0;k<8;k++){const ax=-5-k-reach,ay=-21+Math.round(k*.55),w0=k>5?-2:-1,w1=k>5?3:2;for(let w=w0;w<=w1;w++)R(ax,ay+w,w===w0||w===w1?'k':w===w0+1?'V':'x');}
+    const fx0=-13-reach,fy0=-18,bn=[[0,0],[0,1],[0,2],[-1,0],[-1,1],[-1,2]];for(let f=0;f<3;f++){const fy=-1+f*2;for(let q=0;q<4;q++)bn.push([-2-q,fy+(cl&&q>1?q-1:0)]);}bn.push([-1,4],[-2,5]);
+    const bs=new Set(bn.map(([a,b])=>a+','+b));for(const[a,b]of bn)for(const[da,db]of[[1,0],[-1,0],[0,1],[0,-1]])if(!bs.has((a+da)+','+(b+db)))R(fx0+a+da,fy0+b+db,'k');for(const[a,b]of bn)R(fx0+a,fy0+b,a<-4?'w':'s');
+    for(let k=0;k<6;k++){const ax=4+Math.round(k*.3),ay=-23+k;R(ax+2,ay,'k');R(ax+1,ay,'x');}}
+   R(hx-1,hy,'s');R(hx,hy+1,'d');R(hx-1,hy+1,'s');R(hx+1,hy,'k');
+   /* the blade */
+   const bl=[];for(let k=0;k<=19;k++){const yb=-24-Math.round(k*k*.012)+Math.round(k*.25),th=k<15?3:k<18?2:1;for(let q=0;q<th;q++)bl.push([-k,yb+q,q===0?(p2?'q':'w'):q===1?'s':'d']);}for(const[a,b]of bl){const[i,j]=pt(a,b-1);R(i,j,'k');const[i2,j2]=pt(a,b+1);R(i2,j2,'k');}for(const[a,b,col]of bl){const[i,j]=pt(a,b);R(i,j,col);}
+   {const gk=Math.floor((t*7)%26);if(gk<20&&!dead){const[i,j]=pt(-gk,-24-Math.round(gk*gk*.012)+Math.round(gk*.25));R(i,j,'w');fxStar(c,x+i*P,y0+j*P,g.P,gk%3?1:2,p2?'r':'b');}}
+   if(s.sw>0&&sw>=2){c.globalAlpha=s.p*.45;for(let k=0;k<14;k++){const a2=ang-.5-k*.06,r2=20+k*.15;const i=hx+Math.round(-r2*Math.cos(a2)*.9),j=hy+Math.round(-r2*Math.sin(a2)*.9);R(i,j,'w');R(i+1,j,'s');}c.globalAlpha=s.p*fade;}
+   /* phase 2: lost souls circle it */
+   if(p2&&!dead){for(let k=0;k<3;k++){const a=t*1.3+k*2.09,sx=x+Math.round(Math.cos(a)*18)*P,sy=y0+Math.round(-18+Math.sin(a)*9)*P;c.globalAlpha=s.p*.75;fxR(c,sx-P,sy-P,P,'k',3,3);fxR(c,sx,sy,P,'l');fxR(c,sx,sy-P,P,'w');fxR(c,sx-Math.round(Math.sin(a))*P*2,sy+P,P,'g');}c.globalAlpha=s.p*fade;}
+   if(dead&&dn>.85){for(let k=0;k<4;k++){const q=Math.min(1,(dn-.85)/.4);R(-12+k*7,0,'k');}}
+   c.restore();},
+  ev(s,n,o,A,g){if(n!=='reap'||!s.l.p||s.dnt!=null)return;s.sw=.75;s.fl=.6;const x0=o.x,y0=o.y,T1=1.5;A.add({k:'fn',x:x0,y:y0,T:T1,fa:.75,d:(c,q,g)=>{const P=fxBP(g),u=q.t/T1,rise=Math.min(1,q.t/.35),yy=u<.23?y0-rise*30:y0-30+(g.H+40-(y0-30))*Math.pow((u-.23)/.77,1.6),xx=fq(x0+Math.sin(q.t*7)*8,P),y1=fq(yy,P),wv=fst(q.t,8)%2,G=fxPt(c,xx,y1,P);
    c.globalAlpha*=.9;G(-2,-4,'k',5,1);G(-3,-3,'k',7,5);G(-2,-3,'w',5,4);G(-2,-3,'i',1,4);G(-1,-2,'k');G(1,-2,'k');G(0,0,'k');G(-3,2,'k',1,1);G(-2,2,wv?'k':'w');G(-1,2,'w');G(0,2,wv?'w':'k');G(1,2,'w');G(2,2,wv?'k':'w');G(3,2,'k');G(-2,3,wv?'.':'k');G(0,3,'k');G(2,3,wv?'k':'.');
    for(let k=1;k<4;k++)fxR(c,fq(x0+Math.sin((q.t-k*.06)*7)*8,P),fq(yy-(u<.23?-k:k)*P*1.4-4*P,P),P,k<2?'l':'g');}});
    A.add({k:'fn',x:x0,y:y0-20,vy:-30,T:1,fa:.5,d:(c,q,g)=>T(c,'+1',q.x+16,q.y,18,'#38862a','center',FD)});}},
@@ -1382,13 +1456,22 @@ Object.assign(FXS,{
   ev(s,n,o,A,g){if(n!=='prune'||!s.l.p||s.dnt!=null)return;const P=fxBP(g),z=Math.max(1,(o.r||20)/30);A.add({k:'fn',x:o.x,y:o.y,T:.55,fa:.7,d:(c,q,g)=>{const op=q.t<.12?3:q.t<.2?1:0,x=q.x,y=q.y;for(const sd of[-1,1])for(let k=0;k<11;k++){const xx=fq(x+sd*(op*(11-k)*.45+1)*P*z*.7,P),yy=fq(y-10*P*z+k*P*z,P);fxR(c,xx-P,yy,P,'k',4,1);fxR(c,xx,yy,P,sd<0?'s':'w',2,1);}fxR(c,x-P,y,P,'k',3,3);fxR(c,x,y+P,P,'y');}});
    for(const sd of[-1,1])A.add({k:'fn',x:o.x+sd*4,y:o.y-(o.r||20)*.3,vx:sd*50,vy:-80,g:500,T:1,dl:.18,fa:.5,d:(c,q,g,t,x)=>{c.save();c.beginPath();if(sd<0)c.rect(x-20,q.y-20,20,40);else c.rect(x,q.y-20,20,40);c.clip();T(c,'0',x,q.y,30,'#e63946','center',FD);c.restore();}});
    for(let k=0;k<4;k++)A.add({k:'sq',x:o.x,y:o.y,vx:(Math.random()-.5)*120,vy:-60-Math.random()*60,g:240,T:.9,col:k%2?'g':'G',s:2,sw:5,sf:6,dl:.15});}},
- /* The Orchard Queen: her crown floats high over the jar on a velvet cushion while her two rules play their own scenes. Phase 2: both rules step up and the crown flashes. Beaten: the crown tumbles down into the jar and bounces off the floor */
- B_queen:{tick(s,g,dt,A){bossT(s,dt);if(s.dnt!=null&&!s.cr){s.cr={x:(g.L+g.R)/2,y:fxRim(g)-150*g.K,vx:90,vy:-120,r:0};}if(s.cr){const q=s.cr;q.vy+=900*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.r+=dt*6;if(q.y>g.bot-6*g.P){q.y=g.bot-6*g.P;q.vy*=-.45;q.vx*=.7;}}},
-  front(c,g,s,t){const P=g.P,cx=fq((g.L+g.R)/2,P),u=Math.min(1,s.age/1.2),y0=fq(fxRim(g)-150*g.K-Math.round((1-u)*(1-u)*40)*P+(fst(t,2)%2?-P:0),P),p2=s.p2t!=null;c.save();c.globalAlpha=s.p;
-   if(s.cr){fxS(c,'crown',s.cr.x,s.cr.y,2*P,{ay:.5,r:Math.floor(s.cr.r)%4});c.restore();return;}
-   fxEl(c,cx,y0+P,P,9,2,(i,j,e)=>e?'k':j<0?'P':'V');for(const sd of[-1,1]){fxR(c,cx+sd*9*P,y0+3*P,P,'y');fxR(c,cx+sd*9*P,y0+4*P,P,'Y');}
-   fxS(c,'crown',cx,y0-P,2*P);if(p2&&fst(t,6)%2){c.globalCompositeOperation='lighter';c.globalAlpha=s.p*.35;fxS(c,'crown',cx,y0-P,2*P);c.globalCompositeOperation='source-over';c.globalAlpha=s.p;}
-   const tw=(t%2.2)/2.2;if(tw<.3)fxStar(c,cx+(tw<.15?-8:9)*P,y0-14*P,P,[1,2,3,2,1][Math.floor(tw/.3*5)],'y');if(u<1)fxStar(c,cx,y0-16*P,P,[0,1,2,3,2,1][Math.floor(u*6)],'y');c.restore();}}});
+ /* The Orchard Queen (v1.81.1, a character now): the queen herself floats high over the jar in an apple-red gown and a purple cape trimmed with ermine, sceptre in hand, while her two rules play their own scenes below. Every time one of her rules strikes she raises the sceptre and its golden apple flares. She moves aside for a boss that needs the sky (The Lid, The Storm, The Blackout). Phase 2: her eyes glow and a dark aura gathers round her. Beaten: her crown tumbles into the jar and she bursts into blossom */
+ B_queen:{EVS:['tax','storm','freeze','wilt','cuckoo','twins','charge','mrock','glut','mould','viseo','reap','slick','prune','audit','drop'],
+  tick(s,g,dt,A){bossT(s,dt);if(s.cm>0)s.cm-=dt;const S=A.S,on=k=>S[k]&&S[k].p>0,px=on('B_lid')||on('B_storm')||on('B_dark')?(on('B_mirror')||on('B_ice')?.84:.17):.5;s.qx=s.qx==null?px:fxA(s.qx,px,dt*.6);
+   if(s.dnt!=null&&!s.cr){const P=fxBP(g),x=g.L+(g.R-g.L)*s.qx,y=fxRim(g)-100*g.K-19*P;s.cr={x,y,vx:90,vy:-120,r:0};for(let k=0;k<26;k++){const a=Math.random()*Math.PI*2,v=60+Math.random()*120;A.add({k:'sq',x:x+(Math.random()-.5)*16*P,y:y+Math.random()*20*P,vx:Math.cos(a)*v,vy:Math.sin(a)*v-40,g:140,T:1.2+Math.random()*.6,col:['p','w','m','p'][k%4],s:2,sw:5,sf:4,ph:k,fa:.5});}}
+   if(s.cr){const q=s.cr;q.vy+=900*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.r+=dt*6;if(q.y>g.bot-6*g.P){q.y=g.bot-6*g.P;q.vy*=-.45;q.vx*=.7;}}},
+  front(c,g,s,t){const P=fxBP(g),x=fq(g.L+(g.R-g.L)*(s.qx==null?.5:s.qx),P),u=Math.min(1,s.age/1.2),dead=s.dnt!=null,p2=s.p2t!=null,bob=fst(t,1.5)%2?-1:0,yb=fq(fxRim(g)-100*g.K-Math.round((1-u)*(1-u)*50)*P+bob*P,P);c.save();c.globalAlpha=s.p;
+   if(s.cr){fxS(c,'crown',s.cr.x,s.cr.y,P,{ay:.5,r:Math.floor(s.cr.r)%4});c.restore();return;}
+   if(p2){const a=Math.min(1,s.p2t/1.2);for(let j=-28;j<=2;j++)for(let i=-13;i<=13;i++){const d=(i*i)/169+((j+12)*(j+12))/256;if(d>1||d<.55)continue;if(FBY[((i+40)&3)*4+((j+40)&3)]/16<(1-d)*2.2*a)fxR(c,x+i*P,yb+j*P,P,fst(t+i*.03,4)%3?'V':'x');}}
+   const R=fxPt(c,x,yb,P),cm=s.cm>0,cp=fst(t,5)%2;
+   for(let j=0;j<3;j++){R(-8+(cp?-1:0),-2+j,'k');R(8+(cp?1:0),-2+j,'k');}
+   fxS(c,p2&&fst(t,3)%2===0?'oqB':'oqA',x,yb,P);R(-3,-19,'k');R(-2,-18,'k');R(2,-18,'k');R(3,-19,'k');if(p2){R(-2,-17,'r');R(2,-17,'r');}
+   const sy=cm?-30:-26,sx=10;for(let j=sy+3;j<=-6;j++){R(sx-1,j,'k');R(sx+1,j,'k');R(sx,j,'Y');}R(sx-1,-12,'k',3,1);R(sx,-12,'f');R(sx-1,-11,'k',3,2);R(sx,-11,'f');
+   fxEl(c,x+sx*P,yb+(sy+1)*P,P,2,2,(i,j,e)=>e?'k':i<0&&j<0?'h':cm&&fst(t,10)%2?'w':'y');R(sx,sy-2,'G');R(sx+1,sy-3,'g');
+   if(cm){for(let k=0;k<8;k++){const a=k*Math.PI/4,r2=4+(fst(s.cm,12)%2);R(sx+Math.round(Math.cos(a)*r2),sy+1+Math.round(Math.sin(a)*r2),k%2?'y':'o');}}
+   const tw=(t%2.2)/2.2;if(tw<.3)fxStar(c,x-5*P,yb-25*P,g.P,[1,2,3,2,1][Math.floor(tw/.3*5)],'y');if(u<1)fxStar(c,x,yb-27*P,g.P,[0,1,2,3,2,1][Math.floor(u*6)],'y');c.restore();},
+  ev(s,n){if(!s.l.p||s.dnt!=null||!FXS.B_queen.EVS.includes(n)||n==='drop')return;s.cm=.6;}}});
 
 /* The Padlock on the tool bar: chains cross the tools in an X, link by link, then the padlock drops onto them and the bar dims. Phase 2: it shakes and the charge bursts out of the tools in teal sparks. Beaten: a key flies in and turns, the padlock springs open and drops, and the chains fall away */
 function fxLockBar(c,W,H,s,t){const P=3,BP=4,age=s.age||0,u=Math.min(1,age/.8),dead=s.dnt!=null,dn=dead?s.dnt:0;
