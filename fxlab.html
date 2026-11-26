@@ -24,11 +24,17 @@ canvas.jar{width:100%;max-width:100%;aspect-ratio:388/725;border-radius:8px;back
 .tx{font-size:15px;color:var(--dim);margin:0}
 .tx b{color:var(--cream);font-weight:400}
 .row{display:flex;gap:6px}
+.lbl{color:var(--dim);font-size:15px;margin-right:2px}
+.bar button .n{color:var(--dim);margin-left:4px}.bar button[aria-pressed="true"] .n{color:#1b1029}
+.ver{font-size:13px;color:var(--dim)}
+.card[hidden]{display:none}
 </style>
 <div class="wrap">
 <h1>Charm scenes</h1>
 <p class="sub">Each charm plays its own scene in the jar while it is working, so you can see your build without reading the header. Every card loops a short script: the charm held but idle, its condition coming true, then merges it scores on.</p>
 <div class="bar"><button id="slow" aria-pressed="false">Slow motion</button><button id="pause" aria-pressed="false">Pause</button><button id="all">Replay all</button></div>
+<div class="bar" id="filt" role="toolbar" aria-label="Show"></div>
+<div class="bar" id="sort" role="toolbar" aria-label="Sort"></div>
 <div class="grid" id="grid"></div>
 </div>
 <script src="icons.js"></script>
@@ -88,14 +94,29 @@ D.push(
  {id:'bthief',ch:'thief',boss:'The Thief',tx:'<b>Your leftmost charm does nothing</b> (2 in phase 2). He tiptoes in, reaches up and drops your charm into his sack, where you can see it. Beaten: the charms fly home and he runs.',pile:()=>pile(151,MID),dur:11,x:'',lv:t=>({B_thief:{p:1,ph:t>5.5?2:1,done:t>8.5,ids:t>5.5?['juicer','crit']:['juicer']}}),ev:[]},
  {id:'bmelon',ch:'king',boss:'The Melon Queen',tx:'<b>A Watermelon drops in and stays</b>; phase 2 adds a big rock. Pennants unfurl and a crown comes down onto her. Phase 2: the crown glows red-hot and she hurls the rock. Beaten: the crown pops off and rolls away.',pile:()=>pile(157,[10].concat(MID.slice(0,8))),dur:11,x:'',lv:(t,c)=>{const q=c.fr.find(f=>f.l===10);return{B_melon:{p:1,ph:t>4.5?2:1,done:t>8,q:q&&{x:q.x,y:q.y,r:q.r}}};},ev:[[4.6,c=>c.fx.ev('mrock',{x:W*.75,y:TOP+90,r:rd(6)})]]});
 function gold(c,fx,fy){let b=null,bd=1e9;const tx=L+(R-L)*fx,ty=TOP+(BOT-TOP)*fy;for(const f of c.fr){if(f.gold)continue;const d=Math.hypot(f.x-tx,f.y-ty);if(d<bd){bd=d;b=f;}}if(b)b.gold=1;}
-let SLOW=0,PAUSE=0;const cards=[];
+/* what each card is and the version it arrived in, for the Show and Sort bars */
+const KIND={boss:'Bosses',zone:'Charms in the jar',merge:'Merge styles',grow:'Growing',fusion:'Fusions'},META={};
+for(const id of['wire','brink','tidy','crew','fright','lime','early','clutch','enc'])META[id]=['zone','1.75'];META.bon=['zone','1.75'];for(const id of['oak','tiki','snow'])META[id]=['grow','1.75'];
+for(const id of['low','fshow','hot','slow','cstage','wall'])META[id]=['zone','1.76'];for(const id of['comic','juicer','heavy','snake','dnoth'])META[id]=['merge','1.76'];
+META.knock=['merge','1.77'];META.magpie=['zone','1.77'];for(const id of['ivy','still','amph','wildfire','enc2'])META[id]=['fusion','1.77'];for(const id of['btax','bstorm','bice','bthief','bmelon'])META[id]=['boss','1.78'];
+D.forEach((d,i)=>{const m=META[d.id]||['zone','1.75'];d.kind=m[0];d.v=m[1];d.i=i;});
+let SLOW=0,PAUSE=0;const cards=[];let SHOW='all',SORT='new';try{SHOW=localStorage.getItem('fxShow')||'all';SORT=localStorage.getItem('fxSort')||'new';}catch(e){}
+function bars(){const f=document.getElementById('filt'),o=document.getElementById('sort'),cnt=k=>D.filter(d=>k==='all'||d.kind===k).length;
+ f.innerHTML='<span class="lbl">Show</span>'+[['all','All'],...Object.entries(KIND)].map(([k,n])=>`<button data-k="${k}" aria-pressed="${SHOW===k}">${n}<span class="n">${cnt(k)}</span></button>`).join('');
+ o.innerHTML='<span class="lbl">Sort</span>'+[['new','Newest first'],['old','Oldest first'],['az','A to Z']].map(([k,n])=>`<button data-s="${k}" aria-pressed="${SORT===k}">${n}</button>`).join('');
+ f.onclick=e=>{const b=e.target.closest('[data-k]');if(!b)return;SHOW=b.dataset.k;try{localStorage.setItem('fxShow',SHOW);}catch(x){}bars();lay();};
+ o.onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;SORT=b.dataset.s;try{localStorage.setItem('fxSort',SORT);}catch(x){}bars();lay();};}
+/* order and hide the cards; newest first by default so new work is at the top */
+function lay(){const g=document.getElementById('grid'),vn=v=>v.split('.').map(Number).reduce((a,n)=>a*100+n,0),nm=c=>c.el.querySelector('.nm').textContent;
+ const o=cards.slice().sort((a,b)=>SORT==='az'?nm(a).localeCompare(nm(b)):SORT==='old'?vn(a.d.v)-vn(b.d.v)||a.d.i-b.d.i:vn(b.d.v)-vn(a.d.v)||a.d.i-b.d.i);
+ for(const c of o){c.el.hidden=!(SHOW==='all'||c.d.kind===SHOW);g.appendChild(c.el);if(!c.el.hidden)reset(c);}}
 function drop(c,x,l,id,ex){const r=rd(l);c.fall={x,y:TOP-r-6,vy:0,l,r,ty:landY(c.fr,x,r),id,ex};c.fx.ev('drop',{x});c.lastD=c.t;}
 /* a merge on a fruit already in the pile: the one nearest the spot (fx, fy as shares of the jar), with no drop */
 function mg(c,fx,fy,id,ex){let b=null,bd=1e9;const tx=L+(R-L)*fx,ty=TOP+(BOT-TOP)*fy;for(const f of c.fr){const d=Math.hypot(f.x-tx,f.y-ty);if(d<bd){bd=d;b=f;}}c.pops.push({x:b.x,y:b.y,r:b.r,t:0});c.fx.hit(id,Object.assign({x:b.x,y:b.y,l:b.l,r:b.r},ex||{}));c.hitT=.6;}
 function reset(c){if(c.fr)c.fr.forEach(f=>f.gold=0);c.t=0;c.fx=fxNew();c.v=0;c.fall=null;c.pops=[];c.tg=null;c.ei=0;c.hitT=0;}
-function build(){const g=document.getElementById('grid');for(const d of D){const el=document.createElement('div');el.className='card';const nm=d.boss||(CH[d.ch]||{}).n||d.ch;el.innerHTML=`<div class="hd"><canvas class="ic" width="12" height="12"></canvas><div class="nm">${nm}</div><span class="chip">Waiting</span></div><canvas class="jar"></canvas><p class="tx">${d.tx}</p><div class="row"><button>Replay</button></div>`;g.appendChild(el);
- const ic=el.querySelector('.ic'),gk=PXD[d.ch]?d.ch:null;if(gk)ic.getContext('2d').drawImage(fxGrid(PXD[gk],PXP),0,0);else ic.remove();
- const cv=el.querySelector('canvas.jar'),dp=Math.min(2,devicePixelRatio||1);cv.width=W*dp;cv.height=H*dp;const c={d,cv,ctx:cv.getContext('2d'),dp,chip:el.querySelector('.chip'),fr:d.pile(),vis:true};reset(c);el.querySelector('button').onclick=()=>reset(c);cards.push(c);}
+function build(){const g=document.getElementById('grid');for(const d of D){const el=document.createElement('div');el.className='card';const nm=d.boss||(CH[d.ch]||{}).n||d.ch;el.dataset.id=d.id;el.innerHTML=`<div class="hd"><canvas class="ic" width="12" height="12"></canvas><div class="nm">${nm}</div><span class="ver">v${d.v}</span><span class="chip">Waiting</span></div><canvas class="jar"></canvas><p class="tx">${d.tx}</p><div class="row"><button>Replay</button></div>`;g.appendChild(el);
+ const ic=el.querySelector('.ic'),ik=(typeof ICN!=='undefined'&&ICN[d.ch])||d.ch,gk=PXD[ik]?ik:null;if(gk)ic.getContext('2d').drawImage(fxGrid(PXD[gk],PXP),0,0);else ic.remove();
+ const cv=el.querySelector('canvas.jar'),dp=Math.min(2,devicePixelRatio||1);cv.width=W*dp;cv.height=H*dp;const c={d,el,cv,ctx:cv.getContext('2d'),dp,chip:el.querySelector('.chip'),fr:d.pile(),vis:true};reset(c);el.querySelector('button').onclick=()=>reset(c);cards.push(c);}
  const io=new IntersectionObserver(es=>{for(const e of es){const c=cards.find(k=>k.cv===e.target);if(c)c.vis=e.isIntersecting;}});cards.forEach(c=>io.observe(c.cv));}
 function frame(c,dt){const d=c.d;if(!PAUSE){c.t+=dt;if(c.t>=d.dur)reset(c);while(c.ei<d.ev.length&&c.t>=d.ev[c.ei][0]){d.ev[c.ei][1](c);c.ei++;}
   if(c.fall){const f=c.fall;f.vy+=1100*dt;f.y+=f.vy*dt;if(f.y>=f.ty){f.y=f.ty;c.pops.push({x:f.x,y:f.y,r:f.r,t:0});if(/g$/.test(f.id))c.fx.ev('grow',{id:f.id.slice(0,-1),x:f.x,y:f.y});else c.fx.hit(f.id,Object.assign({x:f.x,y:f.y,l:f.l,r:f.r},f.ex||{}));c.hitT=.6;c.last={x:f.x,y:f.y,r:f.r};c.fall=null;}}
@@ -111,5 +132,5 @@ function hud(x){x.fillStyle='#fff3e6dd';rr(x,6,6,84,40,10);x.fill();T(x,'Depth 3
 let last=0;function loop(ts){const dt=Math.min(.05,(ts-last)/1000||0)*(SLOW?.35:1);last=ts;for(const c of cards)if(c.vis)frame(c,dt);requestAnimationFrame(loop);}
 document.getElementById('slow').onclick=e=>{SLOW^=1;e.target.setAttribute('aria-pressed',!!SLOW);};document.getElementById('pause').onclick=e=>{PAUSE^=1;e.target.setAttribute('aria-pressed',!!PAUSE);};document.getElementById('all').onclick=()=>cards.forEach(reset);
 if(typeof frIcons!=="function")window.frIcons=()=>{};if(typeof cosIcons!=="function")window.cosIcons=()=>{};
-artLoad();build();requestAnimationFrame(loop);
+artLoad();build();bars();lay();requestAnimationFrame(loop);
 </script>
