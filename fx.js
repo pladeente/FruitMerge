@@ -1583,11 +1583,40 @@ Object.assign(FXS,{
  /* Ballast: heavy fruit (Apples and up) fall with speed lines streaming off them */
  ball:{front(c,g,s,t){const P=g.P;c.save();c.globalAlpha=s.p*.8;for(const f of s.l.f||[]){for(const k of[-1,0,1]){const x=fq(f.x+k*f.r*.45,P),len=3+((Math.round(f.x/P)+k+fst(t,12))%3);for(let j=0;j<len;j++)fxR(c,x,f.y-f.r-(3+j+Math.abs(k))*P,P,j===len-1?'s':'d');}}c.restore();}},
  /* Fireworks and Volcano: after every Boom, rockets shoot up out of the blast and burst into stars in the sky (Volcano throws lava instead) */
- boom:{ev(s,n,o,A,g){if(n!=='boom'||!s.l.p||o.dp)return;const vol=!!(A.S.boom&&A.S.boom.l&&0),P=g.P,cols=[['r','y','R'],['b','B','w'],['g','G','l'],['m','V','p'],['o','y','r']];for(let k=0;k<2;k++){const tx=o.x+(k?1:-1)*(30+Math.random()*40),ty=fxRim(g)-50-Math.random()*70,T1=.55,cc=cols[Math.floor(Math.random()*cols.length)],x0=o.x,y0=o.y;
+ boom:{ev(s,n,o,A,g){if(n!=='boom'||!s.l.p||o.dp)return;if(s.l.sh){for(let i=0;i<10;i++){const a=i/10*Math.PI*2+Math.random()*.3,v=260+Math.random()*80;A.add({k:'fn',x:o.x,y:o.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,dr:2.2,T:.45,fa:.5,d:(c,q,g,t,x)=>{const P=g.P;fxR(c,x-P,q.y-P,P,'k',3,3);fxR(c,x,q.y,P,i%2?'s':'d');fxR(c,x-q.vx*.012,q.y-q.vy*.012,P,'d');}});}}if(!s.l.fw)return;const vol=!!(A.S.boom&&A.S.boom.l&&0),P=g.P,cols=[['r','y','R'],['b','B','w'],['g','G','l'],['m','V','p'],['o','y','r']];for(let k=0;k<2;k++){const tx=o.x+(k?1:-1)*(30+Math.random()*40),ty=fxRim(g)-50-Math.random()*70,T1=.55,cc=cols[Math.floor(Math.random()*cols.length)],x0=o.x,y0=o.y;
     A.add({k:'fn',x:x0,y:y0,T:T1,dl:k*.15,fa:1,d:(c,q,g)=>{const u=Math.min(1,(q.t-k*.15)/T1),e=1-(1-u)*(1-u),x=x0+(tx-x0)*e,y=y0+(ty-y0)*e;fxR(c,x-P,y-P,g.P,'k',3,3);fxR(c,x,y,g.P,'w');for(let j=1;j<6;j++)fxR(c,x-(tx-x0)*.03*j,y+j*P,g.P,j<3?'y':'o');},end:A2=>{for(let i=0;i<22;i++){const a=i/22*Math.PI*2,v=150+Math.random()*40;A2.add({k:'sq',x:tx,y:ty,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:110,dr:1.6,T:1,col:cc[i%3],s:i%2?2:1,fa:.5});}for(let i=0;i<10;i++){const a=i/10*Math.PI*2+.3;A2.add({k:'star',x:tx+Math.cos(a)*48,y:ty+Math.sin(a)*48,T:.35,dl:.35+Math.random()*.2,col:cc[i%2]});}A2.add({k:'star',x:tx,y:ty,T:.4,col:'y'});}});}}},
  /* White Flag: on a boss jar a white flag waves on a pole at the right end of the rim: the boss never reaches phase 2 */
  flag:{x(g){return fq(fxRX('wflag',.95,30,g),g.P);},front(c,g,s,t){if(s.o<=0)return;const P=g.P,px=FXS.flag.x(g)+6*P,base=fxRim(g),ph=24,fh=8,fw=12,wv=fst(t,7);c.save();c.globalAlpha=s.o;fxR(c,px-P,base-P,P,'k',3,1);for(let j=1;j<ph;j++){fxR(c,px-P,base-(j+1)*P,P,'k');fxR(c,px,base-(j+1)*P,P,'d');fxR(c,px+P,base-(j+1)*P,P,'k');}fxR(c,px-P,base-(ph+2)*P,P,'k',3,2);fxR(c,px,base-(ph+1)*P,P,'y');
    const fy=base-ph*P;for(let ci=0;ci<fw;ci++){const dy=Math.round(Math.sin(ci*.7-wv*.9)*(ci/fw*1.4+.2));for(let rj=-1;rj<=fh;rj++){const x=px-(ci+2)*P,y=fy+(rj+dy)*P;fxR(c,x,y,P,rj<0||rj===fh||ci===fw-1?'k':(ci+rj+wv)%5===0?'s':'w');}}c.restore();}}});
+
+
+Object.assign(FXD,{
+stwB:`
+..kkkkkkkk..
+.kNnnnnnnNk.
+.kkkkkkkkkk.
+kNnNnnnnNnNk
+kNnNnnnnNnNk
+kddddddddddk
+kNnNnnnnNnNk
+kNnNnnnnNnNk
+kddddddddddk
+.kNnNnnNnNk.
+..kkkkkkkk..`});
+Object.assign(FXS,{
+ /* Curveball, Catapult and Lob: a thrown fruit leaves a trail in the air: dotted pink when it curves towards its match, white speed streaks when it is a Lob */
+ curve:{tick(s,g,dt){s.tr=s.tr||new Map();const P=g.P,live=new Set();for(const q of s.l.f||[]){live.add(q.f);let a=s.tr.get(q.f);if(!a){a=[];s.tr.set(q.f,a);}const l=a[a.length-1];if(!l||Math.hypot(l[0]-q.x,l[1]-q.y)>3*P)a.push([q.x,q.y]);if(a.length>14)a.shift();}for(const k of[...s.tr.keys()]){if(!live.has(k)){const a=s.tr.get(k);a.shift();if(!a.length)s.tr.delete(k);}}},
+  front(c,g,s,t){if(!s.tr)return;const P=g.P;c.save();c.globalAlpha=s.p;for(const a of s.tr.values())a.forEach(([x,y],i)=>{const u=i/a.length;if(s.l.cv){if(i%2)return;fxR(c,x-P,y-P,P,'k',3,3);fxR(c,x,y,P,u>.6?'m':'p');}else{c.globalAlpha=s.p*Math.ceil(u*3)/3;fxR(c,x,y,P,'w',2,1);fxR(c,x,y+P,P,'s',2,1);c.globalAlpha=s.p;}});c.restore();}},
+ /* Quick Hands: every drop leaves speed lines where it left your hand */
+ quick:{ev(s,n,o,A,g){if(n!=='drop'||!s.l.p)return;const P=g.P;for(let k=0;k<3;k++){const y=g.top-(14+k*8)*g.K,dir=k%2?1:-1;A.add({k:'fn',x:o.x,y,T:.3,fa:.3,d:(c,q,g)=>{const u=q.t/.3,P=g.P;for(let i=0;i<4;i++)fxR(c,q.x+dir*(10+i*3+u*18)*g.K,q.y,P,i<2?'d':'s');}});}}},
+ /* Gold Plating and Fort Knox: gold fruit up by the line shine with a golden shield ring, safe from overflow */
+ gplate:{front(c,g,s,t){const P=g.P;c.save();c.globalAlpha=s.p;for(const f of s.l.f||[]){const r=Math.round(f.r/P)+2,n=Math.max(8,r*3);for(let k=0;k<n;k++){const a=k/n*Math.PI*2+(RMO?0:fst(t,6)*.12);if(k%3===0)continue;fxR(c,f.x+Math.round(Math.cos(a)*r)*P,f.y+Math.round(Math.sin(a)*r)*P,P,k%3===1?'y':'Y');}fxStar(c,f.x+f.r*.6,f.y-f.r*.7,P,fst(t+f.x,3)%3?1:2,'y');}c.restore();}},
+ /* Stowaway: a barrel stands on the rim with a little mouse hiding in it; every merge where it copies your rightmost charm, the mouse pops out and waves */
+ stow:{x(g){return fq(fxRX('stow',.9,34,g),fxBP(g));},tick(s,g,dt){if(s.up>0)s.up-=dt;},
+  front(c,g,s,t){const P=fxBP(g),x=FXS.stow.x(g),rim=fxRim(g),up=s.up>0?Math.round(Math.sin((1-s.up/.7)*Math.PI)*5):((t%4.2)<.5?1:0),R=fxPt(c,x,rim-11*P,P);c.save();c.globalAlpha=s.p;
+   if(up>0){const y=-up;R(-2,y-1,'k',5,4);R(-1,y,'s',3,3);R(-2,y-2,'k');R(2,y-2,'k');R(-2,y-1,'p');R(2,y-1,'p');R(-1,y+1,'k');R(1,y+1,'k');R(0,y+2,'m');if(s.up>0&&fst(t,6)%2){R(3,y-1,'k');R(3,y,'s');}}
+   fxS(c,'stwB',x,rim,P);c.restore();},
+  hit(s){s.up=.7;}}});
 
 /* The Padlock on the tool bar: chains cross the tools in an X, link by link, then the padlock drops onto them and the bar dims. Phase 2: it shakes and the charge bursts out of the tools in teal sparks. Beaten: a key flies in and turns, the padlock springs open and drops, and the chains fall away */
 function fxLockBar(c,W,H,s,t){const P=3,BP=4,age=s.age||0,u=Math.min(1,age/.8),dead=s.dnt!=null,dn=dead?s.dnt:0;
