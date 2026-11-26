@@ -22,7 +22,8 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    return{wire:{p:h('wire')||h('ivy'),on:on&&ptop<hiY()},brink:{p:h('brink'),on:on&&overT>0},tidy:{p:h('tidy')||h('still'),on:on&&fr.filter(f=>!f.dead).length<=(h('still')?8:6)},crew:{p:h('crew'),on:on&&ro.full()},fright:{p:h('fright'),on:on&&ro.tf()},
     lime:{p:h('lime'),on:on&&lim>0,tx:lf?lf.x:fxM.x,ty:lf?lf.y:fxM.y,tr:lf?rad(lf.l):fxM.r},early:{p:h('early')||mar,on:on&&jd<=(mar?7:6)},clutch:{p:h('clutch')||mar,on:on&&dl<(mar?6:5)},enc:{p:h('encore')||h('headline'),on:on&&!!enc},bon:{p:h('bonfire'),on:true,n:on?bf:0},oak:v('oak'),tiki:v('tiki'),snow:v('snow'),
     low:{p:h('low')||h('still'),on},fshow:{p:h('fshow')||h('amph'),on},hot:{p:h('hot')||h('wildfire'),on,v:on?jm:0},slow:{p:h('slow'),on:on&&cool<=0&&!over&&!arm&&(dl>0||free>0),w:time-lastD,hx:clampN(cx,L+rad(cur),Rw-rad(cur)),hy:line-rad(cur)-6,hr:rad(cur)},cstage:{p:h('cstage')||h('amph'),on},wall:{p:h('wall')||h('ivy'),on},comic:{p:h('cresc')||h('chain')||h('gfin')||h('wildfire')||h('knock'),on},juicer:{p:h('juicer')||h('smoothie'),on},heavy:{p:h('heavy')||h('mania'),on},snake:{p:h('snake'),on},dnoth:{p:h('dnoth')||h('allin'),on},
-    magpie:{p:h('magpie')||h('hunter'),on,g:fr.filter(f=>f.gold&&!f.dead).map(f=>({f,r:rad(f.l)}))}};}
+    magpie:{p:h('magpie')||h('hunter'),on,g:fr.filter(f=>f.gold&&!f.dead).map(f=>({f,r:rad(f.l)}))},
+    B_tax:{p:!!B.tax,ph,done:!!done},B_storm:{p:!!B.storm,ph,done:!!done},B_ice:{p:!!B.ice,ph,done:!!done,ci:curSp==='ice'&&cool<=0},B_thief:{p:!!B.thief,ph,done:!!done,ids:ro.chs().slice(0,B.thief>1?2:1)},B_melon:{p:!!B.melon,ph,done:!!done,q:(q=>q&&{x:q.x,y:q.y,r:rad(10)})(fr.find(f=>!f.dead&&f.l===10&&f.safe))}};} /* bosses (v1.78): fx.js B_<rule> scenes */
  /* bosses: ph = phase (2 from half the target), vz = how far The Vise has closed, ck = The Clock's timer, gotC = The Collector's fruit was made */
  let ph=1,vz=0,ck=0,gotC=0,cwF=0,seen={},dk=1,dkT=0,dkN=0,bl=0; /* bl = Bloom has given its seed level this jar */ /* The Blackout: dk = light level 0 to 1, dkT = seconds the lights stay on, dkN = drops until they come on */ /* seen = fruit sizes made this jar (Sprout) */
  const hiY=()=>line+(bot-line)*.3,cT=()=>(B.collect>1?7:6)-cB; /* cT = the tier The Collector asks for */
@@ -110,7 +111,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
  /* phase 2: every rule flag goes to 2, plus the one-off hits */
  function phase2(){ph=2;for(const k in B)B[k]=2;if(J.de&&!ro.up('hardy'))ro.oc(J.de); /* the Orchard curse */if(B.lock)for(const t of ro.tools){t.c=0;t.on=0;t.n=0;t.k=0;}if(B.hour)dl=Math.max(1,dl-2);if(B.mirror)B.fog=B.fog||1;if(B.thief)ro.off(2);
   if(B.melon){const r=rad(6);let bx=W/2,bh=1e9;for(let i=0;i<13;i++){const x=L+r+(Rw-L-2*r)*i/12;let h=bot;for(const f of fr)if(!f.dead&&Math.abs(f.x-x)<rad(f.l)+r*.8)h=Math.min(h,f.y-rad(f.l));if(bot-h<bh){bh=bot-h;bx=x;}}
-    add({x:bx,y:line+r+4,vx:0,vy:0,l:6,age:0,a:0,sp:'stone',lit:1,safe:1});grace=Math.max(grace,3);} /* The Melon Queen's rock (she was The Melon King until v1.32.1): into the lowest gap, the pile gets 3s to settle, and the rock itself never counts as over the line */ban={t:3.6,a:'Phase 2',b:J.rule2,ic:J.ic};shake=.35;snd('warn');snd('boom');}
+    add({x:bx,y:line+r+4,vx:0,vy:0,l:6,age:0,a:0,sp:'stone',lit:1,safe:1});if(fx)fx.ev('mrock',{x:bx,y:line+r+4,r});grace=Math.max(grace,3);} /* The Melon Queen's rock (she was The Melon King until v1.32.1): into the lowest gap, the pile gets 3s to settle, and the rock itself never counts as over the line */ban={t:3.6,a:'Phase 2',b:J.rule2,ic:J.ic};shake=.35;snd('warn');snd('boom');}
  function bossTick(dt){const jh=bot-line0;line=line0+jh*((B.lid?(B.lid>1?.22:.14):0)+(B.tide?(B.tide>1?.24:.13)*(.5-.5*Math.cos(time*.8)):0)-ro.up('rim')*.05+(ro.has('limbo')?.25:0));
   const tl=L0+vz;if(Math.abs(L-tl)>.2){L+=(tl-L)*Math.min(1,dt*5);Rw=W-L;}else{L=tl;Rw=W-L;}
   if(!J||done||over)return;if(J.p2&&ph<2&&js>=J.quota*(.5+ro.up('thick')*.1))phase2();
@@ -169,7 +170,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    else if(id==='brink'){shake=Math.max(shake,.1);ring(x,y,r*.5,r*2.2,'#e63946',.5,4);spray(x,y-r,['#e63946','#fff'],8,{sp:300,vy:-160,g:500,t:.5,s:4});}
 }}
   const burst=(x,y,col,n=10,sp=300)=>{for(let q=0;q<n;q++)parts.push({x,y,vx:(Math.random()-.5)*sp*K,vy:(Math.random()-.5)*sp*K,t:.5,col})};
- function freezeAround(f){f.lit=1;f.frz=3;f.vx=f.vy=0;let n=0;const r=rad(f.l);for(const o of fr){if(o===f||o.dead||o.frz>0||n>=4||o.y-rad(o.l)<line)continue;if(Math.hypot(o.x-f.x,o.y-f.y)<r+rad(o.l)+8*K){o.frz=3;o.wz=1;o.vx=o.vy=0;n++;}}burst(f.x,f.y,'#bfefff',14);snd('ice');}
+ function freezeAround(f){if(fx)fx.ev('freeze',{x:f.x,y:f.y,r:rad(f.l)});f.lit=1;f.frz=3;f.vx=f.vy=0;let n=0;const r=rad(f.l);for(const o of fr){if(o===f||o.dead||o.frz>0||n>=4||o.y-rad(o.l)<line)continue;if(Math.hypot(o.x-f.x,o.y-f.y)<r+rad(o.l)+8*K){o.frz=3;o.wz=1;o.vx=o.vy=0;n++;}}burst(f.x,f.y,'#bfefff',14);snd('ice');}
  function trigger(f){if(f.lit)return;if(f.sp==='stone'){f.lit=1;return;}if((f.sp==='sticky'||f.sp==='ice')&&f.y-rad(f.l)<line)return;if(f.sp==='sticky'){f.stuck=1;f.lit=1;f.vx=f.vy=0;snd('sticky');}else if(f.sp==='bomb'){f.lit=1;f.fuse=ro&&ro.has('shortf')?.08:1.3;snd('fuse');}else if(f.sp==='ice')freezeAround(f);else if(f.sp==='slip'){f.lit=1;snd('slip');}else if(f.sp==='magnet'){f.lit=1;snd('magnet');}}
  function explode(f,dp){const rf=rad(f.l),h=k=>ro&&ro.has(k),sh=h('shrap')||h('cluster'),zbm=h('zbomb')||h('citblast'),bb=h('bbomb')||h('bigbang'),R=(rf*3+60*K)*(sh?1.5:1),chain=[]; /* v1.43: Shrapnel and Cluster Bomb reach further, Zest Bomb only hits Citrus anywhere in the blast, Bloom Bomb grows instead, Chain Blast and Cluster Bomb set off the fruit they destroy (dp = already a chained blast) */
   let kn=0,big=0;const near=fr.filter(o=>o!==f&&!o.dead&&(!zbm||FAM[o.l]==='ci')).map(o=>({o,d:Math.hypot(o.x-f.x,o.y-f.y)-rad(o.l)-rf})).filter(e=>e.d<(zbm?R:sh?24*K:12*K)).sort((a,b)=>a.d-b.d).slice(0,sh?5:3);
@@ -286,9 +287,9 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   if(ro){const pc=pbTake(o),fd=!pc&&free>0;if(!pc){if(fd)free--;else if(JK!=='clock')dl--;}lastF=pc?null:{f:o,l:cur,sp:curSp,free:fd};if(fx)fx.ev('drop',{x:o.x});ro.ev('drop',{l:cur,sp:curSp,rt:o.x>W/2});knF=0;if(ro.has('rfire')){rfT=rfT.filter(q=>time-q<2);rfT.push(time);if(rfT.length>=3){rfT=[];rfN++;floatTxt('Rapid fire!',W/2,line+40,'#fb8500',18);ro.fx(['rfire']);}}if(ro.has('dynamo')){chg(1);ro.fx(['dynamo']);}}cur=nxt;curSp=nxtSp;
   if(ro){deal();jd++;if(ro.has('sink')&&(jd+1)%8===0&&curSp!=='stone'){curHv=1;ro.fx(['sink']);} /* Sinkhole: the held fruit is Heavy before it drops, like Lead Weight on the held fruit */wtv=Math.max(0,time-lastD);lastD=time;
    for(const t of ro.tools){if(t.on&&!(ro.has('linger')&&dropK%2)){t.c=Math.max(0,t.c-1);if(t.c<=0){t.on=0;floatTxt(TL[t.id].n+' off',W/2,line+70,'#8f8a99',20);}}if(t.n>0){t.n--;if(!t.n&&t.id==='tilt')tiltE=time+1.5;}}dropK++; /* toggles drain (every other drop with Lingering), timed tools count down */
-   if(B.storm&&jd%(B.storm>1?4:6)===0){whirl=1.1;wdir=Math.random()<.5?1:-1;overT=0;grace=3.6;snd('whirl');}
+   if(B.storm&&jd%(B.storm>1?4:6)===0){if(fx)fx.ev('storm');whirl=1.1;wdir=Math.random()<.5?1:-1;overT=0;grace=3.6;snd('whirl');}
    if(B.slick>1&&jd%6===0)power('shake');
-   if(B.tax&&jd%(B.tax>1?2:4)===0&&ro.coins>0){ro.coins--;floatTxt('Tax!',W/2,line+30,'#a96f16',20);snd('nope');}
+   if(B.tax&&jd%(B.tax>1?2:4)===0&&ro.coins>0){ro.coins--;if(fx)fx.ev('tax');floatTxt('Tax!',W/2,line+30,'#a96f16',20);snd('nope');}
    if(!done&&!free&&(dl===5||dl===3||dl===1)&&JK!=='clock'){floatTxt(dl===1?'Last drop!':dl+' drops left!',W/2,line+60,'#e63946',22);snd('nope');}
    if(B.dark&&--dkN<=0){dkT=B.dark>1?.9:1.5;dkN=B.dark>1?4+rint(3):3+rint(3);}
    if(B.vise)vz=Math.min(W*.15,vz+W*(B.vise>1?.024:.012));
