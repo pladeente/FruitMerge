@@ -333,7 +333,7 @@ function fxNew(){const S={},pp=[];let t=0;
   back(c,g){FXC=A;for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].back)FXS[id].back(c,g,s,t,A);}fxPP(c,g,pp,t,0);},
   front(c,g){FXC=A;for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].front)FXS[id].front(c,g,s,t,A);}fxPP(c,g,pp,t,1);},
   top(c,g){FXC=A;for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].top)FXS[id].top(c,g,s,t,A);}}, /* over the HUD (The Fog hides the Next box) */
-  hit(id,o={}){FXC=A;A.hf[id]=t;if(id==='marathon'){A.hit(S.early&&S.early.on?'early':'clutch',o);return;}const ks=[].concat(FXH[id]||id),q=Object.assign({src:id},o);if(!ks.some(k=>FXS[k])){if(o.x!=null)fxPop(A,id,o.x,o.y-(o.r||0)*.4);return;}for(const k of ks){const s=S[k];if(s&&s.p>0&&FXS[k]&&FXS[k].hit&&A.g)FXS[k].hit(s,q,A,A.g);}},
+  hit(id,o={}){FXC=A;A.hf[id]=t;if(S.shoe&&S.shoe.p>0&&FXCHN.has(id))S.shoe.gl=.6;if(id==='marathon'){A.hit(S.early&&S.early.on?'early':'clutch',o);return;}const ks=[].concat(FXH[id]||id),q=Object.assign({src:id},o);if(!ks.some(k=>FXS[k])){if(o.x!=null)fxPop(A,id,o.x,o.y-(o.r||0)*.4);return;}for(const k of ks){const s=S[k];if(s&&s.p>0&&FXS[k]&&FXS[k].hit&&A.g)FXS[k].hit(s,q,A,A.g);}},
   tok(k,x,y,id){if(A.tkc&&A.tkc[id]&&t-A.tkc[id]<.25)return;(A.tkc=A.tkc||{})[id]=t;if(A.g)fxToks(A,[k],x,y);},
   fire(ids,at){for(const id of ids)if(id&&!FXSKIP.has(id)&&!FXH[id]&&!FXS[id]&&id!=='marathon')A.fq.push({id,at,t});},
   ev(n,o={}){if(!A.g)return;FXC=A;for(const id in FXS){const s=S[id];if(s&&FXS[id].ev)FXS[id].ev(s,n,o,A,A.g);}}};
@@ -1486,7 +1486,7 @@ Object.assign(FXS,{
    the screen it changes: points to the score, Mult to the Mult panel, coins down to the coin counter, charge down to the tool bar, drops to the drops bar, seeds up to the header.
    Pops from one moment fan out in an arc (FXPOP keeps the recent spots) and at most FXCAP icons show at once, so a combo never stacks them. FXT overrides a charm's tokens,
    FXSKIP lists the charms that already show in the jar (pets, the Passerby cat). ---------- */
-const FXSKIP=new Set(['pet','bee','mole','hog','lady','passer','frenzy','zoo','nectar','bfly','treat','magpie','hunter','chrys']),FXCAP=7;
+const FXCHN=new Set(['lucky','fourleaf','scratch','mint','snake','dnoth','allin','alch','phil','gberry','cblast','foot']),FXSKIP=new Set(['pet','bee','mole','hog','lady','passer','frenzy','zoo','nectar','bfly','treat','magpie','hunter','chrys']),FXCAP=7;
 const FXT={piggy:['c'],goose:['c'],bank:['c'],scratch:['c'],mint:['c'],gold:['c'],tjar:['c'],tpunch:['c'],pdirt:['c'],truffle:['c'],gdig:['c'],lchange:['c'],hfund:['c','a'],bag:['d'],horn:['x','d'],dom:['d'],aval:['d','a'],spark:['z'],dynamo:['z'],battery:['z'],juggle:['z'],tremor:['z'],jstart:['z'],csq:['z'],kindl:['z'],play:['a','z'],recyc:['z'],wshop:['z'],tsmith:['z'],citblast:['a','z'],gard:['s'],green:['s'],root:['s'],xpol:['s'],hcomb:['a','s'],packet:['s'],svault:['s'],sbank:['s'],cbin:['s'],coupon:['c'],leaf:['g'],phil:['g'],alch:['g'],gberry:['g'],geode:['g'],ccave:['g','p'],crowd:['p'],ash:['p'],fin:['p'],boom:['p'],volcano:['p','a'],show:['a'],drive:['a'],rfire:['a'],droll:['a'],lslide:['a'],bigbang:['a'],shortf:['p'],zbomb:['a'],bbomb:['p'],cblast:['p'],cluster:['p'],psq:['p'],net:['p'],phoenix:['x']};
 function fxTok(id){if(FXT[id])return FXT[id];const c=(typeof CH!=='undefined'&&CH[id])||(typeof TL!=='undefined'&&TL[id])||{},d=(c.d||'').toLowerCase(),o=[];if(c.x)o.push('x');if(c.add)o.push('a');if(c.chip)o.push('p');if(/coin/.test(d))o.push('c');if(/charge/.test(d))o.push('z');if(/drop back|more drops|\+\d+ drops/.test(d))o.push('d');if(/seed/.test(d)&&!o.length)o.push('s');if(/gold/.test(d)&&!o.length)o.push('g');return FXT[id]=o.length?o.slice(0,2):['p'];}
 const FXIC={};function fxIc(id){if(FXIC[id]!==undefined)return FXIC[id];const k=(typeof ICN!=='undefined'&&ICN[id])||id,gd=typeof PXD!=='undefined'&&PXD[k];if(!gd)return FXIC[id]=null;const cnt={};for(const ch of gd)if(/[a-zA-Z]/.test(ch)&&ch!=='k'&&FXP[ch])cnt[ch]=(cnt[ch]||0)+1;const cols=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).slice(0,3);return FXIC[id]={im:fxGrid(gd,FXP),cols:cols.length?cols:['w']};}
@@ -1533,6 +1533,61 @@ const FXFL={honey:['s','drop',5,{a:Math.PI/2,v:40,g:260,T:1}],lucky:['x',['s','l
  horn:['s','berry',4,{a:-Math.PI/2,v:170}],bag:['s','drop',3,{a:-Math.PI/2,v:120}],spark:['s','bolt',3,{a:-Math.PI/2,v:160}],shortf:['b',['o','y','r'],10],bbomb:['s','petal',5,{v:150,g:120,sw:6}],zbomb:['b',['y','o'],12],cblast:['b',['o','r','y'],10],cluster:['b',['o','r','y'],14],shrap:['b',['d','s'],10],
  limbo:['w','LIMBO ×3','#7a2fe0',{sz:15}],stow:['b',['N','n','y'],10],flag:['b',['w','s'],10],grain:['s','gold',6,{v:160}],nova:['b',['y','h','w','o'],20],phoenix:['s','flame',6,{a:-Math.PI/2,v:180,g:-80}],net:['b',['t','w'],12],lady:null};
 function fxFl(A,id,x,y){const r=FXFL[id];if(!r)return;const run=rc=>{const[k,...a]=rc;if(k==='x'){for(const q of a)run(q);return;}if(k==='s')fxSpray(A,x,y,a[0],a[1],a[2]||{});else if(k==='w'){A.wds=(A.wds||[]).filter(q=>A.t-q<.5);const n=A.wds.length;A.wds.push(A.t);fxWord(A,Math.max(A.g.L+60,Math.min(A.g.R-60,x)),Math.max(70,y-96*A.g.K-n*24*A.g.K),a[0],a[1],Object.assign({vy:-18},a[2]||{}));}else if(k==='r')fxRing(A,x,y,a[0],a[1]*A.g.K,a[2]||{});else if(k==='b'){const o=a[2]||{};A.burst(x,y,a[0],a[1],{v:o.v||150,vy:o.vy==null?-60:o.vy,g:o.g,T:o.T||.6});}};run(r);}
+
+/* ---------- charm scenes, batch 5 (v1.82): passives you could not see before ---------- */
+Object.assign(FXD,{
+garg:`
+..k.......k..
+.kdk.....kdk.
+.kddkkkkkddk.
+.kdddddddddk.
+kddkwkdddkwkk
+kdddddddddddk
+.kddkkkkkddk.
+..kdddddddk..
+.kDkdddddkDk.
+kDDkdddddkDDk
+kDk.kdddk.kDk
+.k.kdkdkdk.k.
+...kkk.kkk...`});
+Object.assign(FXS,{
+ /* Limbo: a bamboo limbo bar on two posts sits just above the line it lowered; every fruit that drops under it makes it wobble, and a merge it scores on sets it bouncing */
+ limbo:{tick(s,g,dt){if(s.wb>0)s.wb-=dt;},
+  front(c,g,s,t){const P=g.P,by=fq(g.top-4*P,P),a=Math.min(1,s.p),w=s.wb>0?Math.sin((1-s.wb/.6)*Math.PI*4)*(s.wb/.6)*3:0;c.save();c.globalAlpha=a;
+   for(const sd of[-1,1]){const px=sd<0?g.L+P:g.R-3*P;fxR(c,px-P,by-5*P,P,'k',4,9);fxR(c,px,by-4*P,P,'N',2,8);fxR(c,px,by-4*P,P,'n',1,8);fxR(c,px-P,by-7*P,P,'k',4,2);fxR(c,px,by-7*P,P,'o',2,1);fxR(c,px,by-8*P,P,'y',2,1);}
+   for(let x=g.L+3*P,i=0;x<g.R-3*P;x+=P,i++){const u=(x-g.L)/(g.R-g.L),sag=Math.round(Math.sin(u*Math.PI)*(1+w)+(s.wx!=null?Math.max(0,2-Math.abs(x-s.wx)/(20*g.K))*w*.5:0)),y=by+sag*P;fxR(c,x,y-2*P,P,'k');fxR(c,x,y+P,P,'k');fxR(c,x,y-P,P,i%7===0?'G':'l');fxR(c,x,y,P,i%7===0?'G':'g');}c.restore();},
+  ev(s,n,o){if(n==='drop'){s.wb=.6;s.wx=o.x;}},
+  hit(s,o,A,g){s.wb=.6;s.wx=o.x;A.burst(o.x,g.top-4*g.P,['l','g','y'],8,{v:110,vy:-80,T:.5});}},
+ /* Metronome: a metronome on the rim; while a combo is alive its arm swings, the weight sliding down the arm as the combo window runs out, and it rings when a combo merge lands */
+ metro:{x(g){return fq(fxRX('metro',.33,30,g),fxBP(g));},tick(s,g,dt){s.ph=(s.ph||0)+dt*(s.on?7:2*(s.sw||0));s.sw=fxA(s.sw||0,s.on?1:0,dt*(s.on?6:1.5));if(s.rg>0)s.rg-=dt;},
+  front(c,g,s,t){const P=fxBP(g),x=FXS.metro.x(g),rim=fxRim(g),R=fxPt(c,x,rim,P);c.save();c.globalAlpha=s.p;for(let j=0;j<12;j++){const hw=Math.round(1.5+j*.33);for(let i=-hw;i<=hw;i++)R(i,-12+j,i===-hw||i===hw||j===0?'k':Math.abs(i)<=1&&j>1&&j<10?'c':i<0?'n':'N');}R(-5,-1,'k',11,1);R(-4,-2,'N',9,1);
+   const a=RMO?0:Math.round(Math.sin(s.ph)*4)/4*.55*s.sw,cx=x,cy=rim-3*P,L2=12;for(let k=0;k<=L2;k++){const px=cx+Math.round(Math.sin(a)*k)*P,py=cy-Math.round(Math.cos(a)*k)*P;fxR(c,px,py,P,k===L2?'k':'d');}const wk=Math.round(4+(s.on?(1-(s.l.u||0))*6:6)),wx=cx+Math.round(Math.sin(a)*wk)*P,wy=cy-Math.round(Math.cos(a)*wk)*P;fxR(c,wx-P,wy-P,P,'k',3,3);fxR(c,wx,wy,P,s.rg>0?'w':'y');
+   if(s.rg>0){fxStar(c,x+5*P,rim-15*P,g.P,2,'y');}c.restore();},
+  hit(s){s.rg=.3;}},
+ /* Safety Net: a rope net is strung across both top corners of the jar. When it saves you it flashes gold, snaps and falls away */
+ net:{back(c,g,s,t){const P=g.P,a=s.p;c.save();c.globalAlpha=a*.85;for(const sd of[-1,1])for(let j=0;j<22;j++){const w=22-j;for(let i=0;i<w;i++){const k1=(i+j)%4===0,k2=(i-j+80)%4===0;if(!k1&&!k2)continue;const x=sd<0?g.L+i*P:g.R-(i+1)*P,y=g.top+(j+1)*P;fxR(c,x,y,P,k1&&k2?'k':i===w-1?'N':'n');}}c.restore();},
+  ev(s,n,o,A,g){if(n!=='save'||o.k!=='net')return;const P=g.P;for(const sd of[-1,1])for(let k=0;k<26;k++){const x=sd<0?g.L+Math.random()*14*P:g.R-Math.random()*14*P,y=g.top+Math.random()*14*P;A.add({k:'sq',x,y,vx:(Math.random()-.5)*60,vy:-40-Math.random()*60,g:500,T:1+Math.random()*.4,col:k%3?'N':'y',fa:.5});}}},
+ /* Phoenix: when it saves you a great phoenix bursts up out of the jar in flames, wings beating, and flies away over the top */
+ phoenix:{ev(s,n,o,A,g){if(n!=='save'||o.k!=='phoenix')return;const x0=(g.L+g.R)/2,y0=o.cut||g.top+(g.bot-g.top)*.5,T1=2;A.add({k:'fn',x:x0,y:y0,T:T1,fa:.85,d:(c,q,g)=>{const P=fxBP(g),u=q.t/T1,e=u*u,x=x0+Math.sin(u*5)*20,y=y0-(y0+60)*e,up=fst(q.t,8)%2,R=(i,j,col)=>fxR(c,x+i*P,y+j*P,P,col);
+    for(const sd of[-1,1])for(let k=1;k<=17;k++){const ty=up?-Math.round(k*.75):Math.round(k*.2)-1,th=Math.max(2,8-Math.floor(k*.42));R(sd*k,ty-1,'k');for(let w=0;w<th;w++)R(sd*k,ty+w,w===0?(k>12?'h':'y'):k>13?'y':k>7?(w<2?'y':'o'):(w<3?'o':'r'));R(sd*k,ty+th,(k+fst(q.t,10))%3?'r':'k');if(k%3===0&&th>2)R(sd*k,ty+th+1,'o');}
+    for(let j=-3;j<=5;j++)for(let i=-3;i<=3;i++)if(i*i*1.4+j*j<=12)R(i,j,(i*i*1.4+j*j>8)?'k':j<0?'y':'o');for(let j=-7;j<=-4;j++)for(let i=-2;i<=2;i++)if(i*i+(j+5.5)*(j+5.5)<=3.5)R(i,j,(i*i+(j+5.5)*(j+5.5)>2)?'k':'y');R(-1,-6,'k');R(1,-6,'k');R(0,-4,'o');R(0,-3,'Y');for(const[i,j]of[[0,-8],[-1,-9],[1,-9],[0,-10]])R(i,j,fst(q.t,8)%2?'r':'o');
+    for(let k=0;k<3;k++)for(let j=5;j<11+k*2;j++)R(k-1+Math.round(Math.sin(q.t*12+j+k)*.6),j,j>8+k?'r':'o');}});for(let k=0;k<30;k++)A.add({k:'sq',x:x0+(Math.random()-.5)*120,y:y0,vx:(Math.random()-.5)*80,vy:-80-Math.random()*160,g:-40,T:1.2+Math.random(),col:['y','o','r'][k%3],s:k%3?1:2,fa:.4});A.add({k:'fn',x:x0,y:y0+50,T:1.4,vy:-10,fa:.6,d:(c,q,g)=>{for(const[dx,dy]of[[-2,0],[2,0],[0,-2],[0,2]])T(c,'REBORN',q.x+dx,q.y+dy,24,'#2a1a3a','center',FD);T(c,'REBORN',q.x,q.y,24,'#fb8500','center',FD);}});}},
+ /* Gargoyle: a stone gargoyle crouches on the rim. While there are rocks in the jar its eyes glow red; a merge it scores on, it flexes and stone chips fly */
+ garg:{x(g){return fq(fxRX('garg',.06,44,g),fxBP(g));},tick(s,g,dt){if(s.fl>0)s.fl-=dt;},
+  front(c,g,s,t){const P=fxBP(g),x=FXS.garg.x(g),rim=fxRim(g),n=s.l.n||0,fl=s.fl>0;c.save();c.globalAlpha=s.p;fxS(c,'garg',x,rim-(fl?P:0),P,{fl:1});const ey=rim-(fl?P:0)-9*P,lit=n>0,bl=(t%3.4)<.12;for(const ex of[-3,2]){fxR(c,x+ex*P,ey,P,bl?'d':lit?(fst(t,3)%2||fl?'r':'R'):'D');}if(lit&&!RMO&&fst(t,2)%2){c.globalAlpha=s.p*.4;fxR(c,x-4*P,ey,P,'q');fxR(c,x+3*P,ey,P,'q');}c.restore();},
+  hit(s,o,A,g){s.fl=.3;const x=FXS.garg.x(g),y=fxRim(g)-6*fxBP(g);A.burst(x,y,['d','D','s'],8,{v:120,T:.5});}},
+ /* Horseshoe: a lucky horseshoe hangs on a nail in the top corner of the glass; every time one of your chance charms comes good it flashes gold */
+ shoe:{tick(s,g,dt){if(s.gl>0)s.gl-=dt;},
+  back(c,g,s,t){const P=g.P,x=fq(g.L+8*P,P),y=fq(g.top+8*P,P),G=s.gl>0,R=fxPt(c,x,y,P);c.save();c.globalAlpha=s.p;R(0,-6,'d');R(0,-7,'k');
+   const pts=[];for(let a=0;a<=Math.PI;a+=.18)pts.push([Math.round(Math.cos(a)*5),Math.round(Math.sin(a)*5)]);const S2=new Set();for(let w=0;w<2;w++)for(const[i,j]of pts)S2.add(i+','+(j+w));for(const k2 of S2){const[i,j]=k2.split(',').map(Number);for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]])if(!S2.has((i+a)+','+(j+b)))R(i+a,j+b-2,'k');}for(let j=-3;j<0;j++){for(const sd of[-5,4]){R(sd,j-2,'k');R(sd+1,j-2,'k');}}for(const k2 of S2){const[i,j]=k2.split(',').map(Number);R(i,j-2,G?(j>3?'y':'h'):(j>3?'d':'s'));}for(const sd of[-5,4])for(let j=-3;j<0;j++)R(sd+(sd<0?0:1),j-2,G?'y':'s');for(const[i,j]of[[-4,1],[4,1],[-2,3],[2,3]])R(i,j-2,'k');if(G)fxStar(c,x+5*P,y-4*P,P,2,'y');c.restore();}},
+ /* Ballast: heavy fruit (Apples and up) fall with speed lines streaming off them */
+ ball:{front(c,g,s,t){const P=g.P;c.save();c.globalAlpha=s.p*.8;for(const f of s.l.f||[]){for(const k of[-1,0,1]){const x=fq(f.x+k*f.r*.45,P),len=3+((Math.round(f.x/P)+k+fst(t,12))%3);for(let j=0;j<len;j++)fxR(c,x,f.y-f.r-(3+j+Math.abs(k))*P,P,j===len-1?'s':'d');}}c.restore();}},
+ /* Fireworks and Volcano: after every Boom, rockets shoot up out of the blast and burst into stars in the sky (Volcano throws lava instead) */
+ boom:{ev(s,n,o,A,g){if(n!=='boom'||!s.l.p||o.dp)return;const vol=!!(A.S.boom&&A.S.boom.l&&0),P=g.P,cols=[['r','y','R'],['b','B','w'],['g','G','l'],['m','V','p'],['o','y','r']];for(let k=0;k<2;k++){const tx=o.x+(k?1:-1)*(30+Math.random()*40),ty=fxRim(g)-50-Math.random()*70,T1=.55,cc=cols[Math.floor(Math.random()*cols.length)],x0=o.x,y0=o.y;
+    A.add({k:'fn',x:x0,y:y0,T:T1,dl:k*.15,fa:1,d:(c,q,g)=>{const u=Math.min(1,(q.t-k*.15)/T1),e=1-(1-u)*(1-u),x=x0+(tx-x0)*e,y=y0+(ty-y0)*e;fxR(c,x-P,y-P,g.P,'k',3,3);fxR(c,x,y,g.P,'w');for(let j=1;j<6;j++)fxR(c,x-(tx-x0)*.03*j,y+j*P,g.P,j<3?'y':'o');},end:A2=>{for(let i=0;i<22;i++){const a=i/22*Math.PI*2,v=150+Math.random()*40;A2.add({k:'sq',x:tx,y:ty,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:110,dr:1.6,T:1,col:cc[i%3],s:i%2?2:1,fa:.5});}for(let i=0;i<10;i++){const a=i/10*Math.PI*2+.3;A2.add({k:'star',x:tx+Math.cos(a)*48,y:ty+Math.sin(a)*48,T:.35,dl:.35+Math.random()*.2,col:cc[i%2]});}A2.add({k:'star',x:tx,y:ty,T:.4,col:'y'});}});}}},
+ /* White Flag: on a boss jar a white flag waves on a pole at the right end of the rim: the boss never reaches phase 2 */
+ flag:{x(g){return fq(fxRX('wflag',.95,30,g),g.P);},front(c,g,s,t){if(s.o<=0)return;const P=g.P,px=FXS.flag.x(g)+6*P,base=fxRim(g),ph=24,fh=8,fw=12,wv=fst(t,7);c.save();c.globalAlpha=s.o;fxR(c,px-P,base-P,P,'k',3,1);for(let j=1;j<ph;j++){fxR(c,px-P,base-(j+1)*P,P,'k');fxR(c,px,base-(j+1)*P,P,'d');fxR(c,px+P,base-(j+1)*P,P,'k');}fxR(c,px-P,base-(ph+2)*P,P,'k',3,2);fxR(c,px,base-(ph+1)*P,P,'y');
+   const fy=base-ph*P;for(let ci=0;ci<fw;ci++){const dy=Math.round(Math.sin(ci*.7-wv*.9)*(ci/fw*1.4+.2));for(let rj=-1;rj<=fh;rj++){const x=px-(ci+2)*P,y=fy+(rj+dy)*P;fxR(c,x,y,P,rj<0||rj===fh||ci===fw-1?'k':(ci+rj+wv)%5===0?'s':'w');}}c.restore();}}});
 
 /* The Padlock on the tool bar: chains cross the tools in an X, link by link, then the padlock drops onto them and the bar dims. Phase 2: it shakes and the charge bursts out of the tools in teal sparks. Beaten: a key flies in and turns, the padlock springs open and drops, and the chains fall away */
 function fxLockBar(c,W,H,s,t){const P=3,BP=4,age=s.age||0,u=Math.min(1,age/.8),dead=s.dnt!=null,dn=dead?s.dnt:0;
