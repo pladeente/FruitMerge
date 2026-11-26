@@ -32,7 +32,7 @@ const rareCue=ids=>{const n=ids.filter(id=>CH[id]&&CH[id].r===2&&!(G.rare||[]).i
 /* pet level pip and XP bar (v1.47.1): the bar fills from this level's XP to the next, counting actions as fifths of an XP, gold at level 5 */
 const plP=c=>{const L=RG.plv(c);if(L>=5)return 1;const a=PLX[L-1],b=PLX[L];return clampN(((c.x||0)+(c.a||0)/5-a)/(b-a),0,1);},plB=c=>PLK[c.id]?`${RG.pp(c)>0?'<i class="ppt">!</i>':''}<i class="plv">${RG.plv(c)}</i><i class="pxp${RG.plv(c)>=5?' max':''}"><b style="width:${Math.round(plP(c)*100)}%"></b></i>`:'';
 const plD=c=>{const L=RG.plv(c),k=PLK[c.id],m=1+.14*(L-1),g=RG.skc(c,'soon'),sz=RG.skc(c,'reach'),id=c.id,n=L<5?` (${c.x||0}/${PLX[L]} XP to level ${L+1})`:'',P=v=>Math.round(v*m);
- const now=k==='cat'?`eats every ${(id==='frenzy'?4:5)-g} drops, size ${3+sz} or less, ${P(id==='frenzy'?90:45)} points`:k==='mole'?`eats every ${(id==='zoo'?5:6)-g-(L>=5?1:0)} drops, size ${4+sz} or less, ${P(id==='zoo'?60:40)} points`:k==='hog'?`every ${7-g} drops and at the gold line, size ${6+sz} or less, ${P(40)} points`:k==='bee'?`every ${(id==='bfly'?3:4)-g} drops, up to ${3+RG.skc(c,'cap')} at a time`:`×${num(2+.125*(L-1))} on her fruit's merge`;
+ const now=k==='cat'?`eats every ${(id==='frenzy'?4:5)-g} drops, size ${3+sz} or less, ${P(id==='frenzy'?90:45)} points`:k==='mole'?`eats every ${(id==='zoo'?5:6)-g-(L>=5?1:0)} drops, size ${4+sz} or less, ${P(id==='zoo'?60:40)} points`:k==='hog'?`every ${7-g} drops and at the gold line, size ${6+sz} or less, ${P(40)} points`:k==='bee'?`every ${(id==='bfly'?3:4)-g} drops, up to ${3+RG.skc(c,'cap')} at a time`:k==='mag'?`every ${(id==='hunter'?6:8)-g} drops it turns ${RG.skl(c,'h3')?'2 fruit':'a fruit'} of size ${3+sz} or less gold`:`×${num(2+.125*(L-1))} on her fruit's merge`;
  const p=RG.pp(c),sk=(c.sk||[]).map(id=>RG.node(k,id).n);return ` <b>Level ${L}${n}.</b> Now: ${now}.${sk.length?' Skills: '+sk.join(', ')+'.':''} ${p?`<b>${p} ability point${p>1?'s':''} to spend</b> in its skill tree.`:'Every level gives an ability point for its skill tree.'}`;}; /* pet levels (v1.43): what the pet does at its level */
 const edc=o=>o&&o.e&&ED[o.e]?' ed-'+o.e:'',edT=e=>e&&ED[e]?` <small class="chip edk ed-${e}">${ED[e].n}</small>`:'',edD=e=>e&&ED[e]?`<br><span class="edd">${ED[e].n}: ${ED[e].d}.</span>`:''; /* editions (v1.43): tile class, name chip, bonus line */
 const tile=(id,cls,tag='i',at='')=>`<${tag} class="tile ${cls}"${at}>${ic(icn(id),1)}</${tag}>`;
@@ -348,6 +348,14 @@ function pspr2(c,k,lk,T,s,px,ell,blk){const bob=Math.round(Math.sin(T*3));
   for(const x of[20,25,32,36])px(x,32,'N');
   if(lk==='helm'){for(let y=0;y<4;y++)for(let x=-5+y;x<=5-y;x++)px(37+x,y0-3-y,y===0?'D':'d');px(35,y0-5,'s');for(let i=1;i<=3;i++)px(37,y0-7-i,'r');}
   else if(lk==='apple'){ell(26,y0-11,3,3,(x,y)=>x===-1&&y===-1?'w':'r',1);px(26,y0-15,'N');px(27,y0-16,'g');px(28,y0-16,'g');}return;}
+ if(k==='mag'){const y0=20+bob,fl=RMO?0:Math.floor(T*2.5)%2;
+  for(let i=0;i<14;i++){const tx=19-i,ty=y0+2-Math.round(i*.55);px(tx,ty-1,'k');px(tx,ty,i%4===1?'B':'x');px(tx,ty+1,i>10?'k':'x');px(tx,ty+2,'k');}
+  ell(26,y0+2,8,5,(x,y)=>y>=0&&x>-3?'w':'x',1);ell(25,y0+1,6,3,(x,y)=>y<=-2?'w':y<=-1&&x<3?'b':'B',1);
+  ell(35,y0-4,4,4,()=> 'x',1);if(!blk){px(36,y0-5,'w');px(37,y0-5,'k');}else{px(36,y0-5,'k');px(37,y0-5,'k');}px(40,y0-4,'D');px(41,y0-4,'D');px(42,y0-4,'D');px(40,y0-3,'D');
+  for(const x of[25,29]){px(x,y0+8,'D');px(x,y0+9,'D');px(x-1,y0+10,'D');px(x+1,y0+10,'D');}
+  if(lk==='crown'){for(let x=-2;x<=2;x++)px(35+x,y0-9,'y');for(const x of[-2,0,2])px(35+x,y0-10,'y');px(35,y0-9,'r');}
+  else if(lk==='mask'){for(let x=-3;x<=3;x++)px(34+x,y0-1,'r');px(30,y0,'r');px(29,y0+1,'R');ell(44,y0-4,1.5,1.5,()=> 'y',1);}
+  else if(lk==='flock'){const a=T*2,x=Math.round(13+Math.cos(a)*4),y=Math.round(7+Math.sin(a*1.3)*2);ell(x,y,3,2,()=> 'x',1);px(x+3,y-1,'x');px(x+4,y-1,'D');px(x,y-2+(fl?0:-1),'w');px(x-1,y-2+(fl?0:-1),'w');}return;}
  if(k==='lady'){const wg=lk==='wings',y0=24-(wg?Math.abs(bob):0);
   if(wg){const fl=RMO?1:[1,.6][Math.floor(T*12)%2];ell(18,y0-6,7*fl,3,()=> 'w',1);ell(38,y0-6,7*fl,3,()=> 's',1);}
   const spt=[[-6,-3],[5,-3],[-4,2],[4,2],[-8,1],[8,1]];ell(27,y0,11,8,(x,y)=>x===0||spt.some(([a,b])=>Math.abs(x-a)+Math.abs(y-b)<=1)?'k':y>=4?'R':'r',1);

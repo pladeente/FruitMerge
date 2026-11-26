@@ -23,7 +23,7 @@ const RPAY=[3,4,6],RAR=['Common','Uncommon','Rare','Fused','Legendary'];
 /* pet groups for req: CAT = brings the caterpillar, EAT = a pet that eats fruit, PETS = any pet */
 /* a chance charm missed: counted for Rabbit's Foot (c.mis is only there on a real merge, never in the score table) */
 const miss=c=>{if(c.mis)c.mis.n++;return 1;};
-const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady'],BEE=['bee','bfly','nectar'],MOLE=['mole','zoo'],BOMB=['boom','volcano','cbomb','gtree'],WILD=['joker','fdeck','vine'];
+const CAT=['pet','frenzy'],EAT=['pet','frenzy','mole','zoo','hog'],PETS=['pet','frenzy','mole','zoo','bee','bfly','nectar','hog','lady','magpie','hunter'],BEE=['bee','bfly','nectar'],MOLE=['mole','zoo'],BOMB=['boom','volcano','cbomb','gtree'],WILD=['joker','fdeck','vine'];
 const CH={
  juicer:{n:'Juicer',r:0,c:5,d:'+1 Mult.',add:()=>1},
  honey:{n:'Honey Pot',r:0,c:5,d:'Every merge scores +8 points.',chip:()=>8},
@@ -61,7 +61,7 @@ const CH={
  gold:{n:'Golden Touch',r:1,c:6,d:'Earn 1 coin whenever you make a size 6 fruit or bigger.'},
  dynamo:{n:'Dynamo',r:2,c:8,d:'Every drop gives each tool 1 charge.'},
  snake:{n:'Snake Eyes',r:0,c:5,d:'1 in 6 merges get ×4 Mult.',x:c=>c.l<0||c.nr?1:Math.random()<c.luck/6?4:miss(c)},
- magpie:{n:'Magpie',r:1,c:6,d:'+1 Mult for every gold fruit in the jar.',add:c=>c.gold||0},
+ magpie:{n:'Magpie',r:1,c:6,d:'A pet. +1 Mult for every gold fruit in the jar. Every 8 drops it flies off and brings back something shiny: a fruit of size 3 or less turns gold.',add:c=>c.gold||0},
  ash:{n:'Ashes',r:1,c:6,d:'Every fruit that is destroyed (removed without merging) scores 15 points.'},
  crit:{n:'Sweet Spot',r:2,c:8,d:'Every 5th merge of a jar gets ×5 Mult.',x:c=>c.l>=0&&c.jm>0&&c.jm%5===0?5:1},
  abacus:{n:'Abacus',r:2,c:8,d:'+0.5 Mult for every seed level you hold.',add:c=>c.sdl*.5},
@@ -238,7 +238,7 @@ const CH={
  /* fusions for the thin-build charms (DESIGN.md) */
  frenzy:{n:'Feeding Frenzy',r:3,c:12,fu:['fry','pet'],d:'Merges that make a size 4 fruit or smaller get ×3 Mult. Every 4 drops a caterpillar eats a small fruit (size 3 or less) for 90 points.',x:c=>c.l>=1&&c.l<=3?3:1},
  green:{n:'Greenhouse',r:3,c:12,fu:['gard','abacus'],d:'Every boss you beat (mini bosses too) gives +1 level to the seeds of 2 random fruit sizes. +0.75 Mult for every seed level you hold.',add:c=>c.sdl*.75},
- hunter:{n:'Treasure Hunter',r:3,c:12,fu:['prosp','magpie'],d:'1 in 6 fruit you drop is gold. +1.5 Mult for every gold fruit in the jar.',add:c=>(c.gold||0)*1.5},
+ hunter:{n:'Treasure Hunter',r:3,c:12,fu:['prosp','magpie'],d:'1 in 6 fruit you drop is gold. +1.5 Mult for every gold fruit in the jar. Its magpie turns a fruit of size 3 or less gold every 6 drops.',add:c=>(c.gold||0)*1.5},
  still:{n:'Still Water',r:3,c:12,fu:['low','tidy'],d:'Merges in the bottom third of the jar get ×2.5 Mult. ×2 more while the jar holds 8 fruit or fewer.',x:c=>(c.low?2.5:1)*(c.n<=8&&!c.idle?2:1)},
  ivy:{n:'Climbing Ivy',r:3,c:12,fu:['wall','wire'],d:'Merges touching a wall score +30 points and get ×1.5 Mult. ×3 Mult while the pile reaches the gold line near the top of the jar.',chip:c=>c.wall?30:0,x:c=>(c.wall?1.5:1)*(c.high?3:1)},
  /* rv = what it does while The Sour Graft has it working backwards (v1.37) */
@@ -456,11 +456,15 @@ const PTR={
  {id:'g',n:'Guard',lk:'helm',nd:[{n:'Alert',d:'Comes 1 drop sooner.',ic:'hog',soon:1},{n:'Big Bite',d:'Eats fruit one size bigger.',ic:'feast',reach:1},{n:'Hedge Wall',d:'The pile can sit over the line 1 second longer.',ic:'net',wall:1}]},
  {id:'s',n:'Spiky',lk:'spike',nd:[{n:'Roll Out',d:'+0.3 Mult for every meal it has eaten this jar.',ic:'whirl',am:.3},{n:'Spiky Ball',d:'Its meal also pops the smallest fruit touching it, for points.',ic:'bomb'},{n:'Pincushion',d:'×1.25 Mult. Bigger, redder spikes.',ic:'shrap',x:1.25}]},
  {id:'f',n:'Forager',lk:'apple',nd:[{n:'Sniffer',d:'When the pile reaches the gold line it comes at once, with no wait.',ic:'fore',sniff:1},{n:'Apple Carrier',d:'Goes for Apples (6) first, and Apples it eats score ×2.',ic:'fr5',apple:1},{n:'Forest Friend',d:'Every meal gives your other pets 1 XP.',ic:'treats',xpo:1}]}]},
+ mag:{n:'Magpie',br:[
+ {id:'h',n:'Hoarder',lk:'crown',nd:[{n:'Eager',d:'Comes 1 drop sooner.',ic:'magpie',soon:1},{n:'Bigger Prize',d:'Gilds fruit one size bigger.',ic:'gold',reach:1},{n:'Crown Jewels',d:'Gilds 2 fruit every visit.',ic:'king'}]},
+ {id:'t',n:'Thief',lk:'mask',nd:[{n:'Pickpocket',d:'Every 2nd visit pays 1 coin.',ic:'coin',coin:.5},{n:'Shiny Stash',d:'+0.3 Mult for every fruit it gilded this jar.',ic:'hall',am:.3},{n:'Master Thief',d:'×1.25 Mult. It wears a robber\'s mask.',ic:'thief',x:1.25}]},
+ {id:'f',n:'Flock',lk:'flock',nd:[{n:'Chatter',d:'Every visit gives your other pets 1 XP.',ic:'treats',xpo:1},{n:'Lucky Charm',d:'Every visit gives every tool +1 charge.',ic:'spark',chg:1},{n:'One for Joy',d:'×1.1 Mult for every pet you hold. A second magpie flies with it.',ic:'pack',xp:.1}]}]},
  lady:{n:'Ladybird',br:[
  {id:'l',n:'Lucky',lk:'clover',nd:[{n:'Hop Hop',d:'+0.1 Mult for every hop this jar.',ic:'lady',am:.1},{n:'Spot of Gold',d:'Every 2nd hop pays 1 coin.',ic:'coin',coin:.5},{n:'Seven Spot',d:'×1.25 Mult. She carries a four-leaf clover.',ic:'fourleaf',x:1.25}]},
  {id:'f',n:'Flyer',lk:'wings',nd:[{n:'Long Hop',d:'When her fruit merges she hops to the biggest fruit in the jar.',ic:'lob'},{n:'Sister',d:'A second ladybird rides another fruit.',ic:'twin'},{n:'Guardian Wings',d:'A fruit with a ladybird never counts as over the line.',ic:'net',lg:1}]},
  {id:'g',n:'Garden',lk:'flower',nd:[{n:'Bloom',d:'Every hop gives every tool +1 charge.',ic:'bloom',chg:1},{n:'Garden Friend',d:'Every hop gives your other pets 1 XP.',ic:'treats',xpo:1},{n:'Pollinator',d:'Every 3rd hop, the fruit she lands on is pollinated (×3 when it merges).',ic:'bee',lp:1}]}]}};
-const PK={cat:['pet','frenzy'],bee:['bee','bfly','nectar'],mole:['mole','zoo'],hog:['hog'],lady:['lady']},PLX=[0,2,5,9,14],PLK=Object.fromEntries(Object.entries(PK).flatMap(([k,a])=>a.map(id=>[id,k])));
+const PK={cat:['pet','frenzy'],bee:['bee','bfly','nectar'],mole:['mole','zoo'],hog:['hog'],lady:['lady'],mag:['magpie','hunter']},PLX=[0,2,5,9,14],PLK=Object.fromEntries(Object.entries(PK).flatMap(([k,a])=>a.map(id=>[id,k])));
 const SDF=['svault','green','bloom'],CRP={ch:6,tl:5,sd:4},CRN={ch:'Charm Crate',tl:'Tool Crate',sd:'Seed Crate'},CRW={ch:'charms',tl:'tools',sd:'seeds'};
 /* Contracts: an optional handicap on a normal jar (never a boss or mini boss jar), offered from depth 2. Sign it and the jar is harder, clear the jar and it pays.
    One is drawn for every such jar: R.ct = {id, on (signed), sd (the seed tier it pays, for a seed contract)}.

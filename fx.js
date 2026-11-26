@@ -549,14 +549,20 @@ Object.assign(FXS,{
 /* Magpie (and Treasure Hunter): a magpie perches on a gold fruit and every few seconds flies to the next one, riding along as the fruit moves. With no gold fruit it waits on the rim. A merge it scores on: it pecks and steals a glint */
 FXS.magpie={pick(s,gl){const o=gl.filter(q=>!s.tg||q.f!==s.tg.f);return o.length?o[Math.floor(Math.random()*o.length)]:gl[0]||null;},
  perch(s,g){if(s.tg)return[s.tg.f.x,s.tg.f.y-s.tg.r*.82];return[fxRX('magpie',.56,50,g),fxRim(g)];},
- tick(s,g,dt,A){const gl=(s.l.g||[]).filter(q=>q.f&&!q.f.dead&&q.f.gold);s.ft=(s.ft||0)+dt;s.st=s.st||'gone';for(const k of['pk','cw'])if(s[k]>0)s[k]-=dt;
+ tick(s,g,dt,A){const gl=(s.l.g||[]).filter(q=>q.f&&!q.f.dead&&q.f.gold);s.ft=(s.ft||0)+dt;s.st=s.st||'gone';for(const k of['pk','cw','vis'])if(s[k]>0)s[k]-=dt;
   if(!s.l.p){if(s.st!=='gone'&&s.st!=='out'){s.st='out';s.ft=0;s.x0=s.bx;s.y0=s.by;}}
   else if(s.st==='gone'){s.tg=FXS.magpie.pick(s,gl);s.st='fly';s.ft=0;s.x0=g.W+30;s.y0=fxRim(g)-160;s.T=1;}
-  const lost=s.tg&&!gl.includes(s.tg)&&!gl.some(q=>q.f===s.tg.f);if(s.l.p&&(s.st==='sit'||s.st==='fly')&&(lost||(!s.tg&&gl.length))){s.x0=s.bx;s.y0=s.by;s.tg=FXS.magpie.pick(s,gl.filter(q=>!s.tg||q.f!==s.tg.f));s.st='fly';s.ft=0;const[px,py]=FXS.magpie.perch(s,g);s.T=Math.max(.45,Math.min(1.1,Math.hypot(px-s.x0,py-s.y0)/260));}
-  if(s.st==='sit'){const[px,py]=FXS.magpie.perch(s,g);s.bx=px;s.by=py;s.sd=(s.sd==null?3:s.sd)-dt;if(s.sd<=0&&gl.length>1){s.x0=s.bx;s.y0=s.by;s.tg=FXS.magpie.pick(s,gl);s.st='fly';s.ft=0;const[qx,qy]=FXS.magpie.perch(s,g);s.T=Math.max(.45,Math.min(1.1,Math.hypot(qx-s.x0,qy-s.y0)/260));}}
+  const lost=s.tg&&!gl.includes(s.tg)&&!gl.some(q=>q.f===s.tg.f);if(s.l.p&&!(s.vis>0)&&(s.st==='sit'||s.st==='fly')&&(lost||(!s.tg&&gl.length))){s.x0=s.bx;s.y0=s.by;s.tg=FXS.magpie.pick(s,gl.filter(q=>!s.tg||q.f!==s.tg.f));s.st='fly';s.ft=0;const[px,py]=FXS.magpie.perch(s,g);s.T=Math.max(.45,Math.min(1.1,Math.hypot(px-s.x0,py-s.y0)/260));}
+  if(s.st==='sit'){const[px,py]=FXS.magpie.perch(s,g);s.bx=px;s.by=py;s.sd=(s.sd==null?3:s.sd)-dt;if(s.sd<=0&&gl.length>1&&!(s.vis>0)){s.x0=s.bx;s.y0=s.by;s.tg=FXS.magpie.pick(s,gl);s.st='fly';s.ft=0;const[qx,qy]=FXS.magpie.perch(s,g);s.T=Math.max(.45,Math.min(1.1,Math.hypot(qx-s.x0,qy-s.y0)/260));}}
   else if(s.st==='fly'){const[px,py]=FXS.magpie.perch(s,g),u=Math.min(1,s.ft/s.T),e=u<.5?2*u*u:1-2*(1-u)*(1-u);s.dir=px>s.x0?1:-1;s.bx=s.x0+(px-s.x0)*e;s.by=s.y0+(py-s.y0)*e-Math.sin(u*Math.PI)*Math.min(70,30+Math.abs(px-s.x0)*.3);if(u>=1){s.st='sit';s.sd=2.4+Math.random()*2.2;s.pk=.25;A.add({k:'star',x:px,y:py-2*g.P,T:.4,col:'y'});}}
   else if(s.st==='out'){const u=Math.min(1,s.ft/1.1);s.dir=-1;s.bx=s.x0-u*g.W*.8;s.by=s.y0-u*u*320;if(u>=1){s.st='gone';s.tg=null;}}},
- front(c,g,s,t){if(!s.st||s.st==='gone'||s.bx==null)return;const P=g.P;let fr='mp0',fl=0;if(s.st==='fly'||s.st==='out'){fr=fst(t,12)%2?'mpF0':'mpF1';fl=s.dir>0?1:0;}else{if(s.pk>0)fr='mpP';else if(s.cw>0)fr=fst(s.cw,10)%2?'mpP':'mp0';fl=s.tg&&s.tg.f.x<(g.L+g.R)/2?1:0;}fxS(c,fr,s.bx,s.by,P,{fl});},
+ front(c,g,s,t){if(!s.st||s.st==='gone'||s.bx==null)return;const P=g.P,lk=s.l.lk||'';let fr='mp0',fl=0;const fly=s.st==='fly'||s.st==='out';if(fly){fr=fst(t,12)%2?'mpF0':'mpF1';fl=s.dir>0?1:0;}else{if(s.pk>0)fr='mpP';else if(s.cw>0)fr=fst(s.cw,10)%2?'mpP':'mp0';fl=s.tg&&s.tg.f.x<(g.L+g.R)/2?1:0;}
+  if(lk==='flock'){const ox=s.bx+(fl?-1:1)*14*P,oy=s.by-8*P-(fst(t,3)%2?P:0);fxS(c,fst(t+.3,12)%2?'mpF0':'mpF1',ox,oy,P,{fl});}
+  fxS(c,fr,s.bx,s.by,P,{fl});const C=(col,row,k)=>fxR(c,s.bx+((fl?15-col:col)-8)*P,s.by-(11-row)*P,P,k),hy=fly?1:0;
+  if(lk==='crown'){C(4,-1+hy,'k');C(5,-1+hy,'y');C(6,-1+hy,'y');C(7,-1+hy,'k');C(4,-2+hy,'y');C(6,-2+hy,'y');C(5,-1+hy,'r');}
+  else if(lk==='mask'&&!fly){for(const col of[3,4,5,6])C(col,4,'r');C(7,5,'r');C(7,6,'R');C(0,3,'y');C(0,2,'Y');}},
+ ev(s,n,o,A,g){if(n!=='mag'||!s.l.p||!o.f)return;if(s.bx==null||s.st==='gone'){s.bx=g.W+30;s.by=fxRim(g)-160;}s.x0=s.bx;s.y0=s.by;s.tg={f:o.f,r:o.r};s.st='fly';s.ft=0;s.vis=1.4;const px=o.x,py=o.y-o.r*.82;s.T=Math.max(.35,Math.min(.8,Math.hypot(px-s.x0,py-s.y0)/320));
+  A.add({k:'fn',x:o.x,y:o.y,T:.6,dl:1.05,fa:.5,d:(c,q,g)=>{const f=o.f,u=(q.t-1.05)/.6,P=g.P;for(let k=0;k<6;k++){const a=k*1.047+u*2,r2=(o.r||20)*(.6+u*.7);fxStar(c,f.x+Math.cos(a)*r2,f.y+Math.sin(a)*r2,P,u<.5?2:1,'y');}}});},
  hit(s,o,A,g){if(s.st!=='sit')return;s.pk=.3;s.cw=.5;const P=g.P;A.add({k:'star',x:s.bx,y:s.by+2*P,T:.45,col:'y'});A.add({k:'spr',sp:'nt',x:s.bx,y:s.by-9*P,vy:-40,vx:(Math.random()-.5)*30,T:.9,fa:.5,sw:4,sf:6});}};
 /* ---------- bosses (v1.78): every boss arrives in the sky above the jar while its banner is up, changes the jar's air for that jar, performs its rule where you can see it,
    transforms at phase 2 and reacts when beaten. Scenes are FXS entries named B_<rule>, live state from the engine: {p: the rule is on this jar, ph: phase, done: jar cleared, ...}.
