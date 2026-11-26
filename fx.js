@@ -188,6 +188,67 @@ kfFfffk....
 ....kwwwk..
 ....kwwwk..
 ....kkkkk..`,
+hdu:`
+.kkk..
+kfffk.
+kfffk.
+kFffk.
+kfffk.
+kFffk.
+kfffk.
+kffffk
+kffffk
+.kfffk
+..kffk
+..kwwk
+..kwwk
+..kkkk`,
+mp0:`
+....kkkk........
+...kxxxxk.......
+..kxwkxxxk......
+DDkxxxxxxxk.....
+..kwwwxxBBxk....
+..kwwwwxBbBxk...
+..kwwwwwxBBxkkk.
+...kwwwwxxxxxxxk
+....kwwwxxkkkxxk
+.....kkkkkk..kkk
+......k..k......`,
+mpP:`
+................
+....kkkk........
+...kxxxxk.......
+..kxwkxxxk......
+.kxxxxxxxBk.....
+DDkwwwxxBbBk....
+..kwwwwxBBBxkkk.
+...kwwwwxxxxxxxk
+....kwwwxxkkkxxk
+.....kkkkkk..kkk
+......k..k......`,
+mpF0:`
+......kk........
+.....kBBk.......
+....kBbBk.......
+...kxBBxk.......
+..kxwkxxxk......
+DDkxxxxxxxk.....
+..kwwwxxxxxkkk..
+..kwwwwxxxxxxxxk
+...kwwwxxxkkkxxk
+....kkkkkk...kkk`,
+mpF1:`
+................
+....kkkk........
+...kxxxxk.......
+..kxwkxxxk......
+DDkxxxxxxxkkkk..
+..kwwwxxxxxxxxxk
+..kwwwwxBBkkkxxk
+...kwwwkBbBk.kkk
+....kkkkBBk.....
+.......kkk......`,
 log:`
 .kkkkkk.
 kEnnnnNk
@@ -257,10 +318,11 @@ function fxNew(){const S={},pp=[];let t=0;
    for(let i=pp.length-1;i>=0;i--){const q=pp[i];q.t+=dt;if(q.dl&&q.t<q.dl)continue;if(q.t>=q.T){pp.splice(i,1);if(q.end)q.end(A,g,q);continue;}const d=dt;q.vy+=(q.g||0)*d;q.x+=q.vx*d;q.y+=q.vy*d;if(q.dr){q.vx*=1-q.dr*d;q.vy*=1-q.dr*d;}if(q.fy!=null&&q.y>q.fy){q.y=q.fy;q.vy=-q.vy*(q.bo||0);q.vx*=.6;}}},
   back(c,g){for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].back)FXS[id].back(c,g,s,t,A);}fxPP(c,g,pp,t,0);},
   front(c,g){for(const id in FXS){const s=S[id];if(s&&s.p>0&&FXS[id].front)FXS[id].front(c,g,s,t,A);}fxPP(c,g,pp,t,1);},
-  hit(id,o={}){if(id==='marathon'){A.hit(S.early&&S.early.on?'early':'clutch',o);return;}const k=FXH[id]||id,s=S[k];if(s&&s.p>0&&FXS[k]&&FXS[k].hit&&A.g)FXS[k].hit(s,o,A,A.g);},
+  hit(id,o={}){if(id==='marathon'){A.hit(S.early&&S.early.on?'early':'clutch',o);return;}const ks=[].concat(FXH[id]||id),q=Object.assign({src:id},o);for(const k of ks){const s=S[k];if(s&&s.p>0&&FXS[k]&&FXS[k].hit&&A.g)FXS[k].hit(s,q,A,A.g);}},
   ev(n,o={}){if(!A.g)return;for(const id in FXS){const s=S[id];if(s&&FXS[id].ev)FXS[id].ev(s,n,o,A,A.g);}}};
  return A;}
-const FXH={ivy:'wire',still:'tidy',encore:'enc',headline:'enc',bonfire:'bon'};
+/* which scenes a charm's merge plays: fusions play both halves' scenes, each scene checks o.src to play only when its half applies */
+const FXH={ivy:['wire','wall'],still:['tidy','low'],encore:'enc',headline:'enc',bonfire:'bon',cresc:'comic',chain:'comic',gfin:'comic',knock:'comic',wildfire:['hot','comic'],smoothie:'juicer',mania:'heavy',allin:'dnoth',amph:['cstage','fshow'],hunter:'magpie'};
 /* the rope of High Wire: the gold line, sagging under the walker, slack with nobody on it, twanging after a flip */
 function fxRope(s,g,x){const P=g.P,sp=g.R-g.L,w=s.wx;let y=g.hy;if(s.onR)y+=2*P*(x<w?(x-g.L)/(w-g.L):(g.R-x)/(g.R-w));else y+=1.5*P*Math.sin(Math.PI*(x-g.L)/sp);if(s.tw>0)y+=Math.sin((x-g.L)/sp*Math.PI*5-s.tw*70)*s.tw/.5*1.5*P;return y;}
 /* Full House's marquee bulbs, on the jar frame, clockwise from the top left */
@@ -302,7 +364,7 @@ const FXS={
    if(rot)fxS(c,fr,x,y-8*P,P,{ay:.5,r:rot,fl:s.wd<0});else fxS(c,fr,x,y,P,{fl:s.wd<0});
    if(pole){const hy=y-8*P+py,ca=Math.cos(a),sa=Math.sin(a),dx=ca*14*P,dy=sa*14*P;for(const k of[-1,1]){fxLn(c,x+k*2*P,y-9*P,x+k*ca*5*P,hy+k*sa*5*P,P,FXP.F);}fxLn(c,x-dx,hy-dy,x+dx,hy+dy,P,FXP.N);for(const k of[-1,1]){fxR(c,x+k*ca*5*P,hy+k*sa*5*P,P,'f');fxR(c,x+k*dx-P,hy+k*dy-P,P,'k',3,3);fxR(c,x+k*dx,hy+k*dy,P,'y');}}
    c.restore();},
-  hit(s,o,A,g){if(s.fl>0)return;s.fl=.7;s.tw=.5;const P=g.P;for(let k=0;k<6;k++)A.add({k:'star',x:s.wx+(Math.random()-.5)*20*P,y:g.hy-16*P-Math.random()*8*P,T:.55,dl:.15+k*.06,col:k%2?'o':'y'});}},
+  hit(s,o,A,g){if(s.fl>0||(o.src==='ivy'&&!s.on))return;s.fl=.7;s.tw=.5;const P=g.P;for(let k=0;k<6;k++)A.add({k:'star',x:s.wx+(Math.random()-.5)*20*P,y:g.hy-16*P-Math.random()*8*P,T:.55,dl:.15+k*.06,col:k%2?'o':'y'});}},
  /* Brinkmanship: while the pile is over the line, the line becomes hazard tape, warning signs bob at its ends and a red glow beats at the top of the jar. A merge it scores on: the tape flashes and throws sparks */
  brink:{tick(s,g,dt){if(s.fh>0)s.fh-=dt;},
   front(c,g,s,t){if(s.o<=0)return;const P=g.P,hb=fxHB(t),t0=fq(g.top,P);c.save();c.fillStyle=FXP.r;for(let j=0;j<24;j++){const d=Math.pow(1-j/24,1.3)*hb*s.o,y=t0+j*P;for(let x=g.L;x<g.R;x+=P){const i=Math.round(x/P),e=Math.min(1,d+(Math.min(i-g.L/P,g.R/P-i)<6?.25*hb:0));if(FBY[(i&3)*4+(j&3)]/16<e){c.globalAlpha=.42;c.fillRect(fq(x,P),y,P,P);}}}
@@ -316,7 +378,7 @@ const FXS={
    for(const q of s.sp)if(q.ph>0)fxStar(c,q.x,q.y,P,[0,1,2,3,2,1,0][Math.min(6,Math.floor(q.ph/q.T*7))],'b');c.restore();},
   front(c,g,s,t){const P=g.P,cy=3,u=(RMO?.5:(s.sw%cy))/.7;if(u>=1||s.o<=0)return;c.save();c.beginPath();c.rect(g.L,g.top,g.R-g.L,g.bot-g.top);c.clip();const H=g.bot-g.top,pos=g.L-H*.6+u*(g.R-g.L+H*.6+14*P);
    for(let y=g.top;y<g.bot;y+=P){const x=fq(pos+(g.top-y)*.6,P);c.globalAlpha=.5*s.o;c.fillStyle='#d6f1ff';c.fillRect(x,fq(y,P),5*P,P);c.globalAlpha=.75*s.o;c.fillStyle=FXP.w;c.fillRect(x+P,fq(y,P),2*P,P);c.globalAlpha=.45*s.o;c.fillStyle='#d6f1ff';c.fillRect(x+7*P,fq(y,P),P,P);}c.restore();},
-  hit(s,o,A,g){const P=g.P;A.add({k:'star',x:o.x+(Math.random()-.5)*8*P,y:o.y-5*P,T:.55,col:'b'});A.add({k:'star',x:o.x+7*P,y:o.y+2*P,T:.45,dl:.12,col:'t'});A.add({k:'star',x:o.x-6*P,y:o.y+P,T:.4,dl:.2,col:'b'});}},
+  hit(s,o,A,g){if(o.src==='still'&&!s.on)return;const P=g.P;A.add({k:'star',x:o.x+(Math.random()-.5)*8*P,y:o.y-5*P,T:.55,col:'b'});A.add({k:'star',x:o.x+7*P,y:o.y+2*P,T:.45,dl:.12,col:'t'});A.add({k:'star',x:o.x-6*P,y:o.y+P,T:.4,dl:.2,col:'b'});}},
  /* Full House: while every charm slot is filled, marquee bulbs around the jar frame chase each other, lighting up one after another when it starts. A merge it scores on: every bulb flashes */
  crew:{tick(s,g,dt){if(s.fh>0)s.fh-=dt;},
   front(c,g,s,t){const pts=fxPer(g),n=pts.length,ch=fst(t,7),pw=Math.min(1,s.ton/.6);c.save();c.globalAlpha=s.p;pts.forEach(([x,y],i)=>{let lit=0;if(s.on)lit=s.ton<.6?(i<n*pw?1:0):((i+ch)%3===0?1:0);if(s.fh>0)lit=fst(s.fh,12)%2?2:1;fxBulb(c,x,y,3,lit);});c.restore();},
@@ -360,7 +422,7 @@ const FXS={
  /* Encore (and Headliner): after a tool use, a pair of hands claps up from each bottom corner. The merge it scores on: roses are thrown onto the fruit and the hands burst into applause */
  enc:{tick(s,g,dt){if(s.ap>0)s.ap-=dt;s.h=fxA(s.h||0,(s.on||s.ap>0)?1:0,dt*5);},
   front(c,g,s,t){if(!(s.h>0))return;const P=g.P,fast=s.ap>0,u=(RMO?.5:t)%.9,ph=fast?fst(t,14)%3:(u<.06?2:u<.12?1:(u>.2&&u<.26)?2:(u>.26&&u<.32)?1:0),gap=[6,3,0][ph],y=g.bot+5+Math.round((1-s.h)*12)*P;c.save();c.globalAlpha=s.p;
-   for(const cx of[g.L+14*P,g.R-14*P]){fxS(c,'hd',cx-(gap/2+4)*P,y,P,{ax:.5});fxS(c,'hd',cx+(gap/2+4)*P,y,P,{ax:.5,fl:1});if(ph===2)for(const[a,b]of[[-7,-15],[-3,-17],[3,-17],[7,-15]]){fxR(c,cx+a*P,y+b*P,P,'k');fxR(c,cx+a*P,y+(b-1)*P,P,'y');}}c.restore();},
+   for(const cx of[g.L+14*P,g.R-14*P]){if(ph===2){fxS(c,'hdu',cx-3*P,y,P,{ax:.5});fxS(c,'hdu',cx+3*P,y,P,{ax:.5,fl:1});}else{fxS(c,'hd',cx-(gap/2+5)*P,y,P,{ax:.5,fl:1});fxS(c,'hd',cx+(gap/2+5)*P,y,P,{ax:.5});}if(ph===2)for(const[a,b]of[[-7,-15],[-3,-17],[3,-17],[7,-15]]){fxR(c,cx+a*P,y+b*P,P,'k');fxR(c,cx+a*P,y+(b-1)*P,P,'y');}}c.restore();},
   hit(s,o,A,g){s.ap=1.1;const P=g.P;for(const x0 of[g.L+14*P,g.R-14*P])for(let k=0;k<3;k++){const T=.5+k*.07,x=x0,y=g.bot-12*P,tx=o.x+(k-1)*5*P,ty=o.y,gr=900;A.add({k:'spr',sp:'rose',x,y,vx:(tx-x)/T,vy:(ty-y-.5*gr*T*T)/T,g:gr,T,dl:k*.08,spin:10,fa:.95,end:(A)=>{A.burst(tx,ty,['p','m','r','q'],6,{v:120,vy:-60,T:.55,g:250});}});}}},
  /* Bonfire: while its merges last, flames burn along the jar floor and three logs sit on the frame, one burning to ash with each merge it scores on */
  bon:{tick(s,g,dt,A){const n=Math.min(3,s.l.n||0);s.r=fxA(s.r||0,[0,.7,1.15,1.7][n],dt*2.5);s.n=n;if(n>0&&!RMO&&Math.random()<dt*n*5)A.add({k:'sq',x:g.L+Math.random()*(g.R-g.L),y:g.bot-10,vx:(Math.random()-.5)*20,vy:-60-Math.random()*60,T:1.4+Math.random(),col:Math.random()<.5?'o':'y',sw:4,sf:4,ph:Math.random()*6,fa:.4});},
@@ -410,20 +472,19 @@ const FXW=[['POW!','BAM!','ZOK!','SOK!','ZAP!'],['WHAM!','BLAM!','BIFF!','SOCK!'
 function fxBub(c,q,g){const P=g.P;if(q.y<q.sy)return;fxR(c,q.x-P,q.y,P,'b');fxR(c,q.x+P,q.y,P,'b');fxR(c,q.x,q.y-P,P,'b');fxR(c,q.x,q.y+P,P,'b');fxR(c,q.x,q.y,P,'w');}
 function fxDie(c,x,y,P,f,r){x=fq(x,P);y=fq(y,P);c.save();c.translate(x,y);c.rotate(r*Math.PI/2);const R=(a,b,col,w=1,h=1)=>{c.fillStyle=FXP[col];c.fillRect(a*P,b*P,w*P,h*P);};R(-5,-6,'k',10,12);R(-6,-5,'k',12,10);R(-5,-5,'w',10,10);R(-5,3,'s',10,2);R(3,-5,'s',2,10);R(-5,-5,'w',8,8);R(4,4,'d');const pp={1:[[0,0]],2:[[-3,-3],[3,3]],3:[[-3,-3],[0,0],[3,3]],4:[[-3,-3],[3,-3],[-3,3],[3,3]],5:[[-3,-3],[3,-3],[0,0],[-3,3],[3,3]],6:[[-3,-3],[3,-3],[-3,0],[3,0],[-3,3],[3,3]]}[f];for(const[a,b]of pp)R(a-1,b-1,f===1?'r':'k',2,2);c.restore();}
 function fxCoin(c,x,y,P,w,tl){x=fq(x,P);y=fq(y,P);const h=7;for(let j=-h;j<=h;j++){const hw=Math.max(0,Math.round(w*Math.sqrt(1-(j/(h+.5))**2)));for(let i=-hw;i<=hw;i++){const e=Math.abs(i)===hw||Math.abs(j)===h||(Math.abs(i)===hw-1&&Math.abs(j)>=h-1),rim=Math.abs(i)>=hw-1||Math.abs(j)>=h-1,st=w>=5&&((i===0&&Math.abs(j)<=3)||(j===0&&Math.abs(i)<=3)||(Math.abs(i)===1&&Math.abs(j)===1));fxR(c,x+i*P,y+j*P,P,e?'k':tl?(st?'D':rim?'d':'s'):(st?'Y':rim?'Y':(i<0&&j<0?'h':'y')));}}}
-FXH.cresc='comic';FXH.chain='comic';
 Object.assign(FXS,{
  /* Low Tide: the bottom third of the jar is under water: a rippling surface, a blue tint, bubbles rising. A merge it scores on (down there): bubbles burst up and the surface ripples */
  low:{surf(g){return g.bot-(g.bot-g.top)/3;},
   tick(s,g,dt,A){const sy=FXS.low.surf(g);s.rp=(s.rp||[]).filter(r=>(r.t+=dt)<1);if(!RMO&&s.p>0&&Math.random()<dt*2.5)A.add({k:'fn',x:g.L+Math.random()*(g.R-g.L),y:g.bot-6,vy:-30-Math.random()*25,T:(g.bot-sy)/30,sy,sw:3,sf:3,ph:Math.random()*6,fa:.95,d:fxBub});},
   front(c,g,s,t){const P=g.P,sy=fq(FXS.low.surf(g),P),wv=fst(t,8);c.save();c.globalAlpha=.17*s.p;c.fillStyle=FXP.b;c.fillRect(g.L,sy,g.R-g.L,g.bot-sy);
    for(let x=g.L;x<g.R;x+=P){const i=Math.round(x/P);let dy=Math.sin(i*.28+wv*.7)*.9;for(const r of s.rp)dy+=Math.sin((x-r.x)*.12-r.t*18)*2.4*(1-r.t)*Math.exp(-Math.abs(x-r.x)/70);dy=Math.round(dy);c.globalAlpha=s.p;fxR(c,x,sy+dy*P-P,P,(i+wv)%9===0?'w':'b');c.globalAlpha=s.p*.85;fxR(c,x,sy+dy*P,P,'B');c.globalAlpha=s.p*.35;for(let j=1;j<5;j++)if(FBY[(i&3)*4+(j&3)]/16<.6-j*.12)fxR(c,x,sy+(dy+j)*P,P,'B');}c.restore();},
-  hit(s,o,A,g){s.rp.push({x:o.x,t:0});const sy=FXS.low.surf(g);for(let k=0;k<7;k++)A.add({k:'fn',x:o.x+(Math.random()-.5)*(o.r||20),y:o.y,vy:-60-Math.random()*40,T:Math.max(.3,(o.y-sy)/70),sy,sw:4,sf:5,ph:k,fa:.95,d:fxBub});}},
+  hit(s,o,A,g){const sy=FXS.low.surf(g);if(o.src==='still'&&o.y<sy)return;s.rp.push({x:o.x,t:0});for(let k=0;k<7;k++)A.add({k:'fn',x:o.x+(Math.random()-.5)*(o.r||20),y:o.y,vy:-60-Math.random()*40,T:Math.max(.3,(o.y-sy)/70),sy,sw:4,sf:5,ph:k,fa:.95,d:fxBub});}},
  /* Floor Show: a light-up dance floor along the bottom and mirror-ball spots sweeping the glass. A merge on the floor: the tiles under it flash */
  fshow:{tick(s,g,dt){if(s.fh>0)s.fh-=dt;if(s.dm>0)s.dm-=dt;},
   back(c,g,s,t){const P=g.P,cols=['m','y','t','P','b','o'],dm=s.dm>0?Math.min(1,s.dm/.3,(1.4-s.dm)/.2):0;c.save();c.beginPath();c.rect(g.L,g.top,g.R-g.L,g.bot-g.top);c.clip();if(dm>0){c.globalAlpha=.32*dm;c.fillStyle=FXP.x;c.fillRect(g.L,g.top,g.R-g.L,g.bot-g.top);}const sp=dm>0?2.2:.5,n=dm>0?22:12;for(let k=0;k<n;k++){const a=(RMO?0:t)*sp+k*.53,x=(g.L+g.R)/2+Math.cos(a+k)*(g.R-g.L)*.45*fhs(k,1)+Math.sin(a*1.7)*20,y=g.top+(g.bot-g.top)*(.15+.6*fhs(k,2))+Math.sin(a*1.3+k)*30;c.globalAlpha=s.p*(dm>0?.9:.6);const z=dm>0?3:2;fxR(c,x,y-P,P,cols[k%6],z,1);fxR(c,x-P,y,P,cols[k%6],z+2,z-1);fxR(c,x,y+(z-1)*P,P,cols[k%6],z,1);}c.restore();
    const bx=fq(g.L+(g.R-g.L)*.8,P),by=fq(g.top+9*P,P),f=fst(t,6);c.save();c.globalAlpha=s.p;fxR(c,bx,g.top,P,'D',1,4);for(let j=-4;j<=4;j++)for(let i=-4;i<=4;i++){const d=i*i+j*j;if(d>18)continue;const e=d>12,fc=(i+j+f)%3;fxR(c,bx+i*P,by+j*P,P,e?'k':fc===0?'w':fc===1?'s':(i<0&&j<0?'b':'d'));}c.restore();},
   front(c,g,s,t){const P=g.P,b=fq(g.bot,P),cols=['m','y','t','P'],st=fst(t,4),tw=6;c.save();c.globalAlpha=s.p;for(let x=g.L,ti=0;x<g.R;x+=tw*P,ti++){const w=Math.min(tw,Math.round((g.R-x)/P)),near=s.fh>0&&Math.abs(x+tw*P/2-s.fx)<tw*P*1.5,lit=(ti+st)%2,col=near?(fst(s.fh,14)%2?'w':'h'):lit?cols[(ti+(st>>1))%4]:'x';fxR(c,x,b-3*P,P,'k',w,1);fxR(c,x,b-2*P,P,col,w,2);fxR(c,x,b-2*P,P,'k',1,2);if(lit||near)fxR(c,x+P,b-2*P,P,'w');}c.restore();},
-  hit(s,o){s.fh=.4;s.fx=o.x;s.dm=1.4;}},
+  hit(s,o,A,g){if(o.src==='amph'&&o.y+(o.r||0)<g.bot-6)return;s.fh=.4;s.fx=o.x;s.dm=1.4;}},
  /* Hot Streak: the jar heats up with every merge this jar: a warm glow rises from the floor, the air shimmers, then embers fly. Every merge: a puff of heat */
  hot:{tick(s,g,dt,A){const n=s.l.v||0,st=n<5?0:n<10?1:n<15?2:3;if(s.st!=null&&st>s.st)s.fl=.45;s.st=st;s.h=fxA(s.h||0,[0,.24,.44,.64][st],dt*.8);if(s.fl>0)s.fl-=dt;if(st>=3&&!RMO&&Math.random()<dt*8)A.add({k:'sq',x:g.L+Math.random()*(g.R-g.L),y:g.bot-4,vx:(Math.random()-.5)*20,vy:-70-Math.random()*60,T:1.6,col:Math.random()<.5?'o':'y',sw:5,sf:4,ph:Math.random()*6,fa:.4});},
   front(c,g,s,t){if(!(s.h>0))return;const P=g.P,H=(g.bot-g.top)*s.h,rows=Math.ceil(H/P),fl=s.fl>0?.25:0;c.save();for(let j=0;j<rows;j++){const y=fq(g.bot,P)-(j+1)*P,d=Math.pow(1-j/rows,1.4)*.75+fl;for(let x=g.L;x<g.R;x+=P){const i=Math.round(x/P);if(FBY[(i&3)*4+(j&3)]/16<d){c.globalAlpha=s.p*.24;fxR(c,x,y,P,j<rows*.35?'r':'o');}}}
@@ -440,22 +501,36 @@ Object.assign(FXS,{
   front(c,g,s,t){const P=g.P,x0=fq(g.L+(g.R-g.L)/3,P),x1=fq(g.L+2*(g.R-g.L)/3,P),fl=s.fh>0?1:0;c.save();for(let y=g.top,j=0;y<g.bot-2*P;y+=P,j++)for(let x=x0-2*P,i=-2;x<x1+2*P;x+=P,i++){const e=Math.min(i+2,Math.round((x1-x)/P)+2),d=(e<2?.25:e<4?.5:.75)*(fl?1:.55);const ci=Math.round(x/P);if(FBY[(ci&3)*4+(j&3)]/16<d){c.globalAlpha=s.p*(fl?.32:.17);fxR(c,x,y,P,'y');}}
    c.globalAlpha=s.p;const b=fq(g.bot,P);for(let x=x0;x<x1;x+=P){const i=Math.round((x-x0)/P);fxR(c,x,b-3*P,P,'k');fxR(c,x,b-2*P,P,i%7===0?'N':'E');fxR(c,x,b-P,P,i%7===0?'N':'n');}
    for(const x of[x0,x1]){const y=fxRim(g);fxR(c,x-2*P,y-4*P,P,'k',4,4);fxR(c,x-P,y-3*P,P,'D',2,2);fxR(c,x-P,y-P,P,fl?'w':'h',2,1);}c.restore();},
-  hit(s,o,A,g){s.fh=.4;A.burst(o.x,o.y-(o.r||16),['m','y','t','b','g','P'],14,{v:170,vy:-160,g:420,T:.9,dr:1.2});}},
+  hit(s,o,A,g){const w=g.R-g.L;if(o.src==='amph'&&(o.x<g.L+w/3||o.x>g.L+2*w/3))return;s.fh=.4;A.burst(o.x,o.y-(o.r||16),['m','y','t','b','g','P'],14,{v:170,vy:-160,g:420,T:.9,dr:1.2});}},
  /* Wallflower: flowering vines climb both walls of the jar. A merge touching a wall: the flowers on that side bloom and throw petals at it */
  wall:{tick(s,g,dt){if(s.bl&&(s.bl.t-=dt)<=0)s.bl=null;},
   front(c,g,s,t){const P=g.P,sw=fst(t,2)%2;c.save();c.globalAlpha=s.p;for(const sd of[-1,1]){const wx=sd<0?g.L:g.R-P;let k=0;for(let y=g.bot-P;y>g.top+6*P;y-=P,k++){const dx=Math.round(Math.sin(k*.18+(sd>0?2:0))*1)+1,x=wx-sd*dx*P;fxR(c,x,y,P,'G');if(k%6===3){fxR(c,x-sd*P,y,P,'g');fxR(c,x-sd*2*P,y-P,P,'g');}
      if(k%11===5){const big=s.bl&&s.bl.sd===sd&&Math.abs(s.bl.y-y)<70,fx=x-sd*3*P,fy=y-(sw&&!big?P:0),pc=k%22===5?'p':'m';for(const[a,b]of[[0,-2],[0,2],[-2,0],[2,0],[-1,-1],[1,1],[-1,1],[1,-1]])fxR(c,fx+a*P,fy+b*P,P,'k');fxR(c,fx,fy-P,P,pc);fxR(c,fx,fy+P,P,pc);fxR(c,fx-P,fy,P,pc);fxR(c,fx+P,fy,P,pc);if(big){fxR(c,fx-P,fy-P,P,pc);fxR(c,fx+P,fy+P,P,pc);fxR(c,fx-P,fy+P,P,pc);fxR(c,fx+P,fy-P,P,pc);fxR(c,fx,fy-2*P,P,pc);fxR(c,fx,fy+2*P,P,pc);fxR(c,fx-2*P,fy,P,pc);fxR(c,fx+2*P,fy,P,pc);}fxR(c,fx,fy,P,'y');}}}c.restore();},
-  hit(s,o,A,g){const sd=o.x<(g.L+g.R)/2?-1:1,wx=sd<0?g.L+4*g.P:g.R-4*g.P;s.bl={sd,y:o.y,t:.7};for(let k=0;k<9;k++){const T=.45+Math.random()*.2;A.add({k:'sq',x:wx,y:o.y+(Math.random()-.5)*60,vx:(o.x-wx)/T*(.7+Math.random()*.5),vy:-40-Math.random()*60,g:200,T,col:k%2?'p':'m',dr:.4});}}},
+  hit(s,o,A,g){if(o.src==='ivy'&&o.x-(o.r||0)>g.L+8&&o.x+(o.r||0)<g.R-8)return;const sd=o.x<(g.L+g.R)/2?-1:1,wx=sd<0?g.L+4*g.P:g.R-4*g.P;s.bl={sd,y:o.y,t:.7};for(let k=0;k<9;k++){const T=.45+Math.random()*.2;A.add({k:'sq',x:wx,y:o.y+(Math.random()-.5)*60,vx:(o.x-wx)/T*(.7+Math.random()*.5),vy:-40-Math.random()*60,g:200,T,col:k%2?'p':'m',dr:.4});}}},
  /* Crescendo and Chain Reaction: every combo merge they score on lands a comic-book hit: a loud starburst and a word, bigger the longer the combo runs, then it breaks apart */
- comic:{hit(s,o,A,g){const now=A.t;if(s.lt&&now-s.lt<.05)return;s.lt=now;const cb=Math.max(1,o.cb||1),tier=cb<3?0:cb<5?1:2,wl=FXW[tier],w=wl[Math.floor(Math.random()*wl.length)],R=Math.min(58,38+cb*4),seed=Math.floor(Math.random()*99),ang=(Math.random()<.5?-1:1)*(.15+Math.random()*.2),cv=fxBurst(w,R,ang,seed),pr=FXCB[seed%FXCB.length],P=2,x=Math.max(g.L+cv.width*P*.3,Math.min(g.R-cv.width*P*.3,o.x)),y=o.y-(o.r||16)*.4;
+ comic:{hit(s,o,A,g){if(o.src==='wildfire'&&!(o.cb>=1))return;const now=A.t;if(s.lt&&now-s.lt<.05)return;s.lt=now;const ko=o.src==='knock',fi=o.src==='wildfire',cb=Math.max(ko?3:1,o.cb||1),tier=cb<3?0:cb<5?1:2,wl=ko?['K.O.!','KAPOW!','WHAM!']:fi?['FWOOM!','WHOOSH!','BLAZE!']:FXW[tier],w=wl[Math.floor(Math.random()*wl.length)],R=Math.min(62,(ko?46:38)+cb*4),seed=fi?[0,1][Math.floor(Math.random()*2)]:ko?0:Math.floor(Math.random()*99),ang=(Math.random()<.5?-1:1)*(.15+Math.random()*.2),cv=fxBurst(w,R,ang,seed),pr=FXCB[seed%FXCB.length],P=2,x=Math.max(g.L+cv.width*P*.3,Math.min(g.R-cv.width*P*.3,o.x)),y=o.y-(o.r||16)*.4;
+   if(ko)for(let k=0;k<14;k++){const a=k*Math.PI/7+Math.random()*.2;A.add({k:'fn',x:o.x,y:o.y,T:.25,fa:.4,a,d:(c,q,g)=>{const P=g.P,r0=(o.r||20)*1.3+q.t*300,r1=r0+18+q.t*60;fxLn(c,q.x+Math.cos(q.a)*r0,q.y+Math.sin(q.a)*r0,q.x+Math.cos(q.a)*r1,q.y+Math.sin(q.a)*r1,P,FXP.k);}});}
    A.add({k:'fn',x,y,T:.62,fa:.85,d:(c,q,g)=>{const P=2,f=Math.floor(q.t/.05),sc=f===0?.55:f===1?1.18:1,u=q.t>.44?1:0,w=cv.width*P*sc;if(u&&!q.br){q.br=1;A.burst(q.x,q.y,[pr[0],pr[1],'k'],16,{v:300,T:.5,s:3,g:300,w:40});}if(u)return;c.save();c.imageSmoothingEnabled=false;c.drawImage(cv,fq(q.x-w/2,P),fq(q.y-w/2,P),w,w);c.restore();}});}},
  /* Juicer: every merge squirts juice in the fruit's colour; drops that reach the glass splat and run down it */
- juicer:{hit(s,o,A,g){const col=(FRUIT[o.l]||FRUIT[0])[0],P=g.P;A.burst(o.x,o.y-(o.r||16)*.3,[col,col,'w'],8,{v:140,vy:-60,g:500,T:.45,s:2});for(let k=0;k<9;k++){const a=-Math.PI*(.1+.8*Math.random()),v=180+Math.random()*200;A.add({k:'fn',x:o.x,y:o.y-(o.r||16)*.3,vx:Math.cos(a)*v*(Math.random()<.5?-1:1),vy:Math.sin(a)*v,g:900,T:1.6,fa:.8,col,st:0,d:(c,q,g)=>{const P=g.P;if(!q.st&&(q.x<=g.L+P||q.x>=g.R-2*P)){q.st=1;q.sx=q.x<=g.L+P?g.L:g.R-2*P;q.sy=q.y;q.vx=0;q.vy=16;q.g=0;q.T=q.t+1.4;}if(q.st){q.x=q.sx;const len=Math.max(1,Math.round((q.y-q.sy)/P));c.globalAlpha*=.85;fxR(c,q.x-P,q.sy-P,P,q.col,4,2);for(let j=0;j<len;j++)fxR(c,q.x,q.sy+j*P,P,q.col,2,1);fxR(c,q.x,q.y,P,q.col,2,3);fxR(c,q.x,q.y,P,'w');}else{fxR(c,q.x,q.y,P,q.col,2,2);fxR(c,q.x,q.y,P,'w');if(q.vy>0&&q.y>g.bot-2*P)q.T=q.t;}}});}}},
+ juicer:{hit(s,o,A,g){const sm=o.src==='smoothie',col=sm?(Math.random()<.5?'#ff8fab':(FRUIT[o.l]||FRUIT[0])[0]):(FRUIT[o.l]||FRUIT[0])[0],P=g.P;if(sm)A.burst(o.x,o.y-(o.r||16)*.3,['y','Y','h'],6,{v:90,vy:-40,g:600,T:.6,s:2});A.burst(o.x,o.y-(o.r||16)*.3,[col,col,'w'],8,{v:140,vy:-60,g:500,T:.45,s:2});for(let k=0;k<9;k++){const a=-Math.PI*(.1+.8*Math.random()),v=180+Math.random()*200;A.add({k:'fn',x:o.x,y:o.y-(o.r||16)*.3,vx:Math.cos(a)*v*(Math.random()<.5?-1:1),vy:Math.sin(a)*v,g:900,T:1.6,fa:.8,col,st:0,d:(c,q,g)=>{const P=g.P;if(!q.st&&(q.x<=g.L+P||q.x>=g.R-2*P)){q.st=1;q.sx=q.x<=g.L+P?g.L:g.R-2*P;q.sy=q.y;q.vx=0;q.vy=16;q.g=0;q.T=q.t+1.4;}if(q.st){q.x=q.sx;const len=Math.max(1,Math.round((q.y-q.sy)/P));c.globalAlpha*=.85;fxR(c,q.x-P,q.sy-P,P,q.col,4,2);for(let j=0;j<len;j++)fxR(c,q.x,q.sy+j*P,P,q.col,2,1);fxR(c,q.x,q.y,P,q.col,2,3);fxR(c,q.x,q.y,P,'w');}else{fxR(c,q.x,q.y,P,q.col,2,2);fxR(c,q.x,q.y,P,'w');if(q.vy>0&&q.y>g.bot-2*P)q.T=q.t;}}});}}},
  /* Heavyweight: a size 6+ merge it scores on lands like a wrestler: impact lines, a shockwave along the ground and dust kicked out */
- heavy:{hit(s,o,A,g){const r=o.r||30,gy=o.y+r*.6;A.add({k:'fn',x:o.x,y:o.y,T:.16,fa:1,d:(c,q,g)=>{const P=g.P;for(let k=0;k<10;k++){const a=k*Math.PI/5+.3;for(let d=1.2;d<1.95;d+=.1){fxR(c,q.x+Math.cos(a)*r*d,q.y+Math.sin(a)*r*d,P,'k');fxR(c,q.x+Math.cos(a)*r*d+P,q.y+Math.sin(a)*r*d,P,'k');}}}});
+ heavy:{hit(s,o,A,g){if(o.src==='mania'&&o.l<5)return;const r=o.r||30,gy=o.y+r*.6;if(o.src==='mania')A.burst(o.x,o.y,['g','G','r','w'],12,{v:200,vy:-120,g:500,T:.7,s:2});A.add({k:'fn',x:o.x,y:o.y,T:.16,fa:1,d:(c,q,g)=>{const P=g.P;for(let k=0;k<10;k++){const a=k*Math.PI/5+.3;for(let d=1.2;d<1.95;d+=.1){fxR(c,q.x+Math.cos(a)*r*d,q.y+Math.sin(a)*r*d,P,'k');fxR(c,q.x+Math.cos(a)*r*d+P,q.y+Math.sin(a)*r*d,P,'k');}}}});
    A.add({k:'fn',x:o.x,y:gy,T:.5,fa:.4,d:(c,q,g)=>{const P=g.P,u=q.t/.5,R=r*(1+u*2.6);for(let k=0;k<64;k++){const a=k/64*Math.PI*2,x=q.x+Math.cos(a)*R,y=q.y+Math.sin(a)*R*.32;fxR(c,x,y+P,P,'k');fxR(c,x,y,P,'w');fxR(c,x,y-P,P,'s');}}});
    for(let k=0;k<12;k++){const d=k%2?1:-1;A.add({k:'fn',x:o.x+d*r*.5,y:gy,vx:d*(90+Math.random()*140),vy:-30-Math.random()*50,g:100,dr:2.2,T:.8,fa:.3,z:2+Math.floor(Math.random()*2),d:(c,q,g)=>{const P=g.P,z=q.z+Math.floor(q.t*4);fxR(c,q.x-z*P/2,q.y-z*P/2,P,'d',z,z);fxR(c,q.x-z*P/2,q.y-z*P/2,P,'s',z-1,z-1);}});}}},
  /* Snake Eyes: when it hits, two dice tumble into the jar, bounce and land on double one */
  snake:{hit(s,o,A,g){const P=g.P,fy=o.y-(o.r||16)-6*P;for(const d of[-1,1]){const x0=o.x+d*7*P;A.add({k:'fn',x:x0-d*30,y:g.top-30,vx:d*30,vy:60,g:1300,T:1.4,fa:.75,fy,bo:.45,sd:Math.random()*9,d:(c,q,g)=>{const P=g.P,mv=Math.abs(q.vy)>40||q.t<.5,f=mv?1+Math.floor(fhs(q.sd,Math.floor(q.t*14))*6):1,r=mv?Math.floor(q.t*12)%4:0;fxDie(c,q.x,q.y,P,f,r);}});}}},
  /* Double or Nothing: every merge flips a coin. Heads it lands gold and sparkles (×2), tails it lands dull and puffs (×0.75) */
- dnoth:{hit(s,o,A,g){const tl=!!o.tails,y0=o.y-(o.r||16);A.add({k:'fn',x:o.x,y:y0,vy:-340,g:1100,T:1,fa:.8,fy:y0,bo:0,end:null,land:0,d:(c,q,g)=>{const P=g.P,up=q.t<.6;if(!up&&!q.land){q.land=1;if(tl)A.burst(q.x,q.y,['s','d','D'],8,{v:60,vy:-30,g:-20,T:.5,s:2});else for(let k=0;k<5;k++){const a=k*Math.PI*2/5;A.add({k:'star',x:q.x+Math.cos(a)*24,y:q.y+Math.sin(a)*24,T:.45,dl:k*.04,col:'y'});}}const w=up?[5,3,1,3][Math.floor(q.t*16)%4]:5;fxCoin(c,q.x,q.y,P,w,!up&&tl);}});}}});
+ dnoth:{hit(s,o,A,g){const tl=!!o.tails,y0=o.y-(o.r||16);A.add({k:'fn',x:o.x,y:y0,vy:-340,g:1100,T:1,fa:.8,fy:y0,bo:0,end:null,land:0,d:(c,q,g)=>{const P=g.P,up=q.t<.6;if(!up&&!q.land){q.land=1;if(tl)A.burst(q.x,q.y,['s','d','D'],8,{v:60,vy:-30,g:-20,T:.5,s:2});else for(let k=0;k<5;k++){const a=k*Math.PI*2/5;A.add({k:'star',x:q.x+Math.cos(a)*24,y:q.y+Math.sin(a)*24,T:.45,dl:k*.04,col:o.src==='allin'?'g':'y'});}}const w=up?[5,3,1,3][Math.floor(q.t*16)%4]:5;fxCoin(c,q.x,q.y,P,w,!up&&tl);}});}}});
+
+/* Magpie (and Treasure Hunter): a magpie perches on a gold fruit and every few seconds flies to the next one, riding along as the fruit moves. With no gold fruit it waits on the rim. A merge it scores on: it pecks and steals a glint */
+FXS.magpie={pick(s,gl){const o=gl.filter(q=>!s.tg||q.f!==s.tg.f);return o.length?o[Math.floor(Math.random()*o.length)]:gl[0]||null;},
+ perch(s,g){if(s.tg)return[s.tg.f.x,s.tg.f.y-s.tg.r*.82];return[g.L+(g.R-g.L)*.56,fxRim(g)];},
+ tick(s,g,dt,A){const gl=(s.l.g||[]).filter(q=>q.f&&!q.f.dead&&q.f.gold);s.ft=(s.ft||0)+dt;s.st=s.st||'gone';for(const k of['pk','cw'])if(s[k]>0)s[k]-=dt;
+  if(!s.l.p){if(s.st!=='gone'&&s.st!=='out'){s.st='out';s.ft=0;s.x0=s.bx;s.y0=s.by;}}
+  else if(s.st==='gone'){s.tg=FXS.magpie.pick(s,gl);s.st='fly';s.ft=0;s.x0=g.W+30;s.y0=fxRim(g)-160;s.T=1;}
+  const lost=s.tg&&!gl.includes(s.tg)&&!gl.some(q=>q.f===s.tg.f);if(s.l.p&&(s.st==='sit'||s.st==='fly')&&(lost||(!s.tg&&gl.length))){s.x0=s.bx;s.y0=s.by;s.tg=FXS.magpie.pick(s,gl.filter(q=>!s.tg||q.f!==s.tg.f));s.st='fly';s.ft=0;const[px,py]=FXS.magpie.perch(s,g);s.T=Math.max(.45,Math.min(1.1,Math.hypot(px-s.x0,py-s.y0)/260));}
+  if(s.st==='sit'){const[px,py]=FXS.magpie.perch(s,g);s.bx=px;s.by=py;s.sd=(s.sd==null?3:s.sd)-dt;if(s.sd<=0&&gl.length>1){s.x0=s.bx;s.y0=s.by;s.tg=FXS.magpie.pick(s,gl);s.st='fly';s.ft=0;const[qx,qy]=FXS.magpie.perch(s,g);s.T=Math.max(.45,Math.min(1.1,Math.hypot(qx-s.x0,qy-s.y0)/260));}}
+  else if(s.st==='fly'){const[px,py]=FXS.magpie.perch(s,g),u=Math.min(1,s.ft/s.T),e=u<.5?2*u*u:1-2*(1-u)*(1-u);s.dir=px>s.x0?1:-1;s.bx=s.x0+(px-s.x0)*e;s.by=s.y0+(py-s.y0)*e-Math.sin(u*Math.PI)*Math.min(70,30+Math.abs(px-s.x0)*.3);if(u>=1){s.st='sit';s.sd=2.4+Math.random()*2.2;s.pk=.25;A.add({k:'star',x:px,y:py-2*g.P,T:.4,col:'y'});}}
+  else if(s.st==='out'){const u=Math.min(1,s.ft/1.1);s.dir=-1;s.bx=s.x0-u*g.W*.8;s.by=s.y0-u*u*320;if(u>=1){s.st='gone';s.tg=null;}}},
+ front(c,g,s,t){if(!s.st||s.st==='gone'||s.bx==null)return;const P=g.P;let fr='mp0',fl=0;if(s.st==='fly'||s.st==='out'){fr=fst(t,12)%2?'mpF0':'mpF1';fl=s.dir>0?1:0;}else{if(s.pk>0)fr='mpP';else if(s.cw>0)fr=fst(s.cw,10)%2?'mpP':'mp0';fl=s.tg&&s.tg.f.x<(g.L+g.R)/2?1:0;}fxS(c,fr,s.bx,s.by,P,{fl});},
+ hit(s,o,A,g){if(s.st!=='sit')return;s.pk=.3;s.cw=.5;const P=g.P;A.add({k:'star',x:s.bx,y:s.by+2*P,T:.45,col:'y'});A.add({k:'spr',sp:'nt',x:s.bx,y:s.by-9*P,vy:-40,vx:(Math.random()-.5)*30,T:.9,fa:.5,sw:4,sf:6});}};

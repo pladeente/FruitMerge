@@ -209,6 +209,7 @@ const CH={
  linger:{n:'Lingering',r:1,c:6,d:'Timed tools last 2 more drops. Switch-on tools (Slingshot, Moon Boots) use 1 charge every 2 drops instead of every drop.'},
  /* v1.40: ×Mult for builds that had none of their own (combo, destruction, economy, seeds, gold, tools, chance, the full jar). Context fields in the comment above CH. Family Tree is in RG.score */
  cresc:{n:'Crescendo',r:1,c:7,d:'In a combo (merges less than 1 second apart), the 2nd merge and every merge after it get ×2 Mult.',x:c=>c.combo>=1?2:1},
+ knock:{n:'Knockout',r:1,c:6,d:'In a combo (merges less than 1 second apart), every merge from the 3rd is a Knockout: ×2 Mult, and it punches the fruit touching it away.',x:c=>c.combo>=2&&c.l>=0?2:1}, /* v1.77: the punch is in the engine (knockF), the comic hit in fx.js */
  bonfire:{n:'Bonfire',r:1,c:6,d:'After a fruit is destroyed (removed without merging), your next 3 merges get ×2 Mult.',x:c=>c.bf&&c.l>=0?2:1},
  spender:{n:'Big Spender',r:1,c:7,d:'Starts at ×1 Mult, +0.1 for every 2 coins you spent in the last shop (up to ×2).',x:c=>Math.min(2,1+.1*Math.floor((c.spt||0)/2))},
  poly:{n:'Polyculture',r:1,c:7,d:'Starts at ×1 Mult, +0.1 for every fruit size you hold a seed for.',x:c=>1+.1*(c.sdn||0)},
