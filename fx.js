@@ -443,7 +443,7 @@ const FXS={
   ty(s,g){return fxRim(g)-2*g.P-Math.min(s.n||0,FXS.tiki.cap(g))*9*g.P;},
   front(c,g,s,t){const P=g.P,x0=FXS.tiki.x0(g),rim=fxRim(g),k=Math.min(s.n||0,FXS.tiki.cap(g)),drop=s.dr>0?Math.round(Math.pow(s.dr/.45,2)*34)*P:0;c.save();c.globalAlpha=s.p;fxR(c,x0-7*P,rim-2*P,P,'k',13,2);fxR(c,x0-6*P,rim-2*P,P,'e',11,1);
    for(let i=0;i<k;i++){let y=rim-2*P-i*9*P;if(i===k-1)y-=drop;fxS(c,'tk'+(i%3),x0,y,P);}
-   const ty=rim-2*P-k*9*P-(k?drop:0),fb=s.fl>0?2:0;for(const d of[-4,4]){fxR(c,x0+(d-1)*P,ty-6*P,P,'k',3,6);fxR(c,x0+d*P,ty-6*P,P,'E',1,6);fxR(c,x0+(d-1)*P,ty-7*P,P,'k',3,1);if(k>0){const f=fst(t,7+d/2),h=4+fb+(f%3===1?1:0);for(let j=0;j<h;j++){const w=j<h-2?1:0;fxR(c,x0+(d-w)*P,ty-(8+j)*P,P,j>=h-1?'y':j>=h-3?'o':'r',1+2*w,1);}if(f%4===0)fxR(c,x0+(d+(f%8?1:-1))*P,ty-(10+h)*P,P,'y');}}c.restore();},
+   const ty=rim-2*P-k*9*P-(k?drop:0),fb=s.fl>0?2:0;for(const d of[-5,3]){ /* the faces span cells -6..4 of x0 (an odd width rounds left), so the torches sit at their centre -1 ± 4 */fxR(c,x0+(d-1)*P,ty-6*P,P,'k',3,6);fxR(c,x0+d*P,ty-6*P,P,'E',1,6);fxR(c,x0+(d-1)*P,ty-7*P,P,'k',3,1);if(k>0){const f=fst(t,7+Math.abs(d)/2),h=4+fb+(f%3===1?1:0),sw=f%4===1?1:f%4===3?-1:0;for(let j=0;j<h;j++){const y=ty-(8+j)*P;if(j<h-2){const dx=j>=h-3?sw:0;fxR(c,x0+(d-1+dx)*P,y,P,j===0?'r':'o');fxR(c,x0+(d+dx)*P,y,P,j===0?'o':'y');fxR(c,x0+(d+1+dx)*P,y,P,j===0?'r':'o');}else fxR(c,x0+(d+sw)*P,y,P,j===h-1?'h':'y');}if(f%5===0)fxR(c,x0+(d+(f%10?1:-1))*P,ty-(10+h)*P,P,'y');}}c.restore();},
   ev(s,n,o){if(n==='grow'&&o.id==='tiki')s.fl=.5;}},
  /* Snowball: a snowball sits on the rim, as big as the charm has grown. At the start of a jar after it grew it rolls along the rim picking up snow, and snow falls in the jar */
  snow:{sr(n){return Math.min(12,4+n*.8);},
