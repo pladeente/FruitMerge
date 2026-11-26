@@ -1418,9 +1418,8 @@ Object.assign(FXS,{
    const bob=dead?0:Math.round(Math.sin(t*1.6)*1.4),vs=dead?Math.max(.18,1-Math.max(0,dn-.25)/.6*.82):1,y0=fq(rim-(dead?Math.round(5*(1-Math.min(1,dn/.85))):5)*P+bob*P,P),hem=fst(t,7),fade=dead&&dn>2.4?Math.max(0,1-(dn-2.4)/.8):1;
    c.save();c.globalAlpha=s.p*fade;
    const R=(i,j,col)=>{if(u<1&&FBY[((i+64)&3)*4+((j+64)&3)]/16>=u*1.15-.1)return;fxR(c,x+i*P,y0+Math.round(j*vs)*P,P,col);};
-   /* the scythe: pole behind the robe, blade in front over the hood; swings around the far hand */
-   const sw=s.sw>0?Math.min(3,Math.floor((1-s.sw/.75)*4)):0,ang=dead?.12-Math.min(1.69,dn*3.2):[.12,-.45,.7,1.25][sw],cs=Math.cos(ang),sn=Math.sin(ang),hx=6,hy=-17,pt=(a,b)=>[hx+Math.round(a*cs-b*sn),hy+Math.round(a*sn+b*cs)];
-   const pole=[];for(let k=-9;k<=24;k++)pole.push(pt(0,-k));for(const[i,j]of pole){R(i-1,j,'k');R(i+1,j,'k');}for(const[i,j]of pole)R(i,j,'N');for(const[i,j]of pole.filter((q,k)=>k%3===0))R(i,j,'n');
+   /* the scythe (v1.82: held in front, the user's note): a long snath gripped by a bony hand out of the far sleeve, the blade over the head curving down towards the jar with its edge on the inside. It swings about the grip: wind up back, then a sweep down towards the jar */
+   const sw=s.sw>0?Math.min(3,Math.floor((1-s.sw/.75)*4)):0,ang=dead?Math.min(1.5,dn*3.2):[.05,.4,-.7,-1.15][sw],cs=Math.cos(ang),sn=Math.sin(ang),hx=7,hy=-17,pt=(a,b)=>[hx+Math.round(a*cs-b*sn),hy+Math.round(a*sn+b*cs)];
    /* robe */
    const top=-24;for(let j=top;j<=0;j++){const hw=Math.round(7+(j-top)*.38),sk=j>-7?Math.round(Math.sin(t*2.4+j*.5)*(j+7)*.18):0;for(let i=-hw;i<=hw;i++){const cut=j>-4&&fhs(i+hem*3,j)<(j+4)*.22;if(cut)continue;const e=i===-hw||i===hw||j===0||(j>-4&&fhs(i+hem*3,j+1)<(j+5)*.22);const fold=j>top+5&&((i+40)%5===0);R(i+sk,j,e?'k':i<-hw+2?'V':fold?'k':i>hw-3?'k':'x');}}
    for(let i=-5;i<=5;i++){R(i,top-1,'k');}
@@ -1435,11 +1434,14 @@ Object.assign(FXS,{
     const fx0=-13-reach,fy0=-18,bn=[[0,0],[0,1],[0,2],[-1,0],[-1,1],[-1,2]];for(let f=0;f<3;f++){const fy=-1+f*2;for(let q=0;q<4;q++)bn.push([-2-q,fy+(cl&&q>1?q-1:0)]);}bn.push([-1,4],[-2,5]);
     const bs=new Set(bn.map(([a,b])=>a+','+b));for(const[a,b]of bn)for(const[da,db]of[[1,0],[-1,0],[0,1],[0,-1]])if(!bs.has((a+da)+','+(b+db)))R(fx0+a+da,fy0+b+db,'k');for(const[a,b]of bn)R(fx0+a,fy0+b,a<-4?'w':'s');
     for(let k=0;k<6;k++){const ax=4+Math.round(k*.3),ay=-23+k;R(ax+2,ay,'k');R(ax+1,ay,'x');}}
-   R(hx-1,hy,'s');R(hx,hy+1,'d');R(hx-1,hy+1,'s');R(hx+1,hy,'k');
-   /* the blade */
-   const bl=[];for(let k=0;k<=19;k++){const yb=-24-Math.round(k*k*.012)+Math.round(k*.25),th=k<15?3:k<18?2:1;for(let q=0;q<th;q++)bl.push([-k,yb+q,q===0?(p2?'q':'w'):q===1?'s':'d']);}for(const[a,b]of bl){const[i,j]=pt(a,b-1);R(i,j,'k');const[i2,j2]=pt(a,b+1);R(i2,j2,'k');}for(const[a,b,col]of bl){const[i,j]=pt(a,b);R(i,j,col);}
-   {const gk=Math.floor((t*7)%26);if(gk<20&&!dead){const[i,j]=pt(-gk,-24-Math.round(gk*gk*.012)+Math.round(gk*.25));R(i,j,'w');fxStar(c,x+i*P,y0+j*P,g.P,gk%3?1:2,p2?'r':'b');}}
-   if(s.sw>0&&sw>=2){c.globalAlpha=s.p*.45;for(let k=0;k<14;k++){const a2=ang-.5-k*.06,r2=20+k*.15;const i=hx+Math.round(-r2*Math.cos(a2)*.9),j=hy+Math.round(-r2*Math.sin(a2)*.9);R(i,j,'w');R(i+1,j,'s');}c.globalAlpha=s.p*fade;}
+   /* the snath in front of the robe, the far sleeve and the gripping hand over it, then the blade */
+   const pole=[];for(let k=-20;k<=26;k++)pole.push(pt(0,-k));for(const[i,j]of pole){R(i-1,j,'k');R(i+1,j,'k');}pole.forEach(([i,j],k)=>R(i,j,k%5===2?'n':'N'));const[ti,tj]=pt(0,-26),[bi,bj]=pt(0,20);R(ti,tj-1,'k');R(bi,bj+1,'k');
+   if(!dead)for(let k=0;k<6;k++){const ax=4+Math.round(k*.5),ay=-23+k;for(let w=-1;w<=2;w++)R(ax+w,ay,w===-1||w===2?'k':w===0?'V':'x');}
+   if(!dead){const H=(i,j,col)=>R(hx+i,hy+j,col);for(let i=-2;i<=2;i++){H(i,-2,'k');H(i,2,'k');}for(const j of[-1,0,1]){H(-2,j,'k');H(2,j,'k');}H(-1,-1,'s');H(0,-1,'w');H(1,-1,'s');H(-1,0,'w');H(1,0,'s');H(-1,1,'s');H(0,1,'s');H(1,1,'d');}
+   const bl=[];for(let k=0;k<=18;k++){const yb=-26+Math.round(k*k*.028),th=k<12?3:k<16?2:1;for(let q=0;q<th;q++)bl.push([-1-k,yb+q,q===th-1?(p2?'q':'w'):q===0?'d':'s']);}bl.push([0,-27,'d'],[0,-26,'d']);
+   const bs=new Set(bl.map(([a,b])=>pt(a,b).join(',')));for(const[a,b]of bl){const[i,j]=pt(a,b);for(const[da,db]of[[1,0],[-1,0],[0,1],[0,-1]])if(!bs.has((i+da)+','+(j+db)))R(i+da,j+db,'k');}for(const[a,b,col]of bl){const[i,j]=pt(a,b);R(i,j,col);}
+   {const gk=Math.floor((t*7)%24);if(gk<18&&!dead){const[i,j]=pt(-1-gk,-26+Math.round(gk*gk*.028)+(gk<12?2:gk<16?1:0));fxStar(c,x+i*P,y0+j*P,g.P,gk%3?1:2,p2?'r':'b');}}
+   if(s.sw>0&&sw>=2){c.globalAlpha=s.p*.45;for(let k=0;k<12;k++){const a=ang+.15+k*.08,c2=Math.cos(a),s2=Math.sin(a),i=hx+Math.round(-12*c2+22*s2),j=hy+Math.round(-12*s2-22*c2);R(i,j,'w');R(i+1,j,'s');}c.globalAlpha=s.p*fade;}
    /* phase 2: lost souls circle it */
    if(p2&&!dead){for(let k=0;k<3;k++){const a=t*1.3+k*2.09,sx=x+Math.round(Math.cos(a)*18)*P,sy=y0+Math.round(-18+Math.sin(a)*9)*P;c.globalAlpha=s.p*.75;fxR(c,sx-P,sy-P,P,'k',3,3);fxR(c,sx,sy,P,'l');fxR(c,sx,sy-P,P,'w');fxR(c,sx-Math.round(Math.sin(a))*P*2,sy+P,P,'g');}c.globalAlpha=s.p*fade;}
    if(dead&&dn>.85){for(let k=0;k<4;k++){const q=Math.min(1,(dn-.85)/.4);R(-12+k*7,0,'k');}}
