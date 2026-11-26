@@ -1618,6 +1618,42 @@ Object.assign(FXS,{
    fxS(c,'stwB',x,rim,P);c.restore();},
   hit(s){s.up=.7;}}});
 
+
+Object.assign(FXD,{pigA:`
+....kkkkkk......
+...kppppppkkk...
+..kppkkppppppk..
+.kppppppppppppk.
+kppkpppppppppmkk
+kppppppppppppmmk
+kppppppppppppmmk
+.kpppppppppppmk.
+..kpkkppppkkpk..
+..kk..kkkk..kk..`});
+Object.assign(FXS,{
+ /* Piggy Bank and Golden Goose: when you clear a jar a piggy bank trots onto the rim and the coins it pays you drop into its slot one by one */
+ piggy:{x(g){return fq(fxRX('piggy',.66,64,g),fxBP(g));},tick(s,g,dt,A){if(!s.l.done){s.dt=null;return;}if(s.dt==null){s.dt=0;s.dn=0;}s.dt+=dt;const n=s.l.n||3;if(s.dt>.5+s.dn*.32&&s.dn<n){const P=fxBP(g),x=FXS.piggy.x(g),y0=fxRim(g)-110,ty=fxRim(g)-10*P,k=s.dn++;A.add({k:'fn',x,y:y0,T:.38,fa:1,d:(c,q,g)=>{const u=q.t/.38,y=y0+(ty-y0)*u*u;fxSpD(c,x,y,g.P,FXSP.coin);},end:A2=>{s.wg=.2;A2.add({k:'star',x,y:ty,T:.3,col:'y'});}});}if(s.wg>0)s.wg-=dt;},
+  front(c,g,s,t){if(!s.l.done||s.dt==null)return;const P=fxBP(g),x=FXS.piggy.x(g),u=Math.min(1,s.dt/.4),y=fxRim(g)-Math.round((1-u)*(1-u)*30)*P;c.save();c.globalAlpha=s.p;fxS(c,'pigA',x+(s.wg>0?(fst(s.wg,20)%2?P:-P):0),y,P);c.restore();}},
+ /* Melon Fever and Melon Mania: a thermometer down the right wall of the jar; the red rises with every Mult it has grown and steams when a big fruit makes it jump */
+ fever:{tick(s,g,dt,A){const v=s.l.v||0;if(s.v0!=null&&v>s.v0){s.st=.8;const P=g.P;for(let k=0;k<6;k++)A.add({k:'sq',x:g.R-6*P+(Math.random()-.5)*6*P,y:g.top+4*P,vy:-40-Math.random()*40,g:-30,T:1,col:k%2?'s':'w',s:2,fa:.3,ly:0});}s.v0=v;if(s.st>0)s.st-=dt;if(s.pl>0)s.pl-=dt;},
+  back(c,g,s,t){const P=g.P,x=fq(g.R-7*P,P),top=fq(g.top+6*P,P),len=Math.max(18,Math.round((g.bot-g.top)/P*.42)),fill=Math.min(1,(s.l.v||0)/18),hot=s.st>0,R=fxPt(c,x,top,P);c.save();c.globalAlpha=s.p;
+   R(-2,-1,'k',5,len+2);R(-1,0,'w',3,len);for(let j=0;j<len;j++){if(j%5===0)R(2,j,'k');}const fh=Math.round(fill*(len-2));for(let j=len-fh;j<len;j++)R(0,j,hot&&fst(t,10)%2?'o':'r');R(-1,0,'i',1,len);
+   const by=len+2,pl=s.pl>0?1:0;for(let j=-3-pl;j<=3+pl;j++)for(let i=-3-pl;i<=3+pl;i++){const d=i*i+j*j;if(d>(3+pl)*(3+pl)+1)continue;R(i,by+j,d>(2+pl)*(2+pl)+1?'k':i<0&&j<0?'q':'r');}c.restore();},
+  hit(s){s.pl=.25;}},
+ /* Cornucopia: a horn of plenty lies on the rim spilling fruit; every merge that gives you a drop back, a fruit tumbles out of it and a drop flies to your drops bar */
+ horn:{x(g){return fq(fxRX('horn',.7,64,g),fxBP(g));},
+  front(c,g,s,t){const P=fxBP(g),x=FXS.horn.x(g),rim=fxRim(g),R=fxPt(c,x,rim,P);c.save();c.globalAlpha=s.p;const cells=new Map();
+   for(let k=0;k<=20;k++){const u=k/20,cx=-9+13*u,cy=-11+9*u-Math.sin(u*Math.PI)*2.5,r=.9+u*4;for(let j=Math.floor(cy-r);j<=Math.ceil(cy+r);j++)for(let i=Math.floor(cx-r);i<=Math.ceil(cx+r);i++)if((i-cx)**2+(j-cy)**2<=r*r)cells.set(i+','+j,u);}
+   for(const[k2]of cells){const[i,j]=k2.split(',').map(Number);for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]])if(!cells.has((i+a)+','+(j+b)))R(i+a,j+b,'k');}
+   for(const[k2,u]of cells){const[i,j]=k2.split(',').map(Number);const up=!cells.has(i+','+(j-1));R(i,j,u>.95?'N':Math.floor(u*22)%3===0?'N':up?'E':(i+j)%2?'n':'e');}
+   for(let j=-6;j<=-1;j++)for(let i=3;i<=5;i++)if((i-4)**2*2+(j+3.5)**2<=7)R(i,j,'N');
+   const fr2=[[6,-3,4],[9,-2,1],[7,-1,0],[10,-1,2],[5,-6,3]];for(const[i,j,l]of fr2)if(typeof drawFruit==='function')drawFruit(c,x+i*P,rim+j*P,P*1.7,l);c.restore();},
+  ev(s,n,o,A,g){if(n!=='hornd'||!s.l.p)return;const P=fxBP(g),x=FXS.horn.x(g)+8*P,y=fxRim(g)-4*P,l=Math.floor(Math.random()*4);A.add({k:'fn',x,y,vx:-30+Math.random()*60,vy:-160,g:600,T:.9,fa:.7,fy:fxRim(g)+40,d:(c,q,g,t,x2)=>{if(typeof drawFruit==='function')drawFruit(c,x2,q.y,P*1.6,l);}});fxToks(A,['d'],x,y+20);}},
+ /* Golden Rain: when you use it, gold rains down over the whole jar */
+ grain:{ev(s,n,o,A,g){if(n!=='act'||o.id!=='grain')return;const P=g.P;for(let k=0;k<60;k++)A.add({k:'fn',x:g.L+Math.random()*(g.R-g.L),y:g.top-120-Math.random()*80,vy:180+Math.random()*120,T:1.6,dl:Math.random()*.9,fa:.7,fy:g.bot,d:(c,q,g,t,x2)=>{k%3?(fxR(c,x2,q.y,g.P,'y'),fxR(c,x2,q.y-g.P,g.P,'Y')):fxSpD(c,x2,q.y,g.P,FXSP.coin);}});fxWord(A,(g.L+g.R)/2,g.top+60,'GOLDEN RAIN','#e09600',{sz:22,vy:-10,T:1.4});}},
+ /* Supernova: when you use it, a star explodes in the middle of the jar in a white flash and a ring of fire */
+ nova:{ev(s,n,o,A,g){if(n!=='act'||o.id!=='nova')return;const x=(g.L+g.R)/2,y=g.top+(g.bot-g.top)*.45;A.add({k:'fn',x,y,T:.25,fa:0,d:(c,q,g)=>{c.globalAlpha*=.6*(1-q.t/.25);c.fillStyle='#fff';c.fillRect(g.L,g.top-40,g.R-g.L,g.bot-g.top+40);}});for(let i=0;i<3;i++)fxRing(A,x,y,['y','o','r'][i],(140+i*30)*g.K,{dl:i*.08,T:.6});A.burst(x,y,['y','w','o','r'],36,{v:320,T:.9});A.add({k:'star',x,y,T:.5,col:'y'});fxWord(A,x,y-60,'SUPERNOVA','#fb8500',{sz:24,vy:-10,T:1.3});}}});
+
 /* The Padlock on the tool bar: chains cross the tools in an X, link by link, then the padlock drops onto them and the bar dims. Phase 2: it shakes and the charge bursts out of the tools in teal sparks. Beaten: a key flies in and turns, the padlock springs open and drops, and the chains fall away */
 function fxLockBar(c,W,H,s,t){const P=3,BP=4,age=s.age||0,u=Math.min(1,age/.8),dead=s.dnt!=null,dn=dead?s.dnt:0;
  c.globalAlpha=(dead?Math.max(0,1-dn/.8):Math.min(1,age/.4))*.3;c.fillStyle=FXP.x;c.fillRect(0,0,W,H);
