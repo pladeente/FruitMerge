@@ -1,5 +1,5 @@
 /* Overripe service worker: network first so updates show straight away, cache as offline fallback. */
-const CACHE = 'fruit-merge-v33';
+const CACHE = 'fruit-merge-v34';
 const CORE = ['./', './index.html', './icons.js', './rogue.js', './font.css', './style.css', './core.js', './draw.js', './fx.js', './engine.js', './app.js', './social.js', './rogue-ui.js', './glue.js', './tutorial.js', './dev.js', './boot.js', './fruits.png', './caterpillar.png', './logo.png', './fbadge.png', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
