@@ -142,6 +142,8 @@ Chain Reaction retuned: +0.5 Mult per combo step up to +4 (was +1 up to +8), Wil
 
 ## Pets (built)
 
+Candidate (the user's idea, 26 Nov, not started): the Magpie should be a pet. It is one of the only animals in the pool that is not one, and it already lives in the jar (its scene rides gold fruit). As a pet it would get levels and a skill tree like the others (gold branch, theft branch, a coin branch), and Treasure Hunter would carry it.
+
 Creatures that live in the jar and act every few drops, plus charms that pay off for them. Pet combos only turn up once a pet that fits is held (`req` lists in `rogue.js`: `CAT` caterpillar, `EAT` pets that eat), so they are never dead picks and do not dilute runs without pets.
 
 | Name | Rarity | Effect |
