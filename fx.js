@@ -873,6 +873,74 @@ const fxBP=g=>Math.round(g.P*4/3); /* boss characters: a 4px grid, a third chunk
 function fxIcon(c,id,x,y,P){const k=typeof icn==='function'?icn(id):id;if(!PXD[k])return;const key='ic_'+k;if(!FXI[key])FXI[key]=fxGrid(PXD[k],PXP);const im=FXI[key];c.save();c.imageSmoothingEnabled=false;c.fillStyle=FXP.k;c.fillRect(fq(x-7*P/1.5,P),fq(y-7*P/1.5,P),Math.round(14*P/1.5),Math.round(14*P/1.5));c.drawImage(im,fq(x-6*P/1.5,P),fq(y-6*P/1.5,P),Math.round(12*P/1.5),Math.round(12*P/1.5));c.restore();}
 /* ---------- bosses, batch 2 (v1.79) ---------- */
 Object.assign(FXD,{
+msS:`
+....kkkk.....
+...kUUUUkk...
+..kUUUUUUUkk.
+..kuuuuuukUk.
+..kffffffkwwk
+.kffkwffffkk.
+kfffkkffffk..
+.kkfkkkfffk..
+..kwwwffffk..
+...kkkkkkk...
+..kVVVVVVk...
+.kVVVVVVVVk..
+.kVVVVVVVVVk.
+..kVVVVVVVVk.
+..kVVVVVVVVk.
+..kVVVVVVVk..
+...kVkkVk....
+...kkk.kkk...`,
+msW:`
+.............
+....kkkk.....
+...kUUUUkk...
+..kUUUUUUUkk.
+..kuuuuuukUk.
+..kffffffkwwk
+.kffkwffffkk.
+kfffkkffffk..
+.kkfkkkfffk..
+..kwwwffffk..
+...kkkkkkk...
+..kVVVVVVk...
+.kVVVVVVVVk..
+.kVVVVVVVVVk.
+..kVVVVVVVVk.
+..kVVVVVVVk..
+...kVVVVVk...
+...kkkkkkk...`,
+mnS:`
+...kkkk...
+..kyyyyk..
+.kyyhwyyk.
+kkkkkkkkk.
+.kffffffk.
+.kfkffffk.
+kffffffk..
+.kNNNNNk..
+..kNNNk...
+.kbbbbbk..
+.kbybbbbk.
+.kbbbbbbk.
+.kbbkbbk..
+.kkk.kkk..`,
+mnW:`
+...kkkk...
+..kyyyyk..
+.kyyhwyyk.
+kkkkkkkkk.
+.kffffffk.
+.kfkffffk.
+kffffffk..
+.kNNNNNk..
+..kNNNk...
+.kbbbbbk..
+.kbybbbbk.
+.kbbbbbbk.
+kbbk.kbbk.
+kkk...kkk.`,
 lock:`
 ...kkkkk...
 ..kdssddk..
@@ -931,9 +999,9 @@ Object.assign(FXS,{
   /* soft fog: overlapping puffs, white on top, grey underneath, a grey rim only on their lower edge, each drifting a little on its own */
   puffs(c,g,t,list,a,ox){const P=g.P;c.save();c.globalAlpha=a;const cells=new Map();list.forEach(([x0,y0,r],k)=>{const x=Math.round((x0+ox+(RMO?0:Math.sin(t*.55+k*1.7)*4))/P),y=Math.round((y0+(RMO?0:Math.sin(t*.7+k*2.3)*2))/P),R=Math.round(r/P);for(let j=-R;j<=R;j++)for(let i=-R;i<=R;i++){const d=Math.sqrt(i*i+j*j);if(d>R+.3)continue;const key=(x+i)+','+(y+j),edge=d>R-1,col=edge?(j>0?'d':'s'):(j>R*.35?'s':'w'),pr=cells.get(key);if(!pr||pr==='d'||(pr==='s'&&col==='w'))cells.set(key,col);}});
    for(const[key,col]of cells){const[i,j]=key.split(',').map(Number);fxR(c,i*P,j*P,P,col);}c.restore();},
-  /* phase 2: a fog bank over the sky where you hold your fruit, drawn behind it, so the grey ball the rule leaves still shows its size */
-  front(c,g,s,t){if(s.p2t==null)return;const u=Math.min(1,s.age/1.3),dead=s.dnt!=null,gone=dead?Math.min(1,s.dnt/1.1):0,ox=gone*gone*300,a=(dead?1-gone:1)*Math.min(1,s.p2t/1.2);if(a<=0)return;const y=fxRim(g)-30,list=[];for(let x=g.L+6,i=0;x<g.R;x+=24,i++)list.push([x,y+(i%2?-6:4),15+(i%3)*2]);FXS.B_fog.puffs(c,g,t,list,a*.95,ox);},
-  top(c,g,s,t){const P=g.P,u=Math.min(1,s.age/1.3),dead=s.dnt!=null,gone=dead?Math.min(1,s.dnt/1.1):0,ox=(1-u)*(1-u)*160+gone*gone*300,a=dead?1-gone:Math.min(1,s.age/.5);if(a<=0)return;const W=g.W;
+  /* phase 2: a fog bank over the sky where you hold your fruit, hiding it completely (the user's call, v1.80: harder is the boss's intent) */
+  band(c,g,s,t){if(s.p2t==null)return;const dead=s.dnt!=null,gone=dead?Math.min(1,s.dnt/1.1):0,ox=gone*gone*300,a=(dead?1-gone:1)*Math.min(1,s.p2t/.8);if(a<=0)return;const r0=fxRim(g),list=[];for(let x=g.L+4,i=0;x<g.R+10;x+=22,i++){list.push([x,r0-40+(i%2?-4:3),16+(i%3)*2]);list.push([x+11,r0-16+(i%2?3:-2),15+(i%2)*3]);}FXS.B_fog.puffs(c,g,t,list,a,ox);},
+  top(c,g,s,t){FXS.B_fog.band(c,g,s,t);const P=g.P,u=Math.min(1,s.age/1.3),dead=s.dnt!=null,gone=dead?Math.min(1,s.dnt/1.1):0,ox=(1-u)*(1-u)*160+gone*gone*300,a=dead?1-gone:Math.min(1,s.age/.5);if(a<=0)return;const W=g.W;
    FXS.B_fog.puffs(c,g,t,[[W-28,48,12],[W-52,46,11],[W-80,80,10],[W-70,64,14],[W-16,80,11],[W-26,66,14],[W-48,58,17],[W-58,82,13],[W-34,84,13]],a*.96,ox);
    if(u>=1&&!dead){const bl=(t%3.1)<.14,lk=s.p2t!=null?-1:0;for(const ex of[W-56,W-38]){const x=fq(ex,P),y=fq(70,P);if(bl)fxR(c,x-P,y,P,'Y',3,1);else{fxR(c,x-P,y-P,P,'y',3,2);fxR(c,x+lk*P,y,P,'k');fxR(c,x-P,y-P,P,'h');}}}
    if(dead&&s.dnt<1.2){c.save();c.globalAlpha=.85;for(let k=0;k<7;k++){const y=24+k*30,x=((s.dnt*700+k*90)%(W+120))-60;fxR(c,x,y,P,'d',8,1);fxR(c,x+2*P,y+P,P,'s',5,1);}c.restore();}}},
@@ -964,12 +1032,80 @@ Object.assign(FXS,{
    for(let j=-9;j<=10;j++)for(let i=-9;i<=9;i++){if(!fill(i,j))continue;const out=!fill(i+1,j)||!fill(i-1,j)||!fill(i,j+1)||!fill(i,j-1);let col;if(cen(i,j)){const rim=!cen(i+1,j)||!cen(i-1,j)||!cen(i,j+1)||!cen(i,j-1);col=out||rim?'k':(i<0&&j<0?(bloom?'h':'y'):(bloom?'y':'Y'));}else{const k=pIn(i,j),[px,py,r]=pet[k],sep=pet.some((q,n)=>n!==k&&(i-q[0])**2+(j-q[1])**2<=q[2]*q[2]+.4)&&Math.hypot(i-px,j-py)>r-1;col=out?'k':sep?(bloom?'m':'N'):(Math.hypot(i,j)>Math.hypot(px,py)+.6?(bloom?'m':'N'):(bloom?'p':'e'));if(!out&&bloom&&Math.hypot(i-px+.8,j-py+.8)<.7)col='w';}fxR(c,hx+i*P,hy+j*P,P,col);}
    if(bloom){fxR(c,hx-P,hy-P,P,'k');fxR(c,hx+P,hy-P,P,'k');fxR(c,hx-2*P,hy+P,P,'k');fxR(c,hx+2*P,hy+P,P,'k');fxR(c,hx-P,hy+2*P,P,'k',3,1);fxR(c,hx-2*P,hy,P,'p');fxR(c,hx+2*P,hy,P,'p');}else{fxR(c,hx-2*P,hy,P,'k',2,1);fxR(c,hx+P,hy,P,'k',2,1);fxR(c,hx-P,hy+2*P,P,'k',3,1);fxR(c,hx-2*P,hy+3*P,P,'k');fxR(c,hx+2*P,hy+3*P,P,'k');if(s.sg>0&&fst(t,6)%2){fxR(c,hx+2*P,hy+P,P,'b');fxR(c,hx+2*P,hy+2*P,P,'b');}}c.restore();},
   ev(s,n,o,A,g){if(n!=='wilt'||!s.l.p)return;s.sg=.9;const[hx,hy]=FXS.B_wilt.head(s,g),T1=.7;A.add({k:'fn',x:hx,y:hy,vx:(o.x-hx)/T1,vy:(o.y-hy)/T1-60,g:170,T:T1,fa:.8,d:(c,q,g)=>{const P=g.P,r=3+Math.floor(q.t*5);for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){const dd=i*i+j*j;if(dd>r*r||fhs(i+Math.floor(q.t*8),j)<.35)continue;c.globalAlpha=.75;fxR(c,q.x+i*P,q.y+j*P,P,dd>r*r*.6?'G':fhs(i,j)>.5?'e':'g');}},end:(A)=>A.burst(o.x,o.y,['G','e','g'],10,{v:90,T:.6,g:60})});}},
- /* The Padlock: chains rattle round the top corner of the jar and a padlock slams shut on them. Phase 2: it wrenches the charge out of your tools in a burst of sparks. Beaten: a key flies in, it springs open and the chains fall away */
- B_lock:{tick(s,g,dt,A){bossT(s,dt);if(s.p2t!=null&&s.p2t<dt*1.5){const P=fxBP(g);for(let k=0;k<18;k++){const a=-Math.PI*(.05+.9*Math.random()),v=140+Math.random()*180;A.add({k:'sq',x:g.L+5*P,y:g.top+4*P,vx:Math.cos(a)*v*(Math.random()<.5?-1:1)+60,vy:Math.sin(a)*v,g:500,T:.8,col:k%3?'t':'w',dl:k*.02});}}
-   if(s.dnt!=null&&s.dnt>.65&&!s.fall){s.fall=1;for(const[x,y]of FXS.B_lock.links(g,1))A.add({k:'fn',x,y,vx:(Math.random()-.5)*60,vy:-40-Math.random()*60,g:900,T:1.2,fa:.6,d:(c,q,g)=>{const P=g.P;fxR(c,q.x-P,q.y-P,P,'k',3,3);fxR(c,q.x,q.y,P,'d');}});}},
-  links(g,u){const o=[],P=g.P,nt=Math.round((g.R-g.L)*.42/(2*P)),nl=Math.round((g.bot-g.top)*.38/(2*P));for(let k=0;k<Math.round(nt*u);k++)o.push([g.L+8*P+k*2*P,g.top-5,0]);for(let k=0;k<Math.round(nl*u);k++)o.push([g.L-3,g.top+8*P+k*2*P,1]);return o;},
-  front(c,g,s,t){const P=g.P,BP=fxBP(g),u=Math.min(1,s.age/.8),dead=s.dnt!=null;c.save();c.globalAlpha=s.p;if(!(dead&&s.dnt>.65)){const rt=s.p2t!=null&&s.p2t<.6?fst(t,16)%2:0;for(const[x,y,v]of FXS.B_lock.links(g,u)){const k=Math.round((x+y)/P/2)%2,xx=x+(v?rt*P:0),yy=y+(v?0:rt*P);if(k){fxR(c,xx-P,yy-P,P,'k',3,3);fxR(c,xx,yy,P,'d');}else{fxR(c,xx-P,yy,P,'k',3,1);fxR(c,xx,yy-P,P,'k',1,3);fxR(c,xx,yy,P,'s');}}}
-   const lu=Math.min(1,Math.max(0,(s.age-.6)/.35)),lx=g.L+5*P,ly0=g.top+18*P,ly=ly0-(lu<1?Math.round(Math.pow(1-lu,2)*40)*P:0)+(dead&&s.dnt>.65?Math.round(Math.pow(s.dnt-.65,2)*900):0),sw=!dead&&(t%2.6)<.3?(fst(t,10)%2?P:0):0,shk=s.p2t!=null&&s.p2t<.6?(fst(t,20)%2?2:-2)*P/2:0;
-   if(lu>0)fxS(c,dead&&s.dnt>.5?'lockO':'lock',lx+sw+shk,ly,BP);
-   if(dead&&s.dnt<.6){const k=s.dnt/.5,kx=g.L-60+(lx+6*BP-g.L+60)*Math.min(1,k),ky=-20+(ly-6*BP+20)*Math.min(1,k);fxS(c,'key',kx,ky,BP,{ay:.5,r:Math.min(3,Math.floor(s.dnt*8))%4});}
-   if(!dead&&(t%3.3)<.2&&lu>=1)fxStar(c,lx-3*BP,ly-10*BP,P,[1,2,1][Math.min(2,Math.floor((t%3.3)/.07))],'y');c.restore();}}});
+ /* The Padlock (v1.80: on the tool bar itself, the user's idea): chains cross your tools in an X and a padlock slams shut over them; the scene only keeps its clocks, fxLockBar draws it on a canvas over #tb (fxLockSync, from syncPw) */
+ B_lock:{tick(s,g,dt){bossT(s,dt);}}});
+/* ---------- bosses, batch 3 (v1.80) ---------- */
+Object.assign(FXS,{
+ /* The Gambler: a slot machine stands on the rim. Every time you are dealt a fruit it pulls its lever and the reels spin, the middle one landing on your Next fruit. Phase 2: it flashes red and plays with bigger fruit. Beaten: it pays out a shower of coins and its lights die */
+ B_gamble:{x(g){return fq(g.L+(g.R-g.L)*.66,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);const l=s.l;if(s.jd==null)s.jd=l.jd;if(l.jd!==s.jd){s.jd=l.jd;s.sp=.8;s.side=[Math.floor(Math.random()*6),Math.floor(Math.random()*6)];}if(s.sp>0)s.sp-=dt;
+   if(s.dnt!=null&&!s.pay){s.pay=1;const P=fxBP(g),x=FXS.B_gamble.x(g),y=fxRim(g)-4*P;for(let k=0;k<16;k++)A.add({k:'fn',x,y,vx:(Math.random()-.5)*200,vy:-200-Math.random()*200,g:900,T:1.4,dl:k*.04,fa:.7,d:(c,q,g)=>fxCoin(c,q.x,q.y,fxBP(g)*.5,[3,2,1,2][fst(q.t,14)%4],0,3)});}},
+  front(c,g,s,t){const P=fxBP(g),x=FXS.B_gamble.x(g),rim=fxRim(g),u=Math.min(1,s.age/.6),y=rim-(u<1?Math.round(Math.pow(1-u,2)*40)*P:0),dead=s.dnt!=null&&s.dnt>.3,p2=s.p2t!=null,R=(a,b,col,w=1,h=1)=>fxR(c,x+a*P,y+b*P,P,col,w,h);c.save();c.globalAlpha=s.p;
+   R(-8,-22,'k',17,4);R(-7,-21,'Y',15,2);for(let i=-6;i<=6;i+=2){const on=!dead&&((i/2+fst(t,p2?10:5))%2===0);R(i,-21,on?(p2?'r':'h'):'D');}
+   R(-8,-18,'k',17,18);R(-7,-18,'r',14,17);R(6,-18,'R',2,17);R(-7,-18,'y',14,1);R(-7,-4,'y',14,1);
+   R(-7,-15,'k',14,9);R(-6,-14,'w',12,7);const sp=s.sp>0?s.sp:0;
+   for(let k=0;k<3;k++){const cx=x+(-4+k*4)*P,cy=y-10.5*P,stop=sp<=[.45,.25,.1][k];R(-6+k*4+(k?0:0),-14,'k',0,0);if(k)R(-6+k*4,-14,'s',1,7);
+    if(!stop){const f=fst(t+k*.1,16)%6;drawFruit(c,cx,cy+(fst(t,16)%2?-P:P),P*1.4,f);c.fillStyle=FXP.s;c.globalAlpha=s.p*.6;c.fillRect(cx-P,cy-3*P,2*P,P);c.fillRect(cx-P,cy+2*P,2*P,P);c.globalAlpha=s.p;}
+    else if(k===1){if(s.l.hid)T(c,'?',cx,cy+P*1.8,P*5,'#3b2346','center',FD);else if(s.l.ns==='stone'&&typeof drawStone==='function')drawStone(c,cx,cy,P*1.4);else drawFruit(c,cx,cy,P*1.5,s.l.nx||0);}
+    else drawFruit(c,cx,cy,P*1.4,(s.side||[0,0])[k?1:0]);}
+   if(dead){c.globalAlpha=s.p*.55;R(-6,-14,'D',12,7);c.globalAlpha=s.p;T(c,'TILT',x,y-9*P,P*4,'#e63946','center',FD);}
+   R(-6,-4,'k',12,3);R(-5,-3,'x',10,1);R(-8,0,'k',17,1);
+   const pull=s.sp>.6?2:s.sp>.5?1:0;R(9,-17+pull*3,'k',3,3);R(10,-16+pull*3,'r');R(10,-14+pull*3,'D',1,10-pull*3);R(9,-5,'k',3,2);c.restore();}},
+ /* The Twins: two cherry kids sit on the rim holding stems. Every merge that drops a Cherry in, one of them kicks it into the jar. Phase 2: they both throw. Beaten: they fall asleep leaning on each other */
+ B_twins:{x(g){return fq(g.L+(g.R-g.L)*.24,fxBP(g));},
+  tick(s,g,dt){bossT(s,dt);for(const k of['k0','k1'])if(s[k]>0)s[k]-=dt;},
+  front(c,g,s,t){const P=fxBP(g),x0=FXS.B_twins.x(g),rim=fxRim(g),u=Math.min(1,s.age/.7),sl=s.dnt!=null&&s.dnt>.3;c.save();c.globalAlpha=s.p*u;const jx=x0,jy=rim-17*P;
+   for(const d of[0,1]){const kk=s['k'+d]||0,hop=kk>.15?-2:kk>0?1:(sl?0:(fst(t+d*.35,3)%2?-1:0)),lean=sl?(d?-1:1):0,cx=x0+(d?5:-5)*P+lean*P,cy=rim-5*P+hop*P,r=4;
+    fxLn(c,cx+(d?-1:1)*P,cy-r*P,jx,jy+P,P,FXP.N);fxLn(c,cx,cy-r*P,jx+(d?1:-1)*P,jy+P,P,FXP.G);
+    for(let j=-r-1;j<=r+1;j++)for(let i=-r-1;i<=r+1;i++){const dd=i*i+j*j;if(dd>r*r+r)continue;const e=(i+1)**2+j*j>r*r+r||(i-1)**2+j*j>r*r+r||i*i+(j+1)**2>r*r+r||i*i+(j-1)**2>r*r+r;fxR(c,cx+i*P,cy+j*P,P,e?'k':(i+j>r*.7?'R':(i<-1&&j<-1?'q':'r')));}
+    fxR(c,cx-2*P,cy-2*P,P,'w');const bl=(t+d)%2.9<.13;if(sl){fxR(c,cx-2*P,cy,P,'k',2,1);fxR(c,cx+P,cy,P,'k',2,1);}else if(bl){fxR(c,cx-2*P,cy-P,P,'k',2,1);fxR(c,cx+P,cy-P,P,'k',2,1);}else{fxR(c,cx-2*P,cy-P,P,'k',1,2);fxR(c,cx+P,cy-P,P,'k',1,2);}
+    fxR(c,cx-3*P,cy+P,P,'p');fxR(c,cx+2*P,cy+P,P,'p');if(!sl){fxR(c,cx-P,cy+2*P,P,'k',3,1);fxR(c,cx-2*P,cy+P,P,'k');fxR(c,cx+2*P,cy+P,P,'k');}else fxR(c,cx,cy+2*P,P,'k');}
+   fxR(c,jx-P,jy-P,P,'k',3,2);fxR(c,jx,jy-2*P,P,'k',4,2);fxR(c,jx+P,jy-2*P,P,'g',2,1);fxR(c,jx,jy-P,P,'G');
+   if(sl&&!RMO){const q=(t*.6)%1;T(c,'z',jx+(8+q*10)*P/2,jy-q*30,10+q*8,'#3b2346','center',FD);}c.restore();},
+  ev(s,n,o,A,g){if(n!=='twins'||!s.l.p||s.dnt!=null)return;const d=o.x>FXS.B_twins.x(g)?1:0,P=fxBP(g),k='k'+(s['k'+d]>0?1-d:d);s[k]=.3;const x0=FXS.B_twins.x(g)+(k==='k1'?5:-5)*P,y0=fxRim(g)-8*P,T1=.3,G=1500,tx=o.x,ty=g.top+4;A.add({k:'fn',x:x0,y:y0,vx:(tx-x0)/T1,vy:(ty-y0-.5*G*T1*T1)/T1,g:G,T:T1,fa:1,d:(c,q,g)=>drawFruit(c,q.x,q.y,g.P*3,0),end:(A)=>A.burst(tx,ty,['r','q','w'],5,{v:80,T:.3})});}},
+ /* The Miser: a hunched old man in a nightcap shuffles onto the rim clutching a glass jar. Every time your tools would charge, a spark of it flies up out of the tool bar into his jar instead. Phase 2: he hugs the jar and takes every spark. Beaten: the jar smashes and the sparks fly home */
+ B_miser:{x(g){return fq(g.L+(g.R-g.L)*.84,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);const home=FXS.B_miser.x(g);if(s.age<.05||s.x==null){s.x=g.W+50;s.n=0;}if(s.dnt!=null){if(!s.br){s.br=1;const P=fxBP(g),jx=s.x-7*P,jy=fxRim(g)-5*P;A.burst(jx,jy,['i','w','b'],12,{v:150,T:.6,s:1});for(let k=0;k<Math.min(14,4+s.n);k++)A.add({k:'sq',x:jx,y:jy,vx:(Math.random()-.5)*160,vy:100+Math.random()*200,g:500,T:1.1,col:k%2?'t':'w',dl:k*.03});}if(s.dnt>.6)s.x+=dt*120;}else if(s.x>home)s.x=Math.max(home,s.x-dt*60);if(s.gl>0)s.gl-=dt;},
+  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),home=FXS.B_miser.x(g),x=s.x,walk=s.x!==home,p2=s.p2t!=null,dead=s.dnt!=null;c.save();c.globalAlpha=s.p;const fr=walk?(fst(t,4)%2?'msW':'msS'):'msS';fxS(c,fr,x,rim,P,{fl:dead&&s.dnt>.6});
+   if(!dead){const hug=p2?2:0,jx=x-(7-hug)*P,jy=rim-5*P,lv=Math.min(5,Math.floor(s.n/2));for(let j=0;j<7;j++)for(let i=-2;i<=2;i++){const e=Math.abs(i)===2||j===6;fxR(c,jx+i*P,jy-3*P+j*P,P,e?'k':(6-j)<=lv?(fst(t+j*.1,6)%3===0?'w':'t'):'i');}fxR(c,jx-2*P,jy-4*P,P,'k',5,1);fxR(c,jx-P,jy-5*P,P,'N',3,1);if(s.gl>0){c.globalAlpha=s.p*.5;fxR(c,jx-3*P,jy-4*P,P,'t',7,1);fxR(c,jx-3*P,jy+4*P,P,'t',7,1);c.globalAlpha=s.p;}fxR(c,jx+2*P,jy,P,'f',2,1);
+    if(p2&&fst(t,3)%2)fxR(c,x-3*P,rim-12*P,P,'y');}c.restore();},
+  ev(s,n,o,A,g){if(n!=='charge'||!s.l.p||s.dnt!=null)return;const P=fxBP(g),take=s.p2t!=null?2:1;for(let k=0;k<2;k++){const x0=g.L+(g.R-g.L)*(.2+Math.random()*.6),y0=g.H+6,mine=k<take,T1=.7;A.add({k:'fn',x:x0,y:y0,T:T1,dl:k*.08,fa:1,mine,d:(c,q,g)=>{const u=Math.max(0,q.t-(q.dl||0))/T1,jx=s.x-((s.p2t!=null)?5:7)*P,jy=fxRim(g)-9*P,ex=q.mine?jx:x0+(k?40:-40),ey=q.mine?jy:g.H-60,x=x0+(ex-x0)*u+Math.sin(u*Math.PI)*(k?-30:30),y=y0+(ey-y0)*u;fxR(c,x,y,g.P,'t');fxR(c,x,y-g.P,g.P,'w');c.globalAlpha*=.5;fxR(c,x,y+g.P,g.P,'t');},end:k<take?()=>{s.n++;s.gl=.25;}:null});}}},
+ /* The Quarry: a miner pushes a cart of rocks along rails on the rim. When a rock is next, he wheels it over; when it reaches your hand he tips it in. Phase 2: the cart is heaped and his lamp flashes red. Beaten: the cart tips over and he waves goodbye */
+ B_stone:{park(g){return fq(g.L+(g.R-g.L)*.86,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);const l=s.l,park=FXS.B_stone.park(g),P=fxBP(g);if(s.cx==null){s.cx=g.W+60;s.tip=0;}
+   if(l.rock&&!s.rk){s.rk=1;s.tip=.55;A.burst(l.hx,l.hy-l.hr,['d','s','D'],8,{v:90,T:.45,s:1});}if(!l.rock)s.rk=0;if(s.tip>0)s.tip-=dt;
+   const tgt=s.dnt!=null?park:(l.nxr||s.tip>0)?Math.max(g.L+14*P,Math.min(g.R-6*P,l.hx+9*P)):park;const d=tgt-s.cx;s.mv=Math.abs(d)>1;if(s.mv)s.cx+=Math.sign(d)*Math.min(Math.abs(d),dt*(s.p2t!=null?170:120));
+   if(s.dnt!=null&&s.dnt>.4&&!s.fall){s.fall=1;for(let k=0;k<6;k++)A.add({k:'fn',x:s.cx-4*P,y:fxRim(g)-8*P,vx:-60-Math.random()*90,vy:-120-Math.random()*60,g:900,T:1.5,fa:.6,r:6+Math.random()*5,d:(c,q,g)=>{if(typeof drawStone==='function')drawStone(c,q.x,q.y,q.r);}});}},
+  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),x=s.cx,p2=s.p2t!=null,dead=s.dnt!=null;c.save();c.globalAlpha=s.p;
+   for(let xx=g.L+(g.R-g.L)*.2;xx<g.R;xx+=P){const i=Math.round(xx/P);fxR(c,xx,rim-P,P,i%3===0?'N':'d');}
+   const tip=s.tip>0||(dead&&s.dnt>.4),fl=dead&&s.dnt>.4?2:0,wb=s.mv&&fst(t,10)%2?-P:0;
+   const bx=x-5*P,by=rim-2*P;for(const wx of[-3,3]){fxR(c,x-5*P+(wx+5)*P-P,rim-2*P,P,'k',2,2);fxR(c,x-5*P+(wx+5)*P,rim-2*P,P,'D');}
+   const tl=i=>tip?Math.round(i*.35)*P:0; /* tipping: the back of the cart lifts */for(let j=0;j<5;j++)for(let i=0;i<10;i++){const e=i===0||i===9||j===4;fxR(c,bx+i*P,by-(j+1)*P-tl(i)+wb,P,e?'k':(j===3?'d':'D'));}
+   const heap=p2?3:2;for(let i=1;i<9;i++){const h=Math.round(heap*Math.sin(Math.PI*i/9)+(fhs(i,3)>.6?1:0));if(tip&&i<4)continue;for(let j=0;j<h;j++)fxR(c,bx+i*P,by-(6+j)*P-tl(i)+wb,P,(i+j)%3===0?'D':(i+j)%3===1?'d':'s');}
+   const mx=x+9*P,leg=s.mv?(fst(t,8)%2?'mnW':'mnS'):'mnS';fxS(c,leg,mx,rim-P,P);if(p2&&fst(t,4)%2)fxR(c,mx,rim-14*P,P,'r');if(dead&&s.dnt>.8&&fst(t,4)%2)fxR(c,mx+5*P,rim-16*P,P,'f',2,2);c.restore();}},
+ /* The Mirror: a magic mirror hangs in the sky (charm grid, low enough to clear the HUD in the real game) and a shimmering line runs down the middle of the jar. A ghost of your fruit shows where your finger is, with a dotted arc to where it will really drop. Phase 2: the mirror cracks. Beaten: it shatters */
+ B_mirror:{tick(s,g,dt,A){bossT(s,dt);if(s.dnt!=null&&!s.sh){s.sh=1;const P=fxBP(g),mx=g.L+(g.R-g.L)*.17,my=fxRim(g)-52;for(let k=0;k<16;k++){const a=Math.random()*Math.PI*2;A.add({k:'sq',x:mx+Math.cos(a)*20,y:my+Math.sin(a)*24,vx:Math.cos(a)*100,vy:Math.sin(a)*60-40,g:600,T:1,col:k%3?'i':'w',s:1});}}},
+  front(c,g,s,t){const P=g.P,u=Math.min(1,s.age/.8),dead=s.dnt!=null;c.save();
+   if(!dead||s.dnt<.6){const a=(dead?1-s.dnt/.6:u)*.55;c.globalAlpha=a;const ax=fq(g.W/2,g.P),ph=fst(t,8);for(let y=fxRim(g)-60;y<g.bot;y+=g.P){const k=Math.round(y/g.P)+ph;if(k%4<2)fxR(c,ax,y,g.P,k%8<2?'w':'b');}}
+   const l=s.l;if(l.can&&!dead){const gx=g.W-l.hx,gy=l.hy;c.globalAlpha=.35*u;drawFruit(c,gx,gy,l.hr,l.l||0);c.globalAlpha=.8*u;for(let k=1;k<12;k++){const v=k/12,x=gx+(l.hx-gx)*v,y=gy-Math.sin(v*Math.PI)*28-6;if(k%2)fxR(c,x,y,g.P,'b');}}
+   c.globalAlpha=s.p;if(dead&&s.dnt>.05){c.restore();return;}
+   const mx=fq(g.L+(g.R-g.L)*.17,P),my=fq(fxRim(g)-52-(1-u)*(1-u)*80,P),rx=7,ry=10,cr=s.p2t!=null;
+   for(let j=-ry-2;j<=ry+2;j++)for(let i=-rx-2;i<=rx+2;i++){const d=(i*i)/((rx+2)*(rx+2))+(j*j)/((ry+2)*(ry+2)),d2=(i*i)/(rx*rx)+(j*j)/(ry*ry);if(d>1.05)continue;let col;if(d2<=1){col=(i-j*.5>2&&i-j*.5<4)?'w':'i';if(cr&&(Math.abs(i+Math.round(j*.4))<1&&j>-5&&j<6||(j===2&&i>0&&i<5)||(j===-3&&i<0&&i>-4)))col='k';}else col=d>.92?'k':d2<1.35?'Y':'y';fxR(c,mx+i*P,my+j*P,P,col);}
+   fxR(c,mx-2*P,my-(ry+3)*P,P,'k',5,2);fxR(c,mx-P,my-(ry+3)*P,P,'y',3,1);fxR(c,mx,my-(ry+4)*P,P,'r');
+   const bl=(t%3.3)<.12;c.globalAlpha=s.p*.75;if(!bl){fxR(c,mx-3*P,my-2*P,P,'U',2,2);fxR(c,mx+P,my-2*P,P,'U',2,2);fxR(c,mx-2*P,my-2*P,P,'w');fxR(c,mx+2*P,my-2*P,P,'w');}else{fxR(c,mx-3*P,my-P,P,'U',2,1);fxR(c,mx+P,my-P,P,'U',2,1);}fxR(c,mx-2*P,my+3*P,P,'U',5,1);fxR(c,mx+2*P,my+2*P,P,'U');c.restore();}}});
+
+/* The Padlock on the tool bar: chains cross the tools in an X, link by link, then the padlock drops onto them and the bar dims. Phase 2: it shakes and the charge bursts out of the tools in teal sparks. Beaten: a key flies in and turns, the padlock springs open and drops, and the chains fall away */
+function fxLockBar(c,W,H,s,t){const P=3,BP=4,age=s.age||0,u=Math.min(1,age/.8),dead=s.dnt!=null,dn=dead?s.dnt:0;
+ c.globalAlpha=(dead?Math.max(0,1-dn/.8):Math.min(1,age/.4))*.3;c.fillStyle=FXP.x;c.fillRect(0,0,W,H);
+ const fall=dead&&dn>.6?(dn-.6)*(dn-.6)*900:0,sh=(s.p2t!=null&&s.p2t<.6)?(fst(t,20)%2?P:0):0;c.globalAlpha=dead?Math.max(0,1-(dn-.6)/.5):1;
+ for(const[x0,y0,x1,y1]of[[2,5,W-2,H-5],[2,H-5,W-2,5]]){const len=Math.hypot(x1-x0,y1-y0),n=Math.floor(len/(2*P)),m=Math.round(n*u);for(let k=0;k<m;k++){const v=k/n,x=x0+(x1-x0)*v,y=y0+(y1-y0)*v+fall+sh;if(k%2){fxR(c,x-P,y-P,P,'k',3,3);fxR(c,x,y,P,'d');}else{fxR(c,x-P,y,P,'k',3,1);fxR(c,x,y-P,P,'k',1,3);fxR(c,x,y,P,'s');}}}
+ c.globalAlpha=1;const lu=Math.min(1,Math.max(0,(age-.6)/.35)),ly=H/2+26-(lu<1?Math.round(Math.pow(1-lu,2)*70):0)+(dead&&dn>.65?Math.pow(dn-.65,2)*900:0),shk=s.p2t!=null&&s.p2t<.6?(fst(t,20)%2?BP:-BP)/2:0;
+ if(lu>0&&ly<H+60)fxS(c,dead&&dn>.5?'lockO':'lock',W/2+shk,ly,BP);
+ if(dead&&dn<.62){const k=Math.min(1,dn/.5),kx=-30+(W/2+18+30)*k;fxS(c,'key',kx,H/2-4,BP,{ay:.5,r:Math.min(3,Math.floor(dn*8))%4});}
+ if(s.p2t!=null&&s.p2t<.9){const q=s.p2t/.9;for(let k=0;k<18;k++){const a=k*.35,x=W/2+Math.cos(a)*q*W*.48,y=H/2+Math.sin(a)*q*H*.7-q*q*30;c.globalAlpha=Math.max(0,1-q);fxR(c,x,y,P,k%3?'t':'w');}c.globalAlpha=1;}
+ if(!dead&&lu>=1&&(t%3.3)<.2)fxStar(c,W/2-14,ly-46,P,[1,2,1][Math.min(2,Math.floor((t%3.3)/.07))],'y');}
+function fxLockSync(){const g=G.g,s=g&&g.fx&&g.fx.S.B_lock,pw=document.getElementById('pw'),tb=document.getElementById('tb');let cv=document.getElementById('lkc');
+ if(!s||!(s.p>0)||(G.state!=='play'&&G.state!=='pause')||!tb||!pw){if(cv)cv.hidden=true;return;}
+ if(!cv){cv=document.createElement('canvas');cv.id='lkc';cv.style.cssText='position:absolute;pointer-events:none;z-index:5';pw.appendChild(cv);if(getComputedStyle(pw).position==='static')pw.style.position='relative';}
+ cv.hidden=false;const r=tb.getBoundingClientRect(),pr=pw.getBoundingClientRect(),dp=devicePixelRatio||1,w=Math.round(r.width),h=Math.round(r.height);if(!w||!h)return;cv.style.left=(r.left-pr.left)+'px';cv.style.top=(r.top-pr.top)+'px';cv.style.width=w+'px';cv.style.height=h+'px';if(cv.width!==w*dp||cv.height!==h*dp){cv.width=w*dp;cv.height=h*dp;}
+ const c=cv.getContext('2d');c.setTransform(dp,0,0,dp,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=false;fxLockBar(c,w,h,s,g.fx.t);}
