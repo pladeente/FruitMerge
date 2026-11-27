@@ -216,7 +216,11 @@ Each entry: the rule, what the scene shows, its arena, and where to look.
 - **Arena:** scenery `castle`, weather `petals`, darkness .1, stars, sun, clouds 5 at 26 px/s.
 - **Code:** `fx.js` `B_queen:{` (scene), `ARENA.B_queen` (arena); `engine.js` `B_queen:{p:` (live state: `done`); preview card `bqueen`.
 
+## The user's bar and what comes next
+
+See `CLAUDE.md`, "Animation standard and handover": real poses drawn in code (never a squashed or split sprite), bosses big, evil and moving, free to enter the jar and affect fruit, each with its arena and a jar transformation where it fits. Next: rework the basic bosses one at a time in the order the user picks.
+
 ## Ideas the user has raised (not done yet)
 
-- Give the remaining non-humanoid props more presence the way The Rot, The Syrup and The Tide got it in v1.87 (the user's examples of the bar: The Reaper and The Storm). Humanoid characters are fine as they are.
+- Give the remaining non-humanoid props more presence the way The Rot, The Syrup and The Tide got it in v1.87 to v1.89 (the user's examples of the bar: The Reaper and The Storm). Humanoid characters are fine as they are. Bosses may enter the jar and affect fruit (the user, 27 Nov).
 - More movement for the monsters (The Rot leaps across the jar since v1.89). Bosses may shake the jar picture with `A.jsA`/`A.jsT` (engine `fx.jsh`, v1.89): only the drawing moves, never the fruit.
