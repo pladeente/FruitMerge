@@ -1121,7 +1121,8 @@ Object.assign(FXS,{
    const dy=2+Math.round(Math.pow(1-rs,2)*38)+(dead&&dn>1.3?Math.round((dn-1.3)*18):0),fl=s.lfl>0?Math.ceil(s.lfl/.2*3)/3*.5:0,pl=F.apal(p2&&!dead,fl),m=new Map(),set=(i,j,r)=>m.set(Math.round(i)+','+(-Math.round(j-dy)),r);
    const eat=s.eat==null?9:s.eat,lau=eat<1.05&&!dead,lick=eat>=1.05&&eat<1.8&&!dead,gulp=eat<.18,jit=lau&&!RMO?(fst(t,12)%2):0,on=(i,j)=>!dead||fhs(i,j)>Math.min(1,dn*1.4);
    /* the spire, the crown, the tower */
-   for(let j=37;j<=50;j++){set(0,j,'D');if(j<46){set(-1,j,j%3?'a':'D');set(1,j,j%3?'a':'D');}if(j%3===0){set(-2,j,'D');set(2,j,'D');}}set(0,51,(!dead&&fst(t,2)%2)?'r':'R');set(-1,51,'D');set(1,51,'D');
+   const spx=-12;for(let j=37;j<=50;j++){set(spx,j,'D');if(j<46){set(spx-1,j,j%3?'a':'D');set(spx+1,j,j%3?'a':'D');}if(j%3===0){set(spx-2,j,'D');set(spx+2,j,'D');}}set(spx,51,(!dead&&fst(t,2)%2)?'r':'R');set(spx-1,51,'D');set(spx+1,51,'D');
+   /* the flagpole on the crown, a gold ball on top */for(let j=37;j<=51;j++)set(4,j,'t');set(4,52,'G');
    for(let j=31;j<=36;j++)for(let i=-12;i<=12;i++)set(i,j,j===36?'L':Math.abs(i)===12?'a':(j===33&&i%2===0)?'D':i<-6?'H':'A');
    for(let j=-3;j<=30;j++)for(let i=-23;i<=23;i++){const ai=Math.abs(i);set(i,j,j>=29?(j===30?'L':'a'):ai===23?'a':i<-17?'H':(i%6===0&&j>18)?'a':'A');}
    /* windows down the sides and over the sign, lit at random, red in phase 2, going dark when beaten */
@@ -1139,14 +1140,22 @@ Object.assign(FXS,{
     for(let j=bot;j<=top;j++){let r='M';if(j===top||j===bot)r='k';else if(j===top-1&&!gulp)r=(i+40)%3===0?'t':'T';else if(j===bot+1&&!gulp&&top-bot>3)r=(i+41)%3===0?'t':'T';else if(j<top-1&&j>bot+1&&Math.abs(i)<6)r='R';set(i,j,r);}set(i,top+1,'a');}
    if(lick){const u=(eat-1.05)/.75,v=u<.5?u*2:2-u*2,tx=-11+v*22;for(let a=-3;a<=3;a++)for(let b=-1;b<=3;b++)if(a*a/9+(b-1)*(b-1)/4<=1.05)set(tx+a,8+Math.round(tx*tx/80)+b,(b===1||b===2)&&a===0?'m':'p');}
    const o=new Map();for(const[k,v]of m){if(+k.split(',')[1]>2)continue;o.set(k,pl[v]||v);}c.save();c.globalAlpha=s.p;fxBlobI(c,x0,rim,Q,fxFade(o,Math.min(1,s.age/1.2)),s.acv=s.acv||{});
+   FXS.B_tax.flag(c,g,s,t,x0+4*Q,rim-(51-dy)*Q,fl);
    /* eye glow */
    if(!dead&&!lau&&s.age>1.2){c.globalAlpha=s.p*(p2?.38:.26);for(const sd of[-1,1])for(let a=0;a<6.28;a+=.35)fxR(c,x0+Math.round(sd*9+Math.cos(a)*8)*Q,rim-Math.round(14-dy+Math.sin(a)*4.5)*Q,Q,pl.E);}
    /* lightning: a jagged bolt from the clouds to the spire or the sky beside the tower, with a fork */
    if(s.bolt&&s.bolt.t>0&&(fst(s.bolt.t,30)%3)){c.globalAlpha=s.p;for(const pts of s.bolt.p){for(let n=0;n<pts.length-1;n++){const[a,b]=pts[n],[e,f]=pts[n+1],L2=Math.max(1,Math.round(Math.max(Math.abs(e-a),Math.abs(f-b))/Q));for(let k=0;k<=L2;k++){const x=a+(e-a)*k/L2,y=b+(f-b)*k/L2;fxR(c,x-Q,y,Q,'b',4,1);}}for(let n=0;n<pts.length-1;n++){const[a,b]=pts[n],[e,f]=pts[n+1],L2=Math.max(1,Math.round(Math.max(Math.abs(e-a),Math.abs(f-b))/Q));for(let k=0;k<=L2;k++)fxR(c,a+(e-a)*k/L2,b+(f-b)*k/L2,Q,'w',2,1);}}}
    c.restore();},
+  /* the Australian flag flying off the roof (the user's ask): on the charm grid, hoist at the pole, streaming left with the wind; Union Jack in the canton, the Commonwealth Star under it, the Southern Cross on the fly; it ripples in steps, folds shaded */
+  flag(c,g,s,t,px,py,fl){const P=g.P,W2=18,H2=9,cl={B:'#1f2a8a',b:'#16206a',W:'#ffffff',w:'#c9cfe0',R:'#e4002b',r:'#a3001f',k:'#2a1a3a'};if(fl>0)for(const q in cl)if(q!=='k')cl[q]=fxHx(cl[q],'#ffffff',fl);
+   const UJ=['RWBWRWBWR','WRWWRWWRW','RRRRRRRRR','WRWWRWWRW','RWBWRWBWR'],st=new Set(),star=(u,v)=>{for(const[a,b]of[[0,0],[1,0],[-1,0],[0,1],[0,-1]])st.add((u+a)+','+(v+b));};star(4,7);st.add('3,8');st.add('5,8');star(13,1);star(10,4);star(15,4);star(13,7);st.add('14,5');
+   const ph=RMO?0:fst(t,8)*.8,x0=fq(px,P),y0=fq(py,P);c.save();c.globalAlpha*=Math.min(1,(s.ars||0)*1.2);
+   for(let u=0;u<W2;u++){const a=u/W2,off=Math.round(Math.sin(ph-u*.55)*a*1.6),dk=Math.cos(ph-u*.55)<-.35&&u>1,x=x0-(u+1)*P,y=y0+off*P;fxR(c,x,y-P,P,'k',1,H2+2);if(u===W2-1)fxR(c,x-P,y,P,'k',1,H2);
+    for(let v=0;v<H2;v++){let col='B';if(u<9&&v<5)col=UJ[v][u];if(st.has(u+','+v))col='W';const hx=dk?{B:'b',W:'w',R:'r'}[col]:col;c.fillStyle=cl[hx];c.fillRect(x,y+v*P,P,P);}}
+   c.restore();},
   /* the ATO's clocks: rising in, the lightning, the laugh after each coin, its eyes */
   atick(s,g,dt,A){const F=FXS.B_tax,Q=fxBP(g),x0=F.atoX(g),rim=fxRim(g),dead=s.dnt!=null,p2=s.p2t!=null;s.ars=fxA(s.ars||0,1,dt/1.5);if(s.eat!=null)s.eat+=dt;if(s.lfl>0)s.lfl-=dt;if(s.bolt)s.bolt.t-=dt;
-   if(s.blt==null)s.blt=1.8;s.blt-=dt;if(s.blt<=0&&!RMO&&s.ars>.9&&!(dead&&s.dnt>1)){s.blt=(p2?1.1:2.4)+Math.random()*(p2?1.2:2.2);const sp=Math.random()<.55,tx=sp?x0:Math.max(g.L+10,Math.min(g.R-10,x0+(Math.random()<.5?-1:1)*(25+Math.random()*10)*Q)),ty=sp?rim-49*Q:rim-(12+Math.random()*16)*Q,pts=[];let x=tx+(Math.random()-.5)*60;for(let k=0;k<=7;k++){const v=k/7;pts.push([fq(x+(tx-x)*v+(k&&k<7?(Math.random()-.5)*40:0),Q),fq(ty*v-10*(1-v),Q)]);}const fk=[pts[3]];let fx=pts[3][0],fy=pts[3][1];for(let k=0;k<3;k++){fx+=(Math.random()<.5?-1:1)*(10+Math.random()*16);fy+=14+Math.random()*12;fk.push([fq(fx,Q),fq(fy,Q)]);}s.bolt={t:.22,p:[pts,fk]};s.lfl=.2;if(sp)A.burst(x0,rim-49*Q,['w','b','y'],8,{v:120,T:.35});}
+   if(s.blt==null)s.blt=1.8;s.blt-=dt;if(s.blt<=0&&!RMO&&s.ars>.9&&!(dead&&s.dnt>1)){s.blt=(p2?1.1:2.4)+Math.random()*(p2?1.2:2.2);const sp=Math.random()<.55,tx=sp?x0-12*Q:Math.max(g.L+10,Math.min(g.R-10,x0+(Math.random()<.5?-1:1)*(25+Math.random()*10)*Q)),ty=sp?rim-49*Q:rim-(12+Math.random()*16)*Q,pts=[];let x=tx+(Math.random()-.5)*60;for(let k=0;k<=7;k++){const v=k/7;pts.push([fq(x+(tx-x)*v+(k&&k<7?(Math.random()-.5)*40:0),Q),fq(ty*v-10*(1-v),Q)]);}const fk=[pts[3]];let fx=pts[3][0],fy=pts[3][1];for(let k=0;k<3;k++){fx+=(Math.random()<.5?-1:1)*(10+Math.random()*16);fy+=14+Math.random()*12;fk.push([fq(fx,Q),fq(fy,Q)]);}s.bolt={t:.22,p:[pts,fk]};s.lfl=.2;if(sp)A.burst(x0-12*Q,rim-49*Q,['w','b','y'],8,{v:120,T:.35});}
    if(dead&&!s.asp&&s.dnt>.5){s.asp=1;A.burst(x0,rim-24*Q,['y','w','o'],16,{v:180,vy:-80,g:500,T:.7});}
    const h=s.coinA&&s.coinA>0?[-1,-1]:(s.l.p?[-1,0]:[0,0]);if(s.coinA>0)s.coinA-=dt;s.alk=s.eat!=null&&s.eat<1.8?[0,0]:h;},
   /* the coin hops from the sack into its mouth: it gulps, laughs and licks its lips */
