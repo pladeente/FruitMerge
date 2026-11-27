@@ -134,7 +134,7 @@ The user should never have to explain this again. Everything below is their bar,
 - Bosses may shake the jar picture (`A.jsA`/`A.jsT`, engine `fx.jsh`). Screen shake stays off for combos and charms.
 - The model for weather and battle mood is The Storm: it darkens the scene and dark clouds race across in one direction.
 
-**Next job: rework the basic bosses one at a time, in the order the user picks.** They are mostly small props on the rim. Done: The Twins (v1.90, a conjoined two-headed cherry ogre, see `BOSSES.md`; v1.91 its rule drops Evil Cherries, rocks that never merge, in place of free Cherries, the user's call). Candidates, with first ideas only (the user decides):
+**Next job: rework the basic bosses one at a time, in the order the user picks.** They are mostly small props on the rim. Done: The Twins (v1.90, a conjoined two-headed cherry ogre, see `BOSSES.md`; v1.91 its rule drops Evil Cherries, rocks that never merge, in place of free Cherries, the user's call). The Blackout (v1.92, a giant shadow beast behind the jar). The user asked to go down the rest in alphabetical order: Clock, Collector, Fog, Gambler, Glutton, Hourglass, Leech, Lid, Slick, Swarm, Wilt. A scene can now draw behind the jar with a `bg(c,g,s,t,A)` hook (called from `fx.arena`, before `drawJar`). Candidates, with first ideas only (the user decides):
 - The Leech: a giant writhing leech that slithers into the jar.
 - The Lid: a lid with teeth, like a mimic.
 - The Wilt: a withered tree creature.
