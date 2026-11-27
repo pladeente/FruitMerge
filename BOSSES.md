@@ -68,9 +68,10 @@ Each entry: the rule, what the scene shows, its arena, and where to look.
 
 ### The Clock
 - **Rule:** Your fruit drops by itself after 3 seconds. **Phase 2:** It drops after 2 seconds. First depth 2.
-- **Scene:** The Clock: a cuckoo clock lands on the rim. Its red hand sweeps once in the time your fruit has before it drops by itself, the pendulum ticks, and the cuckoo pops out each time it drops your fruit for you.
+- **Scene (v1.93, the user's first idea: a clockwork owl):** a brass clockwork owl on the rim (rim spot .79, width 120), about 20 cells wide folded, 40 flared, 42 tall on the boss grid, built per frame as one cell map: a pendulum tail swinging over the rim into the jar, steel talons, wings (folded plates, or six blade feathers fanned by `wing`), a brass egg body with scalloped plates, rivets and a few patina spots, a chest dial (ticks, the red hand on `ck`, a slow hand), a wind-up key turning in its back, ear tufts, an angry brow plate, gear eyes (teeth turning, faster when tense or striking) with a one-cell glow ring, a hooked beak. The head ticks round every 0.5 s to stare at the held fruit (`hx`). Tense (`ck` over .6): leans in, wings lift halfway, eyes go white-hot, sparks. Strike (event `cuckoo`, 0.65 s): wings flared, beak open, chime rings from its chest and at the held fruit. Phase 2: cracked dial over a furnace glow, red eyes, steam from the tufts, faster pendulum. Beaten: gears burst out, the spring coils up out of its head, the head spins, it slumps and fades.
+- **Jar:** a big clock face on the back of the glass (ticks, a slow hand, the red hand on `ck`), gears turning in the bottom corners.
 - **Arena:** scenery `gears`, weather `dust`, darkness .12, stars.
-- **Code:** `fx.js` `B_clock:{` (scene), `ARENA.B_clock` (arena); `engine.js` `B_clock:{p:` (live state: `done`, `ck`); preview card `bclock`.
+- **Code:** `fx.js` `B_clock:{` (scene: `tick`, `back` the clock face, `front` the owl, `ev` the strike), `ARENA.B_clock`; `engine.js` `B_clock:{p:` (live state: `done`, `ck`, and `hd`: `hx`, `hy`, `hr`); preview card `bclock`.
 
 ### The Fog
 - **Rule:** The Next box is hidden. **Phase 2:** Your own fruit is hidden too. First depth 1.
