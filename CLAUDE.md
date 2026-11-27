@@ -133,7 +133,7 @@ The user should never have to explain this again. Everything below is their bar,
 - Bosses may shake the jar picture (`A.jsA`/`A.jsT`, engine `fx.jsh`). Screen shake stays off for combos and charms.
 - The model for weather and battle mood is The Storm: it darkens the scene and dark clouds race across in one direction.
 
-**Next job: rework the basic bosses one at a time, in the order the user picks.** They are mostly small props on the rim. Candidates, with first ideas only (the user decides):
+**Next job: rework the basic bosses one at a time, in the order the user picks.** They are mostly small props on the rim. Done: The Twins (v1.90, a conjoined two-headed cherry ogre, see `BOSSES.md`). Candidates, with first ideas only (the user decides):
 - The Leech: a giant writhing leech that slithers into the jar.
 - The Lid: a lid with teeth, like a mimic.
 - The Wilt: a withered tree creature.

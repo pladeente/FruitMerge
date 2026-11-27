@@ -756,7 +756,7 @@ const ARENA={
  B_wilt:{sky:['#b8926a','#e8cfab'],gr:'#9a7a58',sc:'trees',sk:['#a3866a','#735a42'],o:{k:'dead'},cl:{n:4,v:-20,c:['#d6bc98','#b89c78'],y:[.05,.35],s:1.2},wx:'leaves',wn:1,wc:['#a9713a','#c48a52','#6e4420'],dk:.06,jar:['#d9c09a',.1]},
  B_lock:{sky:['#33363f','#5a5d68'],gr:'#2e3038',sc:'hall',sk:['#4a4d58','#2c2e36'],o:{bars:1},wx:'dust',wn:.5,wc:['#8f8a99','#c9c3d4'],dk:.2,jar:['#4a4d58',.12],vg:.5},
  B_gamble:{sky:['#22093a','#55185a'],gr:'#1c0a2a',sc:'city',sk:['#3a1450','#1e0a2e'],o:{win:['#ff4d8d','#35c2b4','#ffd43b','#4cc9f0'],neon:1},st:1,wx:'coins',wn:.7,dk:.12,jar:['#55185a',.08],vg:.4},
- B_twins:{sky:['#7ccaf5','#d6f0ff'],gr:'#8acb7a',sc:'trees',sk:['#86c98f','#4f9a60'],o:{k:'cherry'},cl:{n:6,v:-24,c:['#ffffff','#dbe9f5'],y:[.05,.45],s:1.2},wx:'petals',wn:.7,wc:['#ffafcc','#ffffff','#ff8fab']},
+ B_twins:{sky:['#2b0a1e','#b8475a'],gr:'#2a0f1d',sc:'trees',sk:['#5a1d35','#36102a'],o:{k:'cherry'},cl:{n:6,v:-24,c:['#4a1a32','#2e0d1f'],y:[.05,.4],s:1.3},wx:'petals',wn:.9,wc:['#ff8fab','#e63946','#a3202c'],sun:['#ff8f8f',.8,.34,13],dk:.14,jar:['#5a1d35',.07],vg:.4},
  B_miser:{sky:['#24190f','#47341f'],gr:'#1f160c',sc:'city',sk:['#3a2a18','#20160c'],o:{win:['#fb8500','#ffd43b'],chim:1},st:1,wx:'dust',wn:.5,wc:['#e09600','#c48a52'],dk:.28,jar:['#3a2c1a',.12],vg:.75},
  B_stone:{sky:['#c49a72','#ead0b0'],gr:'#a8845e',sc:'mounts',sk:['#a37a56','#77573c'],wx:'pebbles',wn:.6,wc:['#8f8a99','#5f5a6b'],cl:{n:3,v:-14,c:['#e0c6a6','#c8a886'],y:[.05,.3],s:1.1},jar:['#c9a27d',.08]},
  B_mirror:{sky:['#311a52','#74499c'],gr:'#2a1640',sc:'mounts',sk:['#5a3a86','#3a2160'],o:{shard:1},wx:'sparkle',wn:1,wc:['#ffffff','#c9b3ff','#4cc9f0'],st:1,dk:.1,jar:['#c9b3ff',.1],vg:.4},
@@ -1366,18 +1366,73 @@ Object.assign(FXS,{
    if(dead){c.globalAlpha=s.p*.55;R(-6,-14,'D',12,7);c.globalAlpha=s.p;T(c,'TILT',x,y-9*P,P*4,'#e63946','center',FD);}
    R(-6,-4,'k',12,3);R(-5,-3,'x',10,1);R(-8,0,'k',17,1);
    const pull=s.sp>.6?2:s.sp>.5?1:0;R(9,-17+pull*3,'k',3,3);R(10,-16+pull*3,'r');R(10,-14+pull*3,'D',1,10-pull*3);R(9,-5,'k',3,2);c.restore();}},
- /* The Twins: two cherry kids sit on the rim holding stems. Every merge that drops a Cherry in, one of them kicks it into the jar. Phase 2: they both throw. Beaten: they fall asleep leaning on each other */
- B_twins:{x(g){return fq(fxRX('B_twins',.24,78,g),fxBP(g));},
-  tick(s,g,dt){bossT(s,dt);for(const k of['k0','k1'])if(s[k]>0)s[k]-=dt;},
-  front(c,g,s,t){const P=fxBP(g),x0=FXS.B_twins.x(g),rim=fxRim(g),u=Math.min(1,s.age/.7),sl=s.dnt!=null&&s.dnt>.3;c.save();c.globalAlpha=s.p*u;const jx=x0,jy=rim-17*P;
-   for(const d of[0,1]){const kk=s['k'+d]||0,hop=kk>.15?-2:kk>0?1:(sl?0:(fst(t+d*.35,3)%2?-1:0)),lean=sl?(d?-1:1):0,cx=x0+(d?5:-5)*P+lean*P,cy=rim-5*P+hop*P,r=4;
-    fxLn(c,cx+(d?-1:1)*P,cy-r*P,jx,jy+P,P,FXP.N);fxLn(c,cx,cy-r*P,jx+(d?1:-1)*P,jy+P,P,FXP.G);
-    for(let j=-r-1;j<=r+1;j++)for(let i=-r-1;i<=r+1;i++){const dd=i*i+j*j;if(dd>r*r+r)continue;const e=(i+1)**2+j*j>r*r+r||(i-1)**2+j*j>r*r+r||i*i+(j+1)**2>r*r+r||i*i+(j-1)**2>r*r+r;fxR(c,cx+i*P,cy+j*P,P,e?'k':(i+j>r*.7?'R':(i<-1&&j<-1?'q':'r')));}
-    fxR(c,cx-2*P,cy-2*P,P,'w');const bl=(t+d)%2.9<.13;if(sl){fxR(c,cx-2*P,cy,P,'k',2,1);fxR(c,cx+P,cy,P,'k',2,1);}else if(bl){fxR(c,cx-2*P,cy-P,P,'k',2,1);fxR(c,cx+P,cy-P,P,'k',2,1);}else{fxR(c,cx-2*P,cy-P,P,'k',1,2);fxR(c,cx+P,cy-P,P,'k',1,2);}
-    fxR(c,cx-3*P,cy+P,P,'p');fxR(c,cx+2*P,cy+P,P,'p');if(!sl){fxR(c,cx-P,cy+2*P,P,'k',3,1);fxR(c,cx-2*P,cy+P,P,'k');fxR(c,cx+2*P,cy+P,P,'k');}else fxR(c,cx,cy+2*P,P,'k');}
-   fxR(c,jx-P,jy-P,P,'k',3,2);fxR(c,jx,jy-2*P,P,'k',4,2);fxR(c,jx+P,jy-2*P,P,'g',2,1);fxR(c,jx,jy-P,P,'G');
-   if(sl&&!RMO){const q=(t*.6)%1;T(c,'z',jx+(8+q*10)*P/2,jy-q*30,10+q*8,'#3b2346','center',FD);}c.restore();},
-  ev(s,n,o,A,g){if(n!=='twins'||!s.l.p||s.dnt!=null)return;const d=o.x>FXS.B_twins.x(g)?1:0,P=fxBP(g),k='k'+(s['k'+d]>0?1-d:d);s[k]=.3;const x0=FXS.B_twins.x(g)+(k==='k1'?5:-5)*P,y0=fxRim(g)-8*P,T1=.3,G=1500,tx=o.x,ty=g.top+4;A.add({k:'fn',x:x0,y:y0,vx:(tx-x0)/T1,vy:(ty-y0-.5*G*T1*T1)/T1,g:G,T:T1,fa:1,d:(c,q,g)=>drawFruit(c,q.x,q.y,g.P*3,0),end:(A)=>A.burst(tx,ty,['r','q','w'],5,{v:80,T:.3})});}},
+ /* The Twins (v1.90, the user's pick: conjoined cherry ogres): one huge two-headed cherry monster squats on the rim, two glossy cherry heads joined by thick twisted stems that knot into one woody crown with leaves, gnarled thorny vine arms clawing the rim and roots trailing over it. The left head is a brute (heavy brows, fangs, tusks), the right a grinner (one big eye, one squint and a scar, a split grin of little teeth, a lolling tongue); their eyes follow your fruit and every few seconds they turn and snarl at each other. It lands with a thud that shakes the jar. Every Cherry the rule drops, the nearer head lurches out and spits it into the jar (stretched, mouth wide, juice spraying), snaps back squashed and chews up the next. Brambles creep down the glass with cherries hanging off them. Phase 2: both heads swell, veins show, the eyes burn white, the stems crack and bleed juice, the leaves wither, the hanging cherries drip, they snarl more often. Beaten: they turn on each other and bite, juice bursts, and both shrivel to dry husks, eyes crossed out, and dissolve */
+ B_twins:{x(g){return fq(fxRX('B_twins',.24,196,g),fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);if(!s.h||s.age<.02)s.h=[{st:'idle',tm:0},{st:'idle',tm:0}];const Q=fxBP(g),p2=s.p2t!=null,dead=s.dnt!=null,x=FXS.B_twins.x(g),rim=fxRim(g);
+   for(const h of s.h){h.tm+=dt;if(h.st==='spit'&&h.tm>.22){h.st='rec';h.tm=0;}else if(h.st==='rec'&&h.tm>.18){h.st='chew';h.tm=0;}else if(h.st==='chew'&&h.tm>.75){h.st='idle';h.tm=0;}}
+   if(s.age>.55&&!s.thd){s.thd=1;if(!RMO){A.jsA=Math.max(4*g.K,3);A.jsT=.45;}A.burst(x,rim-Q,['p','w','m'],18,{v:210,vy:-130,g:520,T:.8,w:130});}
+   s.sn=(s.sn==null?3.2:s.sn)-dt;if(s.sn<=0&&!dead&&!RMO&&s.h.every(h=>h.st==='idle')){s.sn=p2?2.4+Math.random():4.8+Math.random()*2;s.snt=0;}if(s.snt!=null){s.snt+=dt;if(s.snt>.95)s.snt=null;}
+   if(s.snt!=null&&s.snt>.2&&!s.snp&&!RMO){s.snp=1;for(let k=0;k<5;k++)A.add({k:'sq',x:x+(Math.random()-.5)*4*Q,y:rim-7*Q,vx:(Math.random()-.5)*120,vy:-60-Math.random()*60,g:600,T:.6,col:k%2?'w':'q'});}if(s.snt==null)s.snp=0;
+   if(dead&&!s.bit&&s.dnt>.45){s.bit=1;A.burst(x,rim-11*Q,['r','R','q','w'],28,{v:250,vy:-150,g:700,T:.9,s:2});if(!RMO){A.jsA=3*g.K;A.jsT=.3;}}
+   if(!RMO&&!dead&&s.p>0&&s.age>1.2){if(Math.random()<dt*(p2?2.2:1)){const d=Math.random()<.5?0:1;A.add({k:'sq',x:x+(d?13:-15)*Q,y:rim-3*Q,vy:30,g:500,T:1.4,col:Math.random()<.5?'q':'r',fy:g.bot-3});}
+    if(p2&&Math.random()<dt*1.6){const d=Math.random()<.5?-1:1;A.add({k:'sq',x:x+d*(5+Math.random()*2)*Q,y:rim-(22+Math.random()*3)*Q,vy:10,g:420,T:1.6,col:Math.random()<.6?'R':'r',fy:g.bot-3});}}},
+  /* the brambles down the glass: a thorny vine on each wall with leaves, blossoms and hanging cherries, growing in over the first seconds; phase 2 the cherries darken and drip juice down the glass */
+  back(c,g,s,t){const u=fxArU(s);if(u<=0)return;const P=g.P,p2=s.p2t!=null,top=g.top,hgt=g.bot-top,gr=Math.min(1,s.age/5)*(p2?.9:.7),n=Math.floor(hgt*gr/P);c.save();c.globalAlpha=Math.ceil(u*3)/3*.95;
+   for(const sd of[-1,1]){const wx=sd<0?g.L:g.R-P,cx=j=>wx-sd*Math.round(2+Math.sin(j*.21+(sd>0?2:0))*1.6+Math.sin(j*.07+1))*P;
+    for(let j=0;j<n;j++){const xx=cx(j),y=top+j*P;fxR(c,xx,y,P,(j+(sd>0?3:0))%7===0?'N':'G');fxR(c,xx-sd*P,y,P,'g');fxR(c,xx+sd*P,y,P,'k');
+     if(j%6===2){fxR(c,xx-sd*2*P,y,P,'N');fxR(c,xx-sd*3*P,y-P,P,'N');}
+     if(j%11===6){fxR(c,xx-sd*2*P,y-P,P,'g');fxR(c,xx-sd*3*P,y-2*P,P,'l');fxR(c,xx-sd*2*P,y-2*P,P,'g');fxR(c,xx-sd*4*P,y-3*P,P,'g');}
+     if(j%13===9&&!p2){const bx=xx-sd*3*P;fxR(c,bx,y,P,'y');fxR(c,bx-P,y,P,'p');fxR(c,bx+P,y,P,'p');fxR(c,bx,y-P,P,'p');fxR(c,bx,y+P,P,'p');}
+     if(j%17===12&&j+5<n){const sx=xx-sd*2*P;for(let k=1;k<=3;k++)fxR(c,sx-sd*(k>>1)*P,y+k*P,P,'G');for(const o of[0,3]){const ox=sx-sd*(o+1)*P,oy=y+(4+(o?1:0))*P;fxR(c,ox-P,oy-P,P,'k',4,4);fxR(c,ox,oy,P,p2?'z':'R',2,2);fxR(c,ox-P+P,oy-P+P,P,p2?'R':'r');if(!p2)fxR(c,ox,oy,P,'q');
+       if(p2){const ln=Math.min(9,Math.floor((s.p2t||0)*3+fhs(j,o)*4)),dr=fst(t+j*.3+o,3)%3;for(let d=0;d<ln;d++)fxR(c,ox+(o?P:0),oy+(3+d)*P,P,d===ln-1?'r':'R');if(!RMO)fxR(c,ox+(o?P:0),oy+(3+ln+dr)*P,P,'r');}}}}}
+   c.restore();},
+  front(c,g,s,t){if(!s.h)return;const Q=fxBP(g),dead=s.dnt!=null,dn=dead?s.dnt:0,p2=s.p2t!=null,x=FXS.B_twins.x(g),rim=fq(fxRim(g),Q)+fxDrop(s,Q),l=s.l;if(dead&&dn>3.4)return;
+   const m=new Map(),set=(i,j,col)=>m.set(Math.round(i)+','+(-Math.round(j)),col),disc=(cx,cy,r,f)=>{const ri=Math.ceil(r);for(let j=-ri;j<=ri;j++)for(let i=-ri;i<=ri;i++)if(i*i+j*j<=r*r+.3){const v=f(i,j);if(v)set(Math.round(cx)+i,Math.round(cy)+j,v);}},
+    bez=(a,b,e,n,f)=>{for(let k=0;k<=n;k++){const v=k/n,w=1-v;f(w*w*a[0]+2*v*w*b[0]+v*v*e[0],w*w*a[1]+2*v*w*b[1]+v*v*e[1],v,k);}};
+   const sw=p2?1:0,shr=dead?Math.min(1,Math.max(0,(dn-.85)/1.1)):0,sn=s.snt!=null&&!dead,bite=dead&&dn<.85,hx=l.hx!=null?l.hx:x+40;
+   /* each head's pose: idle (breathing, out of step), spit (lurches out, stretched, mouth wide), rec (snaps back squashed, teeth clenched), chew (cheeks working), snarl (both turn in), bite (beaten: they turn on each other), then shrivel */
+   const HP=[0,1].map(d=>{const h=s.h[d],sd=d?1:-1,br=!RMO&&!dead&&h.st==='idle'&&!sn&&fst(t+d*.36,1.4)%2?1:0,lean=Math.sign((h.tx!=null?h.tx:x)-(x+sd*11*Q))||sd;let ox=0,oy=br,rx=9+sw,ry=9+sw,mo=d?2:3,ey='o';
+    if(h.st==='spit'){ox=lean*2;oy=1;rx-=1;ry+=1;mo=6;ey='w';}else if(h.st==='rec'){ox=-lean;oy=0;rx+=1;ry-=1;mo=1;ey='s';}else if(h.st==='chew'){const f=fst(t,6)%2;mo=f?1:2;rx+=f;ey='o';}
+    else if(sn){ox=-sd;mo=d?(fst(t,8)%2?5:2):4;ey='a';}
+    if(bite){ox=-sd*(dn>.4?3:2);oy=1;mo=dn>.45?1:6;ey='a';}else if(dead){const k=Math.round(shr*2.5);oy=0;mo=2;ey=dn>1.05?'x':'s';rx-=k;ry-=k;ox=-sd*Math.round(1-shr);}
+    return{d,sd,h,cx:sd*11+ox,cy:ry+1+oy,rx,ry,mo,ey,lean};});
+   /* roots over the rim and the vine arms, behind the heads */
+   for(const H of HP){const{sd,cx,rx}=H;for(const o of[-5,-2,2,5]){const len=2+Math.floor(fhs(o+5,H.d)*3);for(let k=0;k<len;k++)set(cx+o+((k+(RMO?0:fst(t+o,2)))%3===2?sd:0),1-k,k===len-1?'n':'N');}
+    const sp=H.h.st==='spit',sl=dead&&dn>.85,sh=[cx+sd*(rx-1),H.cy-1],el=[cx+sd*(rx+4),H.cy+(sp?6:sl?0:3)],hd=[cx+sd*(rx+4+(sp?1:0)),2];
+    bez(sh,el,hd,16,(px,py,v,k)=>{disc(px,py,1.6-v*.5,(i)=>i*sd>0?'G':i*sd<0?'g':'G');if(k===5||k===10||k===13){set(px,py+2,'N');set(px+sd,py+3,'N');}});
+    for(const f of[-1,0,1]){set(hd[0]+f*1.4,1,'N');set(hd[0]+f*2,0,'N');set(hd[0]+f*2,-1,'N');set(hd[0]+f*2+(f?f:sd)*.6,-2,'c');}}
+   /* the shared stems, twisted, up to one woody knot with leaves */
+   const ky=Math.max(HP[0].cy+HP[0].ry,HP[1].cy+HP[1].ry)+7-Math.round(shr*3),kx=Math.round((HP[0].cx+HP[1].cx)/2);
+   for(const H of HP){const{sd,cx}=H,t0=H.cy+H.ry;bez([cx-sd,t0-1],[cx+sd,t0+5],[kx+sd,ky-1],14,(px,py,v,k)=>{const cr=p2&&!dead&&(k===6||k===11);disc(px,py,1.8-v*.5,(i,j)=>cr&&i===0&&j===0?'r':cr&&i*i+j*j<=1?'R':(k*2+i-j+H.d*3)%7===0?'N':i<0?'g':'G');});}
+   const wd=p2||dead,sa=RMO?0:(fst(t,2)%2?.07:0);for(const[a0,L0,s0]of[[.62,9,0],[2.35,6,1]]){const a=a0+sa*(s0?-1:1)+(dead?shr*1.6*(s0?1:-1):0),dx=Math.cos(a),dy=Math.sin(a);for(let k=0;k<=L0;k+=.5){const w=Math.sin(Math.PI*k/L0)*(s0?2.2:3.3);for(let o=-w;o<=w;o+=.5){if(wd&&fhs(Math.round(k*3),Math.round(o*2+9))>.9)continue;set(kx+dx*(k+1.5)-dy*o,ky+1+dy*(k+1.5)+dx*o,Math.abs(o)<.5?(wd?'N':'l'):o>0?(wd?'E':'g'):(wd?'n':'G'));}}}
+   disc(kx,ky,3.3,(i,j)=>i===0&&j<1?'k':(i===-1&&j===1)||(i===1&&j===-2)?'k':i*i+j*j>6?(i<0&&j>0?'n':'N'):'n');set(kx-2,ky+3,'N');set(kx-3,ky+4,'N');set(kx-3,ky+5,'n');
+   /* the heads: glossy cherries lit top left, a dimple where the stem goes in; the one acting is drawn last, over its twin */
+   const ord=HP[1].h.st!=='idle'?[0,1]:[1,0];
+   for(const d of ord){const H=HP[d],{cx,cy,rx,ry,sd}=H,lp=bite||sn?-sd:dead?0:Math.max(-1,Math.min(1,Math.round((hx-(x+cx*Q))/(30*g.K))));
+    const dk=c0=>shr<=0?c0:shr<.5?({w:'q',q:'r',r:'R',R:'z',z:'z'}[c0]||c0):({w:'R',q:'R',r:'z',R:'z',z:'k'}[c0]||c0);
+    const inE=(i,j)=>(i*i)/(rx*rx+rx*.7)+(j*j)/(ry*ry+ry*.7)<=1;
+    for(let j=-ry-1;j<=ry+1;j++)for(let i=-rx-1;i<=rx+1;i++){if(!inE(i,j))continue;if(Math.abs(i)<=1&&j>=ry)continue;const nx=i/rx,ny=j/ry,n2=nx*nx+ny*ny;let col;
+     const sp=(nx+.42)*(nx+.42)/.05+(ny-.45)*(ny-.45)/.025;if(sp<=1)col='w';else if(sp<=2.8)col='q';else{const sh=nx*.6-ny*.5+n2*.35;col=sh>.85?'z':sh>.42||(sh>.3&&FBY[((i+40)&3)*4+((j+40)&3)]<8)?'R':'r';}
+     if(Math.abs(i)<=2&&j===ry-1)col='R';if(shr>0&&((i*3+j*5+d)%9===0)&&n2<.8)col='z';set(cx+i,cy+j,dk(col));}
+    if(p2&&!dead){const pu=RMO?0:fst(t,3)%2;for(const[vx,vy]of(d?[[-8,-1],[-8,0],[-7,1],[-7,2],[-8,3],[-6,2],[-5,6],[-4,7],[-3,7],[-5,7],[6,-2],[7,-1],[7,0],[8,1],[7,-3]]:[[-8,1],[-7,2],[-7,3],[-6,4],[-6,5],[-5,6],[-8,4],[-3,7],[-2,8],[7,1],[7,2],[8,3],[6,3],[6,-3],[7,-4]]))set(cx+vx,cy+vy,pu&&(vx+vy)%2?'R':'z');}
+    if(!dead||shr<.6){set(cx+sd*3,cy-5,dk('R'));set(cx+sd*4,cy-5,dk('R'));set(cx-sd*5,cy+3,dk('R'));}
+    /* the face */
+    const ec=p2?['w','y']:['y','o'],ey=H.ey,E=(ex,w,hh,big)=>{if(ey==='x'){for(let k=0;k<3;k++){set(ex+k,cy+k,'s');set(ex+2-k,cy+k,'s');}return;}if(ey==='s'){for(let i=0;i<w;i++)set(ex+i,cy+1,'k');if(!dead)set(ex+1+Math.max(0,lp),cy+1,ec[1]);return;}const tall=ey==='w'?hh+1:hh,j0=cy-(ey==='w'?1:0);for(let i=-1;i<=w;i++)for(let j=-1;j<=tall;j++)set(ex+i,j0+j,dk(j<0?'z':'R'));for(let i=0;i<w;i++)for(let j=0;j<tall;j++)set(ex+i,j0+j,'k');const gx=ex+Math.floor((w-2)/2)+lp*(w>3?1:0),gw=big?2:1;for(let i=0;i<gw;i++){set(gx+i+(big?0:1),j0+tall-2,ec[0]);if(tall>2||!big)set(gx+i+(big?0:1),j0+tall-3<j0?j0:j0+tall-3,ec[1]);}if(big)set(gx+(lp>0?1:0),j0+tall-1,'w');};
+    if(d===0){E(cx-6,4,3,1);E(cx+1,4,3,1);const bd=ey==='a'?1:0;if(ey!=='x')for(const s0 of[-1,1])for(let k=0;k<5;k++){const bi=s0<0?cx-7+k:cx+5-k,bj=cy+4+Math.round(k*-.35)-bd+(k>3?0:0);set(bi,bj,'k');set(bi,bj+1,'k');set(bi,bj+2,dk('R'));}
+     const my=cy-3,mo=H.mo;if(mo<=1){for(let i=-5;i<=5;i++){set(cx+i,my+1,'k');set(cx+i,my,(i+9)%3?'c':'k');set(cx+i,my-1,(i+10)%3?'c':'k');set(cx+i,my-2,'k');}}else for(let i=-5;i<=5;i++)for(let j=0;j<mo;j++){const e=j===0||j===mo-1;set(cx+i,my-j,e?'k':j===mo-2&&mo>3?'z':'k');}
+     if(mo>1){for(const fi of[-3,3])for(let k=1;k<=Math.min(2,mo-2);k++)set(cx+fi,my-k,'c');if(mo>2)for(const fi of[-5,-1,1,5])set(cx+fi,my-1,'c');if(mo>3)for(const fi of[-4,-2,2,4])set(cx+fi,my-mo+2,'c');if(mo>=5)for(let i=-1;i<=1;i++)set(cx+i,my-mo+2,'p');}
+     for(const s0 of[-1,1]){set(cx+s0*6,my-mo+1,'c');set(cx+s0*6,my-mo+2,'c');set(cx+s0*6,my-mo+3,'w');}
+     if(!dead&&mo<5){const ln=1+(RMO?1:fst(t+.4,3)%3);for(let k=1;k<=ln;k++)set(cx-4,my-mo+1-k,k===ln?'q':'w');}}
+    else{if(!dead||shr<.5)for(let k=0;k<8;k++){const si=cx+1+Math.round(k*.62),sj=cy+5-k;set(si,sj,'z');if(k%2){set(si-1,sj,'k');set(si+1,sj,'k');}}E(cx-6,4,4,1);E(cx+2,3,2,0);if(ey!=='x'){set(cx+1,cy+4,'k');set(cx+2,cy+4,'k');set(cx+3,cy+3,'k');set(cx+4,cy+3,'k');set(cx+5,cy+4,'k');set(cx-6,cy+4+(ey==='a'?-1:0),'k');set(cx-5,cy+5,'k');set(cx-4,cy+5,'k');set(cx-3,cy+4+(ey==='a'?-1:0),'k');}
+     const mo=H.mo,jm=i=>cy-3+Math.round(i*i/14);for(let i=-6;i<=6;i++){const mh=Math.max(1,Math.round(mo*(1-(i/7.5)*(i/7.5)))),top=jm(i);if(mo<=1||mh<=1){set(cx+i,top,'k');set(cx+i,top-1,(i+6)%2?'c':'k');set(cx+i,top-2,'k');continue;}set(cx+i,top,'k');set(cx+i,top-1,(i+6)%2?'c':'k');for(let j=2;j<mh+1;j++)set(cx+i,top-j,j===mh-1&&mh>3?'z':'k');set(cx+i,top-mh,(i+7)%2?'c':'k');set(cx+i,top-mh-1,'k');}
+     if(mo>=4){const tb=jm(2)-Math.max(1,Math.round(mo*(1-(2/7.5)*(2/7.5))));for(let k=0;k<3+(mo>4?1:0);k++){set(cx+2,tb-k,k?'p':'m');set(cx+3,tb-k,'m');}set(cx+2,tb-3-(mo>4?1:0),'p');}}}
+   const u=Math.min(1,s.age/1.2)*(dead&&dn>1.9?Math.max(0,1-(dn-1.9)/1.4):1);c.save();c.globalAlpha=s.p;fxBlob(c,x,rim,Q,fxFade(m,u));
+   /* the eyes glow */
+   if(!dead&&p2){c.globalAlpha=s.p*.45;const gc='y';for(const H of HP){if(H.ey==='s')continue;const ex=H.d?[[-6,4],[2,3]]:[[-6,4],[1,4]];for(const[e0,w]of ex)for(let j=-2;j<=4;j++)for(let i=-1;i<=w;i++){if((i>=0&&i<w&&j>=0&&j<=2)||FBY[((i+8)&3)*4+((j+8)&3)]/16>.5)continue;fxR(c,x+(H.cx+e0+i)*Q,rim-(H.cy+j)*Q,Q,gc);}}}
+   c.restore();},
+  ev(s,n,o,A,g){if(n!=='twins'||!s.l.p||s.dnt!=null||!s.h)return;const Q=fxBP(g),x=FXS.B_twins.x(g),rim=fxRim(g);let d=o.x>x?1:0;const bz=h=>h.st==='spit'||h.st==='rec';if(bz(s.h[d])&&!bz(s.h[1-d]))d=1-d;const h=s.h[d],sd=d?1:-1;h.st='spit';h.tm=0;h.tx=o.x;s.snt=null;
+   const lean=Math.sign(o.x-(x+sd*11*Q))||sd,R0=10+(s.p2t!=null?1:0),mx=x+(sd*11+lean*2)*Q,my=rim-(R0-3)*Q;A.burst(mx,my,['r','q','w','R'],9,{v:130,vy:-20,T:.4});
+   const T1=.28,G=1500,tx=o.x,ty=g.top+4;A.add({k:'fn',x:mx,y:my,vx:(tx-mx)/T1,vy:(ty-my-.5*G*T1*T1)/T1,g:G,T:T1,fa:1,d:(c,q,g)=>drawFruit(c,q.x,q.y,g.P*3,0),end:(A)=>A.burst(tx,ty,['r','q','w'],6,{v:90,T:.35})});}},
  /* The Miser: a hunched old man in a nightcap shuffles onto the rim clutching a glass jar. Every time your tools would charge, a spark of it flies up out of the tool bar into his jar instead. Phase 2: he hugs the jar and takes every spark. Beaten: the jar smashes and the sparks fly home */
  B_miser:{x(g){return fq(fxRX('B_miser',.79,64,g)+18*g.K,fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);const home=FXS.B_miser.x(g);if(s.age<.05||s.x==null){s.x=g.W+50;s.n=0;}if(s.dnt!=null){if(!s.br){s.br=1;const P=fxBP(g),jx=s.x-7*P,jy=fxRim(g)-5*P;A.burst(jx,jy,['i','w','b'],12,{v:150,T:.6,s:1});for(let k=0;k<Math.min(14,4+s.n);k++)A.add({k:'sq',x:jx,y:jy,vx:(Math.random()-.5)*160,vy:100+Math.random()*200,g:500,T:1.1,col:k%2?'t':'w',dl:k*.03});}if(s.dnt>.6)s.x+=dt*120;}else if(s.x>home)s.x=Math.max(home,s.x-dt*60);if(s.gl>0)s.gl-=dt;},
