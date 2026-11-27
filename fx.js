@@ -1831,7 +1831,14 @@ Object.assign(FXS,{
      else{const ox=hxx+fi*1.7;set(ox,hyy-1+tap,'B');set(ox,hyy-2+tap,'B');set(ox+fi*.3,hyy-3+tap,'B');set(ox+fi*.3,hyy-4+tap,'C');}}}
    const o=new Map();for(const[k,r]of m){let col=pl[r];const[i,j]=k.split(',').map(Number);if((r==='B'||r==='S'||r==='H')&&!m.has(i+','+(j-1))&&dk<.67)col=pl.R;o.set(k,col);}
    const keep=dead&&dn>.7?Math.max(0,1-(dn-.7)/1.6):1;c.save();c.globalAlpha=s.p*keep;fxBlob(c,x0,rim,Q,fxFade(o,Math.min(1,s.age/.8)));c.restore();},
-  front(c,g,s,t){FXS.B_dark.arms(c,g,s,t);FXS.B_dark.bulb(c,g,s,t);},
+  /* the light (v1.92.1, the user's ask: like Limelight): while the bulb is on the jar is not fully lit, it stays dim outside a cone of warm light from the bulb that covers most of the jar; the beam shows in the air between the bulb and the rim; phase 2's stutter cuts it; beaten, the dim fades out */
+  beam(c,g,s,t){const dk=s.l.dk==null?1:s.l.dk;if(dk<=.02)return;const dead=s.dnt!=null,fo=dead?Math.max(0,1-s.dnt/1.5):1;if(fo<=0)return;const P=g.P,BP=fxBP(g),bx=fq(g.L+(g.R-g.L)*.62,BP)+.5*BP,by=fq(fxRim(g)-62*g.K,BP),y0=Math.floor(by/P)*P,cw=Math.ceil((g.R-g.L)/P),ch=Math.ceil((g.bot-y0)/P),p2=s.p2t!=null,fl=p2&&!dead&&fst(t,14)%5===0;
+   if(!s.bcv||s.bcv.width!==cw||s.bcv.height!==ch){s.bcv=document.createElement('canvas');s.bcv.width=cw;s.bcv.height=ch;s.bcx=s.bcv.getContext('2d');s.bim=s.bcx.createImageData(cw,ch);}
+   const lit=Math.ceil(dk*3)/3*fo,sway=RMO?0:Math.sin(t*.9)*.05,lx=(bx-g.L)/P,ly=(by-y0)/P,tgx=((g.L+g.R)/2-g.L)/P+sway*cw*2,tgy=ch,ddx=tgx-lx,ddy=tgy-ly,dist=Math.hypot(ddx,ddy),ux=ddx/dist,uy=ddy/dist,tn=cw*.5/dist,jt=Math.floor((g.top-10-y0)/P),d=s.bim.data;
+   for(let j=0;j<ch;j++)for(let i=0;i<cw;i++){const px=i+.5-lx,py=j+.5-ly,al=px*ux+py*uy,pe=Math.abs(px*uy-py*ux),w=al*tn+1.2;let k=0;if(!fl&&al>1){if(pe<w)k=2;else if(pe<w+2)k=(i+j)&1?2:0;}const o=(j*cw+i)*4,inJ=j>=jt;
+    if(k){const core=pe<w*.45;d[o]=255;d[o+1]=core?226:236;d[o+2]=core?130:170;d[o+3]=(inJ?(core?46:30):(core?40:24))*lit;}else if(inJ){d[o]=18;d[o+1]=10;d[o+2]=30;d[o+3]=150*lit;}else d[o+3]=0;}
+   s.bcx.putImageData(s.bim,0,0);c.save();c.globalAlpha=s.p;c.imageSmoothingEnabled=false;c.beginPath();c.rect(g.L,0,g.R-g.L,g.bot);c.clip();c.drawImage(s.bcv,g.L,y0,cw*P,ch*P);c.restore();},
+  front(c,g,s,t){FXS.B_dark.beam(c,g,s,t);FXS.B_dark.arms(c,g,s,t);FXS.B_dark.bulb(c,g,s,t);},
   bulb(c,g,s,t){const BP=fxBP(g),x=fq(g.L+(g.R-g.L)*.62,BP),y0=fxRim(g)-150*g.K,yb=fq(fxRim(g)-62*g.K,BP),dk=s.l.dk==null?1:s.l.dk,p2=s.p2t!=null,dead=s.dnt!=null,fl=p2&&!dead&&dk>.5&&fst(t,14)%5===0;let lit=dead||(dk>.5&&!fl);c.save();c.globalAlpha=s.p*Math.min(1,s.age/.6);
    for(let y=fq(y0,BP);y<yb-6*BP;y+=BP)fxR(c,x,y,BP,'k');fxR(c,x+2*BP,yb-12*BP,BP,'d',1,4);fxR(c,x+2*BP,yb-8*BP,BP,'k');
    const B=fxPt(c,x,yb,BP);B(-2,-7,'k',5,1);B(-2,-6,'d',5,2);B(-2,-5,'D',5,1);B(-3,-4,'k',7,1);

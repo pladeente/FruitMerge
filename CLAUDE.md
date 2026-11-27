@@ -134,19 +134,21 @@ The user should never have to explain this again. Everything below is their bar,
 - Bosses may shake the jar picture (`A.jsA`/`A.jsT`, engine `fx.jsh`). Screen shake stays off for combos and charms.
 - The model for weather and battle mood is The Storm: it darkens the scene and dark clouds race across in one direction.
 
-**Next job: rework the basic bosses one at a time, in the order the user picks.** They are mostly small props on the rim. Done: The Twins (v1.90, a conjoined two-headed cherry ogre, see `BOSSES.md`; v1.91 its rule drops Evil Cherries, rocks that never merge, in place of free Cherries, the user's call). The Blackout (v1.92, a giant shadow beast behind the jar). The Clock (v1.93, a clockwork owl). The user asked to go down the rest in alphabetical order: Clock, Collector, Fog, Gambler, Glutton, Hourglass, Leech, Lid, Slick, Swarm, Wilt. A scene can now draw behind the jar with a `bg(c,g,s,t,A)` hook (called from `fx.arena`, before `drawJar`). Candidates, with first ideas only (the user decides):
-- The Leech: a giant writhing leech that slithers into the jar.
-- The Lid: a lid with teeth, like a mimic.
-- The Wilt: a withered tree creature.
-- The Hourglass: a sand golem; the jar fills with sand.
-- The Slick: an oil-slick slime; the jar is greasy.
-- The Glutton: a gaping mouth monster behind its plate.
-- The Blackout: something huge with glowing eyes behind the bulb.
-- The Clock: a clockwork owl.
+**Next job: rework the basic bosses one at a time, in alphabetical order (the user's call, 27 Nov).** Work on ONE boss per session: finish it, push, and stop for the user to review before starting the next.
+
+Complete (the user signed these off): **The Twins** (v1.90, a conjoined two-headed cherry ogre; v1.91 its rule drops Evil Cherries, rocks that never merge, in place of free Cherries), **The Blackout** (v1.92, a giant shadow beast behind the jar; v1.93 the bulb casts a Limelight-style beam over most of the jar while it is on). Done, awaiting the user's review: **The Clock** (v1.93, a brass clockwork owl). A scene can draw behind the jar with a `bg(c,g,s,t,A)` hook (called from `fx.arena`, before `drawJar`).
+
+Still to do, in this order, with first ideas only (the user decides):
 - The Collector: a many-armed curator.
-- The Swarm: a hive queen.
 - The Fog: a fog wraith.
 - The Gambler's machine: a one-armed bandit monster.
+- The Glutton: a gaping mouth monster behind its plate.
+- The Hourglass: a sand golem; the jar fills with sand.
+- The Leech: a giant writhing leech that slithers into the jar.
+- The Lid: a lid with teeth, like a mimic.
+- The Slick: an oil-slick slime; the jar is greasy.
+- The Swarm: a hive queen.
+- The Wilt: a withered tree creature.
 
 Each one gets presence, its own movement with real poses, a jar transformation where it fits, and its arena. `BOSSES.md` has every boss's current scene and where its code lives; update it with each rework.
 
