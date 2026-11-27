@@ -326,7 +326,7 @@ const BOSS={
  tax:{n:'The Taxman',d:'Takes a coin every 4 drops.',d2:'Takes a coin every 2 drops.',min:2},
  clock:{n:'The Clock',d:'Your fruit drops by itself after 3 seconds.',d2:'It drops after 2 seconds.',min:2},
  gamble:{n:'The Gambler',d:'Every fruit is a random size from 1 to 6, whatever your Orchard says.',d2:'Sizes go up to 7.',min:2},
- twins:{n:'The Twins',d:'Every merge that makes a size 3 fruit or bigger drops a Cherry (1) into the jar.',d2:'It drops 2 of them.',min:2},
+ twins:{n:'The Twins',d:'Every merge that makes a size 3 fruit or bigger drops an Evil Cherry into the jar: a rock the size of a Cherry that never merges.',d2:'It drops 2 of them.',min:2},
  miser:{n:'The Miser',d:'Tools charge at half speed.',d2:'Tools stop charging.',min:2},
  ice:{n:'Cold Snap',d:'Every 4th fruit is Frozen: when it lands it freezes up to 4 fruit it touches for 3 seconds, then shatters. Each frozen fruit shrinks one size when it thaws, and a Cherry vanishes.',d2:'Every 3rd fruit is Frozen.',min:3},
  stone:{n:'The Quarry',d:'Every 5th drop is a rock that never merges.',d2:'Every 3rd drop is a rock.',min:3},

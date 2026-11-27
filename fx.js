@@ -1432,7 +1432,7 @@ Object.assign(FXS,{
    c.restore();},
   ev(s,n,o,A,g){if(n!=='twins'||!s.l.p||s.dnt!=null||!s.h)return;const Q=fxBP(g),x=FXS.B_twins.x(g),rim=fxRim(g);let d=o.x>x?1:0;const bz=h=>h.st==='spit'||h.st==='rec';if(bz(s.h[d])&&!bz(s.h[1-d]))d=1-d;const h=s.h[d],sd=d?1:-1;h.st='spit';h.tm=0;h.tx=o.x;s.snt=null;
    const lean=Math.sign(o.x-(x+sd*11*Q))||sd,R0=10+(s.p2t!=null?1:0),mx=x+(sd*11+lean*2)*Q,my=rim-(R0-3)*Q;A.burst(mx,my,['r','q','w','R'],9,{v:130,vy:-20,T:.4});
-   const T1=.28,G=1500,tx=o.x,ty=g.top+4;A.add({k:'fn',x:mx,y:my,vx:(tx-mx)/T1,vy:(ty-my-.5*G*T1*T1)/T1,g:G,T:T1,fa:1,d:(c,q,g)=>drawFruit(c,q.x,q.y,g.P*3,0),end:(A)=>A.burst(tx,ty,['r','q','w'],6,{v:90,T:.35})});}},
+   const T1=.28,G=1500,tx=o.x,ty=g.top+4;A.add({k:'fn',x:mx,y:my,vx:(tx-mx)/T1,vy:(ty-my-.5*G*T1*T1)/T1,g:G,T:T1,fa:1,d:(c,q,g)=>drawEvil(c,q.x,q.y,g.P*3.4,q.t),end:(A)=>A.burst(tx,ty,['R','r','k'],6,{v:90,T:.35})});}},
  /* The Miser: a hunched old man in a nightcap shuffles onto the rim clutching a glass jar. Every time your tools would charge, a spark of it flies up out of the tool bar into his jar instead. Phase 2: he hugs the jar and takes every spark. Beaten: the jar smashes and the sparks fly home */
  B_miser:{x(g){return fq(fxRX('B_miser',.79,64,g)+18*g.K,fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);const home=FXS.B_miser.x(g);if(s.age<.05||s.x==null){s.x=g.W+50;s.n=0;}if(s.dnt!=null){if(!s.br){s.br=1;const P=fxBP(g),jx=s.x-7*P,jy=fxRim(g)-5*P;A.burst(jx,jy,['i','w','b'],12,{v:150,T:.6,s:1});for(let k=0;k<Math.min(14,4+s.n);k++)A.add({k:'sq',x:jx,y:jy,vx:(Math.random()-.5)*160,vy:100+Math.random()*200,g:500,T:1.1,col:k%2?'t':'w',dl:k*.03});}if(s.dnt>.6)s.x+=dt*120;}else if(s.x>home)s.x=Math.max(home,s.x-dt*60);if(s.gl>0)s.gl-=dt;},
