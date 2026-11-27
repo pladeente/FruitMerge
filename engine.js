@@ -392,7 +392,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
    else if(doneT>0){doneT-=dt;if(doneT<=0){if(exF)ro.ev('exact');if(shF)ro.ev('shave');ro.clear(dl);}}}
   parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.g)p.vy+=p.g*dt;p.t-=dt;});parts=parts.filter(p=>p.t>0);},
  draw(c,dt){let held=null;c.save();if(shake>0)c.translate((Math.random()-.5)*shake*30,(Math.random()-.5)*shake*30);
-  drawBg(c,W,H,time,line);drawJar(c,L,Rw,line,bot,time);if(JK==='hour')hgDraw(c);if(JK==='see')ssDraw(c);
+  drawBg(c,W,H,time,line);if(fx)fx.arena(c,fxG());drawJar(c,L,Rw,line,bot,time);if(JK==='hour')hgDraw(c);if(JK==='see')ssDraw(c);
   c.strokeStyle=overT>0?(Math.floor(overT*6)%2?'#e63946':'#ff8fab'):'#ff8fab';c.setLineDash([8,6]);c.lineWidth=2;c.beginPath();c.moveTo(L,line);c.lineTo(Rw,line);c.stroke();c.setLineDash([]);
   if(fx)fx.back(c,fxG());else if(J&&ro.has('wire')||J&&ro.has('ivy')){const y=hiY(),on=ptop<y;c.strokeStyle=on?'#e09600':'#e0960070';c.lineWidth=on?3:2;c.setLineDash([3,7]);c.beginPath();c.moveTo(L,y);c.lineTo(Rw,y);c.stroke();c.setLineDash([]);}
   if(whirl>0){c.save();c.globalAlpha=Math.min(1,whirl*2)*.35;c.strokeStyle='#4cc9f0';c.lineWidth=3;c.lineCap='round';const cy=(line+bot)/2;for(let i=0;i<3;i++){const a=time*6*wdir+i*2.09;c.beginPath();c.arc(W/2,cy,(Rw-L)*(.18+i*.12),a,a+1.6);c.stroke();}c.restore();}
