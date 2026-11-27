@@ -1847,21 +1847,129 @@ Object.assign(FXS,{
    if(dead){c.globalAlpha=s.p;for(let k=0;k<2;k++){const a=t*(3+k)+k*3,mx=x+Math.cos(a)*(9+k*3)*BP,my=yb+Math.sin(a*1.3)*6*BP,w=fst(t+k,12)%2;fxR(c,mx,my,BP,'N');fxR(c,mx-BP,my-(w?BP:0),BP,'d');fxR(c,mx+BP,my-(w?BP:0),BP,'d');}}c.restore();},
   top(c,g,s,t){const dk=s.l.dk==null?1:s.l.dk;if(!s.ey||dk>.45||s.dnt!=null)return;const P=g.P,hx=s.l.hx!=null?s.l.hx:g.W/2;c.save();c.globalAlpha=s.p*Math.max(0,1-dk*2.2);
    const Q=fxBP(g);for(const e of s.ey){if(s.age<e.d)continue;const bl=((t+e.ph)%3.1)<.14,lk=hx<e.x-20?-1:hx>e.x+20?1:0,red=s.p2t!=null&&e.ph>3.5;for(const k of[-1,1]){const ex=fq(e.x+k*2*Q,Q),ey=fq(e.y,Q);if(bl){fxR(c,ex-Q,ey,Q,red?'r':'Y',2,1);continue;}fxR(c,ex-Q,ey-Q,Q,red?'q':'y',2,2);fxR(c,ex-Q,ey-Q,Q,red?'h':'h');fxR(c,ex+(lk>0?0:lk<0?-Q:(k<0?0:-Q)),ey,Q,'k');}}c.restore();}},
- /* The Collector: a glass display case on the rim holds the shape of the fruit it wants, and a magnifying glass drifts over your biggest fruit, checking. Made it: the fruit appears in the case with a rosette. Phase 2 (not made yet): the label flips to a bigger fruit. Beaten: a gold star on the case */
- B_collect:{x(g){return fq(fxRX('B_collect',.26,56,g),fxBP(g));},
-  tick(s,g,dt,A){bossT(s,dt);const l=s.l;if(s.l0==null)s.l0=l.l;if(l.l!==s.l0){s.fl=.5;s.l0=l.l;}if(s.fl>0)s.fl-=dt;if(l.got&&!s.gt){s.gt=1;s.gtt=0;const P=fxBP(g),x=FXS.B_collect.x(g),y=fxRim(g)-10*P;for(let k=0;k<10;k++)A.add({k:'star',x:x+(Math.random()-.5)*20*P,y:y+(Math.random()-.5)*14*P,T:.6,dl:k*.05,col:k%2?'y':'b'});}if(s.gt)s.gtt+=dt;
-   const b=l.big;if(b){s.mx=s.mx==null?b.x:s.mx+(b.x-s.mx)*Math.min(1,dt*2.2);s.my=s.my==null?b.y:s.my+(b.y-s.my)*Math.min(1,dt*2.2);s.mr=b.r;s.ml=b.l;}},
-  front(c,g,s,t){const P=fxBP(g),x=FXS.B_collect.x(g),rim=fxRim(g),l=s.l,R=fxPt(c,x,rim+fxDrop(s,P),P),y0=rim+fxDrop(s,P);c.save();c.globalAlpha=s.p;
-   if(s.mx!=null&&s.dnt==null){const Q=g.P,a=t*1.3,cx=fq(s.mx+Math.cos(a)*s.mr*.35,Q),cy=fq(s.my+Math.sin(a)*s.mr*.25,Q),rr2=Math.max(6,Math.round((s.mr||20)/Q*.55));
-    c.globalAlpha=s.p*.28;fxEl(c,cx,cy,Q,rr2,rr2,(i,j,e)=>e?0:(i+j)<-rr2?'w':'i');c.globalAlpha=s.p;fxEl(c,cx,cy,Q,rr2,rr2,(i,j,e)=>{if(!e)return 0;return(i*i+j*j)>(rr2-.5)*(rr2-.5)?'k':0;});
-    for(let k=0;k<5;k++){fxR(c,cx+(rr2+k)*Q*.71,cy+(rr2+k)*Q*.71,Q,'k',2,2);fxR(c,cx+(rr2+k)*Q*.71+Q*.5,cy+(rr2+k)*Q*.71,Q,'N');}
-    const ok=s.ml!=null&&s.ml>=l.l;if((t%2.4)<.9){const q=Math.min(1,(t%2.4)/.15);T(c,l.got?'!':ok?'!':'?',cx,cy-rr2*Q-10-q*4,16,l.got||ok?'#38b000':'#3b2346','center',FD);}}
-   const sq=s.fl>0?Math.abs(Math.cos((1-s.fl/.5)*Math.PI)):1;
-   R(-7,-2,'k',15,2);R(-6,-2,'n',13,1);R(-7,-17,'k',15,15);c.globalAlpha=s.p*.85;R(-6,-16,'i',13,14);c.globalAlpha=s.p;R(-6,-16,'w',1,6);R(-5,-16,'w',1,2);
-   const fr0=Math.round(5.5*P),fx=x,fy=y0-9*P;if(sq>.1){c.save();c.translate(fx,fy);c.scale(sq,1);if(l.got){drawFruit(c,0,0,fr0,l.l);}else{drawFruit(c,0,0,fr0,l.l);c.fillStyle=FXP.x;c.globalAlpha=s.p*.88;c.beginPath();c.arc(0,0,fr0*1.02,0,7);c.fill();c.globalAlpha=s.p;T(c,'?',0,P*.6,P*5,'#fff2d8','center',FD);}c.restore();}
-   R(-4,-1,'k',9,1);R(-3,-1,'Y',7,1);
-   if(l.got){const gu=Math.min(1,(s.gtt||0)/.4),ry=-17-Math.round((1-gu)*6);R(4,ry,'k',5,5);R(5,ry+1,'r',3,3);R(6,ry+2,'y');R(5,ry+5,'R');R(7,ry+5,'R');R(5,ry+6,'k');R(7,ry+6,'k');}
-   if(s.dnt!=null){const q=Math.min(1,s.dnt/.5);fxStar(c,x,y0-20*P-Math.round((1-q)*10)*P,g.P,3,'y');}c.restore();}},
+ /* The Collector (v1.94, the user's first idea: a many-armed curator): a gaunt six-armed curator looms behind the jar in a moth-eaten green tailcoat, its shoulders hunched up past its long neck: a narrow grey skull, white wisps of hair, a hooked nose, a needle-toothed grin, one slit eye glowing and the other huge behind a brass monocle on a chain. Two hands grip the rim with long drumming fingers. One holds up a bell jar on a wooden stand with a brass plaque: inside is the black shape of the fruit it wants, the plaque gives its size. One holds an open ledger and one a quill. The last holds a magnifying glass on brass lazy tongs: it peers through it (half its face becomes one giant veined eye), then the tongs shoot out over your biggest fruit and the lens magnifies it while it leans in, then it writes in the ledger. Made it: it cackles, head thrown back, the fruit flies into the bell jar with a sparkle and a rosette, and from then on it admires its prize through the lens. Phase 2: it rears up and roars, two spidery arms unfold from its back holding specimen pins, its eye burns red, its hair stands on end, more moth holes; if the fruit is not made yet the shape in the bell jar flips to a bigger one. The jar is lined with tufted velvet like a display case. Beaten: it throws up its hands, the monocle pops out and falls, the bell jar shatters and it comes apart from the head down into a cloud of moths */
+ B_collect:{cx(g){return fq(g.L+(g.R-g.L)*.5,fxBP(g));},
+  pal(p2){return{A:'#2f5b4f',a:'#1d3a35',H:'#4f8a6e',L:'#8fc7a0',W:'#f4efe0',w:'#c9c0a8',C:'#c4313c',c:'#7a1e2a',S:'#cfd6c2',s:'#9aa38c',X:'#4a5246',Z:'#eef3e2',B:'#ffc94a',b:'#c98a1e',j:'#7a4f12',E:p2?'#ff4d4d':'#ffe066',e:p2?'#a3202c':'#e09600',O:'#fff8e6',v:'#e06070',T:'#fff2d8',M:'#3a0f1e',Q:'#ffffff',q:'#b8b8c8',N:'#6e4420',n:'#a9713a',P:'#fff2d8',p:'#d8c9a6',I:'#3a2a4a',V:'#6b2a3a',R:'#e63946',g:'#a8cfe8',G:'#e3f3ff',k:'#2a1a3a'};},
+  /* where everything is this frame, in cells from the jar centre on the rim (j up) */
+  pose(s,g,t){const Q=fxBP(g),x0=FXS.B_collect.cx(g),rim=fq(fxRim(g),Q),dead=s.dnt!=null,dn=dead?s.dnt:0,p2=s.p2t!=null,rg=p2&&!dead&&s.p2t<1.5?1:0,ck=s.gt&&!dead&&s.gtt<1.9?1:0,sh=dead?1:0,ra=s.ra||0,er=ra*ra*(3-2*ra);
+   const rs=s.rs||0,dy=Math.round(Math.pow(1-rs,2)*48),bob=RMO||rg||sh||ck?0:fst(t,1.1)%2,shk=(ck||rg)&&!RMO?(fst(t,10)%2?1:-1):0,up=rg?3:sh?2:ck?1:0,hj=Math.floor((g.R-g.L)/2/Q);
+   const big=s.mx!=null,bjx=-31,bjy=9+bob+(ck?3:0)+(rg?1:0)+(sh?4:0)+(ck?shk:0);
+   /* the lens: in front of its eye, or over the target (the biggest fruit; once made, the bell jar's prize) */
+   const tgx=s.gt?bjx:big?(s.mx-x0)/Q:12,tgy=s.gt?bjy+8:big?(rim-s.my)/Q:-20,wr=s.gt?1.5:big?Math.min(3,(s.mr||20)/Q*.22):0,wa=RMO?0:fst(t,5)*.9,ln=Math.round(er*2)*(tgx<0?-1:1);
+   const hcx=ln+shk,hc=20+bob+up-Math.round(er*3)+(ck?2:0),ex=hcx+4,ey=hc+1;
+   const lx0=ex,ly0=ey,lx1=tgx+Math.cos(wa)*wr,ly1=tgy+Math.sin(wa)*wr*.6,lx=lx0+(lx1-lx0)*er,ly=ly0+(ly1-ly0)*er,hx1=lx+7.5,hy1=ly-7.5;
+   const uh=sh?[24,26]:[hx1+(14-hx1)*er,hy1+(3-hy1)*er];
+   const wq=s.wq||0,scr=RMO?[0,0]:[fst(t,7)%3-1,fst(t,5)%2],qh=sh?[26,20]:[24+(-12+scr[0]-24)*wq,8+bob+(8+scr[1]-8-bob)*wq];
+   const lh=sh?[-22,17]:[-17,2+bob],rh=sd=>sh?[sd*30,8]:[sd*(hj-5),rs<.85?Math.round((.85-rs)*60):0];
+   const jw=sh?3:rg?3:ck?(fst(t,8)%2?3:1):0;
+   const keep=dead&&dn>.7?Math.max(0,1-(dn-.7)/1.7):1;
+   return{Q,x0,rim,dead,dn,p2,rg,ck,sh,er,dy,bob,shk,up,hj,bjx,bjy,hcx,hc,ex,ey,lx,ly,uh,qh,lh,rh,jw,keep,tgx,tgy,look:[Math.max(-1,Math.min(1,Math.round((tgx-ex)/12))),Math.max(-1,Math.min(1,Math.round((tgy-ey)/14)))]};},
+  /* top-down dissolve when beaten: cells above the line go, with a dither edge */
+  cut(m,keep){if(keep>=1)return m;const o=new Map();for(const[k,v]of m){const[i,j]=k.split(',').map(Number),h=(-j+4)/38;if(h<keep*1.1-.05+(FBY[((i+64)&3)*4+((j+64)&3)]/16-.5)*.1)o.set(k,v);}return o;},
+  tint(m,pl,lit){const o=new Map();for(const[k,r]of m){const[i,j]=k.split(',').map(Number);let col=pl[r]||r;if(lit&&!m.has(i+','+(j-1))){if(r==='A'||r==='a'||r==='H')col=pl.L;else if(r==='S'||r==='s')col=pl.Z;}o.set(k,col);}return o;},
+  tick(s,g,dt,A){bossT(s,dt);const l=s.l,dead=s.dnt!=null,Q=fxBP(g),x0=FXS.B_collect.cx(g),rim=fxRim(g);if(s.cy==null){s.cy='peer';s.ct=1;s.ra=0;s.wq=0;s.wr=0;s.rs=0;}
+   s.rs=fxA(s.rs,1,dt/1.3);s.ct+=dt;const D={peer:2.6,reach:.45,insp:2.4,back:.45,write:1.4},NX={peer:'reach',reach:'insp',insp:'back',back:'write',write:'peer'};
+   if(!dead&&s.rs>=1&&s.ct>=D[s.cy]){s.ct=0;s.cy=NX[s.cy];if(s.cy==='peer')s.wr=Math.min(8,s.wr+1);}
+   s.ra=fxA(s.ra,(s.cy==='reach'||s.cy==='insp')&&!dead&&s.rs>=1?1:0,dt*2.4);s.wq=fxA(s.wq,s.cy==='write'&&!dead?1:0,dt*4);
+   const b=l.big;if(b){const k=Math.min(1,dt*2.5);s.mx=s.mx==null?b.x:s.mx+(b.x-s.mx)*k;s.my=s.my==null?b.y:s.my+(b.y-s.my)*k;s.mr=b.r;s.ml=b.l;}
+   if(s.l0==null)s.l0=l.l;if(l.l!==s.l0){s.fl=.5;s.l0=l.l;}if(s.fl>0)s.fl-=dt;
+   const bjX=x0-31*Q,bjY=rim-17*Q;
+   if(l.got&&!s.gt){s.gt=1;s.gtt=0;s.gx=b?b.x:g.W/2;s.gy=b?b.y:g.top+60;}
+   if(s.gt){const o=s.gtt;s.gtt+=dt;if(o<.7&&s.gtt>=.7){for(let k=0;k<10;k++)A.add({k:'star',x:bjX+(Math.random()-.5)*18*Q,y:bjY+(Math.random()-.5)*14*Q,T:.6,dl:k*.04,col:k%2?'y':'b'});A.burst(bjX,bjY,['y','w','B'],12,{v:150,T:.5});}}
+   if(!s.sl&&s.rs>=.85){s.sl=1;for(const sd of[-1,1])A.burst(x0+sd*(Math.floor((g.R-g.L)/2/Q)-5)*Q,rim,['s','d','c'],7,{v:90,vy:-40,T:.4});if(!RMO){A.jsA=2*g.K;A.jsT=.2;}}
+   if(s.p2t!=null&&!s.rr){s.rr=1;if(!RMO){A.jsA=3*g.K;A.jsT=.35;}A.burst(x0,rim-25*Q,['r','o','y'],14,{v:180,vy:-60,T:.6});}
+   if(dead){const dn=s.dnt;
+    if(!s.mp&&dn>=.2){s.mp=1;const mx=x0+4*Q,my=rim-23*Q;A.add({k:'fn',x:mx,y:my,vx:60,vy:-160,g:900,T:1.5,fa:.7,ph:0,d:(c,q,g2)=>{const P=fxBP(g2),fr=Math.floor(q.t*10)%4,w=fr===1||fr===3?1:3;for(let j=-3;j<=3;j++)for(let i=-3;i<=3;i++){const d=(i*i)/(w*w+.5)+(j*j)/9.5;if(d<=1.15&&d>=.45)fxR(c,q.x+i*P*(w/3),q.y+j*P,P,i<0||j<0?'y':'Y');}}});}
+    if(!s.gs&&dn>=.55){s.gs=1;A.burst(bjX,bjY,['i','j','w'],18,{v:220,vy:-80,g:700,T:.8});A.burst(bjX,bjY+6*Q,['n','N'],6,{v:120,g:700,T:.7});}
+    if(dn>.7&&dn<2.6&&!RMO){const kp=Math.max(0,1-(dn-.7)/1.7),yy=rim-(kp*38-4)*Q;for(let k=0;k<3;k++)if(Math.random()<dt*9)A.add({k:'fn',x:x0+(Math.random()-.5)*(kp>.5?18:34)*Q,y:yy+(Math.random()-.5)*4*Q,vx:(Math.random()-.5)*70,vy:-40-Math.random()*60,g:-10,T:1.4+Math.random()*1.2,fa:.55,sw:6,sf:5,ph:Math.random()*6,d:(c,q,g2,t2,x)=>{const P=g2.P,f=Math.floor(q.t*12+q.ph)%2;fxR(c,x,q.y,P,'k',1,2);if(f){fxR(c,x-2*P,q.y,P,'s',2,1);fxR(c,x+P,q.y,P,'s',2,1);fxR(c,x-2*P,q.y+P,P,'d');fxR(c,x+2*P,q.y+P,P,'d');}else{fxR(c,x-P,q.y-P,P,'s');fxR(c,x+P,q.y-P,P,'s');}}});}}},
+  /* the curator's body, behind the jar (fx.arena calls bg before the jar is drawn): only what is above the rim shows */
+  bg(c,g,s,t){if(!(s.rs>.02))return;const F=FXS.B_collect,P0=F.pose(s,g,t),{Q,x0,rim,dy,p2,rg,ck,sh,bob,up,hcx,hc,jw,keep,look}=P0,pl=F.pal(p2),m=new Map(),set=(i,j,r)=>m.set(Math.round(i)+','+(-Math.round(j-dy)),r),set2=(i,j,r)=>set(i,j-10,r),so=bob+up,sw=p2?1:0;
+   /* phase 2: two spidery arms unfold from its back, holding specimen pins */
+   if(p2){const xa=Math.min(1,s.p2t/1),ea=xa*xa*(3-2*xa),jab=RMO?0:(fst(t,3)%4===0?2:0);for(const sd of[-1,1]){const S=[sd*9,17+so],E=[sd*(11+15*ea),18+so+16*ea],H=[sd*(13+24*ea),20+so+9*ea+(sd>0?jab:0)];for(const[a,b2,r]of[[S,E,1.5],[E,H,1.1]])for(let k=0;k<=12;k++){const v=k/12,px=a[0]+(b2[0]-a[0])*v,py=a[1]+(b2[1]-a[1])*v;for(let jj=-2;jj<=2;jj++)for(let ii=-2;ii<=2;ii++)if(ii*ii+jj*jj<=r*r+.3)set2(px+ii,py+jj,jj>0?'A':'a');}
+     set2(E[0],E[1]+2,'S');set2(E[0]+sd,E[1]+2,'s');for(let f=-1;f<=1;f++){set2(H[0]+sd+f,H[1]+1,'S');set2(H[0]+sd*2+f,H[1]+2+Math.abs(f),'s');}
+     if(ea>.5)for(let k=1;k<=7;k++){set2(H[0]+sd*(1+k*.55),H[1]+2+k,k>5?'R':'s');if(k>5)set2(H[0]+sd*(2+k*.55),H[1]+2+k,'R');}}}
+   /* the tailcoat: hunched shoulders rising past the neck, lapels, a white shirt and a red cravat, brass buttons, a watch chain, moth holes */
+   for(let i=-17-sw;i<=17+sw;i++){const ai=Math.abs(i),top=Math.round(19+so+ai*.24-(ai>12+sw?(ai-12-sw)*1.5:0));for(let j=-3;j<=top;j++){const hw=11+sw+Math.max(0,j-7)*.55;if(ai>hw)continue;set2(i,j,i<-hw*.55&&j>top-7?'H':i>hw*.42?'a':'A');}}
+   for(let j=8;j<=19+so;j++){const v=(j-8)*.42;for(let i=-Math.ceil(v+3);i<=Math.ceil(v+3);i++){const ai=Math.abs(i);if(ai<=v)set2(i,j,i>0?'w':'W');else if(ai<=v+2.5)set2(i,j,ai>v+1.8?'a':'H');}}
+   for(let j=12;j<=19+so;j++){const w=j>=17+so?1:j>=14?0:(j%2?0:1);for(let i=-w;i<=w;i++)set2(i,j,j>=17+so&&i>0?'c':'C');}
+   for(const bx of[-4,4])for(const by of[1,5]){set2(bx,by,'B');set2(bx,by-1,'b');}
+   for(const[a,b2]of[[-5,4],[-6,3],[-7,3],[-8,3],[-9,4]])set2(a,b2,a%2?'b':'B');for(let i=-11;i<=-8;i++)set2(i,2,'a');
+   for(const[a,b2]of[[7,10],[10,4],[-9,13],[12,15],[3,-1]].concat(p2?[[-13,7],[6,15],[-6,-2],[13,9]]:[])){set2(a,b2,'k');set2(a+1,b2,'k');set2(a,b2-1,'X');}
+   /* the collar points and the long neck */
+   const nb=[Math.round(hcx*.5),9+so];for(let k=0;k<=8;k++){const v=k/8,px=nb[0]+(hcx-nb[0])*v,py=nb[1]+(hc-8-nb[1])*v;for(let ii=-1;ii<=1;ii++)set(px+ii,py,ii<0?'S':ii>0?'s':(k>5?'X':'S'));}
+   for(const sd of[-1,1])for(const[a,b2]of[[2,20],[3,20],[3,21],[4,21],[4,22],[2,21],[5,22]])set2(nb[0]+sd*a,b2+so-1,sd>0?'w':'W');
+   /* the head: a narrow grey skull, pointed chin and ears */
+   const rx=8,ry=9;for(let j=-ry;j<=ry;j++){const sc=j<0?1+j/ry*.55:1;for(let i=-rx;i<=rx;i++){if((i*i)/((rx*sc)*(rx*sc)+rx*.6)+(j*j)/(ry*ry+ry*.6)>1)continue;set(hcx+i,hc+j,i<-rx*.4&&j>1?'Z':i>rx*.45?'s':(j<=-1&&j>=-4&&Math.abs(i)>=3)?'s':'S');}}
+   for(const sd of[-1,1])for(const[a,b2,r]of[[8,1,'S'],[9,1,'s'],[9,2,'S'],[10,3,'s'],[10,4,'s'],[8,0,'s']])set(hcx+sd*a,hc+b2,sd>0&&r==='S'?'s':r);
+   /* white tufts of hair over the ears, standing on end in phase 2 */
+   const fl=RMO?0:fst(t,3)%2;for(const sd of[-1,1])for(const[bx,by,L3,ang]of[[6,6,6,p2?1.4:.55],[7,3,5,p2?1.1:.05],[4,9,4,p2?2:1.3]]){for(let k=0;k<=L3;k++){const w=Math.max(0,Math.round((L3-k)*.45)),cx2=hcx+sd*(bx+k),cy2=hc+by+Math.round(k*ang)+(k===L3&&fl?1:0);for(let q=-w;q<=w;q++)set(cx2,cy2+q,q<0?'q':'Q');}}
+   /* sockets, angry brows */
+   for(const sd of[-1,1]){for(let i=-3;i<=3;i++)for(let j=-2;j<=2;j++)if(i*i/9+j*j/4<=1)set(hcx+sd*4+i,hc+1+j,'X');for(let k=0;k<=5;k++)set(hcx+sd*(1+k),hc+3+Math.round(k*.5),'X');}
+   /* the slit eye */
+   const sx=hcx-4;if(sh)for(let i=-1;i<=1;i++)for(let j=0;j<=2;j++)set(sx+i,hc+j,'E');else{for(let i=-2;i<=2;i++){set(sx+i,hc+1,'E');if(Math.abs(i)<2)set(sx+i,hc+2,i<0?'Q':'E');}set(sx+look[0],hc+1,'k');set(sx+look[0],hc+2,'k');}
+   /* the monocle eye on a chain */
+   const ex=hcx+4,ey=hc+1;for(let j=-5;j<=5;j++)for(let i=-5;i<=5;i++){const d=Math.sqrt(i*i+j*j);if(d>4.6)continue;if(d>3.7){if(!s.mp)set(ex+i,ey+j,i+j>0?'b':'B');}else if(d<=2.1&&!sh)set(ex+i,ey+j,d>1.5?'e':'E');else set(ex+i,ey+j,p2&&d>2.4&&((i*3+j*5)&3)===0?'v':'O');}
+   if(!sh){for(const[a,b2]of[[0,0],[1,0],[0,1],[1,1]])set(ex+look[0]+a-(look[0]>0?1:0),ey+look[1]+b2-(look[1]>0?1:0),'k');set(ex-2,ey+2,'Q');}else{set(ex,ey,'k');}
+   if(p2)for(const[a,b2]of[[1,3],[2,2],[2,1],[3,0]])set(ex+a,ey+b2,'G');
+   if(!(s.mp))for(let k=0;k<7;k++)set(ex+5+Math.round(k*.3),ey-2-k*1.6,k%2?'b':'B');
+   /* the hooked nose, the needle-toothed grin */
+   for(let k=0;k<=3;k++){set(hcx,hc-k,'S');set(hcx+1,hc-k,k?'X':'s');set(hcx-1,hc-1-k,k<2?'Z':'S');}set(hcx-1,hc-4,'S');set(hcx,hc-4,'S');set(hcx+1,hc-4,'X');set(hcx,hc-5,'X');set(hcx-1,hc-5,'s');
+   const my=hc-7;for(let i=-6;i<=6;i++){const ai=Math.abs(i),yy=my+Math.round(i*i/11),h=jw?Math.max(1,jw-Math.round(ai/3)):0;set(hcx+i,yy+1,'X');if(!h){set(hcx+i,yy,ai<=5?((i+20)%2?'T':'M'):'X');set(hcx+i,yy-1,ai<=5?'s':'S');}else{for(let q=0;q<=h+1;q++)set(hcx+i,yy-q,q===0?((i+20)%2?'T':'M'):q===h+1?((i+21)%2?'T':'X'):'M');set(hcx+i,yy-h-2,'X');}}
+   const o=F.tint(F.cut(m,keep),pl,1),o2=new Map();for(const[k,v]of o){if(+k.split(',')[1]>2)continue;o2.set(k,v);}
+   c.save();c.globalAlpha=s.p;fxBlobI(c,x0,rim,Q,fxFade(o2,Math.min(1,s.age/.9)),s.cvb=s.cvb||{});
+   /* the eyes glow */
+   if(!(s.dnt!=null&&s.dnt>.9)&&s.age>.9){c.globalAlpha=s.p*(p2||rg?.42:.26);const gc=pl.E;for(let a=0;a<6.28;a+=.5){fxR(c,x0+Math.round(sx+Math.cos(a)*3.5)*Q,rim-Math.round(hc+1-dy+Math.sin(a)*2)*Q,Q,gc);}}
+   c.restore();},
+  /* the jar becomes a display case: tufted velvet behind the fruit */
+  back(c,g,s,t){const u=fxArU(s);if(u<=0)return;const P=g.P,w=Math.ceil((g.R-g.L)/P),h=Math.ceil((g.bot-g.top)/P),key=w+','+h+','+P;
+   if(s.vk!==key){s.vk=key;const cv=document.createElement('canvas');cv.width=w;cv.height=h;const x=cv.getContext('2d'),cl=(i,j,col)=>{x.fillStyle=col;x.fillRect(i,j,1,1);};x.fillStyle='#4a1a2e';x.fillRect(0,0,w,h);const D=9;
+    for(let j=0;j<h;j++)for(let i=0;i<w;i++){const a=((i+j)%(2*D)+2*D)%(2*D),b=((i-j)%(2*D)+2*D)%(2*D);if(a===0||b===0)cl(i,j,'#36101f');else if(a===1||b===1)cl(i,j,'#5c2338');}
+    for(let j=0;j<h+D;j+=D)for(let i=((j/D)%2?D:0);i<w+D;i+=2*D){cl(i,j,'#ffc94a');cl(i+1,j,'#c98a1e');cl(i,j+1,'#7a4f12');}
+    for(let j=0;j<h;j++)for(let i=0;i<w;i++){const e=Math.min(i,w-1-i,h-1-j);if(e<3&&FBY[(i&3)*4+(j&3)]/16>e/3){x.fillStyle='#24081a';x.fillRect(i,j,1,1);}}s.vcv=cv;}
+   c.save();c.globalAlpha=Math.ceil(u*3)/3*.3;c.imageSmoothingEnabled=false;c.drawImage(s.vcv,g.L,g.top,w*P,h*P);c.restore();},
+  /* the arms, hands and everything they hold, over the jar */
+  front(c,g,s,t){if(!(s.rs>.6))return;const F=FXS.B_collect,P0=F.pose(s,g,t),{Q,x0,rim,dy,p2,ck,sh,bob,up,hj,bjx,bjy,lx,ly,uh,qh,lh,rh,er,keep,look,dead,dn}=P0,pl=F.pal(p2),m=new Map(),set=(i,j,r)=>m.set(Math.round(i)+','+(-Math.round(j-dy)),r),so=bob+up,l=s.l;
+   const disc=(cx,cy,r,f)=>{const ri=Math.ceil(r);for(let jj=-ri;jj<=ri;jj++)for(let ii=-ri;ii<=ri;ii++)if(ii*ii+jj*jj<=r*r+.3)set(cx+ii,cy+jj,f(ii,jj));},ln=(a,b2,col)=>{const n=Math.max(1,Math.round(Math.max(Math.abs(b2[0]-a[0]),Math.abs(b2[1]-a[1]))));for(let k=0;k<=n;k++)set(a[0]+(b2[0]-a[0])*k/n,a[1]+(b2[1]-a[1])*k/n,typeof col==='function'?col(k,n):col);};
+   /* an arm: a sleeve from the shoulder to the elbow and on to a white cuff; hi = the elbow bends up (spider-like) */
+   const arm=(S,H,L2,sd,hi,bare)=>{const dx=H[0]-S[0],dy2=H[1]-S[1],d=Math.hypot(dx,dy2)||1,a=L2/2,hh=d<L2?Math.sqrt(a*a-(d/2)*(d/2)):0,nx=-dy2/d,ny=dx/d,c1=[S[0]+dx/2+nx*hh,S[1]+dy2/2+ny*hh],c2=[S[0]+dx/2-nx*hh,S[1]+dy2/2-ny*hh],E=hi?(c1[1]>c2[1]?c1:c2):(c1[0]*sd-c1[1]*.3>c2[0]*sd-c2[1]*.3?c1:c2),W=[H[0]-(H[0]-E[0])*1.6/(Math.hypot(H[0]-E[0],H[1]-E[1])||1),H[1]-(H[1]-E[1])*1.6/(Math.hypot(H[0]-E[0],H[1]-E[1])||1)];
+    for(const[p,q2,r]of[[S,E,bare?1.2:1.7],[E,W,bare?.9:1.3]]){const n=Math.max(2,Math.round(Math.hypot(q2[0]-p[0],q2[1]-p[1])));for(let k=0;k<=n;k++){const px=p[0]+(q2[0]-p[0])*k/n,py=p[1]+(q2[1]-p[1])*k/n;disc(px,py,r,bare?(ii,jj)=>jj<-r*.3?'s':'S':(ii,jj)=>jj>r*.35?'H':jj<-r*.35?'a':'A');}}if(bare){disc(E[0],E[1],1.6,(ii,jj)=>ii===0&&jj===0?'X':jj<0?'s':'S');disc(S[0],S[1],2,(ii,jj)=>jj>0?'H':'a');}else{disc(E[0],E[1],1.4,(ii,jj)=>jj>0?'H':'A');disc(W[0],W[1],1.2,(ii,jj)=>ii*sd>0?'w':'W');}return E;};
+   const hold=(H,sd)=>{disc(H[0],H[1],1.5,(ii,jj)=>jj>0?'S':'s');set(H[0]+sd*2,H[1],'s');};
+   /* the two hands on the rim, fingers hooked over the edge, drumming */
+   for(const sd of[-1,1]){const H=rh(sd),S=[sd*11,0+so];arm(S,H,Math.abs(H[0]-S[0])+12,sd,1,1);for(let i=-2;i<=2;i++)for(let j=0;j<=1;j++)if(i*i/5+j*j<=1.2)set(H[0]+i,H[1]+1+j,j>0?'S':'s');
+    for(let f=0;f<4;f++){const fx=H[0]+(f-1.5)*1.4*sd,tap=!sh&&!dead&&!RMO&&s.rs>=1&&((fst(t+sd*.8,7)+f*2)%12===0)?2:0,L3=sh?0:3-tap;for(let k=0;k<L3;k++)set(fx,H[1]-k,k===L3-1?'T':k?'S':'s');if(sh||tap){set(fx,H[1]+1,'S');set(fx,H[1]+2,'s');}}}
+   /* the ledger hand: an open book, leather cover, spine, a red ribbon, lines filling up as it writes */
+   {const S=[-12,4+so];arm(S,lh,14,-1,0,1);const bx=lh[0]+1,by=lh[1]+3;for(let i=-9;i<=9;i++)for(let j=-4;j<=4;j++){const ai=Math.abs(i),lift=ai>=2?Math.round((9-ai)*.18):0,e=ai===9||Math.abs(j)===4;set(bx+i,by+j+lift,e?(j<0?'N':'V'):ai<=1?(ai?'p':'N'):ai>=7?'p':'P');}
+    for(let q=0;q<Math.min(12,4+(s.wr||0));q++){const pg=q%2?1:-1,row=Math.floor(q/2);for(let i=2;i<=7;i++)if((i*3+q)%7)set(bx+pg*i,by+3-row+Math.round((9-i)*.18),'I');}
+    for(let k=1;k<=4;k++)set(bx+(k>3?1:0),by-4-k+1,'R');set(bx-1,by-6,'R');
+    hold([bx-9,by+1],-1);}
+   /* the magnifier hand: brass lazy tongs from the hand to the lens */
+   const L0=[lx+5,ly-5],L1=[lx+7.5,ly-7.5];{const S=[14,9+so];arm(S,uh,19,1,0);ln(L0,L1,'N');const dx=uh[0]-L1[0],dy2=uh[1]-L1[1],d=Math.hypot(dx,dy2);if(d>2){const n=Math.max(2,Math.round(d/5)),sg=d/n,hw=Math.max(.6,3.6-sg*.38),ux=dx/d,uy=dy2/d,px=-uy,py=ux;for(let k=0;k<n;k++){const a=[L1[0]+ux*sg*k,L1[1]+uy*sg*k],b2=[L1[0]+ux*sg*(k+1),L1[1]+uy*sg*(k+1)],z=k%2?1:-1;ln([a[0]+px*hw*z,a[1]+py*hw*z],[b2[0]-px*hw*z,b2[1]-py*hw*z],'b');ln([a[0]-px*hw*z,a[1]-py*hw*z],[b2[0]+px*hw*z,b2[1]+py*hw*z],'B');set(a[0]+ux*sg/2,a[1]+uy*sg/2,'j');}}hold(uh,1);
+    for(let jj=-8;jj<=8;jj++)for(let ii=-8;ii<=8;ii++){const dd=Math.sqrt(ii*ii+jj*jj);if(dd<=7.9&&dd>6.6)set(lx+ii,ly+jj,ii+jj>2?'b':ii+jj<-6?'B':'B');}}
+   /* the quill hand: up by its side, or writing in the ledger */
+   {const S=[12,4+so];arm(S,qh,16,1,0,1);const w=s.wq>.5,tip=w?[qh[0]-2,qh[1]-2]:[qh[0]-1,qh[1]-2];set(tip[0],tip[1],'k');set(tip[0]+1,tip[1]+1,'d');for(let k=1;k<=9;k++){const fx=qh[0]+k*(w?.55:.35),fy=qh[1]+k,bw=k<3?0:k<8?1:0;set(fx,fy,'Q');for(let q=1;q<=bw;q++){set(fx-q,fy-1+(k%2),'Q');set(fx+q,fy,'q');}if(k>3&&k<8)set(fx-2,fy-(k%2),k%3?'q':'Q');}hold(qh,1);}
+   /* the bell jar on its stand, the plaque, a rosette once it holds the prize */
+   {const S=[-14,9+so];arm(S,[bjx+3,bjy],20,-1,0);for(let i=-7;i<=7;i++){set(bjx+i,bjy+2,'n');set(bjx+i,bjy+1,'N');set(bjx+i,bjy,'N');set(bjx+i,bjy-1,'j');}for(let i=-3;i<=3;i++)for(let j=-1;j<=2;j++)set(bjx+i,bjy+j,Math.abs(i)===3||j===-1||j===2?'b':'B');set(bjx+3,bjy-1,'S');set(bjx+4,bjy-1,'s');
+    if(!(dead&&dn>.55)){for(let j=3;j<=10;j++){set(bjx-6,bjy+j,'g');set(bjx+6,bjy+j,'g');}for(let a=0;a<=Math.PI+.01;a+=.08)set(bjx+Math.cos(a)*6,bjy+10+Math.sin(a)*5,'g');}if(!(dead&&dn>.55)){set(bjx,bjy+16,'B');set(bjx,bjy+17,'b');set(bjx-1,bjy+16,'b');set(bjx+1,bjy+16,'b');}
+    if(s.gt&&s.gtt>.7){const gu=Math.min(1,(s.gtt-.7)/.3),ry=bjy+1+Math.round((1-gu)*4);for(const[a,b2,col]of[[5,0,'R'],[6,0,'R'],[7,0,'R'],[5,1,'R'],[6,1,'y'],[7,1,'R'],[5,2,'R'],[6,2,'R'],[7,2,'R'],[5,-1,'C'],[5,-2,'C'],[7,-1,'C'],[7,-2,'C']])set(bjx+a,ry+b2,col);}}
+   /* the lens's bezel */
+   const kp=dead?keep:1,o=F.tint(F.cut(m,kp),pl,1);c.save();c.globalAlpha=s.p*(dead&&dn>2.2?0:1);const u=Math.min(1,s.age/1.1);fxBlobI(c,x0,rim,Q,fxFade(o,u),s.cvf=s.cvf||{});
+   if(!(dead&&dn>.55)&&keep>.15){
+    /* inside the bell jar: the shape of the fruit it wants, or the prize */
+    const bx=x0+bjx*Q+Q/2,byy=rim-(bjy+8-dy)*Q+Q/2,fr0=Math.round(4.6*Q);c.globalAlpha=s.p*.2*u;c.fillStyle=pl.G;c.beginPath();c.arc(bx,byy-Q,6*Q,Math.PI,0);c.rect(bx-6*Q,byy-Q,12*Q,7*Q);c.fill();c.globalAlpha=s.p*u;
+    const sq=s.fl>0?Math.abs(Math.cos((1-s.fl/.5)*Math.PI)):1,fly=s.gt&&s.gtt<.7;if(sq>.1){c.save();c.translate(bx,byy);c.scale(sq,1);if(s.gt&&!fly)drawFruit(c,0,0,fr0,l.l);else c.drawImage(F.sil(l.l,fr0),-fr0*1.5,-fr0*1.5);c.restore();}
+    c.globalAlpha=s.p*u*.85;for(let k=0;k<4;k++)fxR(c,bx-4*Q,byy-(4-k*1.5)*Q,Q,'w');c.globalAlpha=s.p*u;
+    T(c,String(l.l+1),bx+Q/2,rim-(bjy+.5-dy)*Q+Q/2,Q*3.4,'#5a2e0a','center',FD);
+    if(fly){const v=s.gtt/.7,e=v*v*(3-2*v),fx=s.gx+(bx-s.gx)*e,fy=s.gy+(byy-s.gy)*e-Math.sin(e*Math.PI)*120*g.K,rr=(s.mr||fr0)+(fr0-(s.mr||fr0))*e;drawFruit(c,fx,fy,rr,l.l);}
+    /* inside the lens: a giant veined eye while it peers, your fruit magnified while it inspects */
+    const lcx=x0+lx*Q+Q/2,lcy=rim-(ly-dy)*Q+Q/2,lr=6.6*Q;c.save();c.beginPath();c.arc(lcx,lcy,lr,0,7);c.clip();
+    if(er<.5){const ex=Math.round(lx),ey=Math.round(ly),bl=!RMO&&!sh&&(t%3.7)<.14;for(let jj=-7;jj<=7;jj++)for(let ii=-7;ii<=7;ii++){const d=Math.sqrt(ii*ii+jj*jj);if(d>7)continue;const ix=ii-look[0]*1.6,iy=jj-look[1]*1.2,di=Math.sqrt(ix*ix+iy*iy);let col=d>6?pl.v:((ii*7+jj*13)&7)===0&&d>4.2?pl.v:pl.O;if(sh){if(di<=2.4)col=di<1.2?pl.k:pl.E;}else if(di<=3.4)col=di<=1.6?pl.k:di>2.8?pl.e:((ix*3+iy*5)&3)===0?pl.e:pl.E;if(!sh&&di>1.6&&di<=2.4&&ix<0&&iy<0)col='#ffffff';if(bl&&jj<(t%3.7<.07?3:0))col=jj<-5?pl.s:pl.S;fxR(c,x0+(ex+ii)*Q,rim-(ey+jj-dy)*Q,Q,col);}}
+    else{c.globalAlpha=s.p*.85;c.fillStyle='#fff6e8';c.fillRect(lcx-lr,lcy-lr,lr*2,lr*2);c.globalAlpha=s.p;const M=1.45;if(s.gt){drawFruit(c,lcx+(bx-lcx)*M,lcy+(byy-lcy)*M,fr0*M,l.l);}else if(s.mx!=null&&s.ml!=null)drawFruit(c,lcx+(s.mx-lcx)*M,lcy+(s.my-lcy)*M,(s.mr||20)*M,s.ml);}
+    c.restore();c.globalAlpha=s.p*.7;for(let k=0;k<3;k++)fxR(c,lcx-(4-k)*Q,lcy-(3+k*.0)*Q-(k)*Q,Q,'w');
+    /* a ? or a ! over the lens as it judges */
+    if(er>.9&&!s.gt&&(t%2.4)<1.1){const ok=s.ml!=null&&s.ml>=l.l;T(c,ok?'!':'?',lcx,lcy-lr-12,18,ok?'#38b000':'#ff6b6b','center',FD);}}
+   c.restore();},
+  /* the fruit as a black shape (cached per size) */
+  sil(l,r){const k=l+','+r+','+(typeof ART!=='undefined'&&ART?1:0)+(typeof SPR!=='undefined'&&SPR&&SPR[l]?1:0);FXSIL[k]=FXSIL[k]||(()=>{const cv=document.createElement('canvas');cv.width=cv.height=Math.ceil(r*3);const x=cv.getContext('2d');drawFruit(x,r*1.5,r*1.5,r,l);x.globalCompositeOperation='source-in';x.fillStyle='#120a1c';x.fillRect(0,0,cv.width,cv.height);return cv;})();return FXSIL[k];}},
  /* The Slick: a wet floor sign on the rim, a sheen running over the glass and glints sliding off every fruit. Phase 2: each shake knocks the sign flat for a moment. Beaten: a mop wipes the floor dry and the sign folds away */
  B_slick:{x(g){return fq(fxRX('B_slick',.76,40,g),fxBP(g));},
   tick(s,g,dt){bossT(s,dt);if(s.kn>0)s.kn-=dt;s.sw=(s.sw||0)+dt;},
@@ -2206,6 +2314,14 @@ const fxAd=(A,q)=>A.add(Object.assign(q,{T:q.T+(q.dl||0)}));
 const fxFrMine=(A,x,y)=>A.F.filter(f=>Math.hypot(f.x-x,f.y-y)>4);
 const fxFC=l=>(typeof FRUIT!=='undefined'&&FRUIT[l]&&FRUIT[l][0])||FXP.r;
 /* an outlined cell blob from a set of cells ("i,j" -> colour) at grid P */
+const FXSIL={},FXRGB={}; /* fruit silhouettes (The Collector's bell jar); colours as [r,g,b] for fxBlobI */
+/* fxBlob drawn through one ImageData (v1.94): the cells and their dark outline go into a small canvas at one pixel a cell, then it is drawn scaled up once. Same look as fxBlob, a fraction of the canvas calls; cv = a holder object kept by the scene */
+function fxBlobI(c,x,y,P,cells,cv){if(!cells.size)return;let i0=1e9,i1=-1e9,j0=1e9,j1=-1e9;const L=[];for(const[k2,col]of cells){const p=k2.indexOf(','),i=+k2.slice(0,p),j=+k2.slice(p+1);L.push(i,j,col);if(i<i0)i0=i;if(i>i1)i1=i;if(j<j0)j0=j;if(j>j1)j1=j;}i0--;j0--;i1++;j1++;const w=i1-i0+1,h=j1-j0+1;
+ if(!cv.c||cv.c.width<w||cv.c.height<h){cv.c=document.createElement('canvas');cv.c.width=w+8;cv.c.height=h+8;cv.x=cv.c.getContext('2d');}const W2=cv.c.width,H2=cv.c.height;if(!cv.d||cv.d.width!==W2||cv.d.height!==H2)cv.d=cv.x.createImageData(W2,H2);const d=cv.d.data;d.fill(0,0,W2*h*4);
+ const rgb=col=>{let v=FXRGB[col];if(!v){const hx=FXP[col]||col;v=FXRGB[col]=[parseInt(hx.slice(1,3),16),parseInt(hx.slice(3,5),16),parseInt(hx.slice(5,7),16)];}return v;},K=rgb('k');
+ for(let n=0;n<L.length;n+=3){const i=L[n]-i0,j=L[n+1]-j0;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const o=((j+b)*W2+i+a)*4;if(!d[o+3]){d[o]=K[0];d[o+1]=K[1];d[o+2]=K[2];d[o+3]=255;}}}
+ for(let n=0;n<L.length;n+=3){const i=L[n]-i0,j=L[n+1]-j0,v=rgb(L[n+2]),o=(j*W2+i)*4;d[o]=v[0];d[o+1]=v[1];d[o+2]=v[2];d[o+3]=255;}
+ cv.x.putImageData(cv.d,0,0,0,0,w,h);const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(cv.c,0,0,w,h,fq(x,P)+i0*P,fq(y,P)+j0*P,w*P,h*P);c.imageSmoothingEnabled=sm;}
 function fxBlob(c,x,y,P,cells){for(const k2 of cells.keys()){const[i,j]=k2.split(',').map(Number);for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]])if(!cells.has((i+a)+','+(j+b)))fxR(c,x+(i+a)*P,y+(j+b)*P,P,'k');}for(const[k2,col]of cells){const[i,j]=k2.split(',').map(Number);fxR(c,x+i*P,y+j*P,P,col);}}
 const FXHT=[[-2,-2,'m'],[-1,-2,'m'],[1,-2,'m'],[2,-2,'m'],[-3,-1,'m'],[-2,-1,'p'],[-1,-1,'m'],[0,-1,'m'],[1,-1,'m'],[2,-1,'m'],[3,-1,'m'],[-3,0,'m'],[-2,0,'m'],[-1,0,'m'],[0,0,'m'],[1,0,'m'],[2,0,'m'],[3,0,'m'],[-2,1,'m'],[-1,1,'m'],[0,1,'m'],[1,1,'m'],[2,1,'R'],[-1,2,'m'],[0,2,'m'],[1,2,'R'],[0,3,'R']];
 const FXM={
