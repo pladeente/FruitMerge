@@ -760,7 +760,7 @@ const ARENA={
  B_miser:{sky:['#24190f','#47341f'],gr:'#1f160c',sc:'city',sk:['#3a2a18','#20160c'],o:{win:['#fb8500','#ffd43b'],chim:1},st:1,wx:'dust',wn:.5,wc:['#e09600','#c48a52'],dk:.28,jar:['#3a2c1a',.12],vg:.75},
  B_stone:{sky:['#c49a72','#ead0b0'],gr:'#a8845e',sc:'mounts',sk:['#a37a56','#77573c'],wx:'pebbles',wn:.6,wc:['#8f8a99','#5f5a6b'],cl:{n:3,v:-14,c:['#e0c6a6','#c8a886'],y:[.05,.3],s:1.1},jar:['#c9a27d',.08]},
  B_mirror:{sky:['#311a52','#74499c'],gr:'#2a1640',sc:'mounts',sk:['#5a3a86','#3a2160'],o:{shard:1},wx:'sparkle',wn:1,wc:['#ffffff','#c9b3ff','#4cc9f0'],st:1,dk:.1,jar:['#c9b3ff',.1],vg:.4},
- B_glut:{sky:['#4e2214','#8a4626'],gr:'#3a180c',sc:'hall',sk:['#6a3420','#3e1c0e'],o:{col:1,ban:'#e63946'},wx:'embers',wn:.6,dk:.15,jar:['#8a4a2a',.08],vg:.5},
+ B_glut:{sky:['#2a1636','#b0543a'],gr:'#1a2410',sc:'leaf',sk:['#3a6a2a','#1e3a16'],sun:['#ff8a3c',.2,.5,7],cl:{n:3,v:-10,c:['#7a3a4a','#5a2a3e'],y:[.05,.3],s:1.1},wx:'leaves',wn:.5,dk:.1,jar:['#4a6a2a',.06],vg:.5},
  B_sticky:{sky:['#6e3410','#d98538'],gr:'#5a2a0c',sc:'trees',sk:['#a85a26','#6a3010'],o:{k:'maple'},cl:{n:4,v:-18,c:['#e8a060','#c07838'],y:[.05,.35],s:1.2},wx:'drip',wn:.8,wc:['#e09600','#fb8500'],dk:.08,jar:['#e09600',.1]},
  B_swarm:{sky:['#45553a','#8a9a68'],gr:'#3a4a2c',sc:'swamp',sk:['#55663f','#2e3a22'],wx:'gnats',wn:1.4,dk:.14,jar:['#6a7a4a',.1],vg:.4},
  B_rot:{sky:['#262f1c','#556536'],gr:'#1c2414',sc:'swamp',sk:['#36422a','#1c2412'],o:{mush:1},cl:{n:6,v:-22,c:['#3e4a2c','#2a3420'],y:[.05,.5],s:1.3},wx:'spores',wn:1.3,wc:['#b6e36a','#b388eb','#7bc950'],dk:.24,jar:['#4a5a2a',.04],vg:.6},
@@ -793,7 +793,8 @@ const SCN={
  swamp:{f:i=>3+Math.round(1.5*Math.sin(i*.07)),n:i=>1},
  grave:{f:i=>4+Math.round(1.5*Math.sin(i*.08)),n:i=>1},
  hedge:{f:i=>{const b=Math.floor(i/7);return 6+Math.floor(fhs(b,3)*5);},n:i=>2},
- gears:{f:i=>2,n:i=>1}};
+ gears:{f:i=>2,n:i=>1},
+ leaf:{f:i=>{const b=Math.floor(i/20),u=(i%20)/19,h=11+Math.floor(fhs(b,5)*8),c=.25+fhs(b,8)*.5,w=.18,d=Math.abs(u-c)<w&&fhs(b,7)>.35?h*.5*Math.sqrt(1-((u-c)/w)**2):0;return Math.max(1,Math.round(h*Math.pow(Math.sin(Math.PI*u),.6)-d));},n:i=>2+Math.round(1.2*Math.sin(i*.21))+(i%5===0?2:0)}}; /* leaf (v1.100, The Glutton): giant leaves with bites out of them */
 const FXSC={};
 function fxScnC(c,g,a,t,id){const Q=fxBP(g),hz=fq(fxRim(g)+6,Q),key=id+'|'+g.W+'|'+g.H+'|'+Q+'|'+hz;let cv=FXSC[key];if(!cv){cv=document.createElement('canvas');cv.width=Math.ceil(g.W);cv.height=hz;const x=cv.getContext('2d');fxScn(x,g,a,0,1);FXSC[key]=cv;}c.drawImage(cv,0,0);fxScn(c,g,a,t,2);}
 function fxScn(c,g,a,t,md=3){const Q=fxBP(g),hz=fq(fxRim(g)+6,Q),N=Math.ceil(g.W/Q)+2,S=SCN[a.sc],o=a.o||{},[cf,cn]=a.sk||['#888888','#555555'],ST=md&1,AN=md&2,col0=(i,h,cc)=>{if(h>0){c.fillStyle=cc;c.fillRect(i*Q,hz-h*Q,Q,h*Q);}},cel0=(i,j,cc)=>{c.fillStyle=cc;c.fillRect(i*Q,hz-(j+1)*Q,Q,Q);},col=(i,h,cc)=>{if(ST)col0(i,h,cc);},cel=(i,j,cc)=>{if(ST)cel0(i,j,cc);},cela=(i,j,cc)=>{if(AN)cel0(i,j,cc);};if(!S)return;
@@ -814,6 +815,7 @@ function fxScn(c,g,a,t,md=3){const Q=fxBP(g),hz=fq(fxRim(g)+6,Q),N=Math.ceil(g.W
   if(o.shelf)for(const j of[4,9])for(let i=0;i<N;i++){cel(i,j,'#5a4632');if(i%5===1){cel(i,j+1,'#e3f3ff');cel(i,j+2,'#e3f3ff');cel(i,j+3,'#a9713a');}}if(o.ban)for(let i=7;i<N;i+=10)for(let j=8;j<13;j++){cel(i,j,o.ban);if(j===8&&fst(t,3)%2)cela(i,j-1,o.ban);}if(o.frame)for(let i=6;i<N;i+=10){for(let j=6;j<11;j++){cel(i-1,j,'#e09600');cel(i+2,j,'#e09600');}for(let d=-1;d<=2;d++){cel(i+d,6,'#e09600');cel(i+d,10,'#e09600');}cel(i,8,'#ff4d8d');cel(i+1,8,'#ffd43b');}}
  if(a.sc==='gears'){const G=[[.2,9,1],[.38,6,-1.5],[.75,11,.8],[.9,5,-2]];for(const[fx,r,sp]of G){const cx=Math.round(fx*N),cy=r-2,an=t*sp*.5;for(let j=-r-2;j<=r+2;j++)for(let i=-r-2;i<=r+2;i++){const d=Math.hypot(i,j),aa=Math.atan2(j,i)-an,tooth=Math.cos(aa*8)>.3;if((d<=r||(d<=r+2&&tooth))&&d>r*.35)cela(cx+i,cy+j,d>r?cf:fxHx(cf,'#ffffff',.08));}}}
  if(a.sc==='trees'){const k=o.k||'pine';for(let x=2;x<N;x+=6+Math.floor(fhs(x,4)*4)){const h=6+Math.floor(fhs(x,6)*8),base=fh[x];if(k==='dead'){for(let j=0;j<h;j++)cel(x,base+j,cf);for(let b=0;b<3;b++){const by=base+3+b*2,sd=b%2?1:-1;for(let d=1;d<=2+b%2;d++)cel(x+sd*d,by+d,cf);}}else{for(let j=0;j<h-3;j++)cel(x,base+j,fxHx(cf,'#000000',.25));const r=k==='pine'?0:2+Math.floor(fhs(x,8)*2);if(k==='pine')for(let j=0;j<h;j++){const w=Math.max(0,Math.round((h-j)*.35));for(let d=-w;d<=w;d++)cel(x+d,base+2+j,cf);}else{for(let j=-r;j<=r;j++)for(let i=-r-1;i<=r+1;i++)if(i*i/((r+1)*(r+1))+j*j/(r*r)<=1)cel(x+i,base+h-r+j,k==='maple'&&fhs(x+i,j)>.7?fxHx(cf,'#fb8500',.4):cf);if(k==='cherry')for(const[i,j]of[[-1,0],[1,-1],[0,1]])cel(x+i,base+h-r+j,'#e63946');}}}}
+ if(a.sc==='leaf'){for(let i=10;i<N;i+=20){for(let j=0;j<fh[i]-2;j++)cel(i,j,fxHx(cf,'#ffffff',.14));for(let j=3;j<fh[i]-4;j+=3)for(let d=1;d<=3;d++){if(fh[i-d]>j+d+1)cel(i-d,j+d,fxHx(cf,'#ffffff',.08));if(fh[i+d]>j+d+1)cel(i+d,j+d,fxHx(cf,'#ffffff',.08));}}}
  if(a.sc==='hedge'){for(let i=0;i<N;i++)if(i%7===3&&fh[i]>8){cel(i,fh[i],cf);cel(i,fh[i]+1,cf);cel(i-1,fh[i]+1,cf);cel(i+1,fh[i]+1,cf);cel(i,fh[i]+2,cf);}}
  if(a.sc==='waves'){for(let i=0;i<N;i++){if(((i+Math.floor(t*4))%9)===0)cela(i,fh[i]-1,'#4cc9f0');if(((i*3+Math.floor(t*2))%13)===0)cela(i,fh[i]-2,'#a8cfe8');}}
  if(a.sc==='swamp'&&o.mush){for(const[fx,h,r]of[[.12,9,4],[.3,6,3],[.68,11,5],[.88,7,3]]){const cx=Math.round(fx*N);for(let j=0;j<h;j++){cel(cx,fh[cx]+j,fxHx(cf,'#ffffff',.12));cel(cx+1,fh[cx]+j,cf);}for(let j=0;j<=r;j++){const w=Math.round(Math.sqrt(r*r+r-j*j));for(let i=-w;i<=w;i++)cel(cx+i,fh[cx]+h+j,(i+j)%4===0&&j>0?'#b6e36a':'#4a3a5a');}}}
@@ -1788,23 +1790,77 @@ ldC:`
 ...kkkkk...`});
 FXD.rtV=FXD.rtA.replace(/r/g,'V').replace(/R/g,'x').replace(/w/g,'l');FXD.rtD=FXD.rtA.replace(/[rR]/g,'D').replace(/[wc]/g,'s'); /* the toadstool rotten (phase 2) and shrivelled (beaten) */
 Object.assign(FXS,{
- /* The Glutton: a place setting on the rim, plate, knife and fork. As its next meal comes round the knife and fork bang on the table; every meal leaves a core on the plate and a burp floats out of the jar. Phase 2: they never stop banging. Beaten: a napkin over the plate, cutlery crossed on top */
- B_glut:{x(g){return fq(fxRX('B_glut',.7,72,g),fxBP(g));},
-  tick(s,g,dt){bossT(s,dt);if(s.bg>0)s.bg-=dt;},
-  front(c,g,s,t){const P=fxBP(g),x=FXS.B_glut.x(g),rim=fxRim(g),dy=fxDrop(s,P),R=fxPt(c,x,rim+dy,P),dead=s.dnt!=null,p2=s.p2t!=null;c.save();c.globalAlpha=s.p;
-   fxEl(c,x,rim+dy-2*P,P,8,2,(i,j,e)=>e?'k':j<-1?'s':Math.abs(i)>5||j>0?'s':'w');R(-4,-3,'w',9,1);R(-6,-1,'d',13,1);
-   const nc=Math.min(4,s.n||0);for(let k=0;k<nc;k++){const cx=-6+k*4+(nc===1?5:nc===2?3:nc===3?2:0);R(cx,-8,'k',4,1);R(cx-1,-7,'k',6,1);R(cx,-7,'r',3,1);R(cx+3,-7,'R');R(cx,-6,'k',4,2);R(cx+1,-6,'f');R(cx+2,-6,'F');R(cx+1,-5,'F');R(cx+2,-5,'f');R(cx-1,-4,'k',6,1);R(cx,-4,'r',3,1);R(cx+3,-4,'R');R(cx,-3,'k',4,1);R(cx+2,-9,'N');R(cx+3,-10,'G');}
-   if(dead){const u=Math.min(1,s.dnt/.5),ny=-Math.round((1-u)*14);for(let i=-6;i<=6;i++)for(let j=-3;j<=0;j++){const e=i===-6||i===6||j===-3;R(i,ny+j,e?'k':((i+j)&1)?'r':'w');}
-    if(u>=1){for(let k=0;k<9;k++){R(-5+k,-9+k,'k');R(-4+k,-9+k,'s');R(5-k,-9+k,'k');R(4-k,-9+k,'d');}}c.restore();return;}
-   const due=(s.l.n===1)||p2,bang=due&&!RMO,fr=fst(t,p2?7:5)%2,fy=bang&&fr?-3:0,ky=bang&&!fr?-3:0,up=s.bg>0?-6:0;
-   const fork=(fx,fy2)=>{R(fx-3,fy2-15,'k',7,5);for(const q of[-2,0,2])R(fx+q,fy2-14,q<0?'w':'s',1,3);R(fx-2,fy2-11,'s',5,1);R(fx-2,fy2-10,'k',5,1);R(fx-1,fy2-10,'s',3,1);R(fx-1,fy2-9,'k',3,9);R(fx,fy2-9,'s',1,8);for(const q of[-1,1])R(fx+q,fy2-15,'.');};
-   const knife=(kx,ky2)=>{R(kx-1,ky2-14,'k',3,1);R(kx-2,ky2-13,'k',1,8);R(kx+1,ky2-13,'k',1,8);R(kx-1,ky2-13,'w',1,7);R(kx,ky2-13,'s',1,7);R(kx-2,ky2-6,'k',4,1);R(kx-1,ky2-5,'N',2,4);R(kx-2,ky2-5,'k',1,5);R(kx+1,ky2-5,'k',1,5);R(kx-1,ky2-1,'k',2,1);};
-   fork(-10,fy+up);knife(10,ky+up);
-   if(bang&&(fy||ky)&&fst(t,p2?7:5)!==s.lb){s.lb=fst(t,p2?7:5);}
-   if(bang&&fst(t,p2?7:5)%2===0){R(-12,-1,'D');R(-8,-1,'D');}else if(bang){R(8,-1,'D');R(12,-1,'D');}
-   if(p2&&fst(t,3)%2){R(-1,-17,'r',2,3);R(-1,-13,'r',2,1);}c.restore();},
-  ev(s,n,o,A,g){if(n!=='glut'||!s.l.p||s.dnt!=null)return;s.n=(s.n||0)+1;s.bg=.5;const P=g.P;A.burst(o.x,o.y,['f','F','y'],10,{v:150,T:.5});
-   A.add({k:'fn',x:o.x,y:o.y-(o.r||20)-4*P,vy:-45,T:1.6,dl:.35,fa:.5,sw:6,sf:3,d:(c,q,g,t,x)=>{const P=fxBP(g),k=Math.min(3,1+Math.floor(q.t/.1));for(const[dx,dy,r]of[[-5,1,4],[4,0,5],[0,-4,4]].slice(0,k))fxEl(c,fq(x+dx*P,P),fq(q.y+dy*P,P),P,r,r-1,(i,j,e)=>e?'k':j<-r+2?'w':i+j>r?'g':'l');if(k>=3)T(c,'BURP!',x,q.y,18,'#2a1a3a','center',FD);}});}},
+ /* The Glutton (v1.100, the user's pick of four: the Great Grub): a giant red caterpillar arches over the jar from behind, its tail behind the left of the glass, its front legs hooked over the right rim and its neck reared up like a cobra; a front-facing head with glowing eyes that follow the fruit in hand, curled horns and big serrated mandibles. The meals alternate (the user's ask): on one its head dives into the jar on the neck (it follows the engine's boss caterpillar, which is not drawn then: cat.gi), chews the fruit and pulls back, and a lump runs down its body to the tail, then a burp; on the next a small red caterpillar crawls in while it watches and laughs. Phase 2: it roars and shakes the jar, silk webs the top corners, its bristles grow red-tipped, its eyes go red. Beaten: it recoils, withers to a dry husk and crumbles from the tail. Built cell by cell each frame on the boss grid: bm = the arch, drawn behind the jar (bg), fm = the front legs, neck and head (front) */
+ B_glut:{
+  pal(p2,h){const L={C:'#d62f42',H:'#ff7262',S:'#8a1830',K:'#4e0c1e',Y:'#ffd43b',X:'#2a1a3a',T:p2?'#ff4d4d':'#ffd43b',h:'#7a1e2e',j:'#b03a48',q:'#4e1222',O:'#fb8500',E:p2?'#ff3030':'#ffe066',e:p2?'#ff8a5c':'#e09600',m:'#5a3018',n:'#c8803e',w:'#fff2d8',M:'#3a0814',G:'#b6e36a'},D={C:'#9a7a52',H:'#c8a878',S:'#6a5236',K:'#3e2e1e',Y:'#b8a070',X:'#3e2e1e',T:'#8a7050',h:'#5a4632',j:'#7a6446',q:'#3e2e1e',O:'#8a6a42',E:'#5a4a36',e:'#4a3a2a',m:'#4a3a2a',n:'#7a6446',w:'#c8b89a',M:'#3e2e1e',G:'#8a7a50'};if(h<=0)return L;const o={};for(const k in L)o[k]=fxHx(L[k],D[k],Math.min(1,h));return o;},
+  /* the frame: cells from the jar's left edge on the rim; S = the front segment on the right rim, H0 = the head's centre at rest (its mouth is 9 cells below) */
+  G(g){const Q=fxBP(g),Wc=Math.round((g.R-g.L)/Q);return{Q,x0:fq(g.L,Q),rim:fq(fxRim(g),Q),Wc,S:[Math.round(.87*Wc),-6],H0:[Math.round(.66*Wc),-24]};},
+  /* where the engine's giant meal starts and ends: the mouth at rest, in px */
+  home(g){const o=FXS.B_glut.G(g);return{x:o.x0+o.H0[0]*o.Q,y:o.rim+(o.H0[1]+12)*o.Q};},
+  tick(s,g,dt,A){bossT(s,dt);const o=FXS.B_glut.G(g),Q=o.Q,l=s.l,ct=l.cat&&l.cat.gi?l.cat:null,dead=s.dnt!=null,p2=s.p2t!=null,dn=dead?s.dnt:0;if(s.p>0)fxRX('B_glut',.87,70,g,1);
+   let tx=o.H0[0],ty=o.H0[1],md='idle';
+   if(dead){md='dead';if(dn<.7)ty-=6;else{const u=Math.min(1,(dn-.7)/.9);tx=o.H0[0]+(o.S[0]-10-o.H0[0])*u;ty=o.H0[1]-6+(o.S[1]-4-(o.H0[1]-6))*u;}}
+   else if(ct){md=ct.st==='eat'?'eat':ct.st==='out'?'back':'dive';tx=(ct.x-o.x0)/Q;ty=(ct.y-o.rim)/Q-12;}
+   else if(p2&&s.p2t<1.6){md='roar';ty-=8;tx+=2;}
+   else if(l.n===1&&l.gn){md='rear';ty-=6;tx+=3;}
+   else if(s.lf>0)md='laugh';
+   if(s.lf>0)s.lf-=dt;s.md=md;if(s.hx==null||!s.age||s.age<dt*1.5){s.hx=tx;s.hy=ty;}const sp=(ct?240:md==='dead'?14:30)*dt;s.hx=fxA(s.hx,tx,sp);s.hy=fxA(s.hy,ty,sp);
+   const mx=o.x0+Math.round(s.hx)*Q,my=o.rim+(Math.round(s.hy)+13)*Q;
+   /* the gulp: a lump runs from the head to the tail, a burp once it is down the neck */
+   if(s.gl!=null){s.gl+=dt;if(s.gl>.9&&!s.bp){s.bp=1;FXS.B_glut.burp(A,mx,my-4*Q);}if(s.gl>3.2)s.gl=null;}
+   /* drool drips from the mouth while it waits */
+   if(!dead&&!ct&&!RMO&&(md==='idle'||md==='rear'||md==='laugh')){s.dr=(s.dr==null?1.5:s.dr)-dt;if(s.dr<=0){s.dr=(md==='rear'?1:2.2)+Math.random()*1.4;const dx=Math.random()<.5?-2:1;A.add({k:'fn',x:mx+dx*Q,y:my-Q,vx:0,vy:0,g:0,T:.5,d:(c,q,g2)=>{const P=fxBP(g2),n=1+Math.floor(q.t/.17);for(let k=0;k<n;k++)fxR(c,q.x,q.y+k*P,P,k===n-1?'G':'l');},end:(A2,g2,q)=>A2.add({k:'sq',x:q.x,y:q.y+3*fxBP(g2),vx:0,vy:40,g:520,T:1.1,col:'l',s:2,fy:g2.bot-6})});}}
+   /* phase 2: the roar shakes the jar and it spits silk at the top corners */
+   if(p2&&!dead&&s.p2t>.35&&!s.rr){s.rr=1;A.jsA=3*g.K;A.jsT=.5;A.burst(mx,my,['w','c','s'],16,{v:200,vy:-40,g:200,T:.7});}
+   /* beaten: it crumbles from the tail, a puff of dust per segment */
+   if(dead&&dn>1.7&&s.sg){const n=s.sg.length,k=Math.min(n,Math.floor((dn-1.7)/1.1*n));s.cr=s.cr||0;while(s.cr<k){const p=s.sg[s.cr];if(p)A.burst(p[0],p[1],['n','N','D','s'],s.cr===n-1?22:8,{v:s.cr===n-1?150:90,vy:-30,g:260,T:.8,w:p[2]});s.cr++;}}},
+  burp(A,x,y){A.add({k:'fn',x,y,vy:-45,T:1.6,fa:.5,sw:6,sf:3,d:(c,q,g,t,x)=>{const P=fxBP(g),k=Math.min(3,1+Math.floor(q.t/.1));for(const[dx,dy,r]of[[-5,1,4],[4,0,5],[0,-4,4]].slice(0,k))fxEl(c,fq(x+dx*P,P),fq(q.y+dy*P,P),P,r,r-1,(i,j,e)=>e?'k':j<-r+2?'w':i+j>r?'g':'l');if(k>=3)T(c,'BURP!',x,q.y,18,'#2a1a3a','center',FD);}});},
+  build(s,g,t){if(s.bf===t&&s.bv)return s.bv;const o=FXS.B_glut.G(g),Q=o.Q,Wc=o.Wc,dead=s.dnt!=null,dn=dead?s.dnt:0,p2=s.p2t!=null,md=s.md||'idle',hk=dead?Math.ceil(Math.max(0,Math.min(1,(dn-.7)/.9))*3)/3:0,C=FXS.B_glut.pal(p2,hk),l=s.l;
+   const bob=RMO?0:fst(t,1.6)%2,tense=md==='rear'||md==='roar'||(dead&&dn<.7),ten=tense?-3:0,shr=dead?Math.min(1,Math.max(0,(dn-.7)/.9)):0,S=o.S,st=(m,i,j,v)=>m.set(Math.round(i)+','+Math.round(j),v);
+   /* the arch: a cubic from the tail (behind the jar, left) over the sky to S */
+   const T0=[.08*Wc,8],C1=[.05*Wc,-46+ten],C2=[.7*Wc,-58+ten-bob],bz=v=>{const a=1-v;return[a*a*a*T0[0]+3*a*a*v*C1[0]+3*a*v*v*C2[0]+v*v*v*S[0],a*a*a*T0[1]+3*a*a*v*C1[1]+3*a*v*v*C2[1]+v*v*v*S[1]];};
+   const pts=[[T0[0],T0[1],0]];let Ls=0,pv=T0;for(let k=1;k<=90;k++){const p=bz(k/90);Ls+=Math.hypot(p[0]-pv[0],p[1]-pv[1]);pts.push([p[0],p[1],Ls]);pv=p;}
+   const at=d=>{for(let k=1;k<pts.length;k++)if(pts[k][2]>=d){const a=pts[k-1],b=pts[k],u=(d-a[2])/((b[2]-a[2])||1);return[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];}return S;};
+   /* the neck: a quadratic from S to the head, bowing out to the right and up over the rim */
+   const hx=Math.round(s.hx==null?o.H0[0]:s.hx),hy=Math.round(s.hy==null?o.H0[1]:s.hy),sh=(md==='roar'||(dead&&dn<.7))&&!RMO?(fst(t,12)%2?1:-1):0,lau=md==='laugh'&&!RMO?fst(t,9)%2:0,chw=md==='eat'&&!RMO&&fst(t,6)%2===0?1:0,X=hx+sh,Y=hy+lau+chw;
+   const K1=[S[0]+4,Math.min(Y-3,-14)],qz=v=>{const a=1-v;return[a*a*S[0]+2*a*v*K1[0]+v*v*X,a*a*S[1]+2*a*v*K1[1]+v*v*Y];};let Ln=0,qp=S;for(let k=1;k<=24;k++){const p=qz(k/24);Ln+=Math.hypot(p[0]-qp[0],p[1]-qp[1]);qp=p;}
+   const SP=7.2,nN=Math.max(4,Math.ceil(Ln/4.4)),all=[];for(let d=Ls-SP;d>-1;d-=SP)all.unshift({p:at(Math.max(0,d)),r:3.4+2.7*Math.min(1,d/(3*SP)),dh:Ln+Ls-d,b:1});all.push({p:S,r:6.2,dh:Ln,b:0,S:1});for(let k=1;k<nN;k++){const v=k/nN;all.push({p:qz(v),r:5.8-1.1*v,dh:(1-v)*Ln,b:0});}
+   let lx=0,ly=0;{let tx2=null,ty2=null;if(md==='dive'||md==='eat'){ly=1;}else if(l.cat&&!l.cat.gi){tx2=l.cat.x;ty2=l.cat.y;}else if(l.hx!=null){tx2=l.hx;ty2=l.hy;}if(tx2!=null){const dx=(tx2-(o.x0+X*Q))/Q,dy=(ty2-(o.rim+Y*Q))/Q;lx=dx<-8?-1:dx>8?1:0;ly=dy>4?1:0;}}
+   const gl=s.gl!=null?s.gl*62:-99,cr=dead?s.cr||0:0,Cc=[.45*Wc,-6],wig=RMO?0:fst(t,3),op=md==='dive'||md==='roar'?1:md==='eat'?(chw?0:.9):md==='rear'?(RMO||fst(t,6)%2?1:.5):md==='laugh'?(lau?.6:.15):md==='back'?0:md==='dead'?(dn<.7?1:.35):.2+.2*(RMO?0:fst(t,1.3)%2),sw=RMO?0:fst(t,2)%2,fl=dead&&dn<.7&&!RMO&&fst(t,10)%2,sr=Math.round(shr*6);
+   /* rebuilt only when something in them changes, so a still pose makes no garbage (a map a frame cost 50 to 100 ms GC pauses) */const ak=[bob,ten,wig,p2,hk,cr,sr,gl>Ln-8?Math.round(gl):-1].join(),fk=[cr,hk,sr,p2,wig,ten,X,Y,md,op,sw,lx,ly,RMO?0:fst(t,4)%2,fl,gl<Ln+8?Math.round(gl):-1].join(),nA=s.ak!==ak,nF=s.fk!==fk,bm=nA?new Map():s.bm0,fm=nF?new Map():s.fm0;s.ak=ak;s.fk=fk;s.bm0=bm;s.fm0=fm;
+   const disc=(m,q,k)=>{const r=Math.max(2,q.r*(1-shr*.18)+1.8*Math.max(0,1-Math.abs(q.dh-gl)/7)),cx=q.p[0],cy=q.p[1];
+    fxMD(m,cx,cy,r,(i,j)=>{const dd=i*i+j*j;return dd>(r-1)*(r-1)?C.K:i+j<-r*.6?C.H:j>r*.42?C.S:C.C;});
+    const sx=Math.round(cx-r*.25),sy=Math.round(cy+r*.12);if(r>=4.5){for(const[i,j]of[[0,-1],[-1,0],[1,0],[0,1]])st(m,sx+i,sy+j,C.Y);st(m,sx,sy,C.X);}else st(m,sx,sy,C.Y);
+    if(r<3)return;let nx=cx-Cc[0],ny=cy-Cc[1];const nl=Math.hypot(nx,ny)||1;nx/=nl;ny/=nl;const Lb=((p2?6:4)+(tense?1:0))*(1-shr*.6),a0=Math.atan2(ny,nx);
+    for(const da of[-.55,0,.55]){const a=a0+da+.12*Math.sin(k*1.7+wig),ca=Math.cos(a),sa=Math.sin(a);for(let d=r-1;d<=r+Lb;d+=.7)st(m,cx+ca*d,cy+sa*d,d>r+Lb-1.6?C.T:C.X);}};
+   for(let k=cr;k<all.length;k++){const q=all[k];if(q.b){if(nA)disc(bm,q,k);}else if(nF){if(q.S){for(const lx of[-4,-1,2,5]){for(let j=S[1]+4;j<=2;j++)st(fm,S[0]+lx,j,C.X);st(fm,S[0]+lx-1,2,C.n);st(fm,S[0]+lx,3,C.n);}}disc(fm,q,k);}}
+   if(dead){s.sg=all.map(q=>[o.x0+q.p[0]*Q,o.rim+q.p[1]*Q,q.r*Q]);s.sg.push([o.x0+X*Q,o.rim+Y*Q,16*Q]);}
+   /* the head, facing out: horns, a capsule with an orange V, angry glowing eyes that follow the fruit, small eyes under them, serrated mandibles that open, chew and drool */
+   if(nF&&cr<=all.length){ /* the head crumbles last */const bul=md==='back'?1:0,m=fm;
+    for(const sd of[-1,1])[[4,-8],[5,-9],[5,-10],[6,-11],[7,-12],[8,-12+(sd>0?sw:1-sw)],[9,-11+(sd>0?sw:1-sw)]].forEach(([i,j],k)=>{const v=k>4?C.T:k%2?C.O:C.q;st(m,X+sd*i-(sd<0?1:0),Y+j+(dead?Math.round(shr*3):0),v);if(k<4)st(m,X+sd*(i+1)-(sd<0?1:0),Y+j+(dead?Math.round(shr*3):0),v);});
+    const rx=10+bul,ry=9;for(let j=-ry;j<=ry;j++)for(let i=-rx-1;i<=rx;i++){const u=(i+.5)*(i+.5)/(rx*rx+.6)+j*j/(ry*ry+.5);if(u<=1)st(m,X+i,Y+j,u>.88?C.X:u>.72?C.q:(i+4)*(i+4)+(j+5)*(j+5)<6?C.j:C.h);}st(m,X-6,Y-6,C.H);st(m,X-5,Y-7,C.H);
+    for(const[i,j]of[[0,-8],[-1,-8],[0,-7],[-1,-7],[0,-6],[-1,-6],[0,-5],[-1,-5],[-2,-4],[1,-4],[-3,-3],[2,-3],[-4,-2],[3,-2]])st(m,X+i,Y+j,C.O);
+    const shut=hk>=.66,fl=dead&&dn<.7&&!RMO&&fst(t,10)%2;for(const sd of[-1,1]){const e=(i,j,v)=>st(m,X+(sd<0?i:-i-1),Y+j,v);
+     for(let i=-9;i<=-5;i++)e(i,-3,C.X);e(-4,-2,C.X);e(-3,-1,C.X);
+     if(shut){for(let i=-8;i<=-4;i++)e(i,-1,C.X);}else{const E=fl?C.w:C.E;for(let i=-8;i<=-5;i++)e(i,-2,E);for(let i=-8;i<=-4;i++)e(i,-1,E);for(let i=-7;i<=-4;i++)e(i,0,E);const pc=-6+(sd<0?lx:-lx);e(pc,ly?-1:-2,C.X);e(pc,ly?0:-1,C.X);if(!hk)e(-8,-2,p2?'#ffd0c0':C.w);}
+     e(-9,2,shut?C.X:C.e);e(-8,3,shut?C.X:C.e);e(-9,4,shut?C.X:C.e);}
+    if(op>.3){const mh=Math.round(op*3);for(let j=7;j<=9+mh;j++){const w=j===9+mh?2:j===7?3:4;for(let i=-w;i<w;i++)st(m,X+i,Y+j,C.M);}st(m,X-3,Y+9+mh,C.G);st(m,X-3,Y+10+mh,C.G);if(!RMO&&fst(t,4)%2)st(m,X-3,Y+11+mh,C.G);st(m,X+2,Y+9+mh,C.G);}
+    const cl=[[-7,6],[-7,8],[-6,10],[-5,12],[-3,13],[-2,14]],on=[[-7,6],[-9,8],[-10,10],[-10,12],[-9,14],[-7,15]],wd=[3,3,3,2,2,1];for(const sd of[-1,1])for(let k=0;k<6;k++){const px=Math.round(cl[k][0]+(on[k][0]-cl[k][0])*op),py=Math.round(cl[k][1]+(on[k][1]-cl[k][1])*op),b=(i,j,v)=>st(m,X+(sd<0?i:-i-1),Y+j,v);for(let q=0;q<wd[k];q++)for(const dj of[0,1])b(px+q,py+dj,q===0||dj===1&&k<5?C.m:C.n);if(k>=1&&k<=4&&op>.15)b(px+wd[k],py+1,C.w);if(k===5)b(px,py+1,C.w);}}
+   s.bf=t;return s.bv={bm,fm,x0:o.x0,rim:o.rim,Q};},
+  /* behind the jar: the arch */
+  bg(c,g,s,t){const V=FXS.B_glut.build(s,g,t),u=Math.min(1,s.age/1.4);c.save();c.globalAlpha=s.p;fxBlobI(c,V.x0,V.rim,V.Q,fxFade(V.bm,u),s.cb||(s.cb={keep:1}));c.restore();},
+  /* in the jar: chewed leaves pressed on the glass, behind the fruit */
+  back(c,g,s,t){const u=fxArU(s);if(u<=0)return;const Q=g.P,key='glutlf|'+g.L+'|'+g.R+'|'+g.top+'|'+g.bot+'|'+Q;let cv=FXSC[key];if(!cv){cv=document.createElement('canvas');cv.width=Math.ceil(g.W);cv.height=Math.ceil(g.bot+Q*4);const x=cv.getContext('2d'),top=fxRim(g)+10,H=g.bot-top,Wd=g.R-g.L;
+    const leaf=(bx,by,an,len,wd,bites)=>{const ca=Math.cos(an),sa=Math.sin(an),R=len+wd+2;for(let dj=-R;dj<=R;dj++)for(let di=-R;di<=R;di++){const a=di*ca+dj*sa,b=-di*sa+dj*ca;let col=null;if(a<0&&a>-3&&Math.abs(b)<.8)col='#3c7a2a';else if(a>=0&&a<=len){const w=wd*Math.pow(Math.sin(Math.PI*Math.min(1,a/len+.04)),.7);if(Math.abs(b)<=w&&!bites.some(([ba,bb,br])=>(a-ba)*(a-ba)+(b-bb)*(b-bb)<br*br)){col=Math.abs(b)<.7?'#3c7a2a':Math.abs(b)>w-1.1?'#2a5a1e':((a-Math.abs(b)*.9)%5+5)%5<.8?'#4a8a32':b<0?'#7bc950':'#5aa83a';}}if(col){const px=bx+di*Q,py=by+dj*Q;if(px>=g.L&&px<g.R&&py<g.bot){x.fillStyle=col;x.fillRect(fq(px,Q),fq(py,Q),Q,Q);}}}};
+    leaf(g.L+Q,top+H*.62,-.55,22,7,[[8,6.5,3],[15,-5,2.5]]);leaf(g.R-Q,top+H*.3,Math.PI+.6,18,6,[[10,-5,3]]);leaf(g.L+Wd*.62,g.bot-Q,-Math.PI+.25,24,7,[[6,6,3],[16,6,2.5],[12,-6,2]]);FXSC[key]=cv;}
+   c.save();c.globalAlpha=Math.ceil(u*3)/3*.5;c.drawImage(cv,0,0);c.restore();},
+  /* over the fruit: phase 2's silk in the top corners, then the front legs, neck and head */
+  front(c,g,s,t){const V=FXS.B_glut.build(s,g,t),dead=s.dnt!=null,u=Math.min(1,s.age/1.4);c.save();
+   if(s.p2t!=null){const sk=Math.min(1,Math.max(0,(s.p2t-.5)/.5))*(dead?Math.max(0,1-s.dnt/1.2):1);if(sk>0){const P=g.P,top=fxRim(g)+10,H=g.bot-top,Wd=g.R-g.L;c.globalAlpha=s.p*Math.ceil(sk*3)/3*.6;
+    for(const sd of[0,1]){const cx=sd?g.R:g.L,f=sd?-1:1;for(const[a,b]of[[.12,.16],[.22,.27],[.34,.38]]){const ax=cx,ay=top+H*a,bx=cx+f*Wd*b,by=top,kx=cx+f*Wd*b*.32,ky=top+H*a*.32;for(let v=0;v<=1;v+=P/(Wd*b+H*a)*1.4){const w=1-v,px=w*w*ax+2*w*v*kx+v*v*bx,py=w*w*ay+2*w*v*ky+v*v*by;fxR(c,px,py,P,((v*40)|0)%3?'w':'s');}}
+     for(let v=0;v<=1;v+=P/(Wd*.42)){fxR(c,cx+f*Wd*.42*v*.8,top+H*.4*v*.8,P,'c');}}}}
+   c.globalAlpha=s.p;fxBlobI(c,V.x0,V.rim,V.Q,fxFade(V.fm,u),s.cf||(s.cf={keep:1}));c.restore();},
+  ev(s,n,o,A,g){if(n!=='glut'||!s.l.p||s.dnt!=null)return;A.burst(o.x,o.y,['f','F','y'],10,{v:150,T:.5});if(o.gi){s.gl=0;s.bp=0;}else{s.lf=.9;FXS.B_glut.burp(A,o.x,o.y-(o.r||20)-4*g.P);}}},
  /* The Syrup (v1.87, a monster in the bottle, the user's ask): a big syrup bottle on the rim with a syrup creature living in it, glaring at the fruit in your hand through the glass, bubbles rising round it; a goo tendril curls out of the neck and flings a glob onto every Sticky fruit you are handed, and syrup oozes down the inside of the jar's walls. Phase 2: the glass cracks and leaks, the creature turns red-eyed and bares its teeth, a puddle spreads on the floor. Beaten: its eyes shut, the syrup drains away, the cap pops off and the bottle fades */
  B_sticky:{x(g){return fq(fxRX('B_sticky',.28,100,g),fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);const l=s.l;if(s.hp>0)s.hp-=dt;if(l.st&&!s.was&&s.dnt==null){s.hp=.5;const P=fxBP(g)*.9,x0=FXS.B_sticky.x(g)+(l.hx!=null&&l.hx<FXS.B_sticky.x(g)?-16:16)*P,y0=fxRim(g)-32*P,T1=.5;s.ct=0;s.tx=l.hx;A.add({k:'fn',x:x0,y:y0,vx:(l.hx-x0)/T1,vy:(l.hy-l.hr-y0-.5*900*T1*T1)/T1,g:900,T:T1,fa:1,d:(c,q,g)=>{const P=g.P;fxEl(c,fq(q.x,P),fq(q.y,P),P,2,2,(i,j,e)=>e?'k':i<0&&j<0?'y':'Y');},end:(A2,g)=>{s.ct=.01;A2.burst(l.hx,l.hy-l.hr,['Y','o','y'],8,{v:110,T:.4});}});}
@@ -2452,12 +2508,12 @@ const fxFC=l=>(typeof FRUIT!=='undefined'&&FRUIT[l]&&FRUIT[l][0])||FXP.r;
 /* an outlined cell blob from a set of cells ("i,j" -> colour) at grid P */
 const FXSIL={},FXRGB={}; /* fruit silhouettes (The Collector's bell jar); colours as [r,g,b] for fxBlobI */
 /* fxBlob drawn through one ImageData (v1.94): the cells and their dark outline go into a small canvas at one pixel a cell, then it is drawn scaled up once. Same look as fxBlob, a fraction of the canvas calls; cv = a holder object kept by the scene */
-function fxBlobI(c,x,y,P,cells,cv,nol){if(!cells.size)return;let i0=1e9,i1=-1e9,j0=1e9,j1=-1e9;const L=[];for(const[k2,col]of cells){const p=k2.indexOf(','),i=+k2.slice(0,p),j=+k2.slice(p+1);L.push(i,j,col);if(i<i0)i0=i;if(i>i1)i1=i;if(j<j0)j0=j;if(j>j1)j1=j;}i0--;j0--;i1++;j1++;const w=i1-i0+1,h=j1-j0+1;
+function fxBlobI(c,x,y,P,cells,cv,nol){if(!cells.size)return;if(cv.keep&&cv.m===cells&&cv.P===P&&cv.x0===x&&cv.y0===y){const q=cv.q,sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(cv.c,0,0,q[0],q[1],q[2],q[3],q[0]*P,q[1]*P);c.imageSmoothingEnabled=sm;return;} /* keep (v1.100): a holder that asks for it redraws the last image while it is handed the same map */let i0=1e9,i1=-1e9,j0=1e9,j1=-1e9;const L=[];for(const[k2,col]of cells){const p=k2.indexOf(','),i=+k2.slice(0,p),j=+k2.slice(p+1);L.push(i,j,col);if(i<i0)i0=i;if(i>i1)i1=i;if(j<j0)j0=j;if(j>j1)j1=j;}i0--;j0--;i1++;j1++;const w=i1-i0+1,h=j1-j0+1;
  if(!cv.c||cv.c.width<w||cv.c.height<h){cv.c=document.createElement('canvas');cv.c.width=w+8;cv.c.height=h+8;cv.x=cv.c.getContext('2d');}const W2=cv.c.width,H2=cv.c.height;if(!cv.d||cv.d.width!==W2||cv.d.height!==H2)cv.d=cv.x.createImageData(W2,H2);const d=cv.d.data;d.fill(0,0,W2*h*4);
  const rgb=col=>{let v=FXRGB[col];if(!v){const hx=FXP[col]||col;v=FXRGB[col]=[parseInt(hx.slice(1,3),16),parseInt(hx.slice(3,5),16),parseInt(hx.slice(5,7),16)];}return v;},K=rgb('k');
  if(!nol)for(let n=0;n<L.length;n+=3){const i=L[n]-i0,j=L[n+1]-j0;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const o=((j+b)*W2+i+a)*4;if(!d[o+3]){d[o]=K[0];d[o+1]=K[1];d[o+2]=K[2];d[o+3]=255;}}}
  for(let n=0;n<L.length;n+=3){const i=L[n]-i0,j=L[n+1]-j0,v=rgb(L[n+2]),o=(j*W2+i)*4;d[o]=v[0];d[o+1]=v[1];d[o+2]=v[2];d[o+3]=255;}
- cv.x.putImageData(cv.d,0,0,0,0,w,h);const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(cv.c,0,0,w,h,fq(x,P)+i0*P,fq(y,P)+j0*P,w*P,h*P);c.imageSmoothingEnabled=sm;}
+ cv.x.putImageData(cv.d,0,0,0,0,w,h);const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(cv.c,0,0,w,h,fq(x,P)+i0*P,fq(y,P)+j0*P,w*P,h*P);c.imageSmoothingEnabled=sm;cv.m=cells;cv.P=P;cv.x0=x;cv.y0=y;cv.q=[w,h,fq(x,P)+i0*P,fq(y,P)+j0*P];}
 function fxBlob(c,x,y,P,cells){for(const k2 of cells.keys()){const[i,j]=k2.split(',').map(Number);for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]])if(!cells.has((i+a)+','+(j+b)))fxR(c,x+(i+a)*P,y+(j+b)*P,P,'k');}for(const[k2,col]of cells){const[i,j]=k2.split(',').map(Number);fxR(c,x+i*P,y+j*P,P,col);}}
 const FXHT=[[-2,-2,'m'],[-1,-2,'m'],[1,-2,'m'],[2,-2,'m'],[-3,-1,'m'],[-2,-1,'p'],[-1,-1,'m'],[0,-1,'m'],[1,-1,'m'],[2,-1,'m'],[3,-1,'m'],[-3,0,'m'],[-2,0,'m'],[-1,0,'m'],[0,0,'m'],[1,0,'m'],[2,0,'m'],[3,0,'m'],[-2,1,'m'],[-1,1,'m'],[0,1,'m'],[1,1,'m'],[2,1,'R'],[-1,2,'m'],[0,2,'m'],[1,2,'R'],[0,3,'R']];
 const FXM={
