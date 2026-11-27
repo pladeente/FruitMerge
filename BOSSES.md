@@ -75,9 +75,10 @@ Each entry: the rule, what the scene shows, its arena, and where to look.
 
 ### The Fog
 - **Rule:** The Next box is hidden. **Phase 2:** Your own fruit is hidden too. First depth 1.
-- **Scene:** The Fog: a fog bank rolls over the Next box with two yellow eyes blinking inside it. Phase 2: it creeps down over the fruit you are holding and the eyes turn to watch it. Beaten: a gust blows it away
-- **Arena:** scenery `trees`, weather `fog`, darkness .05.
-- **Code:** `fx.js` `B_fog:{` (scene), `ARENA.B_fog` (arena); `engine.js` `B_fog:{p:` (live state: `done`); preview card `bfog`.
+- **Scene (v1.95, the user's pick of four):** a hooded wraith of mist behind the jar at .7 of its width (drawn in `bg`, only what is above the rim shows): a peaked pale cowl with smoke streaming off its tip, a black void face with two slanted glowing cyan eyes that follow your fruit and blink, a row of teeth below, a robe with cloth folds flaring down behind the jar, wisps off the shoulders; it floats, bobbing a cell. A long arm (in `top`, over the HUD) reaches up from its shoulder, a ragged sleeve then a bony forearm, and its claw clutches the Next box under the fog puffs that hide it (it reaches out after arriving). The other arm (in `front`) swings an iron lantern on a short chain, cold blue flame with a stepped glow. Phase 2: it rises 5 cells so its face stays above its cloak, the eyes turn red, the lantern burns orange and is raised high, and its cloak pours over the held fruit (`band`: the fog bank plus tattered streamers trailing from it; the engine also draws the held fruit as a grey ? dot). Beaten: a gust (wind streaks) hits it, the lantern smashes on the rim (glass, sparks, smoke, `s.ls`), and it is torn to rags: `shred` blows every cell right and thins it out, top first, with strips flying off; the eyes are the last to go.
+- **Jar:** ground mist in the lower half, chunky two-tone banks on the boss grid drifting behind the fruit (`back`, a cell-sized image redrawn 8 times a second).
+- **Arena:** scenery `trees`, weather `fog`, darkness .14, a darker grey-blue sky (v1.95).
+- **Code:** `fx.js` `B_fog:{` (`pose`, `shred`, `tick`, `bg` hood and robe, `back` mist, `front` lantern arm, `band` and `puffs`, `top` the reaching arm and the fog over Next; layers drawn through `fxBlobI`, mist with no outline), `ARENA.B_fog` (arena); `engine.js` `B_fog:{p:` (live state: `done`, plus `hx`, `hy`, `hr`); preview card `bfog`.
 
 ### The Hourglass
 - **Rule:** 6 fewer drops. **Phase 2:** 2 more drops are taken away. First depth 2.
