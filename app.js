@@ -26,7 +26,7 @@ const pwBtns=[...pw.querySelectorAll('[data-p]')],tb=$('#tb');
 for(const b of pwBtns){b.insertAdjacentHTML('beforeend','<i class="cd"></i><span class="cdn"></span>');b.title+=`, ${COOL[b.dataset.p]}s cooldown`;}
 const G={state:'menu',g:null,W:300,H:480,cssW:300,raf:0,last:0,mode:store.get('mode','classic'),tab:null,scope:LB?'world':'local',pending:null,pwKey:'',lastCoins:0};
 if(!SC[G.mode])G.mode='classic';
-function fit(){const hd=$('#hd').getBoundingClientRect().height,ph=pw.hidden?0:pw.getBoundingClientRect().height+8,app=$('#app'),cs=getComputedStyle(app);
+function fit(){const hd=$('#hd').getBoundingClientRect().height,ph=pw.hidden?0:pw.getBoundingClientRect().height+8-(pw.classList.contains('rg')?14:0),app=$('#app'),cs=getComputedStyle(app);
  const aw=app.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=app.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-hd-8-ph;
  let w,h;if(G.g&&G.state!=='menu'){const a=G.W/G.H;w=Math.max(220,Math.floor(Math.min(480,aw,ah*a)));h=Math.floor(w/a);}
  else{w=Math.max(220,Math.floor(Math.min(480,aw,ah*ASP)));h=Math.max(Math.floor(w/ASP),Math.min(Math.floor(ah),Math.floor(w/ASP_TALL)));}
@@ -113,6 +113,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.99',d:'27 Nov 2026',t:'Edge to edge',i:['In Rogue the game now runs the full width of the screen with no border, the jar sits right on the drops bar, and the HUD panels and empty charm slots are easier to see.']},
  {v:'1.98',d:'27 Nov 2026',t:'A slimmer HUD',i:['The Rogue HUD is now one slim strip across the top, so the bosses and their scenes have the whole sky.','The boss\'s name sits over a wide health-style bar with your score inside it. Mult and Next share a small panel on the right, the curse badges sit in the strip, and status lines like Tax in 3 are one small line underneath. The Last merge line is gone.']},
  {v:'1.97',d:'27 Nov 2026',t:'The bandit',i:['The Gambler is now a living slot machine looming behind the jar. Its eyes are two reels that spin with every fruit you are dealt and stop on glaring eyeballs, and its fanged grin is a reel window whose middle reel shows your Next fruit.','It yanks its own lever with a white-gloved hand, grips the rim with a crane claw and drools coins into a felt-lined jar. Phase 2: red lights, steam and rattling. Beat it and it tilts and jackpots itself to pieces.']},
  {v:'1.96',d:'27 Nov 2026',t:'The tax office',i:['The Taxman has backup: a huge ATO tower now looms behind the jar on his jars, lightning cracking round its spire, with glowing window eyes and a greedy grin of glass-door teeth.','Every coin the Taxman takes hops from his sack into its mouth. It gulps, cackles (HA HA HA) and licks its lips. An Australian flag flies off its roof. In phase 2 its eyes turn red with dollar signs. Beat him and its lights go out and the grin turns to a frown.']},
