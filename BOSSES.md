@@ -83,7 +83,7 @@ Each entry: the rule, what the scene shows, its arena, and where to look.
 
 ### The Hourglass
 - **Rule:** 6 fewer drops. **Phase 2:** 2 more drops are taken away. First depth 2.
-- **Scene:** The Hourglass: an hourglass stands on the rim, its top bulb holding the drops you have left and the sand running down. Phase 2: it flips over and two drops fall through at once. Beaten: the glass cracks and shatters and the sand spills into the jar
+- **Scene:** The Hourglass: an hourglass stands on the rim, its top bulb holding the drops you have left and the sand running down. Phase 2: it flips over and two drops fall through at once. Beaten: the glass cracks and shatters and the sand spills into the jar The held fruit is drawn again after `fx.top` while The Fog is up (v1.99), so the wraith's arm passes behind it.
 - **Arena:** scenery `dunes`, weather `sand`, darkness 0, sun.
 - **Code:** `fx.js` `B_hour:{` (scene), `ARENA.B_hour` (arena); `engine.js` `B_hour:{p:` (live state: `done`, `f`); preview card `bhour`.
 
@@ -140,7 +140,7 @@ Each entry: the rule, what the scene shows, its arena, and where to look.
 
 ### The Syrup
 - **Rule:** Every 3rd fruit is Sticky and stays where it lands. **Phase 2:** Every 2nd fruit is Sticky. First depth 1.
-- **Scene:** The Syrup (v1.87, a monster in the bottle, the user's ask): a big syrup bottle on the rim with a syrup creature living in it, glaring at the fruit in your hand through the glass, bubbles rising round it; a goo tendril curls out of the neck and flings a glob onto every Sticky fruit you are handed, and syrup oozes down the inside of the jar's walls. Phase 2: the glass cracks and leaks, the creature turns red-eyed and bares its teeth, a puddle spreads on the floor. Beaten: its eyes shut, the syrup drains away, the cap pops off and the bottle fades
+- **Scene:** The Syrup (v1.87, a monster in the bottle, the user's ask): a big syrup bottle on the rim with a syrup creature living in it, glaring at the fruit in your hand through the glass, bubbles rising round it; a goo tendril curls out of the neck and flings a glob onto every Sticky fruit you are handed, and syrup oozes down the inside of the jar's walls. Phase 2: the glass cracks and leaks, the creature turns red-eyed and bares its teeth, a puddle spreads on the floor. Beaten: its eyes shut, the syrup drains away, the cap pops off and the bottle fades Since v1.99 the character is drawn at 90% of the boss grid (cell rounded to whole device pixels in `front`), so its head clears the HUD.
 - **Arena:** scenery `trees`, weather `drip`, darkness .08, clouds 4 at 18 px/s.
 - **Code:** `fx.js` `B_sticky:{` (scene), `ARENA.B_sticky` (arena); `engine.js` `B_sticky:{p:` (live state: `done`, `st`, `nx`, `sk`, `x`, `y`, `r`); preview card `bsticky`.
 
