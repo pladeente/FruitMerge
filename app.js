@@ -117,6 +117,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
+ {v:'1.107.2',d:'29 Nov 2026',t:'Simmer',i:['Slow Cook\'s animation shows again: steam rises off the fruit you hold the longer you wait.']},
  {v:'1.107.1',d:'29 Nov 2026',t:'Clear floor',i:['The drops bar sits below the jar again instead of covering its floor.']},
  {v:'1.107',d:'28 Nov 2026',t:'Step back',i:['Rogue jars are framed a little further out, so the whole jar fits with room around it. Boss jars still pull back further to show the boss.','The tool buttons are shorter, and the drops bar now sits right on the floor of the jar.','Beating a boss now plays its whole defeat before the Jar cleared screen comes up.']},
  {v:'1.106',d:'28 Nov 2026',t:'Tar',i:['The Slick is now a tar leviathan that rises out of an oil spill behind the jar, one burning eye on your fruit, drooling tar into a pool in the jar.','The Slick is tougher: every 5 drops it spits tar on a fruit near the top. A Tarred fruit can\'t merge for 3 drops, and the tar runs off a drop at a time. In phase 2 it spits every 3 drops and grabs the rim with two tar arms, wrenching the jar on each shake.']},
