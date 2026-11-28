@@ -771,7 +771,7 @@ const ARENA={
  B_lid:{sky:['#bfa47e','#e8d6b4'],gr:'#a88c66',sc:'hall',sk:['#a88c66','#7a6244'],o:{shelf:1},wx:'steam',wn:.8,jar:['#e8d6b4',.06]},
  B_audit:{sky:['#8d98a6','#cfd6dd'],gr:'#7d8896',sc:'city',sk:['#a3adb9','#6a7584'],o:{win:['#e3f3ff','#a8cfe8'],tall:1},cl:{n:4,v:-20,c:['#dde3e9','#b9c3cd'],y:[.05,.35],s:1.2},wx:'paper',wn:.6,jar:['#c0c8d0',.06]},
  B_vise:{sky:['#24140e','#5a2818'],gr:'#1a0e08',sc:'city',sk:['#3e2014','#1e0e08'],o:{win:['#fb8500'],chim:1,fac:1},wx:'sparks',wn:1,dk:.22,jar:['#5a2a1a',.1],vg:.55},
- B_vamp:{sky:['#22060f','#561226'],gr:'#1a040a',sc:'swamp',sk:['#3e0c1a','#22060e'],st:1,cl:{n:5,v:-40,c:['#3a0c18','#22060e'],y:[0,.4],s:1.3},wx:'drip',wn:.6,wc:['#a3202c','#e63946'],dk:.28,jar:['#5a1428',.15],vg:.65},
+ B_vamp:{sky:['#22060f','#561226'],gr:'#1a040a',sc:'swamp',sk:['#3e0c1a','#22060e'],st:1,sun:['#e8505a',.66,.4,13],cl:{n:5,v:-40,c:['#3a0c18','#22060e'],y:[0,.4],s:1.3},wx:'drip',wn:.6,wc:['#a3202c','#e63946'],dk:.28,jar:['#5a1428',.15],vg:.65},
  B_reaper:{sky:['#0e0a18','#291c3a'],gr:'#0c0814',sc:'grave',sk:['#2c2040','#120c1e'],st:1,cl:{n:6,v:-50,c:['#22182e','#120c1c'],y:[0,.45],s:1.4},wx:'ash',wn:1,wc:['#5f5a6b','#8f8a99'],dk:.36,jar:['#2a1c3a',.2],vg:.85},
  B_prune:{sky:['#58784a','#a6c68e'],gr:'#4a6a3c',sc:'hedge',sk:['#4f7a44','#2f5428'],cl:{n:4,v:-20,c:['#d8e8c8','#b0c8a0'],y:[.05,.35],s:1.2},wx:'leaves',wn:.8,wc:['#7bc950','#38862a','#b6e36a'],jar:['#7aa060',.06]},
  B_queen:{sky:['#401636','#c45c78'],gr:'#2a0e24',sc:'castle',sk:['#6a2a52','#3a1430'],o:{flag:'#ffd43b'},st:1,cl:{n:5,v:-26,c:['#7a3058','#4a1838'],y:[.05,.4],s:1.3},wx:'petals',wn:.9,wc:['#e63946','#ff4d8d','#ffd43b'],sun:['#ffd6a5',.2,.6,8],dk:.1,jar:['#c9607a',.08],vg:.5}};
@@ -2274,18 +2274,54 @@ Object.assign(FXS,{
     fxEl(c,wx,wy,P,4,4,(i,j,e)=>{const d=i*i+j*j;if(e)return'k';if(d>=9)return p2?'R':'D';if(d<=1)return d===0?(p2?'o':'y'):'k';return rot?(i===j||i===-j?'d':0):(i===0||j===0?'d':0);});}
    if(s.ar>0||s.sp>0){const out=s.sp>0,u=out?1-s.sp/.6:1-s.ar/.5,yy=fq(g.top+(g.bot-g.top)*.4,Q);for(const sd of[-1,1])for(let k=0;k<2;k++){const ox=(out?-1:1)*(2+u*5+k*3)*Q,x0=fq(sd<0?g.L+3*Q+ox:g.R-4*Q-ox,Q),dd=(out?-sd:sd);for(let q=0;q<3;q++){fxR(c,x0-dd*q*Q,yy-q*Q,Q,out?'t':'r');fxR(c,x0-dd*q*Q,yy+q*Q,Q,out?'t':'r');}}}c.restore();},
   ev(s,n,o,A,g){if(n!=='viseo'||!s.l.p)return;s.sp=.6;for(const sd of[-1,1]){const x=sd<0?g.L:g.R,y=g.top+(g.bot-g.top)*.4;A.burst(x,y,['y','o','w'],10,{v:200,vx:-sd*60,T:.4});}}},
- /* The Leech: a fat leech clings to the rim, swelling as it drinks; drops of your score drip out of the score panel and into its mouth. Phase 2: it swells bigger and drinks twice as fast. Beaten: it pops */
- B_vamp:{x(g){return fq(fxRX('B_vamp',.62,60,g),fxBP(g));},
-  tick(s,g,dt,A){bossT(s,dt);const p2=s.p2t!=null;s.nt=(s.nt==null?.8:s.nt)-dt;if(s.l.on&&s.dnt==null&&s.nt<=0&&!RMO){s.nt=p2?.45:.9;const P=fxBP(g),x1=FXS.B_vamp.x(g)-8*P,y1=fxRim(g)-5*P,x0=g.W/2+(Math.random()-.5)*40,y0=44*g.K,T1=1.1;s.sl=(s.sl||0)+1;A.add({k:'fn',x:x0,y:y0,T:T1,fa:.9,d:(c,q,g)=>{const u=q.t/T1,e=u*u,xx=x0+(x1-x0)*u,yy=y0+(y1-y0)*e+Math.sin(u*Math.PI)*-30,Q=g.P;fxR(c,xx,yy-Q,Q,'k',2,1);fxR(c,xx-Q,yy,Q,'k',1,2);fxR(c,xx+2*Q,yy,Q,'k',1,2);fxR(c,xx,yy,Q,'r',2,2);fxR(c,xx,yy,Q,'q');fxR(c,xx,yy+2*Q,Q,'k',2,1);},end:()=>{s.gl=.25;}});}if(s.gl>0)s.gl-=dt;
-   if(s.dnt!=null&&!s.pop){s.pop=1;const P=fxBP(g),x=FXS.B_vamp.x(g),y=fxRim(g)-5*P;A.burst(x,y,['r','R','q','V'],22,{v:260,vy:-80,T:.8});}},
-  front(c,g,s,t){const P=fxBP(g),x=FXS.B_vamp.x(g),rim=fxRim(g),dead=s.dnt!=null,p2=s.p2t!=null;c.save();c.globalAlpha=s.p;
-   if(dead){if(s.dnt<1.2){const R=fxPt(c,x,rim,P);R(-6,-1,'k',12,1);R(-5,-2,'V',10,1);R(-6,-2,'k');R(5,-2,'k');}c.restore();return;}
-   const sw=Math.min(1,s.age/10)+(p2?.6:0),gl=s.gl>0?1:0,inch=fst(t,p2?4:2)%2,y0=rim+fxDrop(s,P);
-   const st=inch?1:0,rx=8+(st?1:-1)+Math.round(sw),ry=Math.min(5,Math.round(3+sw*1.4+(st?0:1)+gl)),cy=fq(y0-(ry+1)*P,P);
-   fxEl(c,x,cy,P,rx,ry,(i,j,e)=>e?'k':j<=-ry+1?(i%3===0?'V':'P'):j>=ry-1?'x':(((i+40)%3===0)?'x':(i<-rx+3&&j<0?'P':'V')));
-   const H=fxPt(c,x-(rx+1)*P,cy+(ry-2)*P,P);H(-1,-1,'k',2,4);H(-2,0,'k',1,2);H(-1,0,'R',1,2);H(0,0,'r',1,2);
-   const E=fxPt(c,x-(rx-3)*P,cy-(ry-1)*P,P);E(-1,-1,'k',3,3);E(0,0,'w');E(-1,0,'w');E(-1,0,p2?'r':'k');if(p2&&fst(t,3)%2)E(0,-3,'r');
-   if(gl){const D=fxPt(c,x-(rx+2)*P,cy+(ry-2)*P,P);D(-1,0,'q');}c.restore();}},
+ /* The Leech (v1.103): a giant blood leech rises from behind the jar under a blood moon and latches its sucker onto the score panel, right under the end of your score bar; gulps run down its body and it bloats with every point it drains. With nothing to drink it hovers, sucker opening and closing. Phase 2: it rips free and rears with a lamprey mouth of tooth rings, then latches back on redder, drinking twice as fast. Baby leeches inch up the glass. Beaten: it tears free, bursts, and the shrivelled husk sinks behind the jar */
+ B_vamp:{
+  PAL:[['#1c1a10','#2f2d1a','#4a4826','#77733c'],['#5a0c18','#8e1426','#c8283e','#ff6b7a'],['#2a1410','#4a2018','#723224','#a8503a'],['#2e2420','#4a3c32','#6a5848','#8e7a64']], /* shade, shadow, mid, light: normal (olive, like a real leech), a gulp, phase 2 (engorged), shrivelled */
+  disc(r,v,P){const key='lch|'+r+'|'+v+'|'+P;if(FXSC[key])return FXSC[key];const C=v<0?null:FXS.B_vamp.PAL[v],n=2*r+5,cv=document.createElement('canvas');cv.width=cv.height=n*P;const x=cv.getContext('2d'); /* v -1: the outline disc, drawn under every fill so only the silhouette is outlined */
+   for(let j=-r-2;j<=r+2;j++)for(let i=-r-2;i<=r+2;i++){const d=i*i+j*j;let col;if(!C){if(d>(r+1.2)*(r+1.2))continue;col=FXP.k;}else{if(d>(r+.3)*(r+.3))continue;const l=-(i+j)/(r*1.42),hx=(i+r*.42)**2+(j+r*.42)**2;col=hx<(r*.22)**2+.6?C[3]:l>.3?C[2]:l>-.45?C[1]:C[0];}x.fillStyle=col;x.fillRect((i+r+2)*P,(j+r+2)*P,P,P);}
+   return FXSC[key]={c:cv,o:(r+2)*P};},
+  tick(s,g,dt,A){bossT(s,dt);const H=FXS.B_vamp,P=fxBP(g),l=s.l,dead=s.dnt!=null,p2=s.p2t!=null,t=s.age;
+   if(s.age<=dt*1.01||s.lift==null){s.lift=14;s.mo=1;s.pu=[];s.nt=.5;s.pop=0;s.hx=null;s.ro=0;}
+   if(p2&&s.p2t<dt*1.5&&!dead){s.ro=1.1;if(!RMO){A.jsA=2.5*g.K;A.jsT=.5;}}if(s.ro>0)s.ro-=dt;
+   const on=!!l.on&&!dead&&s.ro<=0&&s.age>1.1,tl=dead?(s.dnt<.4?16:20):s.ro>0?12:on?0:7+Math.sin(t*2.1)*2,tm=dead?(s.dnt<.5?1:0):s.ro>0?1:on?0:.55+.45*Math.sin(t*3.2);
+   s.lift+=(tl-s.lift)*Math.min(1,dt*(on?9:5));s.mo+=(tm-s.mo)*Math.min(1,dt*6);
+   if(on&&!RMO){s.nt-=dt;if(s.nt<=0){s.nt=p2?.38:.75;s.pu.push(0);}}for(let i=0;i<s.pu.length;i++)s.pu[i]+=dt*.55;s.pu=s.pu.filter(u=>u<1.05);
+   /* the body: a curve from behind the jar's right side up to the panel, sampled into discs from the head down */
+   const sw=g.sw||((x,y)=>[x,y]),hb=l.hb||[54,26,g.W-158,20],[tx,hy]=sw(hb[0]+hb[2]*Math.max(.05,Math.min(.95,l.pg||0)),54);s.hx=s.hx==null?tx:s.hx+(tx-s.hx)*Math.min(1,dt*2.5);
+   const rim=fxRim(g),u0=Math.min(1,s.age/1.3),ar=(1-u0)*(1-u0)*80*P,dk=dead&&s.dnt>.7?(s.dnt-.7)**2*260*g.K:0,wr=dead&&s.dnt<.7?3:s.ro>0?2:1,X0=g.L+(g.R-g.L)*.86,hx=s.hx,ty=hy+s.lift*P+ar+dk;
+   const B=[[X0,rim+16*P+ar+dk],[X0+8*P+Math.sin(t*.9)*3*P*wr,rim-(rim-hy)*.5+ar+dk],[hx+(X0-hx)*.1+Math.sin(t*1.3+1)*2*P*wr,ty+26*P],[hx,ty+6*P]],bz=q=>{const a=1-q;return[0,1].map(k=>a*a*a*B[0][k]+3*a*a*q*B[1][k]+3*a*q*q*B[2][k]+q*q*q*B[3][k]);};
+   const sm=[];let L=0,pv=null;for(let i=0;i<=80;i++){const p=bz(1-i/80);if(pv)L+=Math.hypot(p[0]-pv[0],p[1]-pv[1]);sm.push([p[0],p[1],L]);pv=p;}
+   const k=Math.max(0,Math.min(1,(l.dr||0)/.3)),R=6+Math.round(6*k)+(p2?1:0),shr=dead&&s.dnt>.4?Math.max(.45,1-(s.dnt-.4)/.3*.55):1,pts=[],st=1.7*P;let j=0;
+   for(let d=0;d<=L;d+=st){while(j<sm.length-2&&sm[j+1][2]<d)j++;const a=sm[j],b=sm[j+1],f=(d-a[2])/Math.max(1e-6,b[2]-a[2]),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f,u=d/L,dx=b[0]-a[0],dy=b[1]-a[1],dl=Math.hypot(dx,dy)||1;
+    let r=u<.1?4+(R*.65-4)*u/.1:u<.28?R*.65+R*.35*(u-.1)/.18:R+2*k*Math.exp(-(((u-.6)/.18)**2)),gp=0;for(const q of s.pu){const e=Math.exp(-(((u-q)/.05)**2));r+=2*e;if(e>.4)gp=1;}
+    pts.push({x,y,u,nx:-dy/dl,ny:dx/dl,r:Math.max(2,Math.round(r*shr)),v:dead&&s.dnt>.4?3:gp?1:p2?2:0});}
+   s.G={pts,hx,ty,hy,tx:sw(hb[0]+hb[2]*Math.max(.05,Math.min(.95,l.pg||0)),46),k};
+   if(dead&&!s.pop&&s.dnt>=.4){s.pop=1;const b=pts[Math.floor(pts.length*.6)]||pts[0];if(b){A.burst(b.x,b.y,['r','R','q','m'],44,{v:320,vy:-140,T:1.1});A.burst(b.x,b.y,['R','z'],16,{v:160,vy:-60,T:1.4});}if(!RMO){A.jsA=3*g.K;A.jsT=.4;}}},
+  /* the body behind the jar (the jar hides its base), striped and segmented by the discs' outlines */
+  body(c,g,s,n){const G=s.G,P=fxBP(g),H=FXS.B_vamp;if(!G)return;const pts=G.pts,m=Math.min(pts.length,n);for(const pass of[0,1])for(let i=m-1;i>=0;i--){const p=pts[i],d=H.disc(p.r,pass?p.v:-1,P);c.drawImage(d.c,fq(p.x,P)-d.o,fq(p.y,P)-d.o);}
+   for(let i=3;i<m;i+=3){const p=pts[i];if(p.u<.1)continue;const C=H.PAL[p.v];for(let q=-p.r+1;q<=p.r-2;q++)if(q>-p.r*.55||p.v===3)fxR(c,p.x+p.nx*q*P,p.y+p.ny*q*P,P,C[0]);} /* the rings of its body */
+   for(let i=2;i<m;i+=2){const p=pts[i];if(p.u<.12||p.v===3)continue;for(const sd of[.5,-.62]){const x=p.x+p.nx*p.r*sd*P,y=p.y+p.ny*p.r*sd*P;fxR(c,x,y,P,sd>0?(p.v===1?'y':'o'):'#8e2e47');}}},
+  bg(c,g,s,t){if(!s.G)return;const dead=s.dnt!=null,a=dead?(s.dnt<1.4?1:Math.max(0,Math.ceil((2.2-s.dnt)/.8*3)/3)):1;if(a<=0)return;c.save();c.globalAlpha=s.p*a;FXS.B_vamp.body(c,g,s,999);c.restore();},
+  /* over the HUD: the neck, the head with its five pairs of eyespots, and the sucker on the panel (or a lamprey mouth when it lets go) */
+  top(c,g,s,t){const G=s.G;if(!G||!G.pts.length)return;const H=FXS.B_vamp,P=fxBP(g),dead=s.dnt!=null,p2=s.p2t!=null,a=dead?(s.dnt<1.4?1:Math.max(0,Math.ceil((2.2-s.dnt)/.8*3)/3)):1;if(a<=0)return;c.save();c.globalAlpha=s.p*a;
+   H.body(c,g,s,9);const h=G.pts[0],shr=dead&&s.dnt>.4;
+   for(let e=0;e<5;e++){const p=G.pts[e+1];if(!p)break;for(const sd of[-.45,.45]){const x=p.x+p.nx*p.r*sd*P,y=p.y+p.ny*p.r*sd*P;fxR(c,x,y,P,shr?'#2a1a3a':(p2||s.ro>0)&&fst(t,8)%2?'#ffffff':'#ff3b3b');}}
+   const rs=5+Math.round(G.k*2),tx=fq(G.hx,P),ty=fq(G.ty,P);
+   if(s.mo<.3&&!shr){/* latched: the flared lip pressed flat on the panel, and your score sucked down into it */
+    for(let j=0;j<=3;j++){const w=rs-(j>1?j-1:0);for(let i=-w-1;i<=w+1;i++){const e=Math.abs(i)>w||j===3;fxR(c,tx+i*P,ty+j*P,P,e?'k':j===0?'#ff8fab':i<-w/2?'#e0566a':'#c2405a');}}
+    if(s.l.on){const[sx,sy]=G.tx,x=fq(sx,P),y0=fq(sy,P);for(let y=y0;y<ty;y+=P){fxR(c,x,y,P,((y-y0)/P+fst(t,12))%3?'#e63946':'#ffd6dc');}}}
+   else{/* a lamprey mouth: lip, two rings of hooked teeth, a dark throat with a red glow */
+    const r=Math.round((rs+5)*(shr?.55:.55+.45*Math.min(1,s.mo))),cy=ty+Math.round(r*.6)*P,rings=[r-2.6,r-5.2,r-7.8].filter(v=>v>2.6);
+    for(let j=-r-1;j<=r+1;j++)for(let i=-r-1;i<=r+1;i++){const d=Math.sqrt(i*i+j*j);if(d>r+.5)continue;const an=Math.atan2(j,i);let col;
+     if(d>r-.6)col='k';else if(d>r-1.7)col=shr?'#6a5848':(i+j<0?'#ff8fab':'#c2405a');else if(d<2.4)col=d<1.2?(fst(t,6)%2?'#a3202c':'#6d1424'):'#1a0408';
+     else{col=shr?'#4a3c32':d>r*.6?'#8e2e47':'#5a1428';if(!shr)rings.forEach((rv,ri)=>{const nt=Math.max(6,Math.round(rv*1.6)),ph=((an/(Math.PI*2))*nt+ri*.5+100)%1;if(Math.abs(d-rv)<1.05&&Math.abs(ph-.5)<.3)col=d>rv?'#ffffff':'#c9c3d4';});}
+     fxR(c,tx+i*P,cy+j*P,P,col);}}
+   c.restore();},
+  /* baby leeches inching up the glass */
+  back(c,g,s,t){if(s.dnt!=null&&s.dnt>1)return;const P=g.P,n=s.p2t!=null?6:3,w=g.R-g.L,Hh=g.bot-g.top;c.save();c.globalAlpha=s.p*Math.min(1,s.age/1.5)*(s.dnt!=null?1-s.dnt:1);
+   for(let i=0;i<n;i++){const cyc=RMO?0:((t*1.2+fhs(i,2))%1),stp=Math.floor(t*1.2+fhs(i,2)),yc=g.bot-((stp*4*P+fhs(i,1)*Hh)%(Hh-30*g.K))-6*P,Lc=11-Math.round(5*Math.sin(cyc*Math.PI)),x=fq(g.L+3*P+fhs(i,4)*(w-8*P),P);
+    for(let q=0;q<=Lc;q++){const ox=Math.round(Math.sin(Math.PI*q/Lc)*(11-Lc)*.45),y=fq(yc-(11-Lc)*P*(1-cyc)-q*P,P);fxR(c,x+(ox-1)*P,y,P,'k');fxR(c,x+(ox+2)*P,y,P,'k');fxR(c,x+ox*P,y,P,q===Lc?'#c2405a':q%3===1?'#e07020':'#4a4826');fxR(c,x+(ox+1)*P,y,P,q===Lc?'#c2405a':'#2f2d1a');if(q===Lc){fxR(c,x+ox*P,y-P,P,'k',2,1);}if(q===0)fxR(c,x+ox*P,y+P,P,'k',2,1);}}
+   c.restore();}},
  /* The Reaper (final boss, v1.81.1 bigger and darker, the user's ask): a towering hooded reaper hangs in the sky over the right of the jar, a black void under its hood with two burning eyes, a bony hand reaching for your fruit, a huge scythe over its head and smoke dripping from its tattered hem. It fades in out of the dark. Every merge that wins a drop back, its eyes flare, it swings the scythe in a wide arc and a soul floats down out of the jar to your drops. Phase 2: the eyes burn red, the blade's edge glows, lost souls circle it and the jar's edges darken. Beaten: the eyes go out, the robe crumples onto the rim and the scythe falls */
  B_reaper:{x(g){return fq(fxRX('B_reaper',.74,118,g),fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);if(s.sw>0)s.sw-=dt;if(s.fl>0)s.fl-=dt;const P=fxBP(g),x=FXS.B_reaper.x(g),y0=fxRim(g)-5*P;
