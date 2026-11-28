@@ -768,7 +768,7 @@ const ARENA={
  B_dark:{sky:['#04050a','#0e1020'],gr:'#04050a',dk:.35,wx:'moths',wn:.5,vg:.9},
  B_collect:{sky:['#342a40','#665670'],gr:'#2a2034',sc:'hall',sk:['#4e4060','#2e2440'],o:{col:1,frame:1},wx:'dust',wn:.6,wc:['#ffd43b','#fff2a8'],dk:.1,jar:['#6a5a76',.06],vg:.5},
  B_slick:{sky:['#202b3a','#465668'],gr:'#1a2430',sc:'city',sk:['#34445a','#1c2636'],o:{win:['#4cc9f0','#fff2a8']},cl:{n:8,v:-60,c:['#2c3a4c','#1c2636'],y:[0,.4],s:1.3},wx:'rain',wn:1.5,dk:.2,jar:['#5a7a9a',.12],vg:.5},
- B_lid:{sky:['#bfa47e','#e8d6b4'],gr:'#a88c66',sc:'hall',sk:['#a88c66','#7a6244'],o:{shelf:1},wx:'steam',wn:.8,jar:['#e8d6b4',.06]},
+ B_lid:{sky:['#24222f','#625c72'],gr:'#1e1c28',sc:'mounts',sk:['#433f52','#2a2836'],cl:{n:6,v:-30,c:['#3a3648','#262432'],y:[0,.45],s:1.3},wx:'dust',wn:.7,wc:['#8f8a99','#b8a88a'],dk:.16,jar:['#5a5668',.08],vg:.5},
  B_audit:{sky:['#8d98a6','#cfd6dd'],gr:'#7d8896',sc:'city',sk:['#a3adb9','#6a7584'],o:{win:['#e3f3ff','#a8cfe8'],tall:1},cl:{n:4,v:-20,c:['#dde3e9','#b9c3cd'],y:[.05,.35],s:1.2},wx:'paper',wn:.6,jar:['#c0c8d0',.06]},
  B_vise:{sky:['#24140e','#5a2818'],gr:'#1a0e08',sc:'city',sk:['#3e2014','#1e0e08'],o:{win:['#fb8500'],chim:1,fac:1},wx:'sparks',wn:1,dk:.22,jar:['#5a2a1a',.1],vg:.55},
  B_vamp:{sky:['#22060f','#561226'],gr:'#1a040a',sc:'swamp',sk:['#3e0c1a','#22060e'],st:1,sun:['#e8505a',.66,.4,13],cl:{n:5,v:-40,c:['#3a0c18','#22060e'],y:[0,.4],s:1.3},wx:'drip',wn:.6,wc:['#a3202c','#e63946'],dk:.28,jar:['#5a1428',.15],vg:.65},
@@ -2247,15 +2247,88 @@ Object.assign(FXS,{
    if(flat)fxS(c,'slS',x,y0-6*P,P,{ay:.5,r:1});else fxS(c,'slS',x+(s.kn>.55&&fst(s.kn,12)%2?P:0),y0,P);
    if(dead&&s.dnt<1.4){const u=s.dnt/1.2,mx=fq(g.L+(g.R-g.L)*Math.min(1,u),Q),my=g.bot-2*Q;for(let k=0;k<14;k++)fxR(c,mx-k*Q*.6,my-k*Q,Q,'n');for(let i=-3;i<=3;i++)fxR(c,mx+i*Q,my,Q,i%2?'c':'s',1,2);c.globalAlpha=s.p*.6;for(let xx=g.L;xx<mx-4*Q;xx+=Q)if(fhs(Math.round(xx/Q),2)>.6)fxR(c,xx,g.bot-Q,Q,'s');}c.restore();},
   ev(s,n){if(n==='slick'&&s.dnt==null)s.kn=.9;}},
- /* The Lid: a grumpy screw-top lid hangs over the jar, its rim turning, arrows pressing the line down. Phase 2: it screws lower with a hiss of steam. Beaten: it pops off and spins away */
- B_lid:{tick(s,g,dt){bossT(s,dt);},front(c,g,s,t){const P=fxBP(g),cx=fq((g.L+g.R)/2,P),hw=Math.round((g.R-g.L)*.3/P),u=Math.min(1,s.age/.9),p2=s.p2t!=null,dead=s.dnt!=null,dn=dead?s.dnt:0;let by=fxRim(g)-(p2?100:116)*g.K-Math.round(Math.pow(1-u,2)*60)*P;if(dead)by-=dn*dn*520-dn*80;
-   const sx=p2&&!dead&&fst(t,16)%3===0?P:0,sp=dead?Math.max(.15,Math.abs(Math.cos(dn*9))):1,w=Math.max(2,Math.round(hw*sp));c.save();c.globalAlpha=s.p*(dead?Math.max(0,1-Math.max(0,dn-.7)/.4):1);if(dead&&dn>1.1){c.restore();return;}
-   const R=fxPt(c,cx+sx,fq(by,P),P),rot=fst(t,dead?18:p2?7:2);R(-w+1,-8,'k',2*w-1,1);R(-w,-7,'k',2*w+1,1);R(-w+1,-7,'h',2*w-1,1);R(-w,-6,'k');R(w,-6,'k');R(-w+1,-6,'y',2*w-1,1);
-   for(let i=-w;i<=w;i++)for(let j=-5;j<=-1;j++){const e=i===-w||i===w;R(i,j,e?'k':j===-1?'Y':(((i+rot)%3+3)%3===0?'o':((i+rot)%3+3)%3===1?'Y':'y'));}R(-w,0,'k',2*w+1,1);
-   if(sp>.6){const ang=p2?1:0;R(-7,-5,'y',15,4);R(-7,-5,'Y',1,4);R(7,-5,'Y',1,4);R(-4,-5,'w',3,2);R(3,-5,'w',3,2);R(-3+ang,-4,'k');R(4-ang,-4,'k');R(-5,-6+(p2?1:0),'k',3,1);R(3,-6+(p2?1:0),'k',3,1);R(-2,-2,'k',5,1);if(p2){R(-2,-3,'k');R(2,-3,'k');}}
-   if(!dead){const ph=fst(t,6)%3;c.globalAlpha=s.p*Math.min(1,s.age/1.2);for(const ax of[-.6,0,.6]){const ox=Math.round(ax*w);for(let k=0;k<2;k++){const yy=3+k*4+ph;R(ox-2,yy,'r');R(ox+2,yy,'r');R(ox-1,yy+1,'r');R(ox+1,yy+1,'r');R(ox,yy+2,'R');}}
-    if(p2&&!RMO){for(const sd of[-1,1]){const q=(t*1.4+(sd>0?.5:0))%1;c.globalAlpha=s.p*(1-q);fxEl(c,fq(cx+sd*(w+3+q*6)*P,P),fq(by-(4+q*8)*P,P),P,1+Math.round(q*2),1+Math.round(q),(i,j,e)=>e?'s':'w');}}}
-   if(dead&&dn<.5){c.globalAlpha=1;T(c,'POP!',cx,by+12*P,22,'#e63946','center',FD);}c.restore();}},
+ /* The Lid (v1.104, the user's pick of four): a colossal stone hand comes down out of the sky along its arm and lays its palm flat on the jar's rim, pressing the jar down (the engine's lidK drops the line as it slams). Seen side on: the thumb in front, four fingers stacked behind it, an eye in the side of the hand that follows your fruit, glowing runes on a bracer; its fingers drum on the rim. Phase 2: it slides aside, a second hand slams down from the other side, the glass cracks and their eyes and runes turn red. Beaten: cracks of light run through the stone, the hands burst into rubble and the arms crumble away up into the sky */
+ B_lid:{
+  C:['#25272f','#474b5a','#6c7186','#959cb1','#c3c8d7'],M:['#2f4a26','#557f37','#8fbf55'],D:[.47,-.883],O:[40,-11],
+  sc(g){const P=fxBP(g);return Math.max(.8,Math.round((g.R-g.L)/P*.5/46*20)/20);},
+  /* the stone at a point of the hand (x,y in hand units: it points left, the palm on the rim at y 0, the wrist to the right): [part, u across it (-1 top or upper side), v along it, z depth (smaller is nearer), finger] or null */
+  geo(x,y,lf,arm){const H=FXS.B_lid,[dx0,dy0]=H.D,nx=-dy0,ny=dx0,[ox,oy]=H.O;if(y>.5)return null;
+   if(!arm){{const ax=33,ay=-4.6,bx=17,by=-2.4,dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy,q=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),r=4.6-2.2*q,px=ax+dx*q,py=ay+dy*q,d=Math.hypot(x-px,y-py);if(d<r)return['t',(y-py)/r,q,0,4];}
+    const F=[[1,22,6],[-2.5,23.2,6],[0,24.4,5.6],[4.5,25.6,5]];for(let n=0;n<4;n++){const[tx,kx,th]=F[n],o=-3*n,ar=2.2,pv=o-th/2-ar;let X=x,Y=y;if(lf===n){const a=.34,ddx=x-kx,ddy=y-pv;X=kx+ddx*Math.cos(a)+ddy*Math.sin(a);Y=pv-ddx*Math.sin(a)+ddy*Math.cos(a);}
+     if(X>=tx&&X<=kx+1){const v=Math.min(1,(X-tx)/(kx-tx)),t2=th*(.8+.2*v),py=o-t2/2-ar*v,u=(Y-py)/(t2/2);let ok=Math.abs(u)<=1;if(ok&&X<tx+t2/2){const k=(tx+t2/2-X)/(t2/2);ok=u*u+k*k<=1;}if(ok)return['f',u,v,1+n,n];}
+     const ex=(X-(kx-1.4))/3,ey=(Y-(o-th-ar))/1.7;if(Y<=o-th-ar+.2&&ex*ex+ey*ey<1)return['k',-1+ey*.3,ex,1+n,n];}
+    if(x>=20&&x<=44){const yb=x<38?0:-(x-38)*.6,yt=x<26?-10.2-(x-20)*.13:-11-(x-26)*.4;if(y>=yt&&y<=yb)return['b',(y-(yt+yb)/2)/((yb-yt)/2),(x-20)/21,1.5,0];}}
+   const t=(x-ox)*dx0+(y-oy)*dy0,s=(x-ox)*nx+(y-oy)*ny,hw=6.8+Math.min(1.8,Math.max(0,t)*.05);if(arm?t<12:t<-4||t>14)return null;
+   if(t>=7&&t<=12.5&&Math.abs(s)<=hw+1)return['r',s/(hw+1),(t-7)/5.5,4.9,0];if(Math.abs(s)<=hw&&(t>-1||(t+1)*(t+1)+s*s<hw*hw))return['w',s/hw,t,5,0];return null;},
+  /* render cells to a canvas, shaded from a height map lit from the top left, a dark contact line where a nearer part covers a farther one */
+  rend(g,m,cells0,box){const P=fxBP(g),cv=document.createElement('canvas'),[i0,i1,j0,j1]=box,w=i1-i0+5,h=j1-j0+5;cv.width=w*P;cv.height=h*P;fxBlobI(cv.getContext('2d'),(2-i0)*P,(2-j0)*P,P,cells0,{});return{c:cv,ox:(2-i0)*P,oy:(2-j0)*P};},
+  shade(T,hv,C,M,arm){const cells=new Map(),gh=(a,b)=>{const q=hv.get(a+','+b);return q==null?-6:q;},gz=(a,b)=>{const q=T.get(a+','+b);return q?q[3]:99;};
+   for(const[kk,[pt,u,v,z,n,an]]of T){const p=kk.indexOf(','),i=+kk.slice(0,p),j=+kk.slice(p+1),a=(gh(i+1,j+1)-gh(i-1,j-1))*.5+(gh(i+1,j)-gh(i-1,j))*.25+(gh(i,j+1)-gh(i,j-1))*.25+an;let lv=a>1.3?4:a>.45?3:a>-.35?2:a>-1.15?1:0,col=null;
+    if(z>=2.5&&z<5&&lv>1)lv--;if(gz(i,j+1)<z-.4||pt!=='w'&&pt!=='r'&&(gz(i+1,j)<z-.4||gz(i-1,j)<z-.4))lv=0;
+    const nl=pt==='f'?v>.1&&v<.27&&u<-.4:pt==='t'?v>.78&&u<-.35:0;if(nl&&lv){const e=pt==='f'?v>.24||u>-.55&&v>.21:v<.81;col=e?C[0]:u<-.75?'#e2e5ec':'#b3b9c9';}
+    else{const q=fhs(Math.floor((i+256)/4)*1.37+Math.floor((j+256)/3)*7.13,11);if(q>.87&&lv<3&&lv>0)lv++;else if(q<.08&&lv>1)lv--;if(fhs(i*53.7+j*97.3,7)<.025&&lv>1&&lv<4)lv--;}
+    if(pt==='r'&&lv&&(u<-.55&&fhs(Math.floor((j+256)/3)*2.3+Math.floor((i+256)/3),2)>.4))col=M[lv>=3?2:lv>=2?1:0];if(pt==='w'&&arm&&lv&&fhs(Math.floor((i+256)/5)*3.3+Math.floor((j+256)/4)*1.7,8)>.95)col=M[lv>=3?2:1];
+    cells.set(kk,col||C[lv]);}return cells;},
+  /* a pose: one hand (m 1 = mirrored: it comes from the left and points right; lf = the finger lifted, -1 none), cached */
+  pose(g,m,lf){const H=FXS.B_lid,P=fxBP(g),S=H.sc(g),Sy=S*1.5,key='lidp|'+P+'|'+S+'|'+m+'|'+lf;if(FXSC[key])return FXSC[key];const T=new Map(),hv=new Map(),cy=(u,r)=>r*Math.sqrt(Math.max(0,1-u*u)),I=Math.ceil(54*S),J=Math.ceil(30*Sy);let b=[1e9,-1e9,1e9,-1e9];
+   for(let j=-J;j<=0;j++)for(let i=-I;i<=I;i++){const x=(m?-i:i)/S,y=j/Sy,o=H.geo(x,y,lf,0);if(!o)continue;const[pt,u,v,z,n]=o;let h,an=-u*.25;
+    if(pt==='f'){h=cy(u,3*S)-z*1.1*S;const kx=[22,23.2,24.4,25.6][n],tx=[1,-2.5,0,4.5][n];for(const vj of[.3,.62]){const d=(v-vj)*(kx-tx)*S;if(u<-.2)h+=.8*Math.exp(-((d-1)**2)/1.2);if(z<3&&Math.abs(u)<.5&&Math.abs(d)<.5)h-=2;}}
+    else if(pt==='k')h=cy(.3,3*S)-z*1.1*S+1.2*S*Math.sqrt(Math.max(0,1-v*v));else if(pt==='t'){h=cy(u,3.2*S)+1.6*S;const d=(v-.55)*19.5*S;if(Math.abs(u)<.55&&Math.abs(d)<.5)h-=2;}
+    else if(pt==='b')h=cy(u,5*S)-.6*S;else{h=cy(u,8*S)-3*S+(pt==='r'?1.2*S+(v<.2?1:0)-(v>.82?1:0):0);an=-(u*((m?-1:1)*-H.D[1]+H.D[0]))*.18;}
+    T.set(i+','+j,[pt,u,v,z,n,an]);hv.set(i+','+j,h+(6-z)*2.5*S);b=[Math.min(b[0],i),Math.max(b[1],i),Math.min(b[2],j),Math.max(b[3],j)];}
+   const cells=H.shade(T,hv,H.C,H.M,0);
+   /* old cracks in the stone, a lit edge on their left */
+   for(const L of[[[36,-13],[34,-10],[35,-8]],[[41,-14],[40,-11]]])for(let k=0;k<L.length-1;k++){const[a,c2]=[L[k],L[k+1]],n=Math.ceil(Math.hypot(c2[0]-a[0],c2[1]-a[1])*S*1.5);for(let q=0;q<=n;q++){const i=Math.round((a[0]+(c2[0]-a[0])*q/n)*S*(m?-1:1)),j=Math.round((a[1]+(c2[1]-a[1])*q/n)*Sy),kk=i+','+j;if(cells.has(kk)){cells.set(kk,H.C[0]);const l2=(i-1)+','+j;if(cells.has(l2)&&cells.get(l2)!==H.C[0])cells.set(l2,H.C[3]);}}}
+   return FXSC[key]=H.rend(g,m,cells,b);},
+  /* the forearm past the bracer, up into the sky behind the HUD */
+  arm(g,m){const H=FXS.B_lid,P=fxBP(g),S=H.sc(g),Sy=S*1.5,key='lida|'+P+'|'+S+'|'+m;if(FXSC[key])return FXSC[key];const T=new Map(),hv=new Map(),[ox,oy]=H.O,[dx,dy]=H.D,L=200/S;let b=[1e9,-1e9,1e9,-1e9];
+   const xa=Math.floor((ox-12)*S),xb=Math.ceil((ox+dx*L+12)*S),ya=Math.floor((oy+dy*L-12)*Sy),yb=Math.ceil((oy+12)*Sy);
+   for(let j=ya;j<=yb;j++)for(let ii=xa;ii<=xb;ii++){const i=m?-ii:ii,x=ii/S,y=j/Sy,t=(x-ox)*dx+(y-oy)*dy;if(t<11.5||t>L)continue;const s=(x-ox)*-dy+(y-oy)*dx,hw=6.8+Math.min(1.8,t*.05);if(Math.abs(s)>hw)continue;const u=s/hw,bd=Math.floor(t*S)%26;
+    T.set(i+','+j,['w',u,t,5,0,-u*.3+(bd===0?-2.5:bd===1?1.2:0)]);hv.set(i+','+j,8*S*Math.sqrt(Math.max(0,1-u*u)));b=[Math.min(b[0],i),Math.max(b[1],i),Math.min(b[2],j),Math.max(b[3],j)];}
+   return FXSC[key]=H.rend(g,m,H.shade(T,hv,H.C,H.M,1),b);},
+  /* where the hands are: [{x, y (the rim), m, lf}] */
+  lay(g,s){const H=FXS.B_lid,P=fxBP(g),S=H.sc(g),cx=(g.L+g.R)/2,rim=fxRim(g)+2*P,p2=s.p2t!=null,a=Math.min(1,s.age),fall=q=>(1-q*q)*95*P,both=p2&&s.p2f,[dx,dy]=H.D;
+   const h0={x:cx-21*S*P,y:rim,m:0,lf:s.lf0==null?-1:s.lf0,D:fall(a)};if(p2&&!both){const q=Math.min(1,s.p2t/.4),e=q*q*(3-2*q);h0.x+=22.5*S*P*e;h0.D+=Math.sin(Math.PI*q)*12*P;}else if(both)h0.x=cx+1.5*S*P;
+   const o=[h0];if(p2){const q=both?a:Math.min(1,s.p2t/.5);o.push({x:cx-1.5*S*P,y:rim,m:1,lf:s.lf1==null?-1:s.lf1,D:fall(q)});}for(const h of o){h.x=fq(h.x+h.D*dx*(h.m?-1:1),P);h.y=fq(h.y+h.D*dy,P);}return o;},
+  /* a point of the hand (hand units) on the screen */
+  at(g,h,x,y){const P=fxBP(g),S=FXS.B_lid.sc(g);return[h.x+Math.round(x*S)*(h.m?-1:1)*P,h.y+Math.round(y*S*1.5)*P];},
+  tick(s,g,dt,A){bossT(s,dt);const H=FXS.B_lid,l=s.l,P=fxBP(g),S=H.sc(g),dead=s.dnt!=null,p2=s.p2t!=null;
+   if(s.age<=dt*1.01||s.k0==null){s.k0=0;s.dr=[2.4,3.6];s.dt=[9,9];s.bl=2;s.bk=0;s.pop=0;s.gr=2.6;s.cr=0;s.p2f=null;s.ac=0;s.lf0=s.lf1=-1;s.ex0=s.ex1=0;s.pq=0;}
+   if(p2&&s.p2f==null)s.p2f=s.age<.3?1:0;const hs=H.lay(g,s),k=l.k||0;if(!dead&&s.age>.05&&(s.pq||0)<11){const q=s.pq||0;if(q<10)H.pose(g,q>4?1:0,q%5-1);else H.arm(g,1);s.pq=q+1;} /* builds the poses one a frame, so a finger's first drum never stalls */
+   /* the slams: the jar shakes, dust bursts out from under the hand */
+   const tips=h=>[[1,0],[-2.5,-2],[0,-4],[4.5,-6],[15,0]].map(([x,y])=>H.at(g,h,x,y)),slam=(hh,big)=>{if(!RMO){A.jsA=(big?4:3)*g.K;A.jsT=.45;}for(const h of hh){for(let q=0;q<9;q++){const[x,y]=H.at(g,h,q*4.5,0);A.burst(x,y,[H.C[3],H.C[2],'#d8cbb0'],3,{v:120,vy:-80,T:.6,g:200,dr:2,s:1.4});}}};
+   if(k>.005&&s.k0<=.005)slam(hs.slice(0,1).concat(p2&&s.p2f?hs.slice(1):[]),0);if(k>.145&&s.k0<=.145){slam(hs,1);s.cr=1;}s.k0=k;
+   /* drumming: each hand taps its fingers pinky to index now and then, dust at each tap */
+   for(let n=0;n<2;n++){const h=hs[n];if(!h){s['lf'+n]=-1;continue;}s.dr[n]-=dt;if(s.dr[n]<=0&&!dead&&k>.005&&(n===0||s.p2t>1)){s.dr[n]=(p2?2.6:4.2)+Math.random()*1.4;s.dt[n]=0;}s.dt[n]+=dt;const d=s.dt[n],f=d<.6?3-Math.floor(d/.15):-1,on=f>=0&&d%.15<.09?f:-1;
+    if(s['lf'+n]>=0&&on<0&&!RMO){const[x,y]=tips(h)[s['lf'+n]];A.burst(x,h.y,[H.C[3],'#d8cbb0'],3,{v:60,vy:-50,T:.4,g:150,s:1.2});}s['lf'+n]=dead?-1:on;
+    const[ex]=H.at(g,h,30,-10.6),tg=l.hx==null?0:Math.max(-1,Math.min(1,(l.hx-ex)/(50*P)));s['ex'+n]+=(tg-s['ex'+n])*Math.min(1,dt*6);}
+   s.bl-=dt;if(s.bl<=0){s.bk=.2;s.bl=2.4+Math.random()*2.2;}s.bk-=dt;
+   /* phase 2: a grinding squeeze every few seconds */
+   if(p2&&!dead&&k>.145){s.gr-=dt;if(s.gr<=0){s.gr=2.6+Math.random();if(!RMO){A.jsA=1.4*g.K;A.jsT=.3;}for(const h of hs)for(let q=0;q<4;q++){const[x,y]=H.at(g,h,q*10,0);A.burst(x,y,[H.C[2],'#d8cbb0'],2,{v:50,vy:-40,T:.4,g:150,s:1.2});}}}
+   /* beaten: at .5 s the hands burst into rubble, then the arms crumble away up along themselves */
+   if(dead){if(!s.pop&&s.dnt>=.5){s.pop=1;if(!RMO){A.jsA=4*g.K;A.jsT=.5;}const rim=fxRim(g);for(const h of hs){for(let q=0;q<30;q++){const[x,y]=H.at(g,h,Math.random()*44,-Math.random()*13),r=1+Math.floor(Math.random()*3);A.add({x,y,vx:(Math.random()-.5)*240,vy:-100-Math.random()*240,g:900,T:1.3+Math.random()*.5,fa:.75,fy:x>g.L&&x<g.R?rim:null,bo:.35,r,col:H.C[2+Math.floor(Math.random()*2)],d:H.rub});}const[bx,by]=H.at(g,h,22,-7);A.burst(bx,by,['#d8cbb0','#b8a88a','#8f8a99'],26,{v:200,vy:-60,w:40*S*P,T:1.1,g:30,dr:2.5,s:1.8});}}
+    if(s.pop){s.ac=Math.min(1,(s.dnt-.5)/.9);if(!RMO)for(const h of hs){const tc=12+s.ac*190/S,[x,y]=H.at(g,h,H.O[0]+H.D[0]*tc,H.O[1]+H.D[1]*tc);for(let q=0;q<3;q++)A.add({x:x+(Math.random()-.5)*16*S*P,y:y+(Math.random()-.5)*6*P,vx:(Math.random()-.5)*60,vy:-20,g:700,T:.9,fa:.7,r:1+Math.floor(Math.random()*2),col:H.C[1+Math.floor(Math.random()*3)],d:H.rub});}}}},
+  /* a rubble chunk: a little outlined stone */
+  rub(c,q,g,t,x){const C=FXS.B_lid.C,P=fxBP(g),r=q.r,X=fq(x,P),Y=fq(q.y,P);if(r>1){c.fillStyle=FXP.k;c.fillRect(X+P,Y+r*P,r*P,P);c.fillRect(X+r*P,Y+P,P,(r-1)*P);}c.fillStyle=q.col;c.fillRect(X,Y,r*P,r*P);c.fillStyle=C[4];c.fillRect(X,Y,P,P);if(r>2){c.fillStyle=C[1];c.fillRect(X+P,Y+(r-1)*P,(r-1)*P,P);}},
+  back(c,g,s,t){const H=FXS.B_lid,P=fxBP(g),S=H.sc(g),dead=s.dnt!=null,p2=s.p2t!=null,hs=H.lay(g,s),dn=dead?s.dnt:0,red=p2&&s.p2t>.5,gc=red?['#e63946','#ff6b7a','#ffd6d6']:['#fb8500','#ffd43b','#fff2a8'],sm=c.imageSmoothingEnabled;c.save();c.globalAlpha=s.p;c.imageSmoothingEnabled=false;
+   /* glass cracks under the hands, once phase 2 slams */
+   if(s.cr){c.fillStyle='#ffffffb0';const rim=fxRim(g)+3*P;for(const[x0,sd]of[[g.L+2*P,1],[g.R-3*P,-1],[(g.L+g.R)/2,1]])for(let b=0;b<3;b++){let x=x0,y=rim;for(let q=0;q<7+b*2;q++){c.fillRect(fq(x,P),fq(y,P),P,P);x+=sd*(fhs(b*7+q,x0)>.4?P:0)+(b-1)*P*.6;y+=P;}}}
+   for(const h of hs){const A2=H.arm(g,h.m),mx=h.m?-1:1;
+    if(s.pop&&dn>.5){if(s.ac<1){const tc=12+s.ac*190/S,[bx,by]=H.at(g,h,H.O[0]+H.D[0]*tc,H.O[1]+H.D[1]*tc),d=[H.D[0]*mx,H.D[1]],n=[-d[1],d[0]];c.save();c.beginPath();c.moveTo(bx+n[0]*900,by+n[1]*900);c.lineTo(bx-n[0]*900,by-n[1]*900);c.lineTo(bx-n[0]*900+d[0]*3000,by-n[1]*900+d[1]*3000);c.lineTo(bx+n[0]*900+d[0]*3000,by+n[1]*900+d[1]*3000);c.closePath();c.clip();c.drawImage(A2.c,h.x-A2.ox,h.y-A2.oy);c.restore();}continue;}
+    const Pz=H.pose(g,h.m,h.lf);c.drawImage(A2.c,h.x-A2.ox,h.y-A2.oy);c.drawImage(Pz.c,h.x-Pz.ox,h.y-Pz.oy);
+    /* runes on the bracer, pulsing */
+    const pu=RMO?1:.55+.45*Math.sin(t*(red?6:2.6)+h.m*1.3);c.globalAlpha=s.p*(.45+.55*Math.round(pu*3)/3);for(let n=-2;n<=2;n++){const tt=9.75,ss=n*3,[rx,ry]=H.at(g,h,H.O[0]+H.D[0]*tt-H.D[1]*ss,H.O[1]+H.D[1]*tt+H.D[0]*ss);const gl=[[0,-1],[0,0],[0,1],[n&1?-1:1,-1],[n&1?1:-1,1]];c.fillStyle=gc[0];for(const[a,b]of gl)c.fillRect(rx+a*P,ry+b*P,P,P);c.fillStyle=gc[1];c.fillRect(rx,ry,P,P);}c.globalAlpha=s.p;
+    H.eye(c,g,s,h,t,P,S,gc,red,dn,s['ex'+hs.indexOf(h)]||0);
+    /* beaten: cracks of light run out from the eye */
+    if(dead){const u=Math.min(1,dn/.45),[cx,cy]=H.at(g,h,30,-10.6);for(let b=0;b<8;b++){let x=cx,y=cy;const an=b*Math.PI/4+fhs(b,3)*.6,n=Math.round((8+fhs(b,5)*18)*S*u);for(let q=0;q<n;q++){x+=Math.cos(an+Math.sin(q*.9+b)*.6)*P;y+=Math.sin(an+Math.sin(q*.9+b)*.6)*P*.55;c.fillStyle=q%3?gc[1]:gc[2];c.fillRect(fq(x,P),fq(y,P),P,P);}}}}
+   c.imageSmoothingEnabled=sm;c.restore();},
+  /* the eye in the side of the hand: a stone socket, a burning iris with a slit, stone lids that blink */
+  eye(c,g,s,h,t,P,S,gc,red,dn,eo){const H=FXS.B_lid,[ex,ey]=H.at(g,h,30,-10.6),w=Math.round(4.6*S),hh=Math.max(2,Math.round(2.6*S)),C=H.C,dead=s.dnt!=null,op=Math.min(1,Math.max(0,(s.age-1.1)/.4))*(dead?Math.max(0,1-dn/.3):1)*(s.bk>0?0:1)*(h.m&&s.p2t!=null&&!s.p2f?Math.min(1,Math.max(0,(s.p2t-.6)/.3)):1);
+   const R=(i,j,col)=>{c.fillStyle=col;c.fillRect(ex+i*P,ey+j*P,P,P);},lid=Math.round((hh+1)*(1-op));
+   for(let j=-hh-1;j<=hh+1;j++)for(let i=-w-1;i<=w+1;i++){const d=(i/(w+.5))**2+(j/(hh+.5))**2;if(d<=1.3&&d>1)R(i,j,C[0]);}
+   for(let j=-hh;j<=hh;j++)for(let i=-w;i<=w;i++){const d=(i/(w+.5))**2+(j/(hh+.5))**2;if(d>1)continue;if(j<-hh+lid||j>hh-lid){R(i,j,j<0?C[3]:C[1]);if(j===-hh+lid-1||j===hh-lid+1)R(i,j,C[0]);continue;}
+    const pxo=Math.round(eo*(w-2)),ir=hh,di=(i-pxo)**2+(j*1.15)**2;R(i,j,di<=ir*ir+.5?(i===pxo&&Math.abs(j)<hh?FXP.k:di<=(ir-1)*(ir-1)+.5?gc[1]:gc[0]):red?'#f2c0b8':'#ece0b0');if(i===pxo-1&&j===-1&&op>.6)R(i,j,gc[2]);}
+   if(op>.5&&red&&!RMO){c.globalAlpha=.35*(.6+.4*Math.sin(t*7));for(let j=-hh-3;j<=hh+3;j++)for(let i=-w-3;i<=w+3;i++){const d=(i/(w+2.5))**2+(j/(hh+2.5))**2;if(d>1.15&&d<=1.7&&FBY[((i+64)&3)*4+((j+64)&3)]<8)R(i,j,gc[0]);}c.globalAlpha=1;}}},
  /* The Auditor: a stern auditor stands on the rim with her clipboard, tapping her pen. Every merge whose Mult she cuts gets a red AUDITED stamp with the Mult struck through. Phase 2: she turns red in the face and her glasses flash. Beaten: she shuts the clipboard and walks off */
  B_audit:{x(g){return fq(fxRX('B_audit',.82,52,g),fxBP(g));},
   tick(s,g,dt){bossT(s,dt);if(s.st>0)s.st-=dt;if(s.dnt!=null)s.wo=(s.wo||0)+dt*60*g.K;},
