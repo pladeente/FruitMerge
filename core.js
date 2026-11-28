@@ -87,5 +87,5 @@ function cloudPush(now){if(!AU||!AU.name||!LB)return Promise.resolve();clearTime
  if(now)return go();cpT=setTimeout(go,3000);return Promise.resolve();}
 const ASP=.68; /* jar width / height */
 const ASP_TALL=.52; /* tall phones get extra headroom above the line, the play area itself never changes */
-const BSKY=.7; /* boss sky (v1.101): on a boss or mini boss jar the view zooms out until the sky (the canvas top to the jar line) is this many jar widths tall. Raise it if a reworked boss needs more room (engine zTgt) */
+const BSKY=.7,BSKYB={hour:1}; /* BSKYB (v1.102): a bigger sky for a boss that needs it (The Hourglass: an hourglass half the jar wide) */  /* boss sky (v1.101): on a boss or mini boss jar the view zooms out until the sky (the canvas top to the jar line) is this many jar widths tall. Raise it if a reworked boss needs more room (engine zTgt) */
 

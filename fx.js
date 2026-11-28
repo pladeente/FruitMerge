@@ -752,7 +752,7 @@ const ARENA={
  B_melon:{sky:['#ff9e6b','#ffe4bf'],gr:'#e9b47c',sc:'castle',sk:['#e8a87a','#b97a4c'],o:{flag:'#e63946'},cl:{n:5,v:-16,c:['#ffd0a8','#f0a87a'],y:[.05,.4],s:1.3},wx:'petals',wn:.8,wc:['#ff4d8d','#ff8fab','#ffd43b'],sun:['#fff2a8',.78,.55,9],jar:['#ffd8a8',.06]},
  B_clock:{sky:['#2f2b52','#7d6494'],gr:'#2f2b48',sc:'gears',sk:['#4d4673','#332e52'],wx:'dust',wn:.7,wc:['#ffd43b','#fff2a8'],st:1,dk:.12,jar:['#4d4673',.08]},
  B_fog:{sky:['#5f6b73','#a7b2b6'],gr:'#59636a',sc:'trees',sk:['#6f7a80','#4c555b'],o:{k:'dead'},wx:'fog',wn:1,dk:.14,jar:['#c9d2d4',.16]},
- B_hour:{sky:['#f0a24c','#fde2ae'],gr:'#e6b267',sc:'dunes',sk:['#e2a45a','#c3863d'],wx:'sand',wn:1.2,wc:['#f7d08a','#e6b267'],sun:['#fff6c8',.25,.45,10],jar:['#f5d29a',.1]},
+ B_hour:{sky:['#f0a24c','#fde2ae'],gr:'#e6b267',sc:'dunes',sk:['#e2a45a','#c3863d'],sun:['#fff6c8',.2,.3,10],jar:['#f5d29a',.1],stay:1},
  B_wilt:{sky:['#b8926a','#e8cfab'],gr:'#9a7a58',sc:'trees',sk:['#a3866a','#735a42'],o:{k:'dead'},cl:{n:4,v:-20,c:['#d6bc98','#b89c78'],y:[.05,.35],s:1.2},wx:'leaves',wn:1,wc:['#a9713a','#c48a52','#6e4420'],dk:.06,jar:['#d9c09a',.1]},
  B_lock:{sky:['#33363f','#5a5d68'],gr:'#2e3038',sc:'hall',sk:['#4a4d58','#2c2e36'],o:{bars:1},wx:'dust',wn:.5,wc:['#8f8a99','#c9c3d4'],dk:.2,jar:['#4a4d58',.12],vg:.5},
  B_gamble:{sky:['#22093a','#55185a'],gr:'#1c0a2a',sc:'city',sk:['#3a1450','#1e0a2e'],o:{win:['#ff4d8d','#35c2b4','#ffd43b','#4cc9f0'],neon:1},st:1,wx:'coins',wn:.7,dk:.12,jar:['#55185a',.08],vg:.4},
@@ -771,7 +771,7 @@ const ARENA={
  B_lid:{sky:['#bfa47e','#e8d6b4'],gr:'#a88c66',sc:'hall',sk:['#a88c66','#7a6244'],o:{shelf:1},wx:'steam',wn:.8,jar:['#e8d6b4',.06]},
  B_audit:{sky:['#8d98a6','#cfd6dd'],gr:'#7d8896',sc:'city',sk:['#a3adb9','#6a7584'],o:{win:['#e3f3ff','#a8cfe8'],tall:1},cl:{n:4,v:-20,c:['#dde3e9','#b9c3cd'],y:[.05,.35],s:1.2},wx:'paper',wn:.6,jar:['#c0c8d0',.06]},
  B_vise:{sky:['#24140e','#5a2818'],gr:'#1a0e08',sc:'city',sk:['#3e2014','#1e0e08'],o:{win:['#fb8500'],chim:1,fac:1},wx:'sparks',wn:1,dk:.22,jar:['#5a2a1a',.1],vg:.55},
- B_vamp:{sky:['#22060f','#561226'],gr:'#1a040a',sc:'swamp',sk:['#3e0c1a','#22060e'],st:1,cl:{n:5,v:-40,c:['#3a0c18','#22060e'],y:[0,.4],s:1.3},wx:'drip',wn:.6,wc:['#a3202c','#e63946'],dk:.28,jar:['#5a1428',.15],vg:.65},
+ B_vamp:{sky:['#22060f','#561226'],gr:'#1a040a',sc:'swamp',sk:['#3e0c1a','#22060e'],st:1,sun:['#e8505a',.66,.4,13],cl:{n:5,v:-40,c:['#3a0c18','#22060e'],y:[0,.4],s:1.3},wx:'drip',wn:.6,wc:['#a3202c','#e63946'],dk:.28,jar:['#5a1428',.15],vg:.65},
  B_reaper:{sky:['#0e0a18','#291c3a'],gr:'#0c0814',sc:'grave',sk:['#2c2040','#120c1e'],st:1,cl:{n:6,v:-50,c:['#22182e','#120c1c'],y:[0,.45],s:1.4},wx:'ash',wn:1,wc:['#5f5a6b','#8f8a99'],dk:.36,jar:['#2a1c3a',.2],vg:.85},
  B_prune:{sky:['#58784a','#a6c68e'],gr:'#4a6a3c',sc:'hedge',sk:['#4f7a44','#2f5428'],cl:{n:4,v:-20,c:['#d8e8c8','#b0c8a0'],y:[.05,.35],s:1.2},wx:'leaves',wn:.8,wc:['#7bc950','#38862a','#b6e36a'],jar:['#7aa060',.06]},
  B_queen:{sky:['#401636','#c45c78'],gr:'#2a0e24',sc:'castle',sk:['#6a2a52','#3a1430'],o:{flag:'#ffd43b'},st:1,cl:{n:5,v:-26,c:['#7a3058','#4a1838'],y:[.05,.4],s:1.3},wx:'petals',wn:.9,wc:['#e63946','#ff4d8d','#ffd43b'],sun:['#ffd6a5',.2,.6,8],dk:.1,jar:['#c9607a',.08],vg:.5}};
@@ -853,7 +853,7 @@ function fxWx(c,g,a,t,p2,clip){const k=a.wx;if(!k)return;const W=g.W,H=g.H,P=g.P
   else if(k==='moths'){if(i>8)break;const cx=g.W*.5,cy=fxRim(g)-80*g.K,a2=t*(1+i*.2)+i;R(cx+Math.cos(a2)*(20+i*6),cy+Math.sin(a2*1.3)*(12+i*3),'#c9c3d4',fst(t*8+i,8)%2?2:1,1);}
   else if(k==='fog'){if(i>5)break;const fy=y0+sh*(.25+i*.13),fx=((t*(14+i*5)+i*170)%(sw+300))-150+x0,fw=110+i*20;for(let yy=-3;yy<=3;yy++)for(let xx=0;xx<fw;xx+=P){const e=Math.abs(yy)/3.5+Math.abs(xx-fw/2)/(fw/2)*.6;if(FBY[((Math.round(xx/P))&3)*4+((yy+8)&3)]/16>.75-e)continue;R(fx+xx,fy+yy*P,'#e6eaea');}}}}
 /* the arena behind the jar */
-function fxArena(c,g,A,id,s,t){const a=ARENA[id],u=fxArU(s);if(!a||u<=0)return;const p2=s.p2t!=null,hz=fq(fxRim(g)+6,fxBP(g));c.save();c.globalAlpha=Math.ceil(u*3)/3;
+function fxArena(c,g,A,id,s,t){const a=ARENA[id],u=a&&a.stay&&s.dnt!=null?Math.min(1,s.age/1.6)*s.p:fxArU(s); /* stay (v1.102): the place stays when the boss is beaten (the Hourglass's dunes) */if(!a||u<=0)return;const p2=s.p2t!=null,hz=fq(fxRim(g)+6,fxBP(g));c.save();c.globalAlpha=Math.ceil(u*3)/3;
  const N=9;for(let k=0;k<N;k++){c.fillStyle=fxHx(a.sky[0],a.sky[1],k/(N-1));const y=k?Math.floor(hz*k/N):-400;c.fillRect(-g.W,y,3*g.W,Math.ceil(hz/N)+1+(k?0:400));}c.fillStyle=a.gr||a.sky[1];c.fillRect(-g.W,hz,3*g.W,g.H-hz+20); /* v1.101.1: sky and ground run a jar width past each side, for the boss zoom */
  if(a.st){const Q=g.P;for(let i=0;i<50;i++){const x=fhs(i,11)*g.W*1.5-g.W*.25,y=fhs(i,12)*hz*.75;if(fst(t*.8+fhs(i,13)*5,3)%3===0)continue;c.fillStyle=i%7?'#e3f3ff':'#fff2a8';c.fillRect(fq(x,Q),fq(y,Q),Q,Q);}}
  if(a.sun){const[sc,sx,sy,r]=a.sun,Q=fxBP(g),cx=fq(g.W*sx,Q),cy=fq(hz*sy,Q);for(let j=-r-2;j<=r+2;j++)for(let i=-r-2;i<=r+2;i++){const d=i*i+j*j;if(d<=r*r){c.fillStyle=sc;c.fillRect(cx+i*Q,cy+j*Q,Q,Q);}else if(d<=(r+2)*(r+2)&&FBY[((i+40)&3)*4+((j+40)&3)]<6){c.fillStyle=sc;c.globalAlpha*=.5;c.fillRect(cx+i*Q,cy+j*Q,Q,Q);c.globalAlpha/=.5;}}}
@@ -1444,20 +1444,94 @@ Object.assign(FXS,{
     const o=new Map();for(const[k,v]of F.shred(m,dn))o.set(k,pl[v]||v);const om=new Map();for(const[k,v]of F.shred(mi,dn))om.set(k,pl[v]||v);c.save();c.globalAlpha=s.p*Math.min(1,(s.age-.5)/.6);fxBlobI(c,x0,rim,Q,o,s.cvt=s.cvt||{},P0.nol);c.globalAlpha*=.6;fxBlobI(c,x0,rim,Q,om,s.cvu=s.cvu||{},1);c.restore();}
    if(dead&&s.dnt<1.2){c.save();c.globalAlpha=.85;for(let k=0;k<7;k++){const y=24+k*30,x=((s.dnt*700+k*90)%(W+120))-60;fxR(c,x,y,P,'d',8,1);fxR(c,x+2*P,y+P,P,'s',5,1);}c.restore();}}},
  /* The Hourglass: an hourglass stands on the rim, its top bulb holding the drops you have left and the sand running down. Phase 2: it flips over and two drops fall through at once. Beaten: the glass cracks and shatters and the sand spills into the jar */
- B_hour:{x(g){return fq(fxRX('B_hour',.42,58,g),fxBP(g));},HW:[4,4,4,3,3,2,2,1,1],
-  tick(s,g,dt,A){bossT(s,dt);if(s.p2t!=null&&s.p2t<dt*1.5){A.add({k:'fn',x:FXS.B_hour.x(g)+5*fxBP(g),y:fxRim(g)-24*fxBP(g),vy:-30,T:1.1,dl:.6,fa:.5,d:(c,q,g)=>T(c,'-2',q.x,q.y,20,'#e63946','center',FD)});}
-   if(s.dnt!=null&&s.dnt>.55&&!s.sh){s.sh=1;const P=fxBP(g),x0=FXS.B_hour.x(g),y0=fxRim(g)-11*P;for(let k=0;k<14;k++){const a=Math.random()*Math.PI*2,v=80+Math.random()*160;A.add({k:'sq',x:x0+(Math.random()-.5)*30,y:y0+(Math.random()-.5)*40,vx:Math.cos(a)*v,vy:Math.sin(a)*v-80,g:700,T:.9,col:k%3?'i':'w',s:1});}for(let k=0;k<24;k++)A.add({k:'sq',x:x0+(Math.random()-.5)*14,y:y0,vx:(Math.random()-.5)*60,vy:-20+Math.random()*40,g:500,T:1.6,col:k%2?'y':'Y',fa:.7});}},
-  glass(c,x,y,P,f,t,cr){const HW=FXS.B_hour.HW,cap=HW.reduce((a,h)=>a+2*h+1,0);let top=Math.round(f*cap),bot=cap-top;
-   for(const sd of[-1,1])for(let j=0;j<2;j++){fxR(c,x-7*P,y+(sd<0?j:20+j)*P,P,'k',15,1);if(j===(sd<0?1:0))fxR(c,x-6*P,y+(sd<0?j:20+j)*P,P,'N',13,1);}fxR(c,x-6*P,y,P,'E',13,1);
-   for(const px of[-6,6])for(let j=2;j<20;j++){fxR(c,x+(px-1)*P,y+j*P,P,'k',3,1);fxR(c,x+px*P,y+j*P,P,px<0?'E':'N');}
-   const rows=[];for(let r=0;r<9;r++)rows.push([2+r,HW[r]]);rows.push([11,0]);for(let r=0;r<9;r++)rows.push([12+r,HW[8-r]]);
-   const tf=new Map(),bf=new Map();for(let r=8;r>=0&&top>0;r--){const n=Math.min(top,2*HW[r]+1);tf.set(2+r,n);top-=n;}for(let j=19;j>=12&&bot>0;j--){const n=Math.min(bot,2*HW[8-(j-12)]+1);bf.set(j,n);bot-=n;}
-   for(const[j,hw]of rows){if(j>19)continue;fxR(c,x-(hw+1)*P,y+j*P,P,'k');fxR(c,x+(hw+1)*P,y+j*P,P,'k');for(let i=-hw;i<=hw;i++){let col='i';if(j<11){const n=tf.get(j)||0;if(Math.abs(i)<=(n-1)/2)col='y';}else if(j>11){const n=bf.get(j)||0;if(Math.abs(i)<=(n-1)/2)col=i%2?'Y':'y';}if(col==='i'&&i===-hw&&hw>0)col='w';fxR(c,x+i*P,y+j*P,P,col);}}
-   if(f>0&&f<1){for(let j=11;j<19;j++)if((j+fst(t,10))%2===0&&!(bf.get(j)>0))fxR(c,x,y+j*P,P,'y');}
-   if(cr){c.globalAlpha*=1;for(const[a,b]of[[-2,4],[-1,5],[0,6],[1,5],[2,7],[-1,14],[0,15],[1,16],[0,17]])fxR(c,x+a*P,y+b*P,P,'w');}},
-  front(c,g,s,t){const P=fxBP(g),rim=fxRim(g),x0=FXS.B_hour.x(g),u=Math.min(1,s.age/.7),dead=s.dnt!=null;if(dead&&s.dnt>.55)return;const y0=rim-22*P-(u<1?Math.round(Math.pow(1-u,2)*60)*P:0);c.save();c.globalAlpha=s.p;
-   let q=0;if(s.p2t!=null&&s.p2t<.6)q=Math.min(2,Math.floor(s.p2t/.2)+1)%3;const f=s.p2t!=null&&s.p2t<.6?1-(s.l.f||0):(s.l.f==null?1:s.l.f);
-   if(q){c.translate(x0,y0+11*P);c.rotate(q*Math.PI/2);c.translate(-x0,-(y0+11*P));}FXS.B_hour.glass(c,x0,y0,P,f,t,dead);c.restore();}},
+ B_hour:{ /* v1.102 (the user's design): a massive cracked hourglass, half the jar wide, stands behind the jar inside a living sandstorm. The jar's score is the boss's health: as it climbs, more cracks open, more sand leaks into the storm and the storm grows. Beaten, the storm blows itself out and leaves the hourglass broken and empty. Its own boss sky: BSKYB.hour */
+  Q:.3,
+  /* cracks on a 25 by 36 design grid, scaled: [health lost when it opens, polylines, leak [x,row,side or forward dx,dy], bulb 0 top 1 bottom 2 neck, hole] */
+  CR:[[0,[[[1,9],[2,11],[4,13]],[[2,11],[4,10]]],[13,1],0],[.2,[[[-2,23],[-3,25],[-6,28]],[[-3,25],[-5,24]]],[28,-1],1],[.38,[[[-1,8],[-2,10],[-4,12]],[[-2,10],[0,11]]],[12,-1],0],
+   [.5,[[[3,27],[0,24]],[[3,27],[5,24]],[[3,27],[6,30]],[[3,27],[1,29]],[[0,24],[-1,22]]],[27,0,.4,-1,3],1,[3,27]],[.65,[[[3,24],[5,26],[7,28]],[[5,26],[6,24]]],[28,1],1],[.8,[[[-1,15],[0,17],[1,19]]],[17,1],2]],
+  geo(g){const P=fxBP(g),k=P+'|'+(g.R-g.L)+'|'+g.top;if(this._g&&this._g.k===k)return this._g;const C=Math.round((g.R-g.L)/P/4),s=C/12,Hc=Math.round(36*s),ct=5*Math.max(1,Math.round(s)),G=Hc-2*ct,gh=G>>1,gw=Math.round(C*.6),nk=s>1.5?1:0,pt=Math.max(2,Math.round(2*s)),pc=C-1-Math.ceil(pt/2)-1;
+   const f=u=>u<.15?.72+.28*Math.sqrt(1-((.15-u)/.15)**2):u<.45?1:.5*(1+Math.cos(Math.PI*(u-.45)/.55)),hw=[];for(let r=0;r<G;r++){const u=r<gh?r/(gh-1):(G-1-r)/(G-1-gh);hw.push(Math.round(nk+(gw-nk)*f(Math.min(1,u))));}
+   const X=fq((g.L+g.R)/2,P),rim=fq(fxRim(g),P),Y0=rim-(Hc-Math.round(ct/2))*P;let CT=0,CB=0;for(let r=0;r<gh-1;r++)CT+=2*hw[r]+1;for(let r=gh+1;r<G;r++)CB+=2*hw[r]+1;
+   return this._g={k,P,C,s,Hc,ct,G,gh,gw,pt,pc,hw,X,rim,Y0,CT,CB,cy:Math.round(Hc/2)};},
+  hp(s){return Math.max(0,Math.min(1,s.l.hp||0));},
+  nc(s){const h=FXS.B_hour.hp(s);let n=0;for(const k of FXS.B_hour.CR)if(h>=k[0])n++;return n;},
+  sf(s){const h=FXS.B_hour.hp(s),d=s.dnt==null?1:Math.max(0,1-s.dnt/.45);return[(.85*(1-h)+.06)*d,(.5*(1-h)+.1)*d];}, /* sand left in the top and bottom bulb */
+  gw(o,j){const r=j-o.ct;return r>=0&&r<o.G?o.hw[r]:-1;}, /* the glass's half width on a row of the hourglass */
+  leak(o,cr){const L=cr[2],j=Math.round(L[0]*o.Hc/36);if(L.length>2)return[Math.round(3*o.s),j,L[2],L[3]];const hw=FXS.B_hour.gw(o,j);return[L[1]*(hw+2),j,L[1],.25];},
+  tick(s,g,dt,A){bossT(s,dt);const H=FXS.B_hour,o=H.geo(g),P=o.P,dead=s.dnt!=null,h=H.hp(s),Q=H.Q;
+   if(s.age<=dt*1.01||!s.gr){s.gr=[];s.I=0;s.sh=0;s.ph=0;s.ba=0;s.ro=0;s.lz=0;s.lzn=2;s.nc0=1;s.ck=0;}
+   const tg=dead?0:Math.min(1,.2+.8*h+(s.p2t!=null?.08:0));s.I=fxA(s.I,tg,dt*(dead?.8:.35));s.ph+=dt*(.35+1.5*s.I);s.ba+=dt*(1+2*s.I);if(s.ro>0)s.ro-=dt;
+   /* phase 2: the storm roars and two more drops blow away */
+   if(s.p2t!=null&&s.p2t<dt*1.5){s.ro=1.2;if(!RMO){A.jsA=2*g.K;A.jsT=.5;}A.add({k:'fn',x:o.X,y:o.Y0+o.cy*P,vy:-40,T:1.3,dl:.3,fa:.5,d:(c,q,g)=>T(c,'-2 drops',q.x,q.y,26,'#e63946','center',FD)});}
+   const nc=H.nc(s);if(nc>s.nc0&&!dead){s.nc0=nc;s.ck=.4;}if(s.ck>0)s.ck-=dt; /* a new crack opens: it flashes */
+   if(s.p2t!=null&&!dead&&!RMO){s.lzn-=dt;if(s.lzn<=0){s.lzn=1.6+Math.random()*2.4;s.lz=.22;s.lzs=Math.random()*99;}}if(s.lz>0)s.lz-=dt;
+   /* sand leaking from the cracks, flung into the storm */
+   const[ft,fb]=H.sf(s),rate=dead?(s.dnt<.45?220:0):(s.age<1?0:8+90*s.I);
+   if(!RMO&&rate>0){const live=H.CR.slice(0,nc).filter(k=>k[3]===1?fb>.02:ft>.02);if(live.length){s.acc=(s.acc||0)+rate*dt;while(s.acc>=1){s.acc--;const[lx,ly,dx,dy]=H.leak(o,live[Math.floor(Math.random()*live.length)]),sp=(14+Math.random()*12)*o.s;s.gr.push({x:lx,y:ly,vx:dx*sp+(Math.random()-.5)*5,vy:dy*sp+(Math.random()-.5)*5,t:0,T:2+Math.random()*1.4,rt:o.C+3+Math.random()*34,oy:(Math.random()-.5)*o.Hc*.5,c:Math.floor(Math.random()*4),m:0});}}}
+   if(dead&&!s.sh&&s.dnt>=.45){s.sh=1;for(let k=0;k<30;k++){const a=Math.random()*Math.PI*2,v=90+Math.random()*190;A.add({k:'sq',x:o.X+(Math.random()-.5)*o.gw*2*P,y:o.Y0+(o.ct+Math.random()*o.G)*P,vx:Math.cos(a)*v,vy:Math.sin(a)*v-90,g:700,T:1.1,col:k%3?'i':'w',s:1});}
+    for(const p of s.gr){if(p.m!==1)continue;const w=(1+2*s.I)*22/Math.max(10,p.r),oc=o.cy+p.oy;p.m=2;p.x=o.X+p.r*Math.cos(p.a)*P;p.y=o.Y0+(oc+p.r*Math.sin(p.a)*Q)*P;p.vx=Math.sin(p.a)*w*p.r*P;p.vy=-Math.cos(p.a)*w*p.r*Q*P;p.t=0;p.T=.9+Math.random()*.9;}}
+   for(const p of s.gr){p.t+=dt;if(p.m===0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=8*dt;if(p.t>.35){const oc=o.cy+p.oy;p.m=1;p.r=Math.hypot(p.x,(p.y-oc)/Q);p.a=Math.atan2((p.y-oc)/Q,p.x);}}
+    else if(p.m===1){const w=(1+2*s.I)*22/Math.max(10,p.r);p.a-=w*dt;p.r+=(p.rt-p.r)*dt*1.4;}
+    else{p.vy+=420*g.K*dt;p.vx*=1-dt*1.5;p.x+=p.vx*dt;p.y+=p.vy*dt;}}
+   s.gr=s.gr.filter(p=>p.t<p.T);s.jx=dead&&s.dnt<.45&&!RMO?(fst(s.dnt,20)%2?1:-1):0;},
+  /* the hourglass frame and glass, cached per crack count */
+  frm(o,n,brk){const P=o.P,key='hg|'+o.k+'|'+n+'|'+brk;if(FXSC[key])return FXSC[key];const H=FXS.B_hour,{C,s,Hc,ct,G,gh,gw,pt}=o,m=new Map(),S=(i,j,col)=>m.set(i+','+j,col),isG=(i,j)=>{const v=m.get(i+','+j);return v&&v[0]==='G';},b1=Math.max(1,Math.round(s));
+   const cap=(j0,dir)=>{for(let r=0;r<ct;r++){const j=dir>0?j0+r:j0-r,tr=Math.floor(r/b1),w=[C-1,C,C,C-3,C-5][tr],rr=r%b1;for(let i=-w;i<=w;i++)S(i,j,tr===0||tr===3?(i<-w+2*b1+1?'y':'Y'):tr===1&&rr===0?((i+C)%(4*b1)<b1?'Y':'n'):tr===4?(i<-w+b1?'n':'N'):'N');}};cap(0,1);cap(Hc-1,-1);
+   const{pc}=o;for(let j=ct;j<Hc-ct;j++){const u=(j-ct)/(Hc-2*ct-1),bl=Math.max(Math.sin(Math.PI*Math.min(1,u/.5))**3,Math.sin(Math.PI*Math.max(0,(u-.5)/.5))**3),th=Math.round(pt/2+bl*b1*1.5),ring=Math.abs(u-.5)<.025||u<.03||u>.97||Math.abs(u-.25)<.02||Math.abs(u-.75)<.02;
+    for(let q=-th;q<=th;q++){const col=ring?(q<0?'y':'Y'):q<-th/3?'n':q<th/3?'E':'N';S(-pc+q,j,col);S(pc+q,j,col);}}
+   for(let r=0;r<G;r++){const j=ct+r,hw=o.hw[r];for(let i=-hw;i<=hw;i++)S(i,j,hw>=3&&(i===-hw+1||(s>1.5&&i===-hw+2&&r%9<6))?'GW':'GL');}
+   const sc=([x,y])=>[Math.round(x*s),Math.round(y*Hc/36)],ln=(a,b,f)=>{let[x0,y0]=a;const[x1,y1]=b,dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy;for(;;){f(x0,y0);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx;}if(e2<=dx){e+=dx;y0+=sy;}}};
+   for(let k=0;k<n;k++){const cr=H.CR[k];for(const pl of cr[1])for(let q=1;q<pl.length;q++)ln(sc(pl[q-1]),sc(pl[q]),(x,y)=>{if(!isG(x,y))return;S(x,y,'GC');if(isG(x+1,y)&&m.get((x+1)+','+y)!=='GC')S(x+1,y,'GD');});
+    if(cr[4]){const[hx,hy]=sc(cr[4]);for(let j=-b1;j<=b1;j++)for(let i=-b1;i<=b1;i++)if(i*i+j*j<=b1*b1+1)m.delete((hx+i)+','+(hy+j));}}
+   if(brk){for(let r=0;r<Math.round(gh*.8);r++){const j=ct+r,hw=o.hw[r],e=Math.round(-gw*.55+r/gh*gw*1.6+(fhs(r,5)-.5)*3*s);for(let i=-hw;i<=hw;i++){if(i<e)m.delete(i+','+j);else if(i===e)S(i,j,'GC');}}
+    for(let r=gh+Math.round(gh*.25);r<G-Math.round(gh*.15);r++){const j=ct+r,hw=o.hw[r],e=Math.round(gw*.1+(G-r)*.45+(fhs(r,9)-.5)*2*s);for(let i=-hw;i<=hw;i++){if(i>e)m.delete(i+','+j);else if(i===e)S(i,j,'GC');}}
+    for(let r=0;r<b1+1;r++)for(let i=C-2-r;i<=C;i++){m.delete(i+','+r);m.delete((-i)+','+(Hc-1-r));}
+    const j0=Math.round(12*Hc/36);for(let q=0;q<Math.round(6*s);q++)S(o.pc+((q>>1)%2?1:0)-1,j0+q,'k');}
+   const O=new Map(m);for(const k2 of m.keys()){const[i,j]=k2.split(',').map(Number);for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const q=(i+a)+','+(j+b);if(!m.has(q))O.set(q,'k');}}
+   const cv=document.createElement('canvas');cv.width=(2*C+3)*P;cv.height=(Hc+2)*P;const x=cv.getContext('2d'),CL={GL:'rgba(227,243,255,.3)',GW:'rgba(255,255,255,.7)',GD:'rgba(95,90,107,.55)',GC:'#ffffff'};
+   for(const[k2,col]of O){const[i,j]=k2.split(',').map(Number);x.fillStyle=CL[col]||FXP[col];x.fillRect((i+C+1)*P,(j+1)*P,P,P);}return FXSC[key]={c:cv,ox:(C+1)*P,oy:P};},
+  /* the sand in both bulbs (an image redrawn only when the amounts change) and the stream through the neck */
+  sand(c,s,o,X,Y,ft,fb,t,flow){const P=o.P,nt=Math.round(ft*o.CT),nb=Math.round(fb*o.CB),key=nt+'|'+nb+'|'+o.k;let sc=s.sci;
+   if(!sc||sc.key!==key){if(!sc||sc.k!==o.k){const cv=document.createElement('canvas');cv.width=(2*o.gw+3)*P;cv.height=(o.Hc+2)*P;sc=s.sci={cv,k:o.k};}const x=sc.cv.getContext('2d'),ox=(o.gw+1)*P;x.clearRect(0,0,sc.cv.width,sc.cv.height);sc.key=key;
+    const R=(i,j,col)=>{x.fillStyle=FXP[col];x.fillRect(ox+i*P,j*P,P,P);};let n=nt;sc.bt=o.ct+o.G;
+    for(let r=o.gh-2;r>=0&&n>0;r--){const j=o.ct+r,hw=o.hw[r],w=2*hw+1,k=Math.min(n,w),pa=k<w;n-=k;for(let i=-hw;i<=hw;i++){if(pa&&Math.abs(i)<=hw-Math.ceil(k/2))continue;R(i,j,(pa||n<=0)&&i<1?'h':i>hw-2?'Y':(i+j)%3?'y':'Y');}}
+    let b=nb;for(let r=o.G-1;r>o.gh&&b>0;r--){const j=o.ct+r,hw=o.hw[r],w=2*hw+1,k=Math.min(b,w);b-=k;sc.bt=j;const a=Math.floor((k-1)/2);for(let i=-a;i<=a;i++)R(i,j,(k<w||b<=0)&&i<1?'h':i>a-2&&i>0?'Y':(i+j)%3?'y':'Y');}}
+   c.drawImage(sc.cv,X-(o.gw+1)*P,Y);if(flow&&nt>0)for(let j=o.ct+o.gh-1;j<sc.bt;j++)if((j+fst(t,12))%3)fxR(c,X,Y+j*P,P,'y');},
+  /* the storm's dusty head, cached per strength and swirl frame */
+  head(o,f){const P=o.P,key='hgh|'+o.k+'|'+f;if(FXSC[key])return FXSC[key];const rx=o.C+22,ry=Math.round(o.Hc*.5),jc=Math.round(o.Hc*.36),ex=o.C+4+Math.round(3.5*o.s),ey=Math.round(o.Hc*.2),cv=document.createElement('canvas');cv.width=(2*rx+1)*P;cv.height=(2*ry+1)*P;const x=cv.getContext('2d');
+   for(let j=-ry;j<=ry;j++)for(let i=-rx;i<=rx;i++){const yy=j<0?j/ry:j/(ry*1.15),e=(i*i)/(rx*rx)+yy*yy*(j<0?1.15:1),nz=Math.sin(i*.23+j*.5+f*2.09)*Math.cos(i*.1-j*.33+f*1.3),dd=(1-e)*3+.5*nz-(j>ry*.4?(j/ry-.4)*4:0);if(dd<=0||dd<.6&&FBY[((i+64)&3)*4+((j+64)&3)]/16>dd/.6)continue;
+    const jj=j+jc,se=Math.min(...[-1,1].map(sd=>((i-sd*ex)/(6*o.s))**2+((jj-ey-1)/(3.2*o.s))**2)),br=Math.min(...[-1,1].map(sd=>Math.abs(jj-(ey-Math.round(2.2*o.s))+((i*sd-ex)*.45))+(Math.abs(i*sd-ex)>8*o.s?99:0)));
+    x.fillStyle=se<1?(se<.55?'#1a0a04':'#2e1608'):br<1.3*o.s?'#3e2210':dd>2.2?'#5e3618':dd>1.2?'#74441e':dd>.6?'#8e5628':'#a86c34';x.fillRect((i+rx)*P,(j+ry)*P,P,P);}
+   return FXSC[key]={c:cv,ox:rx*P,oy:(ry-jc)*P};},
+  eye(c,x0,y0,P,sd,I,fl,s){const R=(i,j,col)=>fxR(c,x0+sd*i*P,y0+j*P,P,col),hot=I>.72,warm=I>.4,el=Math.round(7*s),th=Math.max(2,Math.round(1.4*s));
+   if(fl>0){c.save();c.globalAlpha*=Math.min(1,.25+.5*I)*fl;const ry=Math.round((4+2*I)*s*.8),rx=Math.round(el*.75+ry*.6),cx=el>>1;for(let j=-ry;j<=ry;j++)for(let i=-rx;i<=rx;i++){const e=(i*i)/(rx*rx)+(j*j)/(ry*ry);if(e<=1&&e>.2&&FBY[((i+64)&3)*4+((j+64)&3)]/16<(1-e)*1.2)R(cx+i,Math.round(cx*.35)+j,'o');}c.restore();}
+   for(let u=0;u<=el;u++){const tp=Math.round(u*.35)-1,hh=Math.round(th*Math.sin(Math.PI*u/el));for(let v=-1;v<=hh+1;v++){const j=tp+v;if(v<0||v>hh){R(u,j,'#2a1208');continue;}const ed=v===0||v===hh||u<2||u>el-2;R(u,j,!ed&&hot&&Math.abs(u-el/2)<el*.25?'w':ed?(warm?'o':'R'):(warm?'y':'o'));}}
+   },
+  bands(c,o,s,fr,v){const P=o.P,Q=FXS.B_hour.Q;for(let k=0;k<9;k++){const vv=Math.max(0,Math.min(1,v*10-k));if(vv<=0)continue;const rx=o.C+3+k*4.5,L=.8+.08*k,a0=-s.ba*22/rx+k*1.9,oc=o.cy+((k%3)-1)*o.Hc*.22;
+    for(const off of[0,Math.PI])for(let u=0;u<=1;u+=.9/(rx*L)){const a=a0+off+u*L,sn=Math.sin(a);if((sn>0)!==fr)continue;const bi=Math.round(u*rx*L);if(FBY[(bi&3)*4+(k&3)]/16>vv*(.35+u))continue;const x=o.X+fq(rx*Math.cos(a)*P,P),y=o.Y0+fq((oc+rx*sn*Q)*P,P);fxR(c,x,y,P,u>.8?'h':u>.45?'y':'#c98a48');if(k<4&&u>.3)fxR(c,x,y+P,P,'Y');}}},
+  grains(c,o,s,fr,jx){const P=o.P,Q=FXS.B_hour.Q,C=['y','h','Y','#c98a48'];for(const p of s.gr){let x,y;if(p.m===0){if(!fr)continue;x=o.X+jx+p.x*P;y=o.Y0+p.y*P;}else if(p.m===1){const sn=Math.sin(p.a);if((sn>0)!==fr)continue;x=o.X+p.r*Math.cos(p.a)*P;y=o.Y0+(o.cy+p.oy+p.r*sn*Q)*P;}else{if(!fr)continue;x=p.x;y=p.y;}if(p.t/p.T>.75&&fst(p.t,10)%2)continue;fxR(c,x,y,P,C[p.c]);}},
+  bg(c,g,s,t,A){const H=FXS.B_hour,o=H.geo(g),P=o.P,dead=s.dnt!=null,I=s.I||0,D=dead?Math.max(0,1-s.dnt/1.8):1,v=I*D,hz=fxRim(g)+6;c.save();c.beginPath();c.rect(-g.W,-400,3*g.W,g.H+400);c.clip();c.globalAlpha=s.p; /* the storm reaches past the jar into the zoom's side strips (v1.104, the wider world; it was clipped to the jar's width while the strips were bare) */
+   /* the sky browns over and dust clouds race across */
+   const da=Math.round(.55*v*12)/12;if(da>0){c.globalAlpha=s.p*da;c.fillStyle='#5c3414';c.fillRect(-g.W,-400,3*g.W,g.H+420);c.globalAlpha=s.p;}
+   const span=g.W+400;for(let k=0;k<34;k++){const vis=Math.max(0,Math.min(1,v*36-k));if(vis<=0)continue;const ln=Math.round((14+fhs(k,23)*40)*o.s/2),x=((fhs(k,21)*span+s.ph*340*(.6+fhs(k,22)*.9))%span)-200,y=fq(o.Y0-24*P+(hz-o.Y0+24*P)*fhs(k,24),P),th=k%3?1:2;c.globalAlpha=s.p*Math.ceil(vis*3)/3*.8;
+    for(let i=0;i<ln;i++){const u=i/ln;if(FBY[(i&3)*4+(k&3)]/16>u*1.4)continue;for(let q=0;q<th;q++)fxR(c,x+i*P,y+q*P,P,q?'#9a6230':u>.85?'#f7d08a':'#c98a48');}}c.globalAlpha=s.p;
+   /* the living storm: a head of dust, burning eyes, a fanged grin */
+   const u=Math.min(1,s.age/.9),rise=u<1?Math.round(Math.pow(1-u,2)*o.Hc*.6)*P:0,Y0=o.Y0+rise,cyp=Y0+o.cy*P;
+   const ha=Math.ceil(Math.min(1,.25+v)*D*4)/4;if(ha>0){const hd=H.head(o,fst(t,5)%3),wb=Math.round(Math.sin(t*1.1))*P;c.globalAlpha=s.p*ha;c.drawImage(hd.c,o.X-hd.ox+wb,Y0-hd.oy);c.globalAlpha=s.p;}
+   if(s.lz>0&&v>.3){c.globalAlpha=s.p*(s.lz>.12?1:.5);let x=o.X-(o.C+20)*P;const y0=Y0+Math.round(o.Hc*.12)*P;for(let i=0;x<o.X+(o.C+20)*P;i++){const y=y0+(Math.round(fhs(i,s.lzs)*8)+i%3)*P;fxR(c,x,y,P,'y');fxR(c,x,y+P,P,'h');x+=2*P;}c.globalAlpha=s.p;}
+   const ro=s.ro>0?Math.min(1,s.ro/.3):dead&&s.dnt<.6?1-s.dnt/.6:0;
+   if(v>0){const ey=!dead||s.dnt<.9&&!(s.dnt>.4&&fst(s.dnt,12)%2);if(ey){const fl=(1+ro*.6)*(fst(t,9)%3?1:.8),eyY=Y0+Math.round(o.Hc*.2)*P;for(const sd of[-1,1])H.eye(c,o.X+sd*(o.C+4)*P,eyY,P,sd,Math.min(1,I+ro*.3),fl,o.s);}}
+   /* sand swirling round the hourglass: the back half, the hourglass, then the front half */
+   const oo=Object.assign({},o,{Y0});H.bands(c,oo,s,false,v);H.grains(c,oo,s,false,0);
+   const jx=(s.jx||0)*P,brk=dead&&s.dnt>=.45,f=H.frm(o,brk?6:H.nc(s),brk?1:0),[ft,fb]=H.sf(s);
+   c.drawImage(f.c,o.X-f.ox+jx,Y0-f.oy);H.sand(c,s,o,o.X+jx,Y0,ft,fb,t,!dead||s.dnt<.45);
+   if(brk){const j=o.ct+o.G-1;for(const[i,q]of[[-6,0],[-5,0],[-4,0],[5,0],[-6,-1],[4,0]])fxR(c,o.X+Math.round(i*o.s)*P,Y0+(j+q)*P,P,q?'y':'Y');}
+   if(s.ck>0&&fst(s.ck,16)%2){c.globalAlpha=s.p*.7;const cr=H.CR[Math.min(5,H.nc(s)-1)],sc=([x,y])=>[Math.round(x*o.s),Math.round(y*o.Hc/36)];for(const pl of cr[1])for(const pt of pl){const[x,y]=sc(pt);fxR(c,o.X+jx+(x-1)*P,Y0+(y-1)*P,P,'y',3,3);}c.globalAlpha=s.p;}
+   if(!dead||s.dnt<.45){const nc=H.nc(s);for(let k=0;k<nc;k++){const cr=H.CR[k];if(cr[3]===1?fb<=.02:ft<=.02)continue;const[lx,ly,dx,dy]=H.leak(o,cr),len=Math.round((3+5*I)*o.s);for(let q=0;q<=len;q++){if((q+fst(t,14))%3===0)continue;fxR(c,o.X+jx+fq((lx+dx*q+q*q*.1)*P,P),Y0+fq((ly+dy*q+q*q*.05)*P,P),P,q%3?'y':'h');}}}
+   H.bands(c,oo,s,true,v);H.grains(c,oo,s,true,jx);c.restore();},
+  /* in the jar: sand blowing across the glass */
+  back(c,g,s,t){const v=(s.I||0)*(s.dnt!=null?Math.max(0,1-s.dnt/1.8):1),n=Math.round(34*v);if(n<=0)return;const P=g.P,w=g.R-g.L;c.save();c.beginPath();c.rect(g.L,fxRim(g),w,g.bot-fxRim(g));c.clip();c.globalAlpha=s.p*.5;
+   for(let i=0;i<n;i++){const y=g.top+fhs(i,31)*(g.bot-g.top),x=g.L+((fhs(i,32)*(w+60)+t*(220+320*v)*(.6+fhs(i,33)*.8))%(w+60))-30;fxR(c,x,y,P,i%3?'y':'Y',i%2?3:2,1);}c.restore();}},
  /* The Wilt: a wilting flower droops in a pot on the rim. Every time it shrinks your biggest fruit it sighs and a sickly puff drifts onto that fruit. Phase 2: it sheds petals. Beaten: it perks up and blooms */
  B_wilt:{x(g){return fq(fxRX('B_wilt',.59,64,g)+19*g.K,fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);const tgt=s.dnt!=null?0:s.p2t!=null?.85:.55;s.dr=fxA(s.dr==null?.3:s.dr,s.sg>0?1:tgt,dt*(s.sg>0?3:1));if(s.sg>0)s.sg-=dt;if(s.p2t!=null&&s.p2t<dt*1.5){const[hx,hy]=FXS.B_wilt.head(s,g);for(let k=0;k<4;k++)A.add({k:'sq',x:hx+(k-2)*6,y:hy,vx:(Math.random()-.5)*30,vy:10,T:2.4,col:k%2?'N':'e',sw:7,sf:2.4,ph:k,fa:.7,s:1});}if(s.dnt!=null&&!s.bl){s.bl=1;const[hx,hy]=FXS.B_wilt.head(s,g);for(let k=0;k<6;k++)A.add({k:'star',x:hx+Math.cos(k)*28,y:hy+Math.sin(k)*24,T:.6,dl:.3+k*.07,col:k%2?'p':'y'});}},
@@ -2200,18 +2274,54 @@ Object.assign(FXS,{
     fxEl(c,wx,wy,P,4,4,(i,j,e)=>{const d=i*i+j*j;if(e)return'k';if(d>=9)return p2?'R':'D';if(d<=1)return d===0?(p2?'o':'y'):'k';return rot?(i===j||i===-j?'d':0):(i===0||j===0?'d':0);});}
    if(s.ar>0||s.sp>0){const out=s.sp>0,u=out?1-s.sp/.6:1-s.ar/.5,yy=fq(g.top+(g.bot-g.top)*.4,Q);for(const sd of[-1,1])for(let k=0;k<2;k++){const ox=(out?-1:1)*(2+u*5+k*3)*Q,x0=fq(sd<0?g.L+3*Q+ox:g.R-4*Q-ox,Q),dd=(out?-sd:sd);for(let q=0;q<3;q++){fxR(c,x0-dd*q*Q,yy-q*Q,Q,out?'t':'r');fxR(c,x0-dd*q*Q,yy+q*Q,Q,out?'t':'r');}}}c.restore();},
   ev(s,n,o,A,g){if(n!=='viseo'||!s.l.p)return;s.sp=.6;for(const sd of[-1,1]){const x=sd<0?g.L:g.R,y=g.top+(g.bot-g.top)*.4;A.burst(x,y,['y','o','w'],10,{v:200,vx:-sd*60,T:.4});}}},
- /* The Leech: a fat leech clings to the rim, swelling as it drinks; drops of your score drip out of the score panel and into its mouth. Phase 2: it swells bigger and drinks twice as fast. Beaten: it pops */
- B_vamp:{x(g){return fq(fxRX('B_vamp',.62,60,g),fxBP(g));},
-  tick(s,g,dt,A){bossT(s,dt);const p2=s.p2t!=null;s.nt=(s.nt==null?.8:s.nt)-dt;if(s.l.on&&s.dnt==null&&s.nt<=0&&!RMO){s.nt=p2?.45:.9;const P=fxBP(g),x1=FXS.B_vamp.x(g)-8*P,y1=fxRim(g)-5*P,x0=g.W/2+(Math.random()-.5)*40,y0=44*g.K,T1=1.1;s.sl=(s.sl||0)+1;A.add({k:'fn',x:x0,y:y0,T:T1,fa:.9,d:(c,q,g)=>{const u=q.t/T1,e=u*u,xx=x0+(x1-x0)*u,yy=y0+(y1-y0)*e+Math.sin(u*Math.PI)*-30,Q=g.P;fxR(c,xx,yy-Q,Q,'k',2,1);fxR(c,xx-Q,yy,Q,'k',1,2);fxR(c,xx+2*Q,yy,Q,'k',1,2);fxR(c,xx,yy,Q,'r',2,2);fxR(c,xx,yy,Q,'q');fxR(c,xx,yy+2*Q,Q,'k',2,1);},end:()=>{s.gl=.25;}});}if(s.gl>0)s.gl-=dt;
-   if(s.dnt!=null&&!s.pop){s.pop=1;const P=fxBP(g),x=FXS.B_vamp.x(g),y=fxRim(g)-5*P;A.burst(x,y,['r','R','q','V'],22,{v:260,vy:-80,T:.8});}},
-  front(c,g,s,t){const P=fxBP(g),x=FXS.B_vamp.x(g),rim=fxRim(g),dead=s.dnt!=null,p2=s.p2t!=null;c.save();c.globalAlpha=s.p;
-   if(dead){if(s.dnt<1.2){const R=fxPt(c,x,rim,P);R(-6,-1,'k',12,1);R(-5,-2,'V',10,1);R(-6,-2,'k');R(5,-2,'k');}c.restore();return;}
-   const sw=Math.min(1,s.age/10)+(p2?.6:0),gl=s.gl>0?1:0,inch=fst(t,p2?4:2)%2,y0=rim+fxDrop(s,P);
-   const st=inch?1:0,rx=8+(st?1:-1)+Math.round(sw),ry=Math.min(5,Math.round(3+sw*1.4+(st?0:1)+gl)),cy=fq(y0-(ry+1)*P,P);
-   fxEl(c,x,cy,P,rx,ry,(i,j,e)=>e?'k':j<=-ry+1?(i%3===0?'V':'P'):j>=ry-1?'x':(((i+40)%3===0)?'x':(i<-rx+3&&j<0?'P':'V')));
-   const H=fxPt(c,x-(rx+1)*P,cy+(ry-2)*P,P);H(-1,-1,'k',2,4);H(-2,0,'k',1,2);H(-1,0,'R',1,2);H(0,0,'r',1,2);
-   const E=fxPt(c,x-(rx-3)*P,cy-(ry-1)*P,P);E(-1,-1,'k',3,3);E(0,0,'w');E(-1,0,'w');E(-1,0,p2?'r':'k');if(p2&&fst(t,3)%2)E(0,-3,'r');
-   if(gl){const D=fxPt(c,x-(rx+2)*P,cy+(ry-2)*P,P);D(-1,0,'q');}c.restore();}},
+ /* The Leech (v1.103): a giant blood leech rises from behind the jar under a blood moon and latches its sucker onto the score panel, right under the end of your score bar; gulps run down its body and it bloats with every point it drains. With nothing to drink it hovers, sucker opening and closing. Phase 2: it rips free and rears with a lamprey mouth of tooth rings, then latches back on redder, drinking twice as fast. Baby leeches inch up the glass. Beaten: it tears free, bursts, and the shrivelled husk sinks behind the jar */
+ B_vamp:{
+  PAL:[['#1c1a10','#2f2d1a','#4a4826','#77733c'],['#5a0c18','#8e1426','#c8283e','#ff6b7a'],['#2a1410','#4a2018','#723224','#a8503a'],['#2e2420','#4a3c32','#6a5848','#8e7a64']], /* shade, shadow, mid, light: normal (olive, like a real leech), a gulp, phase 2 (engorged), shrivelled */
+  disc(r,v,P){const key='lch|'+r+'|'+v+'|'+P;if(FXSC[key])return FXSC[key];const C=v<0?null:FXS.B_vamp.PAL[v],n=2*r+5,cv=document.createElement('canvas');cv.width=cv.height=n*P;const x=cv.getContext('2d'); /* v -1: the outline disc, drawn under every fill so only the silhouette is outlined */
+   for(let j=-r-2;j<=r+2;j++)for(let i=-r-2;i<=r+2;i++){const d=i*i+j*j;let col;if(!C){if(d>(r+1.2)*(r+1.2))continue;col=FXP.k;}else{if(d>(r+.3)*(r+.3))continue;const l=-(i+j)/(r*1.42),hx=(i+r*.42)**2+(j+r*.42)**2;col=hx<(r*.22)**2+.6?C[3]:l>.3?C[2]:l>-.45?C[1]:C[0];}x.fillStyle=col;x.fillRect((i+r+2)*P,(j+r+2)*P,P,P);}
+   return FXSC[key]={c:cv,o:(r+2)*P};},
+  tick(s,g,dt,A){bossT(s,dt);const H=FXS.B_vamp,P=fxBP(g),l=s.l,dead=s.dnt!=null,p2=s.p2t!=null,t=s.age;
+   if(s.age<=dt*1.01||s.lift==null){s.lift=14;s.mo=1;s.pu=[];s.nt=.5;s.pop=0;s.hx=null;s.ro=0;}
+   if(p2&&s.p2t<dt*1.5&&!dead){s.ro=1.1;if(!RMO){A.jsA=2.5*g.K;A.jsT=.5;}}if(s.ro>0)s.ro-=dt;
+   const on=!!l.on&&!dead&&s.ro<=0&&s.age>1.1,tl=dead?(s.dnt<.4?16:20):s.ro>0?12:on?0:7+Math.sin(t*2.1)*2,tm=dead?(s.dnt<.5?1:0):s.ro>0?1:on?0:.55+.45*Math.sin(t*3.2);
+   s.lift+=(tl-s.lift)*Math.min(1,dt*(on?9:5));s.mo+=(tm-s.mo)*Math.min(1,dt*6);
+   if(on&&!RMO){s.nt-=dt;if(s.nt<=0){s.nt=p2?.38:.75;s.pu.push(0);}}for(let i=0;i<s.pu.length;i++)s.pu[i]+=dt*.55;s.pu=s.pu.filter(u=>u<1.05);
+   /* the body: a curve from behind the jar's right side up to the panel, sampled into discs from the head down */
+   const sw=g.sw||((x,y)=>[x,y]),hb=l.hb||[54,26,g.W-158,20],[tx,hy]=sw(hb[0]+hb[2]*Math.max(.05,Math.min(.95,l.pg||0)),54);s.hx=s.hx==null?tx:s.hx+(tx-s.hx)*Math.min(1,dt*2.5);
+   const rim=fxRim(g),u0=Math.min(1,s.age/1.3),ar=(1-u0)*(1-u0)*80*P,dk=dead&&s.dnt>.7?(s.dnt-.7)**2*260*g.K:0,wr=dead&&s.dnt<.7?3:s.ro>0?2:1,X0=g.L+(g.R-g.L)*.86,hx=s.hx,ty=hy+s.lift*P+ar+dk;
+   const B=[[X0,rim+16*P+ar+dk],[X0+8*P+Math.sin(t*.9)*3*P*wr,rim-(rim-hy)*.5+ar+dk],[hx+(X0-hx)*.1+Math.sin(t*1.3+1)*2*P*wr,ty+26*P],[hx,ty+6*P]],bz=q=>{const a=1-q;return[0,1].map(k=>a*a*a*B[0][k]+3*a*a*q*B[1][k]+3*a*q*q*B[2][k]+q*q*q*B[3][k]);};
+   const sm=[];let L=0,pv=null;for(let i=0;i<=80;i++){const p=bz(1-i/80);if(pv)L+=Math.hypot(p[0]-pv[0],p[1]-pv[1]);sm.push([p[0],p[1],L]);pv=p;}
+   const k=Math.max(0,Math.min(1,(l.dr||0)/.3)),R=6+Math.round(6*k)+(p2?1:0),shr=dead&&s.dnt>.4?Math.max(.45,1-(s.dnt-.4)/.3*.55):1,pts=[],st=1.7*P;let j=0;
+   for(let d=0;d<=L;d+=st){while(j<sm.length-2&&sm[j+1][2]<d)j++;const a=sm[j],b=sm[j+1],f=(d-a[2])/Math.max(1e-6,b[2]-a[2]),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f,u=d/L,dx=b[0]-a[0],dy=b[1]-a[1],dl=Math.hypot(dx,dy)||1;
+    let r=u<.1?4+(R*.65-4)*u/.1:u<.28?R*.65+R*.35*(u-.1)/.18:R+2*k*Math.exp(-(((u-.6)/.18)**2)),gp=0;for(const q of s.pu){const e=Math.exp(-(((u-q)/.05)**2));r+=2*e;if(e>.4)gp=1;}
+    pts.push({x,y,u,nx:-dy/dl,ny:dx/dl,r:Math.max(2,Math.round(r*shr)),v:dead&&s.dnt>.4?3:gp?1:p2?2:0});}
+   s.G={pts,hx,ty,hy,tx:sw(hb[0]+hb[2]*Math.max(.05,Math.min(.95,l.pg||0)),46),k};
+   if(dead&&!s.pop&&s.dnt>=.4){s.pop=1;const b=pts[Math.floor(pts.length*.6)]||pts[0];if(b){A.burst(b.x,b.y,['r','R','q','m'],44,{v:320,vy:-140,T:1.1});A.burst(b.x,b.y,['R','z'],16,{v:160,vy:-60,T:1.4});}if(!RMO){A.jsA=3*g.K;A.jsT=.4;}}},
+  /* the body behind the jar (the jar hides its base), striped and segmented by the discs' outlines */
+  body(c,g,s,n){const G=s.G,P=fxBP(g),H=FXS.B_vamp;if(!G)return;const pts=G.pts,m=Math.min(pts.length,n);for(const pass of[0,1])for(let i=m-1;i>=0;i--){const p=pts[i],d=H.disc(p.r,pass?p.v:-1,P);c.drawImage(d.c,fq(p.x,P)-d.o,fq(p.y,P)-d.o);}
+   for(let i=3;i<m;i+=3){const p=pts[i];if(p.u<.1)continue;const C=H.PAL[p.v];for(let q=-p.r+1;q<=p.r-2;q++)if(q>-p.r*.55||p.v===3)fxR(c,p.x+p.nx*q*P,p.y+p.ny*q*P,P,C[0]);} /* the rings of its body */
+   for(let i=2;i<m;i+=2){const p=pts[i];if(p.u<.12||p.v===3)continue;for(const sd of[.5,-.62]){const x=p.x+p.nx*p.r*sd*P,y=p.y+p.ny*p.r*sd*P;fxR(c,x,y,P,sd>0?(p.v===1?'y':'o'):'#8e2e47');}}},
+  bg(c,g,s,t){if(!s.G)return;const dead=s.dnt!=null,a=dead?(s.dnt<1.4?1:Math.max(0,Math.ceil((2.2-s.dnt)/.8*3)/3)):1;if(a<=0)return;c.save();c.globalAlpha=s.p*a;FXS.B_vamp.body(c,g,s,999);c.restore();},
+  /* over the HUD: the neck, the head with its five pairs of eyespots, and the sucker on the panel (or a lamprey mouth when it lets go) */
+  top(c,g,s,t){const G=s.G;if(!G||!G.pts.length)return;const H=FXS.B_vamp,P=fxBP(g),dead=s.dnt!=null,p2=s.p2t!=null,a=dead?(s.dnt<1.4?1:Math.max(0,Math.ceil((2.2-s.dnt)/.8*3)/3)):1;if(a<=0)return;c.save();c.globalAlpha=s.p*a;
+   H.body(c,g,s,9);const h=G.pts[0],shr=dead&&s.dnt>.4;
+   for(let e=0;e<5;e++){const p=G.pts[e+1];if(!p)break;for(const sd of[-.45,.45]){const x=p.x+p.nx*p.r*sd*P,y=p.y+p.ny*p.r*sd*P;fxR(c,x,y,P,shr?'#2a1a3a':(p2||s.ro>0)&&fst(t,8)%2?'#ffffff':'#ff3b3b');}}
+   const rs=5+Math.round(G.k*2),tx=fq(G.hx,P),ty=fq(G.ty,P);
+   if(s.mo<.3&&!shr){/* latched: the flared lip pressed flat on the panel, and your score sucked down into it */
+    for(let j=0;j<=3;j++){const w=rs-(j>1?j-1:0);for(let i=-w-1;i<=w+1;i++){const e=Math.abs(i)>w||j===3;fxR(c,tx+i*P,ty+j*P,P,e?'k':j===0?'#ff8fab':i<-w/2?'#e0566a':'#c2405a');}}
+    if(s.l.on){const[sx,sy]=G.tx,x=fq(sx,P),y0=fq(sy,P);for(let y=y0;y<ty;y+=P){fxR(c,x,y,P,((y-y0)/P+fst(t,12))%3?'#e63946':'#ffd6dc');}}}
+   else{/* a lamprey mouth: lip, two rings of hooked teeth, a dark throat with a red glow */
+    const r=Math.round((rs+5)*(shr?.55:.55+.45*Math.min(1,s.mo))),cy=ty+Math.round(r*.6)*P,rings=[r-2.6,r-5.2,r-7.8].filter(v=>v>2.6);
+    for(let j=-r-1;j<=r+1;j++)for(let i=-r-1;i<=r+1;i++){const d=Math.sqrt(i*i+j*j);if(d>r+.5)continue;const an=Math.atan2(j,i);let col;
+     if(d>r-.6)col='k';else if(d>r-1.7)col=shr?'#6a5848':(i+j<0?'#ff8fab':'#c2405a');else if(d<2.4)col=d<1.2?(fst(t,6)%2?'#a3202c':'#6d1424'):'#1a0408';
+     else{col=shr?'#4a3c32':d>r*.6?'#8e2e47':'#5a1428';if(!shr)rings.forEach((rv,ri)=>{const nt=Math.max(6,Math.round(rv*1.6)),ph=((an/(Math.PI*2))*nt+ri*.5+100)%1;if(Math.abs(d-rv)<1.05&&Math.abs(ph-.5)<.3)col=d>rv?'#ffffff':'#c9c3d4';});}
+     fxR(c,tx+i*P,cy+j*P,P,col);}}
+   c.restore();},
+  /* baby leeches inching up the glass */
+  back(c,g,s,t){if(s.dnt!=null&&s.dnt>1)return;const P=g.P,n=s.p2t!=null?6:3,w=g.R-g.L,Hh=g.bot-g.top;c.save();c.globalAlpha=s.p*Math.min(1,s.age/1.5)*(s.dnt!=null?1-s.dnt:1);
+   for(let i=0;i<n;i++){const cyc=RMO?0:((t*1.2+fhs(i,2))%1),stp=Math.floor(t*1.2+fhs(i,2)),yc=g.bot-((stp*4*P+fhs(i,1)*Hh)%(Hh-30*g.K))-6*P,Lc=11-Math.round(5*Math.sin(cyc*Math.PI)),x=fq(g.L+3*P+fhs(i,4)*(w-8*P),P);
+    for(let q=0;q<=Lc;q++){const ox=Math.round(Math.sin(Math.PI*q/Lc)*(11-Lc)*.45),y=fq(yc-(11-Lc)*P*(1-cyc)-q*P,P);fxR(c,x+(ox-1)*P,y,P,'k');fxR(c,x+(ox+2)*P,y,P,'k');fxR(c,x+ox*P,y,P,q===Lc?'#c2405a':q%3===1?'#e07020':'#4a4826');fxR(c,x+(ox+1)*P,y,P,q===Lc?'#c2405a':'#2f2d1a');if(q===Lc){fxR(c,x+ox*P,y-P,P,'k',2,1);}if(q===0)fxR(c,x+ox*P,y+P,P,'k',2,1);}}
+   c.restore();}},
  /* The Reaper (final boss, v1.81.1 bigger and darker, the user's ask): a towering hooded reaper hangs in the sky over the right of the jar, a black void under its hood with two burning eyes, a bony hand reaching for your fruit, a huge scythe over its head and smoke dripping from its tattered hem. It fades in out of the dark. Every merge that wins a drop back, its eyes flare, it swings the scythe in a wide arc and a soul floats down out of the jar to your drops. Phase 2: the eyes burn red, the blade's edge glows, lost souls circle it and the jar's edges darken. Beaten: the eyes go out, the robe crumples onto the rim and the scythe falls */
  B_reaper:{x(g){return fq(fxRX('B_reaper',.74,118,g),fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);if(s.sw>0)s.sw-=dt;if(s.fl>0)s.fl-=dt;const P=fxBP(g),x=FXS.B_reaper.x(g),y0=fxRim(g)-5*P;
@@ -2271,7 +2381,7 @@ Object.assign(FXS,{
    for(let k=0;k<4;k++)A.add({k:'sq',x:o.x,y:o.y,vx:(Math.random()-.5)*120,vy:-60-Math.random()*60,g:240,T:.9,col:k%2?'g':'G',s:2,sw:5,sf:6,dl:.15});}},
  /* The Orchard Queen (v1.81.1, a character now): the queen herself floats high over the jar in an apple-red gown and a purple cape trimmed with ermine, sceptre in hand, while her two rules play their own scenes below. Every time one of her rules strikes she raises the sceptre and its golden apple flares. She moves aside for a boss that needs the sky (The Lid, The Storm, The Blackout). Phase 2: her eyes glow and a dark aura gathers round her. Beaten: her crown tumbles into the jar and she bursts into blossom */
  B_queen:{EVS:['tax','storm','freeze','wilt','cuckoo','twins','charge','mrock','glut','mould','viseo','reap','slick','prune','audit','drop'],
-  tick(s,g,dt,A){bossT(s,dt);if(s.cm>0)s.cm-=dt;const S=A.S,on=k=>S[k]&&S[k].p>0,px=on('B_lid')||on('B_storm')||on('B_dark')?(on('B_mirror')||on('B_ice')?.84:.17):.5;s.qx=s.qx==null?px:fxA(s.qx,px,dt*.6);
+  tick(s,g,dt,A){bossT(s,dt);if(s.cm>0)s.cm-=dt;const S=A.S,on=k=>S[k]&&S[k].p>0,px=on('B_lid')||on('B_storm')||on('B_dark')||on('B_hour')?(on('B_mirror')||on('B_ice')?.84:.17):.5;s.qx=s.qx==null?px:fxA(s.qx,px,dt*.6);
    if(s.dnt!=null&&!s.cr){const P=fxBP(g),x=g.L+(g.R-g.L)*s.qx,y=fxRim(g)-100*g.K-19*P;s.cr={x,y,vx:90,vy:-120,r:0};for(let k=0;k<26;k++){const a=Math.random()*Math.PI*2,v=60+Math.random()*120;A.add({k:'sq',x:x+(Math.random()-.5)*16*P,y:y+Math.random()*20*P,vx:Math.cos(a)*v,vy:Math.sin(a)*v-40,g:140,T:1.2+Math.random()*.6,col:['p','w','m','p'][k%4],s:2,sw:5,sf:4,ph:k,fa:.5});}}
    if(s.cr){const q=s.cr;q.vy+=900*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.r+=dt*6;if(q.y>g.bot-6*g.P){q.y=g.bot-6*g.P;q.vy*=-.45;q.vx*=.7;}}},
   front(c,g,s,t){const P=fxBP(g),x=fq(g.L+(g.R-g.L)*(s.qx==null?.5:s.qx),P),u=Math.min(1,s.age/1.2),dead=s.dnt!=null,p2=s.p2t!=null,bob=fst(t,1.5)%2?-1:0,yb=fq(fxRim(g)-100*g.K-Math.round((1-u)*(1-u)*50)*P+bob*P,P);c.save();c.globalAlpha=s.p;
