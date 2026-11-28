@@ -1949,14 +1949,21 @@ Object.assign(FXS,{
     const ay=-(top+Math.round(hk*.55)),acx=Math.round(Math.sin(sway+.55*3)*.55*2.5);for(const sd of[-1,1]){const reach=sd===look||(!look&&sd>0);for(let k=0;k<=12;k++){const v=k/12,ex=reach?(hp?14:11):9,ey=reach?(hp?-6:-2):6,px=acx+sd*Math.round(4+v*ex+(reach?Math.sin(t*2+v*3)*v:0)),py=ay+Math.round(v*ey*(reach?1:1)+(reach?-Math.sin(v*Math.PI)*4:Math.sin(v*Math.PI)*-2));fxMD(m,px,py,k>10?1.2:1.7,(i,j)=>i*sd>0?'o':'Y');if(k===12)for(let f=-1;f<=1;f++){m.set((px+sd*2)+','+(py+f),'Y');m.set((px+sd*3)+','+(py+f),'o');}}if(!reach)for(let d=1;d<=2+(fst(t,3)%2);d++)m.set((acx+sd*13)+','+(ay+6+d),'o');}}
    const u=Math.min(1,s.age/1.2)*(dead&&dn>1.2?Math.max(0,1-(dn-1.2)/1.4):1);{const a=c.getTransform().a||1,Qs=Math.max(1,Math.round(Q*.9*a))/a;s.sc=Qs/Q;fxBlob(c,x,rim,Qs,fxFade(m,u));}c.restore();}, /* the user's ask (v1.99): 90% of the boss grid, one fixed size since v1.101's boss sky gives it room; the cell is rounded to whole device pixels so no seams show. s.sc is the scale, read by tick for where the glob is flung from */
   top(c,g,s,t){const l=s.l;if(!l.st||!(s.ct>0)||s.dnt!=null)return;const Q=g.P;c.save();c.globalAlpha=s.p;for(let k=0;k<4;k++){const a=Math.PI*(.2+k*.2),dx=Math.cos(a)*l.hr*.8,dy=Math.sin(a)*l.hr*.8,len=1+Math.min(3,Math.floor(s.ct*3+k)%4);fxR(c,l.hx+dx,l.hy+dy-Q,Q,'Y',2,1);for(let j=0;j<len;j++)fxR(c,l.hx+dx,l.hy+dy+j*Q,Q,j===len-1?'o':'Y');}fxR(c,l.hx-l.hr*.5,l.hy-l.hr*.7,Q,'y',2,1);fxR(c,l.hx-l.hr*.2,l.hy-l.hr*.9,Q,'Y',3,1);c.restore();}},
- /* The Swarm: a cloud of gnats buzzes over the jar and a few carry the fruit in your hand (only the smallest ones get through); each drop, some dive after it. Phase 2: the cloud doubles. Beaten: they scatter */
- B_swarm:{tick(s,g,dt){bossT(s,dt);const P=g.P,n=s.p2t!=null?44:26,cx=g.L+(g.R-g.L)*(.5+.32*Math.sin(s.age*.45)),cy=fxRim(g)-85*g.K+Math.sin(s.age*.8)*18*g.K,l=s.l;s.g=s.g||[];
-   while(s.g.length<n)s.g.push({x:fxSE(g)+20+Math.random()*60,y:cy+(Math.random()-.5)*60,vx:-80,vy:0,ph:Math.random()*9,e:s.g.length<7,dv:0});
-   const sc=s.dnt!=null;for(const q of s.g){if(q.dv>0)q.dv-=dt;let tx,ty;if(sc){const a=q.ph*2.3;tx=q.x+Math.cos(a)*200;ty=q.y+Math.sin(a)*200-40;}else if(q.dv>0){tx=q.dx;ty=q.dy;}else if(q.e&&l.can){const a=q.ph+s.age*3;tx=l.hx+Math.cos(a)*(l.hr+6*P);ty=l.hy-l.hr*.4+Math.sin(a)*l.hr*.7;}else{const a=q.ph+s.age*(1+(q.ph%1));tx=cx+Math.cos(a)*(22+q.ph*4)*g.K;ty=cy+Math.sin(a*1.3)*(14+q.ph*2)*g.K;}
-    q.vx+=((tx-q.x)*(sc?1:6)-q.vx*2.4)*dt+(Math.random()-.5)*900*dt;q.vy+=((ty-q.y)*(sc?1:6)-q.vy*2.4)*dt+(Math.random()-.5)*900*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;}},
-  front(c,g,s,t){if(!s.g)return;const P=fxBP(g);c.save();c.globalAlpha=s.p*(s.dnt!=null?Math.max(0,1-s.dnt/1.2):1);const dk=s.p2t!=null;for(const q of s.g){const x=fq(q.x,P),y=fq(q.y,P),w=fst(t+q.ph,16)%2,d=q.vx>0?1:0;fxR(c,x,y,P,'k',2,1);fxR(c,x+(d?P:0),y,P,dk&&(q.ph*7|0)%3===0?'r':'x');if(w){fxR(c,x,y-P,P,'u');fxR(c,x+P,y-P,P,'j');}else{fxR(c,x-P,y,P,'j');fxR(c,x+2*P,y,P,'j');}}
-   if(!RMO&&s.dnt==null){const u=(t*.7)%1;if(u<.5){const q=s.g[Math.floor(t*.7)%s.g.length];if(q){c.globalAlpha*=1-u*2;T(c,'z',q.x+8,q.y-10-u*20,11+u*6,'#3b2346','center',FD);}}}c.restore();},
-  ev(s,n,o,A,g){if(n!=='drop'||!s.g||s.dnt!=null)return;let k=0;for(const q of s.g){if(k>=8)break;if(q.e)continue;q.dv=.55;q.dx=o.x+(Math.random()-.5)*30;q.dy=g.top+40*g.K+Math.random()*30;k++;}}},
+ /* The Swarm (v1.108, the user's design): insects of every kind (gnats, flies, wasps, mosquitoes, moths, dragonflies, locusts, beetles). A hive face made of insects glares from the sky, its eyes glowing, its fanged mouth opening on every drop as a stream dives after the fruit; a few carry the fruit in your hand. The score is its health: as it climbs, the swarm spreads out from the face over the whole screen, HUD and held fruit included, up to about 75% cover near the end. Never still: specks churn every frame step and gaps drift through, so you glimpse the jar between them. Beetles crawl over the glass and the HUD. Phase 2: the eyes turn red, the face swells and roars, the swarm surges. Beaten: it screams, the eyes go out and the cloud blows apart */
+ B_swarm:{tick(s,g,dt){bossT(s,dt);const l=s.l,Q=fxBP(g),p2=s.p2t!=null,dn=s.dnt,K=g.K;s.h=s.h==null?0:fxA(s.h,Math.min(1,l.hp||0),dt*.3);if(s.mo>0)s.mo-=dt;const H=s.hd=swHd(g,s,l);
+   const n=dn!=null?(s.g?s.g.length:0):Math.min(150,Math.round(16+s.h*96+(p2?24:0)));s.g=s.g||[];while(s.g.length<n){const a=Math.random()*6.283,f=Math.sqrt(Math.random());s.g.push({x:H.x+Math.cos(a)*H.hw*1.3,y:H.y+Math.sin(a)*H.hh*1.2,vx:0,vy:0,ph:Math.random()*9,a,f,k:(p2?SWK2:SWK)[(Math.random()*SWK.length)|0],e:s.g.length<5,dv:0});}if(s.g.length>n+12)s.g.length=n;if(dn!=null&&!s.bu){s.bu=1;const sw=g.sw||((x,y)=>[x,y]),X0=sw(0,0)[0],X1=sw(g.W,0)[0],Y0=sw(0,0)[1];for(let i=0;i<160;i++){const x=X0+Math.random()*(X1-X0),y=Y0+Math.random()*(H.y+(g.bot-H.y)*Math.min(1,s.h*1.2)-Y0);if(Math.hypot(x-H.x,y-H.y)>H.hw*1.3+s.h*(g.bot-H.y))continue;s.g.push({x,y,vx:0,vy:0,ph:Math.random()*9,a:0,f:1,k:i%5?'gn':SWK[(Math.random()*SWK.length)|0],dv:0});}}if(dn==null)s.bu=0;
+   const Rs=Math.max(H.hw*1.3,s.h*Math.hypot(g.R-g.L,g.bot-H.y)*1.1);for(const q of s.g){if(q.dv>0)q.dv-=dt;const jt=SWJ[q.k]||900;let tx,ty,sp=6;q.a+=dt*.35/(.35+q.f);
+    if(dn!=null){const dx=q.x-H.x,dy=q.y-H.y,d=Math.hypot(dx,dy)||1;q.vx+=dx/d*(500+q.ph*60)*K*dt;q.vy+=dy/d*(500+q.ph*60)*K*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;continue;}
+    if(q.dv>0){tx=q.dx;ty=q.dy;sp=9;}else if(q.e&&l.can){const a=q.ph+s.age*3;tx=l.hx+Math.cos(a)*(l.hr+6*g.P);ty=l.hy-l.hr*.4+Math.sin(a)*l.hr*.7;}else{tx=H.x+Math.cos(q.a)*q.f*Rs;ty=H.y+Math.sin(q.a)*q.f*Rs*.85;}
+    q.vx+=((tx-q.x)*sp-q.vx*2.4)*dt+(Math.random()-.5)*jt*dt;q.vy+=((ty-q.y)*sp-q.vy*2.4)*dt+(Math.random()-.5)*jt*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;if(q.vx>25)q.r=1;else if(q.vx<-25)q.r=0;}
+   const sw=g.sw||((x,y)=>[x,y]),X0=sw(0,0)[0],X1=sw(g.W,0)[0],Y0=sw(0,0)[1],nc=dn!=null?0:Math.round(Math.max(0,s.h-.25)*9);s.cr=s.cr||[];while(s.cr.length<nc)s.cr.push({x:X0+Math.random()*(X1-X0),y:Y0+Math.random()*(g.H-Y0),d:(Math.random()*4)|0,tm:Math.random()*2,w:Math.random()*9});if(dn!=null&&dn>.4)s.cr.length=0;
+   for(const b of s.cr){b.tm-=dt;b.w+=dt;if(b.tm<0){b.tm=.6+Math.random()*1.6;b.d=(b.d+(Math.random()<.5?1:3))%4;}const v=26*K*dt,dx=[0,1,0,-1][b.d],dy=[-1,0,1,0][b.d];b.x+=dx*v;b.y+=dy*v;if(b.x<X0+8||b.x>X1-8||b.y<Y0+8||b.y>g.H-8){b.d=(b.d+2)%4;b.x=Math.max(X0+8,Math.min(X1-8,b.x));b.y=Math.max(Y0+8,Math.min(g.H-8,b.y));}}},
+  back(c,g,s,t){if(!s.h)return;const u=s.p*.3*s.h*(s.dnt!=null?Math.max(0,1-s.dnt/1.8):1);if(u<=0)return;c.save();c.globalAlpha=u;c.fillStyle='#140c1c';c.fillRect(-g.W,-400,3*g.W,g.H+800);c.restore();},
+  top(c,g,s,t){if(!s.g||!s.hd)return;const Q=fxBP(g),dn=s.dnt,fa=s.p*(dn!=null?Math.max(0,1-Math.max(0,dn-1.6)/.6):1);if(fa<=0)return;const st=RMO?0:Math.floor(t*12);if(s.fs!==st||!s.fc){s.fs=st;swField(g,s,t);}
+   c.save();c.globalAlpha=fa;const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(s.fc,0,0,s.fw,s.fh,s.fx,s.fy,s.fw*g.P,s.fh*g.P);
+   const fw=fst(t,16),gP=g.P;c.fillStyle=FXP.k;for(const q of s.g)if(q.k==='gn')c.fillRect(fq(q.x,gP),fq(q.y,gP),2*gP,gP);c.fillStyle=FXP.j;for(const q of s.g)if(q.k==='gn')c.fillRect(fq(q.x,gP)+(fw%2?0:gP),fq(q.y,gP)-gP,gP,gP);for(const q of s.g){if(q.k==='gn')continue;const im=swIm(q.k+((fw+(q.ph*3|0))%2?'A':'B'),!q.r),w=im.width*Q,h=im.height*Q;c.drawImage(im,fq(q.x-w/2,Q),fq(q.y-h/2,Q),w,h);}
+   for(const b of s.cr||[])fxS(c,'swbt'+(fst(b.w,8)%2?'A':'B'),b.x,b.y,Q,{r:b.d,ay:.5});c.imageSmoothingEnabled=sm;c.restore();},
+  ev(s,n,o,A,g){if(n!=='drop'||!s.g||s.dnt!=null)return;s.mo=.6;let k=0;for(const q of s.g){if(k>=8)break;if(q.e)continue;q.dv=.55;q.dx=o.x+(Math.random()-.5)*30;q.dy=g.top+40*g.K+Math.random()*30;k++;}}},
  /* The Rot (v1.89, the user's ask: a real leap across the jar, a swamp in the jar): a hulking fungus frog-ogre on the rim, mottled green with a pale belly, bruises and pustules, toadstools on its head, glowing eyes under a heavy brow and a fanged maw that breathes spores into the jar. The jar itself turns to murky swamp water with rubbish sunk in it (cans, a boot, a fish skeleton, a bottle, a tyre), scum on top, bubbles rising, mould creeping over the floor; every fruit that goes mouldy sprouts a mushroom. Every few seconds it crouches (thighs bunched, arms braced, eyes narrowed), leaps right over the jar to the other side of the rim (body stretched, arms thrown up, legs trailing, mouth open, slime dripping, its shadow sliding along the rim) and lands in a splat (arms slammed flat, legs splayed): the jar shakes (only the picture, no fruit moves), mud and spores fly. Phase 2: it swells, more toadstools, red eyes, it leaps and breathes more often and the water darkens. Beaten: it slumps and rots away */
  B_rot:{sx(g,sd){return fq(g.L+(g.R-g.L)*(sd?.8:.2),fxBP(g));},
   tick(s,g,dt,A){bossT(s,dt);if(s.side==null){s.side=0;s.st='idle';s.tm=0;}if(s.pf>0)s.pf-=dt;const Q=fxBP(g),p2=s.p2t!=null;
@@ -2867,3 +2874,147 @@ function fxLockSync(){const g=G.g,s=g&&g.fx&&g.fx.S.B_lock,pw=document.getElemen
  if(!cv){cv=document.createElement('canvas');cv.id='lkc';cv.style.cssText='position:absolute;pointer-events:none;z-index:5';pw.appendChild(cv);if(getComputedStyle(pw).position==='static')pw.style.position='relative';}
  cv.hidden=false;const r=tb.getBoundingClientRect(),pr=pw.getBoundingClientRect(),dp=devicePixelRatio||1,w=Math.round(r.width),h=Math.round(r.height);if(!w||!h)return;cv.style.left=(r.left-pr.left)+'px';cv.style.top=(r.top-pr.top)+'px';cv.style.width=w+'px';cv.style.height=h+'px';if(cv.width!==w*dp||cv.height!==h*dp){cv.width=w*dp;cv.height=h*dp;}
  const c=cv.getContext('2d');c.setTransform(dp,0,0,dp,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=false;fxLockBar(c,w,h,s,g.fx.t);}
+Object.assign(FXD,{swflA:`
+...kk.kk..
+..kiikiik.
+..kijkijk.
+..kjjkjjk.
+.kkkkkkkkk.
+kDdDdDDkrrk
+kDDDDDDkrrk
+.kkkkkkkkk.
+..k.k..k...`,swflB:`
+..........
+..........
+..........
+kkkk......
+kiijkkkkkk.
+kjjDdDDkrrk
+.kDDDDDkrrk
+.kkkkkkkkk.
+..k.k..k...`,swwsA:`
+.......kk.kk..
+......kiikiik.
+......kijkijk.
+.kkkkk.kjkjkk.
+kYkykyykYYYkkk
+kykykyykYYYkrk
+.kykykkkkYkkk.
+..kkkk.k.k.k..
+.k............`,swwsB:`
+..............
+..............
+..............
+.kkkkk.kkk....
+kYkykyykiijkkk
+kykykyykjjYkrk
+.kykykkkkYkkk.
+..kkkk.k.k.k..
+.k............`,swmqA:`
+...kk.......
+..kiik......
+..kijk....k.
+.kkkkk...k..
+kddDdkkkkkkkk
+.kkkkkk..k...
+..k.k.k...k..
+.k..k..k...k.
+k...k...k....`,swmqB:`
+............
+............
+............
+..........k.
+kkkkkk...k..
+kddDdiikkkkkk
+.kkkijkk.k...
+..k.kkk...k..
+.k..k..k...k.`,swmoA:`
+..k.....k..
+...k...k...
+.kkkk.kkkk.
+kEnEEkEEnEk
+kEEnENEnEEk
+.kEEENEEEk.
+..kEkNkEk..
+..kk.k.kk..`,swmoB:`
+..k.....k..
+...k...k...
+....k.k....
+...kEkEk...
+..kEnNnEk..
+..kEENEEk..
+...kkNkk...
+....k.k....`,swdrA:`
+...kkk.kkk.....
+..kijjkijjk....
+...kkkkkkkkk.k.
+kBtBtBtBtttkkbk
+...kkkkkkkkk.k.
+..kijjkijjk....
+...kkk.kkk.....`,swdrB:`
+...............
+...kkkk.kkkk...
+..kiijjkiijjk..
+kBtBtBtBtttkkbk
+..kiijjkiijjk..
+...kkkk.kkkk...
+...............`,swlcA:`
+...kk..........
+..kGGk.kkkk....
+..kGgGkknnnk...
+...kGgGknNnnk..
+.kkkkGkkkkkkkk.
+kgGgGgGgGgkggbk
+.kGGGGGGGGkgggk
+..kkkkkkkkkkkk.
+....kk...k..k..`,swlcB:`
+...kk..........
+..kGGk.........
+..kGgGk........
+...kGgGkkkkkk..
+.kkkkGknnNnnkk.
+kgGgGgGgGgkggbk
+.kGGGGGGGGkgggk
+..kkkkkkkkkkkk.
+....kk...k..k..`,swbtA:`
+k.k...k.k
+.k.kkk.k.
+...kDk...
+k.kbBbk.k
+.kbtBBBk.
+k.ktBBBk.k
+.kktBBBkk.
+k.kkBBkk.k
+...kkk...`,swbtB:`
+.k.....k.
+k.kkkkk.k
+...kDk...
+.kkbBbkk.
+k.btBBBk.k
+.kktBBBkk
+k.ktBBBk.k
+.k.kBBk.k.
+...kkk...`}); /* The Swarm (v1.108): fly, wasp, mosquito, moth, dragonfly and locust side-on facing right (frames A wings up, B down), beetle top-down facing up */
+/* The Swarm (v1.108): kinds (k = sprite key after 'sw', 'gn' a two-cell gnat), their jitter, the noise table and the field of specks */
+const SWK=['gn','gn','gn','gn','fl','fl','fl','ws','ws','mq','mq','mo','mo','lc','dr'],SWK2=['gn','gn','gn','fl','fl','ws','ws','ws','ws','mq','mo','mo','lc','lc','dr'],SWJ={gn:1400,fl:1100,ws:900,mq:1000,mo:1300,lc:700,dr:500},SWN=(()=>{const a=new Float32Array(4096);for(let i=0;i<4096;i++)a[i]=Math.random();return a;})();
+function swN(x,y){const xi=Math.floor(x),yi=Math.floor(y);let u=x-xi,v=y-yi;u=u*u*(3-2*u);v=v*v*(3-2*v);const i0=xi&63,i1=(xi+1)&63,j0=(yi&63)<<6,j1=((yi+1)&63)<<6,a=SWN[j0+i0],b=SWN[j0+i1],c=SWN[j1+i0],d=SWN[j1+i1];return a+(b-a)*u+(c-a+(a-b-c+d)*u)*v;}
+function swC(h,a){return((a<<24)|(parseInt(h.slice(5,7),16)<<16)|(parseInt(h.slice(3,5),16)<<8)|parseInt(h.slice(1,3),16))>>>0;}
+const SWC={b:[swC('#1a1320',240),swC('#1a1320',240),swC('#2b2116',240),swC('#24331a',235),swC('#3d2a52',235)],am:swC('#c98a1a',240),rd:swC('#c8243a',240),wg:swC('#d7e0ee',190),ey:swC('#ffe066',255),eyr:swC('#fb8500',255),e2:swC('#ffb3b3',255),e2r:swC('#e63946',255),pu:swC('#2a1a3a',255),mo:swC('#3a0d18',245)};
+/* sprite cache with mirrored copies, drawn straight (no save/restore: 100+ a frame) */
+const SWI={};function swIm(k,fl){const id=k+(fl?'f':'');if(SWI[id])return SWI[id];const im=fxI('sw'+k);if(!fl)return SWI[id]=im;const cv=document.createElement('canvas');cv.width=im.width;cv.height=im.height;const x=cv.getContext('2d');x.scale(-1,1);x.drawImage(im,-im.width,0);return SWI[id]=cv;}
+/* the face: centre, half width, half height, in the sky under the HUD and above the fruit in your hand */
+function swHd(g,s,l){const sw=g.sw||((x,y)=>[x,y]),K=g.K,y0=sw(0,84*K)[1],yb=l.hy!=null&&l.hr?l.hy-l.hr-10*K:g.top-40*K,hh0=Math.max(18*K,(yb-y0)/2*.95),k=1+.15*(s.h||0)+(s.p2t!=null?.08:0)+(s.p2t!=null&&s.p2t<1.2?.06*Math.sin(Math.min(1,s.p2t/1.2)*Math.PI):0),hh=hh0*k;return{x:(g.L+g.R)/2+Math.sin((s.age||0)*.35)*(g.R-g.L)*.07,y:(y0+yb)/2,hh,hw:Math.min(hh0*1.45,(g.R-g.L)*.38)*k};}
+/* the field: one speck per charm cell over the whole screen, redrawn 12 times a second into a small canvas and blitted at the cell size. Density = the face, then the invasion that spreads out from it with the score (s.h), times drifting noise so gaps open and close; each step every cell rolls again, so the swarm churns */
+function swField(g,s,t){const P=g.P,K=g.K,sw=g.sw||((x,y)=>[x,y]),oy=typeof G!=='undefined'&&G.ovY?G.ovY:0,x0=fq(sw(0,0)[0],P)-P,y0=fq(sw(0,-oy)[1],P)-P,w=Math.ceil((sw(g.W,0)[0]-x0)/P)+2,h=Math.ceil((g.H-y0)/P)+2;
+ if(!s.fc){s.fc=document.createElement('canvas');}if(s.fc.width<w||s.fc.height<h){s.fc.width=w;s.fc.height=h;s.fd=null;}if(!s.fd)s.fd=s.fc.getContext('2d').createImageData(s.fc.width,s.fc.height);const D=new Uint32Array(s.fd.data.buffer),W2=s.fd.width;D.fill(0);s.fx=x0;s.fy=y0;s.fw=w;s.fh=h;
+ const H=s.hd,dn=s.dnt,p2=s.p2t!=null,he=Math.pow(s.h||0,1.5),st=s.fs,Dn=Math.max(1,Math.hypot(g.R-g.L,g.bot-H.y)),pk=p2?1:.94,sc=1,fo=1,kk=dn!=null&&dn>.35?(dn-.35)*2.4:-1,face=dn==null||dn<.36,s1=70*K,s2=28*K,t1=t*.35,t2=t*.6,
+  bl=(t%4.3)<.15?.15:1,op=dn!=null?1:Math.max(.15+.08*Math.sin(t*2.2),s.mo>0?s.mo/.6:0,p2&&s.p2t<1.2?Math.sin(Math.min(1,s.p2t/1.2)*Math.PI):0),mw=.52,mh=.07+.24*op,er=p2?SWC.e2r:SWC.eyr,ec=p2?SWC.e2:SWC.ey;let jn=0,jt=0;
+ const bw=(w>>1)+2,bh=(h>>1)+2;if(!s.nb||s.nb.length<bw*bh){s.nb=new Float32Array(bw*bh);s.db=new Float32Array(bw*bh);s.rb=new Float32Array(bw*bh);}const NB=s.nb,DB=s.db,RB=s.rb,P2=2*P;
+ for(let bj=0;bj<bh;bj++){const wy=y0+bj*P2+P*.5;for(let bi=0;bi<bw;bi++){const wx=x0+bi*P2+P*.5,k=bj*bw+bi,n=.5+(.6*swN(wx/s1+t1,wy/s1+t1*.25)+.4*swN(wx/s2-t2,wy/s2+t2*.4)-.5)*1.7,dx=(wx-H.x)/Dn,dy=(wy-H.y)/Dn*(wy<H.y?1.6:1),rc=Math.sqrt(dx*dx+dy*dy)+.35*(n-.5);NB[k]=n;RB[k]=rc;DB[k]=Math.min(1,Math.max(0,(he*1.3-rc)/.3+.5))*Math.min(1,Math.max(0,(n-.17)/.36))*pk;}}
+ const fx0=H.x-H.hw*1.35,fx1=H.x+H.hw*1.35,fy0=H.y-H.hh*1.35,fy1=H.y+H.hh*1.45;
+ for(let j=0;j<h;j++){const wy=y0+j*P,inJ=wy>g.top&&wy<g.bot,fy=wy>fy0&&wy<fy1,v=(wy-H.y)/H.hh,vv=v*v*(v<0?1:.8),rw=(j>>1)*bw;for(let i=0;i<w;i++){const wx=x0+i*P,ij=inJ&&wx>g.L&&wx<g.R,k=rw+(i>>1),rc=RB[k];let d=DB[k],col=0;
+   if(fy&&wx>fx0&&wx<fx1){const n=NB[k],u=(wx-H.x)/H.hw,e=u*u+vv;if(e<1.15+.5*(n-.5)){d=Math.max(d,.9);
+    if(face&&e<1.05){for(const sg of[-1,1]){const du=u-sg*.4,vc=-.14-sg*du*.5,ev=(v-vc)/(.15*bl),q=du*du/.0625+ev*ev;if(q<1&&ev>-.45){col=Math.abs(du)<.04&&q<.6?SWC.pu:q<.5?ec:er;}}
+     const vm=.42-.2*(u/mw)*(u/mw),a=1-(u/mw)*(u/mw);if(!col&&a>0){const r=Math.sqrt(a)*mh+.02,dv=v-vm;if(Math.abs(dv)<r){col=SWC.mo;const au=Math.abs(u),fu=(au+.08)%.16-.08,fl=au%.16-.08,ft=(dv+r)/r,fb=(r-dv)/r;if((ft<.9&&Math.abs(fu)<.05*(1-ft/.9))||(op>.3&&fb<.7&&Math.abs(fl)<.045*(1-fb/.7)))col=-1;}}}}}
+   if(kk>=0){if(rc<kk){d=0;col=0;}else if(rc<kk+.14)d=Math.min(1,d*1.5+.3);}if(col>0){D[j*W2+i]=col;continue;}if(col<0)d=1;if(ij)jt++;if(d<=0)continue;const hs=Math.imul(i*73856093^j*19349663^st*83492791,2654435761)>>>0;if((hs&1023)<d*1024){D[j*W2+i]=(hs>>>12)%50===0?(p2?SWC.rd:SWC.am):SWC.b[(hs>>>16)%5];if(ij)jn++;if(j>0&&((hs>>>20)&3)<2&&!D[(j-1)*W2+i])D[(j-1)*W2+i]=SWC.wg;}}}
+s.cov=jt?jn/jt:0;s.fc.getContext('2d').putImageData(s.fd,0,0);}
