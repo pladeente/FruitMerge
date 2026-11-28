@@ -395,7 +395,7 @@ function makeGame(W,H,wild,onOver,ro){ /* ro = rogue run hooks (RG.ro), null in 
   if(J&&!over){if(!done){if(js>=J.quota&&(!B.collect||gotC)){done=1;doneT=1.1;exF=Math.floor(js)===J.quota;shF=overT>0;vz=0;ro.off(0);floatTxt('JAR CLEARED!',W/2,line+50,'#38b000',30);if(js>=J.quota*1.02)floatTxt('+'+Math.floor(js-J.quota)+' over the target',W/2,line+84,'#fb8500',22);snd('fly');}
    else if(js>=J.quota&&B.collect&&!gotC&&!cwF){cwF=1;floatTxt('Target reached!',W/2,line+50,'#e09600',26);floatTxt('Now make '+fna(cT()),W/2,line+82,'#e09600',22);snd('nope');} /* The Collector: score is in, the fruit is not (cwF = warned this jar) */
     else if(dl<=0&&free<=0&&time-lastD>3&&time-lastM>1.5&&!fr.some(f=>f.fuse!=null||f.frz>0)){over=true;ro.fail('drops');}}
-   else if(doneT>0){doneT-=dt;if(doneT<=0){if(exF)ro.ev('exact');if(shF)ro.ev('shave');ro.clear(dl);}}}
+   else if(doneT>-50){doneT-=dt;if(doneT<=0&&!(J.boss&&fx&&doneT>-4.9&&!fx.bdn())){doneT=-99;if(exF)ro.ev('exact');if(shF)ro.ev('shave');ro.clear(dl);}} /* v1.107, the user's ask: on a boss jar Jar cleared waits for the boss's defeat to finish (fx.bdn, at most 6 s) */}
   parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.g)p.vy+=p.g*dt;p.t-=dt;});parts=parts.filter(p=>p.t>0);},
  draw(c,dt){let held=null;c.save();if(shake>0)c.translate((Math.random()-.5)*shake*30,(Math.random()-.5)*shake*30);zUpd();c.save();zTr(c);
   drawBg(c,W,H,time,line);if(fx)fx.arena(c,fxG());const jsx=fx&&fx.jsh?fx.jsh():null;if(jsx){c.save();c.translate(jsx[0],jsx[1]);} /* v1.89: a boss can shake the jar and the fruit in it (only the drawing: no fruit moves) */

@@ -27,7 +27,7 @@ for(const b of pwBtns){b.insertAdjacentHTML('beforeend','<i class="cd"></i><span
 const G={state:'menu',g:null,W:300,H:480,cssW:300,raf:0,last:0,mode:store.get('mode','classic'),tab:null,scope:LB?'world':'local',pending:null,pwKey:'',lastCoins:0};
 if(!SC[G.mode])G.mode='classic';
 function fit(){const app=$('#app'),ov=G.mode==='rogue'&&!!G.g;app.classList.toggle('ovh',ov); /* v1.99, the user's ask: in a Rogue run the canvas reaches up behind the charm row (X css px, G.ovY game units above y 0), so a tall boss is no longer cut off; the strip over it is a translucent shade drawn by loop, not the page background */
- const hd=$('#hd').getBoundingClientRect().height,ph=pw.hidden?0:pw.getBoundingClientRect().height+8-(pw.classList.contains('rg')?14:0),cs=getComputedStyle(app);
+ const hd=$('#hd').getBoundingClientRect().height,ph=pw.hidden?0:pw.getBoundingClientRect().height+8+Math.min(0,parseFloat(getComputedStyle(pw).marginTop)||0),cs=getComputedStyle(app);
  const aw=app.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=app.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-hd-8-ph;
  let w,h;if(G.g&&(ov||G.state!=='menu')){const a=G.W/G.H;w=Math.max(220,Math.floor(Math.min(480,aw,ah*a)));h=Math.floor(w/a);}
  else{w=Math.max(220,Math.floor(Math.min(480,aw,ah*ASP)));h=Math.max(Math.floor(w/ASP),Math.min(Math.floor(ah),Math.floor(w/ASP_TALL)));}
@@ -117,7 +117,7 @@ function chain(m,nums){const ch=m.querySelector('#chain'),dpr=Math.min(2,window.
  const gap=w/11;for(let l=0;l<11;l++){drawFruit(c,gap*(l+.5),22,Math.min(gap*.48,7+l*1.4),l);if(nums)T(c,String(l+1),gap*(l+.5),51,12,'#c9b8dc');}}
 /* What's new: newest first. v = version shown, d = date, t = title, i = lines. Add an entry with every change players will notice. The menu marks it New until opened (store key seenLog = newest v) */
 const LOG=[
- {v:'1.107',d:'28 Nov 2026',t:'Step back',i:['Rogue jars are framed a little further out, so the whole jar fits with room around it. Boss jars still pull back further to show the boss.']},
+ {v:'1.107',d:'28 Nov 2026',t:'Step back',i:['Rogue jars are framed a little further out, so the whole jar fits with room around it. Boss jars still pull back further to show the boss.','The tool buttons are shorter, and the drops bar now sits right on the floor of the jar.','Beating a boss now plays its whole defeat before the Jar cleared screen comes up.']},
  {v:'1.106',d:'28 Nov 2026',t:'Tar',i:['The Slick is now a tar leviathan that rises out of an oil spill behind the jar, one burning eye on your fruit, drooling tar into a pool in the jar.','The Slick is tougher: every 5 drops it spits tar on a fruit near the top. A Tarred fruit can\'t merge for 3 drops, and the tar runs off a drop at a time. In phase 2 it spits every 3 drops and grabs the rim with two tar arms, wrenching the jar on each shake.']},
  {v:'1.105',d:'28 Nov 2026',t:'The Hand',i:['The Lid is now a colossal stone hand that comes down out of the sky and presses the jar down. An eye in its side watches your fruit and its fingers drum on the rim. In phase 2 a second hand slams down beside it and the glass cracks. Beat it and the hands burst into rubble.']},
  {v:'1.104',d:'28 Nov 2026',t:'No more ragged edges',i:['On boss jars the sky, scenery, clouds and weather now carry on past the jar to the edges of the screen, so the zoomed-out view no longer shows broken strips at the sides.']},

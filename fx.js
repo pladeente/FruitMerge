@@ -324,6 +324,7 @@ function fxStar(c,x,y,P,n,col='h'){x=fq(x,P);y=fq(y,P);c.fillStyle=FXP.w;c.fillR
 /* particles: k 'sq' (a square of col, s cells), 'spr' (sprite sp, spin = quarter turns a second), 'fn' (q.d draws it); ly 0 = behind the fruit, 1 = over them */
 function fxPP(c,g,pp,t,ly){const P=g.P;for(const q of pp){if((q.ly==null?1:q.ly)!==ly||(q.dl&&q.t<q.dl))continue;const u=q.t/q.T,fa=q.fa==null?.6:q.fa,a=u<fa?1:Math.max(0,Math.ceil((1-(u-fa)/(1-fa))*3)/3);c.save();c.globalAlpha*=a;const x=q.x+(q.sw?Math.sin(q.t*(q.sf||3)+(q.ph||0))*q.sw:0);
  if(q.k==='sq'){c.fillStyle=FXP[q.col]||q.col;const s=(q.s||1)*P;c.fillRect(fq(x,P),fq(q.y,P),s,s);}else if(q.k==='spr')fxS(c,q.sp,x,q.y,q.P||P,{ay:.5,r:q.spin?Math.floor(q.t*q.spin)%4:q.r||0,fl:q.fl});else if(q.k==='star')fxStar(c,x,q.y,P,[0,1,2,3,2,1,0][Math.min(6,Math.floor(u*7))],q.col);else if(q.d)q.d(c,q,g,t,x);c.restore();}}
+const FXBD0=2.7,FXBD={collect:5,glut:3.7,hour:3.7,twins:3.3,storm:3.3,reaper:3.3,clock:3,tax:3.1}; /* v1.107, the user's ask: how long each boss's defeat plays (s.dnt), measured in the game: the arena fades over 2.6 s, these run longer (The Collector's moths, The Glutton's fall...). A new or reworked boss with a longer defeat needs an entry */
 function fxNew(){const S={},pp=[];let t=0;
  const A={pp,S,g:null,F:[],SD:{},rim:{},fr:0,hf:{},fq:[],pops:[],get t(){return t},
   add(q){q.t=0;q.vx=q.vx||0;q.vy=q.vy||0;q.ly=q.ly==null?1:q.ly;pp.push(q);return q;},
@@ -338,6 +339,7 @@ function fxNew(){const S={},pp=[];let t=0;
   hit(id,o={}){FXC=A;A.hf[id]=t;if(S.shoe&&S.shoe.p>0&&FXCHN.has(id))S.shoe.gl=.6;if(id==='marathon'){if(S.early&&S.early.st==='sit')A.hit('early',o);if(S.clutch&&S.clutch.on)A.hit('clutch',o);return;}const ks=[].concat(FXH[id]||id),q=Object.assign({src:id},o);if(!ks.some(k=>FXS[k])){if(FXJFX.has(id)||o.x==null)return;if(FXQ.has(id)){const k2=Math.round(o.x)+','+Math.round(o.y);if(!A.aq||A.aq.t!==t||A.aq.k!==k2){A.aq={t,k:k2,ids:[],o};A.aqs=(A.aqs||[]);A.aqs.push(A.aq);}A.aq.ids.push(id);return;}fxPop(A,id,o.x,o.y-(o.r||0)*.4);return;}for(const k of ks){const s=S[k];if(s&&s.p>0&&FXS[k]&&FXS[k].hit&&A.g)FXS[k].hit(s,q,A,A.g);}},
   tok(k,x,y,id){if(A.tkc&&A.tkc[id]&&t-A.tkc[id]<.25)return;(A.tkc=A.tkc||{})[id]=t;if(A.g)fxToks(A,[k],x,y);},
   fire(ids,at){for(const id of ids)if(id&&!FXSKIP.has(id)&&!FXH[id]&&!FXS[id]&&!FXJFX.has(id)&&!FXQ.has(id)&&id!=='marathon')A.fq.push({id,at,t});},
+  bdn(){for(const id in S){const s=S[id];if(id.slice(0,2)==='B_'&&s&&s.dnt!=null&&s.dnt<(FXBD[id.slice(2)]||FXBD0))return false;}return true;}, /* v1.107: every beaten boss has played its defeat out (the engine holds Jar cleared until then) */
   ev(n,o={}){if(!A.g)return;FXC=A;for(const id in FXS){const s=S[id];if(s&&FXS[id].ev)FXS[id].ev(s,n,o,A,A.g);}}};
  return A;}
 /* which scenes a charm's merge plays: fusions play both halves' scenes, each scene checks o.src to play only when its half applies */
