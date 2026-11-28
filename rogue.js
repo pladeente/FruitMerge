@@ -337,7 +337,7 @@ const BOSS={
  wilt:{n:'The Wilt',d:'Every 4 drops your biggest fruit shrinks one size.',d2:'It shrinks every 3 drops.',min:3},
  dark:{n:'The Blackout',d:'The lights go out. They come back on for a moment every 3 to 5 drops. You can still see the fruit you drop.',d2:'They come on every 4 to 6 drops, for less time.',min:3},
  collect:{n:'The Collector',d:'The jar only clears once you have also made a Pear (7).',d2:'If you have not made it yet, it must now be a Pineapple (8).',nb:'With Bite Size or Snack Pack it asks for one size smaller.',min:3}, /* nb = a note for the Almanac only. In a run the text comes from RG.bt */
- slick:{n:'The Slick',d:'Every fruit is Slippery: it slides with almost no grip.',d2:'The jar also shakes every 6 drops.',min:4},
+ slick:{n:'The Slick',d:'Every fruit is Slippery: it slides with almost no grip. Every 5 drops it spits tar on a fruit near the top: a Tarred fruit can\'t merge for 3 drops.',d2:'It spits every 3 drops, and the jar shakes every 6 drops.',min:4},
  lid:{n:'The Lid',d:'The line sits lower, by 14% of the jar.',d2:'The line sits lower still, by 22% of the jar.',min:4},
  audit:{n:'The Auditor',d:'Mult above ×6 counts only half.',d2:'Mult above ×4 counts only a quarter.',min:4,q:.45},
  vise:{n:'The Vise',d:'The walls close in with every drop. Making a size 6 fruit or bigger opens them again.',d2:'They close twice as fast.',min:4},

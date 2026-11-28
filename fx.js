@@ -767,7 +767,7 @@ const ARENA={
  B_tide:{sky:['#0c1a36','#2a4a78'],gr:'#0c1a36',sc:'waves',sk:['#24467a','#163260'],st:1,cl:{n:7,v:-120,c:['#1c2c4c','#0e1a30'],y:[0,.5],s:1.4},wx:'rain',wn:.9,dk:.22,jar:['#1f4a7a',0],fl:1,vg:.5},
  B_dark:{sky:['#04050a','#0e1020'],gr:'#04050a',dk:.35,wx:'moths',wn:.5,vg:.9},
  B_collect:{sky:['#342a40','#665670'],gr:'#2a2034',sc:'hall',sk:['#4e4060','#2e2440'],o:{col:1,frame:1},wx:'dust',wn:.6,wc:['#ffd43b','#fff2a8'],dk:.1,jar:['#6a5a76',.06],vg:.5},
- B_slick:{sky:['#202b3a','#465668'],gr:'#1a2430',sc:'city',sk:['#34445a','#1c2636'],o:{win:['#4cc9f0','#fff2a8']},cl:{n:8,v:-60,c:['#2c3a4c','#1c2636'],y:[0,.4],s:1.3},wx:'rain',wn:1.5,dk:.2,jar:['#5a7a9a',.12],vg:.5},
+ B_slick:{sky:['#1a1226','#9a3e2a'],gr:'#0c0a12',sc:'city',sk:['#2a1a2c','#120c18'],o:{win:['#ff9b54','#ffd43b'],chim:1,flare:1},cl:{n:9,v:-70,c:['#3a2836','#22182a'],y:[0,.35],s:1.4},wx:'rain',wc:['#6a5a88','#b0a0d0'],wn:1.3,dk:.12,jar:['#2a1e38',.1],vg:.5}, /* v1.106: a refinery harbour at a smoggy dusk, gas flares, oily rain */
  B_lid:{sky:['#24222f','#625c72'],gr:'#1e1c28',sc:'mounts',sk:['#433f52','#2a2836'],cl:{n:6,v:-30,c:['#3a3648','#262432'],y:[0,.45],s:1.3},wx:'dust',wn:.7,wc:['#8f8a99','#b8a88a'],dk:.16,jar:['#5a5668',.08],vg:.5},
  B_audit:{sky:['#8d98a6','#cfd6dd'],gr:'#7d8896',sc:'city',sk:['#a3adb9','#6a7584'],o:{win:['#e3f3ff','#a8cfe8'],tall:1},cl:{n:4,v:-20,c:['#dde3e9','#b9c3cd'],y:[.05,.35],s:1.2},wx:'paper',wn:.6,jar:['#c0c8d0',.06]},
  B_vise:{sky:['#24140e','#5a2818'],gr:'#1a0e08',sc:'city',sk:['#3e2014','#1e0e08'],o:{win:['#fb8500'],chim:1,fac:1},wx:'sparks',wn:1,dk:.22,jar:['#5a2a1a',.1],vg:.55},
@@ -809,6 +809,7 @@ function fxScn(c,g,a,t,md=3){const Q=fxBP(g),hz=fq(fxRim(g)+6,Q),N=Math.ceil(g.W
  if(a.sc==='castle'){const c0=Math.round(N*.55);for(const x of[c0+9,c0+18]){for(let j=21;j<25;j++)cel(x,j,'#2a1a3a');const wv=fst(t,4)%2;cela(x+1,24,o.flag||'#e63946');cela(x+2,24-wv,o.flag||'#e63946');cela(x+1,23,o.flag||'#e63946');}for(let i=c0+2;i<c0+26;i+=4)cel(i,8,'#ffd43b');}
  if(o.win){const W=o.win;for(let i=0;i<N;i++)for(let j=2;j<fh[i]-1;j+=2){if(i%2===0||fhs(i*3,j)<.55)continue;const on=o.neon?fst(t+fhs(i,j)*3,2)%2:fhs(Math.floor(t*.1)+i,j)>.25;if(on)cela(i,j,W[Math.floor(fhs(i,j+1)*W.length)]);}}
  if(o.chim){for(let i=3;i<N;i+=11){for(let k=0;k<4;k++){const u=((t*.25+k*.25+i*.07)%1),sx=i+Math.round(u*4),sy=fh[i]+1+Math.round(u*8),r=1+Math.floor(u*2);c.globalAlpha*=1;for(let dj=-r+1;dj<r;dj++)for(let di=-r+1;di<r;di++)if(FBY[((di+8)&3)*4+((dj+8)&3)]/16<.7-u*.6)cela(sx+di,sy+dj,o.fac?'#5f5a6b':'#4a4560');}}}
+ if(o.flare)for(let i=8;i<N;i+=22){const h=fh[i]+7;for(let j=fh[i];j<h;j++)cel(i,j,cf);cel(i-1,h-1,cf);cel(i+1,h-1,cf);const f=fst(t+i*.3,9)%3;for(let j=0;j<3+f;j++){cela(i,h+j,j<1?'#ffd43b':j<2+f%2?'#fb8500':'#e63946');if(j===1)cela(i+(f===1?1:-1),h+j,'#fb8500');}} /* gas flares on tall stacks (The Slick) */
  if(a.sc==='mounts'&&o.snow)for(let i=0;i<N;i++){const h=fh[i];if(h>10){cel(i,h-1,'#ffffff');if(h>13)cel(i,h-2,'#e3f3ff');}}
  if(a.sc==='mounts'&&o.shard)for(let k=0;k<6;k++){const sx=Math.round((k*.17+.05)*N),sy=fh[sx]+4+Math.round(Math.sin(t*1.2+k)*2+k%3*3);for(let d=0;d<3;d++){cela(sx,sy+d,d===1?'#c9b3ff':'#e3f3ff');}cela(sx-1,sy+1,'#74499c');cela(sx+1,sy+1,'#74499c');}
  if(a.sc==='hall'){for(let i=2;i<N;i+=10){for(let j=0;j<14;j++){cel(i,j,fxHx(cf,'#ffffff',.18));cel(i+1,j,fxHx(cf,'#ffffff',.1));}}if(o.bars)for(let i=6;i<N;i+=10)for(let j=5;j<11;j++){cel(i-1,j,'#15161c');cel(i+1,j,'#15161c');if(j===5||j===10)cel(i,j,'#15161c');}
@@ -1755,21 +1756,6 @@ kPVkRRrrrrrrRkVPk
 kPVkRRRrrrrRRkVPk
 kVVkkkkkkkkkkkVVk
 .kkk.........kkk.`,
-slS:`
-..kkkkkkk..
-..kyyyyyk..
-.kyyyykkyk.
-.kyyyykkyk.
-.kyykkkyyk.
-.kykyykyyk.
-kyyyykkyyyk
-kyyykyykyyk
-kyykyyyykyk
-kyyyyyyyyyk
-kybbbbbbbyk
-kyyyyyyyyyk
-kkkkkkkkkkk
-k.........k`,
 rtA:`
 ....kkkkk....
 ..kkrrwrrkk..
@@ -2236,17 +2222,131 @@ Object.assign(FXS,{
    c.restore();},
   /* the fruit as a black shape (cached per size) */
   sil(l,r){const k=l+','+r+','+(typeof ART!=='undefined'&&ART?1:0)+(typeof SPR!=='undefined'&&SPR&&SPR[l]?1:0);FXSIL[k]=FXSIL[k]||(()=>{const cv=document.createElement('canvas');cv.width=cv.height=Math.ceil(r*3);const x=cv.getContext('2d');drawFruit(x,r*1.5,r*1.5,r,l);x.globalCompositeOperation='source-in';x.fillStyle='#120a1c';x.fillRect(0,0,cv.width,cv.height);return cv;})();return FXSIL[k];}},
- /* The Slick: a wet floor sign on the rim, a sheen running over the glass and glints sliding off every fruit. Phase 2: each shake knocks the sign flat for a moment. Beaten: a mop wipes the floor dry and the sign folds away */
- B_slick:{x(g){return fq(fxRX('B_slick',.76,40,g),fxBP(g));},
-  tick(s,g,dt){bossT(s,dt);if(s.kn>0)s.kn-=dt;s.sw=(s.sw||0)+dt;},
-  back(c,g,s,t){const P=g.P,dead=s.dnt!=null;if(dead&&s.dnt>1.4)return;c.save();c.globalAlpha=s.p*.75;const hx=fq(g.L+((t*.35)%1)*(g.R-g.L),P);for(let x=g.L;x<g.R;x+=P){const d=Math.abs(x-hx);fxR(c,x,g.bot-P,P,d<6*P?'w':'j');}c.restore();},
-  front(c,g,s,t){const P=fxBP(g),Q=g.P,x=FXS.B_slick.x(g),rim=fxRim(g),dead=s.dnt!=null;c.save();c.globalAlpha=s.p;
-   if(!dead)(s.l.fr||[]).forEach((f,i)=>{const ph=(t*.55+fhs(i,5))%1;if(ph>.16)return;const k=Math.floor(ph/.16*4),gx=f.x-f.r*.42,gy=f.y-f.r*.42;for(let q=-1;q<=1;q++)fxR(c,gx+(q+k-1)*Q,gy-(q+k-1)*Q,Q,'w');if(k===2)fxStar(c,gx,gy,Q,1,'b');});
-   {const u=(s.sw%3.2)/1.1;if(u<1&&!dead){c.save();c.beginPath();c.rect(g.L,g.top,g.R-g.L,g.bot-g.top);c.clip();const pos=g.L-60+u*(g.R-g.L+120);c.globalAlpha=s.p*.4;for(let y=g.top;y<g.bot;y+=Q){const xx=fq(pos+(g.top-y)*.5,Q);c.fillStyle='#e3f3ff';c.fillRect(xx,y,Q*2,Q);c.fillRect(xx+5*Q,y,Q,Q);}c.restore();c.globalAlpha=s.p;}}
-   const flat=(s.kn>0&&s.kn<.55)||(dead&&s.dnt>1.2),y0=rim+fxDrop(s,P),R=fxPt(c,x,y0,P);
-   if(flat)fxS(c,'slS',x,y0-6*P,P,{ay:.5,r:1});else fxS(c,'slS',x+(s.kn>.55&&fst(s.kn,12)%2?P:0),y0,P);
-   if(dead&&s.dnt<1.4){const u=s.dnt/1.2,mx=fq(g.L+(g.R-g.L)*Math.min(1,u),Q),my=g.bot-2*Q;for(let k=0;k<14;k++)fxR(c,mx-k*Q*.6,my-k*Q,Q,'n');for(let i=-3;i<=3;i++)fxR(c,mx+i*Q,my,Q,i%2?'c':'s',1,2);c.globalAlpha=s.p*.6;for(let xx=g.L;xx<mx-4*Q;xx+=Q)if(fhs(Math.round(xx/Q),2)>.6)fxR(c,xx,g.bot-Q,Q,'s');}c.restore();},
-  ev(s,n){if(n==='slick'&&s.dnt==null)s.kn=.9;}},
+ /* The Slick (v1.106, the user's pick of four: a tar leviathan; it was a wet floor sign). A hunched mound of living tar rises out of an oil spill behind the jar: an oily rainbow sheen sliding over it, one burning eye under a heavy brow that follows your fruit, a fanged maw strung with tar, drool running off its jaw into the jar. The jar fills with a tar pool, tar seeps down the glass and every fruit glints. Every few drops (the engine's tar) it rears back, lunges and spits a gob onto a fruit near the top: that fruit is Tarred, a black coat that runs off a drop at a time. Phase 2: it roars, grows, its eye turns red and two tar arms come over and clamp the rim; on each shake they wrench the jar. Beaten: the eye gutters out and it melts down into puddles that seep away */
+ B_slick:{
+  C:['#06040a','#130f1e','#241c35','#3a3052','#5c4f7e','#9d8fc4'], /* shade to wet glint */
+  SH:['#3fb8c9','#5cdb95','#fee440','#f15bb5','#9b5de5'], /* the oil's rainbow */
+  cx(g){return fq(g.L+(g.R-g.L)*.62,fxBP(g));},
+  tick(s,g,dt,A){bossT(s,dt);const H=FXS.B_slick,Q=fxBP(g),P=g.P,l=s.l,dead=s.dnt!=null,p2=s.p2t!=null,t=s.age,mv=RMO?0:1,cx=H.cx(g),rim=fq(fxRim(g),Q);
+   if(s.age<=dt*1.01||s.st==null){s.st=1;s.lean=0;s.hy=0;s.mo=2;s.pf=0;s.lid=0;s.yk=0;s.arm=0;s.r2=0;s.sp=null;s.tl=[];s.dph=[0,0,0,0];s.pool=0;s.bl=2;s.px=0;s.pop=0;s.M=null;s.MA=null;}
+   const a0=p2?Math.min(s.p2t,s.age-1.4):-1; /* phase 2's clock, held until it has risen (Ripeness 8 starts in phase 2) */
+   let tl=-3+Math.sin(t*.7)*1.5*mv,th=Math.sin(t*1.3)*mv,tm=4+Math.sin(t*1.9)*mv,tp=0,lid=0,k=4,look=l.hx;
+   if(look!=null)tl+=Math.max(-3,Math.min(3,(look-cx)/Q*.06));
+   const sp=s.sp;if(sp){sp.t+=dt;const f=sp.f;if(f&&!f.dead&&f.x!=null){sp.tx=f.x;sp.ty=f.y;}const u=sp.t;look=sp.tx;
+    if(!dead){k=14;if(u<.35){th=-3;tm=0;tp=1;lid=1.5;tl-=1.5*Math.sign(sp.tx-cx);}else if(u<.62){th=4;tm=7;lid=-1;tl=Math.max(-6,Math.min(6,(sp.tx-cx)/Q*.12));}}
+    if(u>1.25)s.sp=null;}
+   if(p2&&a0>=0&&a0<1.1&&!dead){th=-2;tm=9;lid=-1.5;k=10;if(!s.r2){s.r2=1;if(!RMO){A.jsA=3*g.K;A.jsT=.6;}}}
+   if(s.yk>0){s.yk-=dt;th=2;tm=5;k=12;}
+   if(dead){tm=s.dnt<.5?6:3;th=0;tp=0;lid=s.dnt<.5?-1:2;k=8;}
+   const e=Math.min(1,dt*k);s.lean+=(tl-s.lean)*e;s.hy+=(th-s.hy)*e;s.mo+=(tm-s.mo)*e;s.pf+=(tp-s.pf)*e;s.lid+=(lid-s.lid)*e;
+   s.bl-=dt;if(s.bl<0)s.bl=3+Math.random()*3;
+   /* the arms come up off its shoulders and slam onto the rim, half a second into phase 2 */
+   const at=p2&&!dead?Math.max(0,Math.min(1,(a0-.5)/.7)):dead?Math.max(0,s.arm-(s.dnt>.15?dt/.8:0)):0;if(s.arm<1&&at>=1&&!dead&&!RMO){A.jsA=4*g.K;A.jsT=.45;for(const x of[g.L+(g.R-g.L)*.3,g.L+(g.R-g.L)*.93])A.burst(x,rim,H.C.slice(0,3),8,{v:120,vy:-80,g:500,T:.6,w:20});}s.arm=at;
+   /* the pool in the jar rises as it leaks, and drains when it is beaten */
+   s.pool=dead?Math.max(0,1-Math.max(0,s.dnt-.8)/1.4):Math.min(1,s.age/6)*(p2?1.35:1);s.hpx=(2+Math.round(4*s.pool))*P;
+   {const fk=Math.floor(t*12)+'|'+g.W+'|'+g.H;if(fk!==s.bk||!s.M){s.bk=fk;H.build(s,g,t);}} /* rebuilt 12 times a second (stepped pixel motion, and far less garbage) */const ex=cx+s.E[0]*Q;if(look!=null){const v=Math.max(-2,Math.min(2,Math.round((look-ex)/(g.W*.09))));s.px=v;}
+   /* drool: when a strand on its jaw lets go, the drop falls into the jar (or onto the rim beside it) */
+   if(!dead&&s.J&&mv)for(let q=0;q<4;q++){const ph=(t*.42+fhs(q,3))%1;if(ph<s.dph[q]){const[jc,jb]=s.J[q],x=cx+jc*Q,y=rim+(jb+6)*Q,inj=x>g.L+P&&x<g.R-P;A.add({k:'fn',ly:inj?0:1,x,y,vy:30,g:700,T:inj?1.6:.7,fy:inj?g.bot-s.hpx:rim,fa:.75,d:H.drop});}s.dph[q]=ph;}
+   if(mv&&s.dnt==null){s.sxp=s.sxp||{};for(const[x0,Lk]of H.sx(s,g)){const k2=Math.round(x0),ph=(t*.22+fhs(x0,2))%1;if(s.sxp[k2]!=null&&ph<s.sxp[k2]&&Lk>8*P)A.add({k:'fn',ly:0,x:x0,y:fxRim(g)+Lk,vy:40,g:700,T:1.4,fy:g.bot-s.hpx,fa:.75,d:H.drop});s.sxp[k2]=ph;}}
+   /* Tarred fruit: each drop of tar that wears off runs down off the fruit */
+   const cur=new Map();for(const q of l.tr||[])cur.set(q.o,q);
+   for(const q of s.tl){const n=cur.get(q.o);if(!n||n.t<q.t){const x=n?n.x:q.x,y=n?n.y:q.y;for(let k2=0;k2<(n?2:4);k2++)A.add({k:'fn',ly:0,x:x+(Math.random()-.5)*q.r*1.2,y:y+q.r*.6,vy:20,g:600,T:1.4,fy:g.bot-s.hpx,fa:.7,d:H.drop});}}
+   s.tl=[...cur.values()].map(q=>({o:q.o,t:q.t,x:q.x,y:q.y,r:q.r}));
+   if(dead&&!s.pop&&s.dnt>=.5){s.pop=1;const[mx,my]=s.MP;A.burst(mx,my,H.C.slice(0,4),26,{v:260,vy:-160,g:700,T:1,w:60});A.burst(mx,my,H.SH,10,{v:180,vy:-120,g:600,T:.7});if(!RMO){A.jsA=3*g.K;A.jsT=.4;}}},
+  /* tar seeping in over the rim and down the glass: under its jaw, and under its hands in phase 2; [x, length] */
+  sx(s,g){const P=g.P,W=g.R-g.L,top=fxRim(g),yb=g.bot-(s.hpx||2*P),a2=s.p2t!=null&&s.dnt==null?s.p2t-1.2:-1,o=[];for(const[f,t0]of[[.78,1.2],[.88,2.6]].concat(a2>0?[[.27,a2],[.34,a2-.8]]:[])){const x0=g.L+W*f;let Lk=Math.min((yb-top)*(.2+fhs(f*9,5)*.16),Math.max(0,(f<.5?t0:s.age-t0)*24*g.K));if(s.dnt!=null)Lk*=Math.max(0,1-s.dnt/1.5);if(Lk>0)o.push([x0,Lk]);}return o;},
+  /* a falling drop of tar */
+  drop(c,q,g){const P=g.P,x=fq(q.x,P),y=fq(q.y,P),C=FXS.B_slick.C;c.fillStyle=C[0];c.fillRect(x-P,y-P,3*P,4*P);c.fillRect(x,y-2*P,P,P);c.fillStyle=C[2];c.fillRect(x,y-P,P,2*P);c.fillStyle=C[5];c.fillRect(x,y-P,P,P);},
+  /* the leviathan as cells, from the rim (j < 0 is above it), rebuilt each frame: the head and its dropped jaw, the maw between, the hunched body behind, then the eye, the oil rings, drool, a rim light; it melts when beaten */
+  build(s,g,t){const H=FXS.B_slick,Q=fxBP(g),C=H.C,SH=H.SH,dead=s.dnt!=null,p2=s.p2t!=null,dn=dead?s.dnt:0,mv=RMO?0:1,G=p2?1:0;
+   const u0=Math.min(1,s.age/1.6),rise=Math.round((1-u0)*(1-u0)*46),sw=Math.sin(t*.9)*.8*mv,hx=s.lean+sw,hy=s.hy+rise-G,pf=s.pf,mo=Math.max(0,Math.round(s.mo));
+   const hc=Math.round(-29+hy),rx=17+pf+G,ry=12.5+pf*.6+G*.5,jm=hc+4,jrx=rx*.9,mw=Math.round(jrx*.8);
+   const D=[[sw*.3,8+rise,18+G],[sw*.5,-2+rise,16+G],[-11+sw*.6,-6+hy*.3,10+G],[11+sw*.6,-7+hy*.3,10+G],[s.lean*.5+1,-14+hy*.5,11+G],[s.lean*.8,-20+hy*.8,10+G]];
+   const m=new Map(),ty=new Map(),SI=[],SJ=[];for(let k=0;k<8;k++){SI[k]=[];SJ[k]=[];for(let i=-36;i<=36;i++)SI[k][i+36]=mv?.55*Math.sin(i*.8+t*2.3+k):0;for(let j=-52;j<=14;j++)SJ[k][j+52]=mv?.45*Math.sin(j*.7-t*1.9+k*2):0;} /* the wobble of its surface, as tables */
+   let i=0,j=0,best=-1,lv=0,nx=0,ny=0;const tst=(di,dj,ax,ay,k)=>{const e=(di/ax)**2+(dj/ay)**2;if(e>1.4)return 0;const r=1+(SI[k][i+36]+SJ[k][j+52])/Math.max(ax,ay),v=1-e/(r*r);if(v>best){best=v;nx=di/ax;ny=dj/ay;lv=-(nx+ny)/1.42;return 1;}return 0;};
+   const PC=[[hx-8+Math.sin(t*.4)*4*mv,hc-6+Math.cos(t*.3)*2*mv],[-9+Math.sin(t*.35+2)*3*mv,-9+Math.cos(t*.5)*2*mv]],ri=p2?5.8:5.2;
+   for(j=-52;j<=14;j++)for(i=-36;i<=36;i++){best=-1;lv=0;nx=0;ny=0;let typ=0,dk=-1;
+    const di0=i-hx,inM=Math.abs(di0)<=mw,q2=(di0/mw)**2,tI=inM?jm-Math.round(2.4*q2):jm,gI=inM?Math.round(mo*(1-.5*q2)):Math.round(mo*.5); /* a grin: the corners curl up and close */
+    if(j<=tI){if(tst(i-hx,j-hc,rx,ry,0))typ=1;}
+    else if(j>tI+gI){if(tst(i-hx,j-gI-hc,jrx,ry,1))typ=2;}
+    else if(inM){best=1;typ=3;}
+    else if(tst(i-hx,jm-hc,rx,ry,0))typ=1; /* the corners of its mouth stretch open */
+    if(best<0){for(let k=0;k<D.length;k++)if(tst(i-D[k][0],j-D[k][1],D[k][2],D[k][2],k+2)){typ=4;dk=k;}}
+    if(best<0)continue;let col;
+    if(typ===3){const di=Math.abs(i-hx),dj=j-tI,mo=gI;col=mo<2?C[0]:di>=mw-1||dj===mo?'#3a0814':'#6a1020';if(mo>=3&&di<mw-3&&dj>1&&dj<mo-1)col='#8e1426';if(mo>=4&&di<4&&dj>1&&dj<mo-1)col=fst(t,5)%2?'#d63a3a':'#b02a32';
+     if(mo>=3&&mo<8)for(const sx of[-6,1,5])if(i-Math.round(hx)===sx&&dj!==Math.ceil(mo/2))col=C[1]; /* tar strung across its maw */
+     if(mo>=2){const sc=mw/12;for(const[fx,ln]of[[-10,4],[-7,3],[-4,2],[-1,3],[2,2],[5,3],[8,2],[11,4]])if(i===Math.round(hx+fx*sc)&&dj>=1&&dj<=Math.min(ln,mo-1))col=dj===Math.min(ln,mo-1)?'#b8a888':'#e8dcc0';
+      for(const[fx,ln]of[[-9,2],[-5,3],[0,2],[4,3],[9,2]])if(i===Math.round(hx+fx*sc)&&dj>mo-1-ln&&dj<mo&&mo>=4)col=dj===mo-ln?'#b8a888':'#e8dcc0';}}
+    else{col=lv>.5?C[3]:lv>.05?C[2]:lv>-.45?C[1]:C[0];if(typ===4&&j>0)col=lv>.05?C[1]:C[0];
+     if(typ!==4||dk===2||dk===3){const sd=Math.hypot(nx+.45,ny+.5);if(sd<.07)col=C[5];else if(sd<.17)col=C[4];}
+     if(j<4&&lv>-.25)for(const[px,py]of PC){const d=Math.hypot(i-px,j-py);if(d>2.4&&d<ri&&FBY[((i+64)&3)*4+((j+64)&3)]<4)col=SH[Math.min(4,Math.floor((d-2.4)/((ri-2.4)/5)))];}
+     if((typ===4||typ===2)&&col!==C[0]&&fhs(i,11)>.8){const q=((j-Math.floor(t*3*mv+fhs(i,12)*20))%9+9)%9;if(q===0)col=C[4];else if(q===8)col=C[3];}}
+    m.set(i+','+j,col);ty.set(i+','+j,typ);}
+   /* the jaw casts a dark line on the neck behind it */
+   for(const[k2,v]of ty)if(v===4){const p=k2.indexOf(','),i=+k2.slice(0,p),j=+k2.slice(p+1),a=ty.get(i+','+(j-1));if(a===2||a===1)m.set(k2,C[0]);}
+   /* the eye: socket, glowing sclera, a slit pupil that follows your fruit, a heavy brow pressed low in the middle */
+   const ex=Math.round(hx-1),ey=hc-3,eRx=6.5+G*.5,eRy=5,bl=s.bl<.14&&!dead?eRy*2+1:0,EC=dead?(dn<.6?['#b07a20','#6b4a18','#d8a040']:['#2a2236','#1d1729','#2a2236']):p2?['#ff3b3b','#c81d25','#ffd6dc']:['#ffd43b','#f08c00','#fff2a8'];
+   for(let j=-8;j<=8;j++)for(let i=-9;i<=9;i++){const d=(i/eRx)**2+(j/eRy)**2;if(d>1.4)continue;const key=(ex+i)+','+(ey+j);if(!m.has(key))continue;
+    const lb=-1.8-i*.12+s.lid+bl; /* a heavy lid, half shut, sloping */let col;
+    if(d>1){col=j<-2?C[3]:C[0];}else if(j<=lb){col=j>=lb-1?C[0]:C[2];}
+    else{col=j>=Math.floor(eRy*.75)||d>.8&&j>0?EC[1]:EC[0];if(dn<.6){if(Math.abs(i-s.px)===1&&Math.abs(j)<=1)col=EC[1];if(i===s.px&&Math.abs(j)<=4)col=Math.abs(j)===4?EC[1]:C[0];if((i===-4||i===-3)&&j===-1)col=EC[2];}}
+    m.set(key,col);}
+   s.E=[ex,ey];s.EK=EC[0];
+   /* a crown of tar tendrils along the top of its head, swaying, dripping at the tips */
+   for(let q=0;q<5;q++){const an=-Math.PI*(.18+q*.16),bx=hx+Math.cos(an)*rx*.86,by=hc+Math.sin(an)*ry*.86,ln=(q===2?7:q%2?7:6)+G*2,a2=an+(q-2)*.06+Math.sin(t*1.6+q*1.3)*.22*mv-(dead?.6:0);let px=bx,py=by;for(let d=0;d<=ln;d++){const r=2.4-1.7*d/ln,cx2=px,cy2=py;fxMD(ty,cx2,cy2,r,(i2,j2,ai,aj)=>{if(!m.has(ai+','+aj)||ty.get(ai+','+aj)===5)m.set(ai+','+aj,i2+j2<-1?C[3]:i2+j2<1?C[2]:C[1]);return ty.get(ai+','+aj)||5;});const b=a2+Math.sin(d*.5+t*2+q)*.12*mv+d*.07*(q<2?-1:q>2?1:0);px+=Math.cos(b);py+=Math.sin(b);}}
+   /* drool hanging off the jaw */
+   s.J=[];for(const[q,fx]of[[0,-7],[1,-2],[2,3],[3,8]]){const jc=Math.round(hx+fx),jb=Math.round(hc+ry*Math.sqrt(Math.max(0,1-((jc-hx)/jrx)**2))+mo);s.J.push([jc,jb]);if(dead||!mv)continue;const ln=Math.floor(((t*.42+fhs(q,3))%1)*6);for(let d=1;d<=ln;d++){m.set(jc+','+(jb+d),d===1?C[3]:C[2]);for(const sd of[-1,1]){const kk=(jc+sd)+','+(jb+d);if(ty.get(kk)===4)m.set(kk,C[0]);}}if(ln>=2)m.set((jc+1)+','+(jb+ln),C[2]);}
+   /* a rim light: violet on its top edges, the flare's orange down its right side */
+   const rl=[];for(const k2 of m.keys()){const p=k2.indexOf(','),i=+k2.slice(0,p),j=+k2.slice(p+1);if(j>0||ty.get(k2)===3)continue;const up=!m.has(i+','+(j-1)),rt=!m.has((i+1)+','+j)&&j<-2;if(up||rt)rl.push([k2,up&&rt?'#ffb070':rt?'#e8743a':i>hx+4?'#c46a4a':'#5a4d78']);}for(const[k2,v]of rl)m.set(k2,v);
+   s.MP=[H.cx(g)+hx*Q,fq(fxRim(g),Q)+(jm+mo/2)*Q];
+   /* melting: every column slides down at its own speed, a few leave strings behind */
+   let M=m;if(dead&&dn>.5){const o=new Map(),f=Math.pow(dn-.5,1.6),bot={};for(const[k2,v]of m){const p=k2.indexOf(','),i=+k2.slice(0,p),j=+k2.slice(p+1),dj=Math.round(f*(14+fhs(i,5)*16));o.set(i+','+(j+dj),v);if(bot[i]==null||j>bot[i][0])bot[i]=[j,dj];}for(const i in bot){const[j,dj]=bot[i];if(fhs(+i,6)>.66)for(let q=1;q<dj;q++)if(!o.has(i+','+(j+q)))o.set(i+','+(j+q),C[1]);}M=fxFade(o,1-Math.max(0,dn-1.3)/1.1);}
+   else if(s.age<1)M=fxFade(m,s.age/1);
+   s.M=M;
+   /* the arms (phase 2): from each shoulder up and over, slammed onto the rim, the fingers hooked over its edge */
+   s.MA=null;if(s.arm>0){const A2=new Map(),cx=H.cx(g),yk=s.yk>0?1:0,a=s.arm;
+    for(const sd of[-1,1]){const S=[sd*12+sw*.6,-8+hy*.3],Hx=Math.round((g.L+(g.R-g.L)*(sd<0?.3:.93)-cx)/Q),Hy=-1+yk,u=a<.55?a/.55:1,v=a<.55?0:(a-.55)/.45,hxp=u<1?S[0]+sd*(4+6*u):S[0]+sd*10+(Hx-S[0]-sd*10)*v*v,hyp=u<1?S[1]-18*u:-26+(Hy+26)*v*v,ctl=[(S[0]+hxp)/2,Math.min(S[1],hyp)-9+yk*2];
+     for(let n=0;n<=16;n++){const q=n/16,bx=(1-q)*(1-q)*S[0]+2*q*(1-q)*ctl[0]+q*q*hxp,by=(1-q)*(1-q)*S[1]+2*q*(1-q)*ctl[1]+q*q*hyp;const ar=(5.4-1.8*q)*(1+.13*Math.sin(q*13+t*2*mv+sd));fxMD(A2,bx,by,ar,(i,j,ai,aj)=>{const lv=-(i+j)/6;return j<-ar+1.2?C[4]:lv>.4?C[3]:lv>-.2?C[2]:C[1];});if(n%3===1&&n<15){const dl=1+Math.floor(((t*.5+fhs(n,sd+3))%1)*4*mv);for(let d=1;d<=dl;d++)A2.set(Math.round(bx)+','+Math.round(by+ar+d),d===dl?C[2]:C[1]);}}
+     fxMD(A2,hxp,hyp-3,4.4,(i,j)=>j<-3?C[4]:i+j<-2?C[3]:C[2]);const dr=(fst(t,3)+(sd>0?1:0))%3,hy0=Math.round(hyp);for(const[fi,ln]of[[-4.5,3],[-1.5,5],[1.5,5],[4.5,3]]){const fx2=Math.round(hxp+fi*sd);for(let d=-1;d<=ln;d++){A2.set(fx2+','+(hy0+d),d<1?C[3]:d===ln?C[1]:C[2]);A2.set((fx2+1)+','+(hy0+d),d===ln?C[0]:C[1]);}if(a>=1&&Math.abs(fi)<2)for(let d=1;d<=dr;d++)A2.set(fx2+','+(hy0+ln+d),C[1]);}
+     if(p2&&s.arm>=1)for(let d=0;d<5;d++){const kk=Math.round(S[0]+sd*(5+d*1.5))+','+Math.round(S[1]-6-d*2.2+Math.sin(t*3+d)*.6);if(A2.has(kk)&&FBY[d*3]<9)A2.set(kk,SH[d%5]);}}
+    const MA=dead?fxFade(A2,Math.min(1,s.arm*2.5)):A2; /* beaten, they let go of the rim and draw back into it */
+    s.MA=MA;}},
+  /* behind the jar: the spill's rainbow ripples on the ground, the leviathan and the glow round its eye */
+  bg(c,g,s,t){if(!s.M)return;const H=FXS.B_slick,Q=fxBP(g),P=g.P,cx=H.cx(g),rim=fq(fxRim(g),Q),hz=fq(fxRim(g)+6,Q);c.save();c.globalAlpha=s.p*fxArU(s);
+   c.globalAlpha*=.4;for(let r=0;r<4;r++){const y=hz+(2+r*4)*Q,sp=(r%2?1:-1)*(8+r*3);for(let x=-g.W*.3,k=0;x<g.W*1.3;x+=(9+Math.floor(fhs(k,r)*9))*Q,k++){const xx=fq(x+((t*sp)%(18*Q)),Q),yy=y+(fhs(k,r+5)>.5?Q:0);c.fillStyle=H.SH[(k+r)%5];c.fillRect(xx,yy,Q*(1+(k%3)),Q);}}
+   c.globalAlpha=s.p;fxBlobI(c,cx,rim,Q,s.M,s.BH||(s.BH={keep:1}));
+   if(s.dnt==null&&s.p2t!=null){const[ex,ey]=s.E,X=cx+ex*Q,Y=rim+ey*Q;c.globalAlpha=s.p*(.22+.12*(fst(t,4)%2));c.fillStyle=s.EK;for(let j=-7;j<=7;j++)for(let i=-10;i<=10;i++){const d=(i/7.5)**2+(j/5.6)**2;if(d<1.05||d>1.9||FBY[((i+40)&3)*4+((j+40)&3)]/16>2.2-d*1.1)continue;c.fillRect(X+i*Q,Y+j*Q,Q,Q);}}
+   c.restore();},
+  /* over the glass, behind the fruit: an oily film sliding over it, tar seeping down the walls, the pool on the floor, and its arms on the rim */
+  back(c,g,s,t){const H=FXS.B_slick,P=g.P,Q=fxBP(g),C=H.C,dead=s.dnt!=null,p2=s.p2t!=null,u=fxArU(s),top=fxRim(g),hp=s.hpx||2*P,yb=g.bot-hp;if(u<=0&&!s.MA)return;c.save();
+   if(!RMO&&!dead){const ph=(t%4.5)/4.5,pos=g.L+ph*(g.R-g.L+(g.bot-top)*.45+10*P);c.globalAlpha=s.p*.16;for(let k=0;k<5;k++){c.fillStyle=H.SH[k];for(let y=top;y<g.bot;y+=P){const x0=Math.max(g.L,fq(pos+(top-y)*.45,P)+k*2*P),x1=Math.min(g.R,x0+2*P);if(x1>x0)c.fillRect(x0,y,x1-x0,P);}}} /* no clip: clipping stalled the canvas */
+   c.globalAlpha=Math.ceil(u*3)/3;
+   for(const[x0,Lk]of H.sx(s,g)){const x=fq(x0,P),n=Math.round(Lk/P);for(let k=0;k<n;k++){const y=fq(top,P)+k*P,w=Math.max(1,Math.round(3.2-2.2*k/n+.7*Math.sin(k*.45+x0))),xl=x-Math.floor(w/2)*P;c.fillStyle=C[0];c.fillRect(xl-P,y,(w+2)*P,P);c.fillStyle=C[1];c.fillRect(xl,y,w*P,P);if(w>1){c.fillStyle=C[3];c.fillRect(xl,y,P,P);}}
+    const ey=fq(top,P)+n*P;if(n>2){c.fillStyle=C[0];c.fillRect(x-2*P,ey-P,5*P,3*P);c.fillRect(x-P,ey-2*P,3*P,5*P);c.fillStyle=C[2];c.fillRect(x-P,ey-P,3*P,3*P);c.fillStyle=C[4];c.fillRect(x-P,ey-P,P,P);} /* a fat drop gathering at the end */
+    const by=fq(top+((t*.22+fhs(x0,2))%1)*Lk,P);if(!RMO&&n>8){c.fillStyle=C[0];c.fillRect(x-2*P,by-P,4*P,4*P);c.fillStyle=C[2];c.fillRect(x-P,by,2*P,2*P);c.fillStyle=C[5];c.fillRect(x-P,by,P,P);}}
+   if(s.pool>0){c.globalAlpha=Math.ceil(u*3)/3*.94;for(let x=fq(g.L,P),i=0;x<g.R;x+=P,i++){const w=RMO?0:Math.round(Math.sin(i*.35+t*1.6)*.6),y0=fq(yb,P)+w*P;c.fillStyle=C[1];c.fillRect(x,y0,P,g.bot-y0);c.fillStyle=C[0];c.fillRect(x,y0+3*P,P,Math.max(0,g.bot-y0-3*P));c.fillStyle=(i+fst(t,3))%13<2?H.SH[Math.floor(i/13+t*.5)%5]:C[3];c.fillRect(x,y0,P,P);if(fhs(i,4)>.8){c.fillStyle=C[4];c.fillRect(x,y0+P,P,P);}}
+    if(!RMO)for(let k=0;k<4;k++){const ph=(t*.6+fhs(k,1))%1,bx=fq(g.L+fhs(k,2+Math.floor(t*.6+fhs(k,1)))*(g.R-g.L),P);if(ph>.75){c.fillStyle=C[4];c.fillRect(bx-P,fq(yb,P)-P,P,P);c.fillRect(bx+P,fq(yb,P)-P,P,P);c.fillRect(bx,fq(yb,P)-2*P,P,P);}else{c.fillStyle=C[4];c.fillRect(bx,fq(g.bot-ph/.75*hp,P),P,P);}}}
+   c.globalAlpha=s.p;if(s.MA)fxBlobI(c,H.cx(g),fq(fxRim(g),Q),Q,s.MA,s.AH||(s.AH={keep:1}));
+   c.restore();},
+  /* a Tarred fruit's coat, cached per size and drops left: three drops covers most of it, one leaves a cap */
+  coat(r,n,P){const key='tar|'+Math.round(r)+'|'+n+'|'+P;if(FXSC[key])return FXSC[key];const N=Math.ceil(r/P)+2,cv=document.createElement('canvas');cv.width=cv.height=(2*N+1)*P;const x=cv.getContext('2d'),cvg=[0,.3,.52,.76][Math.min(3,n)],sd=Math.round(r),R=r/P;
+   const base=i=>-R+2*R*(cvg+.05*Math.sin(i*.8+sd)),DR=[[-.62,.42],[.66,.34],[.15,.14]].slice(0,Math.min(3,n)).map(([a,l],k)=>[Math.round(a*R+fhs(k,sd)*2-1),Math.max(2,l*R*(n>1?.6+fhs(k,sd+1)*.6:.45))]); /* the coat's edge and three drips, each ending in a round drop */
+   const ok=(i,j)=>{if(i*i+j*j>(R-.4)**2)return 0;if(j<=base(i))return 1;for(const[di,ln]of DR){const by=base(di)+ln;if(Math.abs(i-di)<=.6&&j<=by)return 1;if((i-di)**2+(j-by)**2<=2.6)return 1;}return 0;};
+   for(let i=-N;i<=N;i++)for(let j=-N;j<=N;j++){if(!ok(i,j))continue;const nn=(i+j)/R,ed=!ok(i,j+1)||!ok(i-1,j)||!ok(i+1,j)||i*i+j*j>(R-1.6)**2,gl=Math.abs(Math.hypot(i+R*.3,j+R*.3)-R*.42)<.8&&i+j<-R*.25;
+    x.fillStyle=ed?'#06040a':gl?(Math.abs(i-j)<2?'#9d8fc4':'#5c4f7e'):nn<-.6?'#241c35':'#16111f';x.fillRect((i+N)*P,(j+N)*P,P,P);}
+   for(const[di,ln]of DR){const by=Math.round(base(di)+ln);if(ok(di,by)&&ok(di-1,by-1)){x.fillStyle='#5c4f7e';x.fillRect((di-1+N)*P,(by-1+N)*P,P,P);}}
+   return FXSC[key]={c:cv,o:N*P};},
+  /* over the fruit: glints sliding off every fruit, the Tarred coats, and the gob in flight */
+  front(c,g,s,t){const H=FXS.B_slick,P=g.P,Q=fxBP(g),C=H.C,dead=s.dnt!=null;c.save();c.globalAlpha=s.p;
+   if(!dead)(s.l.fr||[]).forEach((f,i)=>{const ph=(t*.55+fhs(i,5))%1;if(ph>.16)return;const k=Math.floor(ph/.16*4),gx=f.x-f.r*.42,gy=f.y-f.r*.42;for(let q=-1;q<=1;q++)fxR(c,gx+(q+k-1)*P,gy-(q+k-1)*P,P,'w');if(k===2)fxStar(c,gx,gy,P,1,'b');});
+   for(const q of s.l.tr||[]){const d=H.coat(q.r,q.t,P);c.drawImage(d.c,fq(q.x,P)-d.o,fq(q.y,P)-d.o);const sx=fq(q.x-q.r*.5,P),sy=fq(q.y-q.r*.62,P);fxR(c,sx,sy,P,'#ffffff');fxR(c,sx+P,sy+P,P,H.SH[(fst(t,4)+Math.round(q.x))%5]);}
+   const sp=s.sp;if(sp&&s.MP&&sp.t>=.42&&sp.t<.9&&sp.tx!=null){const v=(sp.t-.42)/.48,[mx,my]=s.MP,x=mx+(sp.tx-mx)*v,y=my+(sp.ty-sp.r*.7-my)*v-Math.sin(v*Math.PI)*28*g.K;
+    if(v<.55){const n=Math.ceil(Math.hypot(x-mx,y-my)/Q);for(let k=1;k<n;k++)if(k%3||v<.3)fxR(c,mx+(x-mx)*k/n,my+(y-my)*k/n,Q,C[1]);}
+    const M=fxPt(c,fq(x,Q),fq(y,Q),Q);M(-2,-1,C[0],5,3);M(-1,-2,C[0],3,5);M(-1,-1,C[2],3,3);M(-1,-1,C[4]);M(0,-1,H.SH[fst(t,8)%5]);M(-1,2,C[0],2,1);}
+   c.restore();},
+  ev(s,n,o,A,g){const H=FXS.B_slick;if(n==='tar'&&s.dnt==null)s.sp={t:0,f:o.f,tx:o.x,ty:o.y,r:o.r||20};
+   else if(n==='tarhit'){A.burst(o.x,o.y-o.r*.6,H.C.slice(0,4),16,{v:170,vy:-130,g:600,T:.7,w:o.r});A.burst(o.x,o.y-o.r*.6,H.SH,6,{v:120,vy:-110,g:500,T:.5});}
+   else if(n==='slick'&&s.dnt==null){s.yk=.5;if(!RMO){A.jsA=3.5*g.K;A.jsT=.5;}}}},
  /* The Lid (v1.104, the user's pick of four): a colossal stone hand comes down out of the sky along its arm and lays its palm flat on the jar's rim, pressing the jar down (the engine's lidK drops the line as it slams). Seen side on: the thumb in front, four fingers stacked behind it, an eye in the side of the hand that follows your fruit, glowing runes on a bracer; its fingers drum on the rim. Phase 2: it slides aside, a second hand slams down from the other side, the glass cracks and their eyes and runes turn red. Beaten: cracks of light run through the stone, the hands burst into rubble and the arms crumble away up into the sky */
  B_lid:{
   C:['#25272f','#474b5a','#6c7186','#959cb1','#c3c8d7'],M:['#2f4a26','#557f37','#8fbf55'],D:[.47,-.883],O:[40,-11],
@@ -2481,7 +2581,7 @@ const FXIC={};function fxIc(id){if(FXIC[id]!==undefined)return FXIC[id];const k=
 /* a token's look, in cells around its centre: [di, dj, colour]; every token gets a dark outline */
 const FXTG={x:[[-1,-1,'P'],[1,-1,'P'],[0,0,'V'],[-1,1,'P'],[1,1,'P']],a:[[0,-1,'m'],[-1,0,'m'],[0,0,'p'],[1,0,'m'],[0,1,'m']],p:[[0,0,'b'],[1,0,'B'],[0,1,'B'],[1,1,'b'],[0,0,'w']],c:[[-1,-1,'y'],[0,-1,'y'],[1,-1,'Y'],[-1,0,'y'],[0,0,'h'],[1,0,'Y'],[-1,1,'Y'],[0,1,'Y'],[1,1,'Y']],z:[[1,-2,'y'],[0,-1,'y'],[1,-1,'y'],[-1,0,'o'],[0,0,'y'],[0,1,'y'],[-1,2,'o']],d:[[0,-2,'b'],[0,-1,'b'],[-1,0,'b'],[0,0,'w'],[1,0,'B'],[0,1,'B']],s:[[0,-2,'g'],[1,-2,'l'],[-1,-1,'g'],[0,-1,'G'],[0,0,'G'],[0,1,'N']],g:[[0,-1,'y'],[-1,0,'y'],[0,0,'h'],[1,0,'y'],[0,1,'Y']]};
 function fxTgD(c,x,y,P,k){const cs=FXTG[k]||FXTG.p,s=new Set(cs.map(([a,b])=>a+','+b));c.fillStyle=FXP.k;for(const[a,b]of cs)for(const[da,db]of[[1,0],[-1,0],[0,1],[0,-1]])if(!s.has((a+da)+','+(b+db)))c.fillRect(fq(x+(a+da)*P,P),fq(y+(b+db)*P,P),P,P);for(const[a,b,col]of cs){c.fillStyle=FXP[col];c.fillRect(fq(x+a*P,P),fq(y+b*P,P),P,P);}}
-function fxSE(g){return g.sw?g.sw(g.W,0)[0]:g.W;} /* v1.106: the screen's right edge in the world (Rogue jars are drawn zoomed out), for things that fly in from off screen */
+function fxSE(g){return g.sw?g.sw(g.W,0)[0]:g.W;} /* v1.107: the screen's right edge in the world (Rogue jars are drawn zoomed out), for things that fly in from off screen */
 function fxTgT(k,g){const p=fxTgT0(k,g);return p&&g.sw?g.sw(p[0],p[1]):p;} /* v1.101: the targets are screen spots (HUD, coins, tools), mapped into a boss jar's zoomed world */
 function fxTgT0(k,g){const W=g.W,H=g.H;return k==='x'||k==='a'?[W-48,22]:k==='p'?[(W-90)/2,36]:k==='c'?[26,H+40]:k==='z'?[W*.62,H+40]:k==='d'?[W*.3,H+24]:k==='s'?[W*.22,-24]:null;}
 function fxToks(A,tk,px,py){const g=A.g,P=g.P;for(const k of tk){if(k==='p'||k==='x'||k==='a')continue; /* v1.82.2: points and Mult already pop under the header slots, so only coins, charge, drops, seeds and gold fly */const tg=fxTgT(k,g);if(!tg){A.burst(px,py,['y','h','Y'],8,{v:110,T:.5});continue;}const x0=px,y0=py-22*g.K,T1=.55+Math.random()*.1,bx=(Math.random()-.5)*60;A.add({k:'fn',x:x0,y:y0,T:T1,fa:.92,d:(c,q,g)=>{const u=Math.min(1,q.t/T1),e=u*u*(3-2*u),xx=x0+(tg[0]-x0)*e+Math.sin(u*Math.PI)*bx,yy=y0+(tg[1]-y0)*e-Math.sin(u*Math.PI)*30*g.K;for(let s2=3;s2>0;s2--){const v=Math.max(0,u-s2*.05),ev=v*v*(3-2*v);c.globalAlpha*=.6;c.fillStyle=FXP[k==='c'?'y':k==='z'?'y':k==='x'?'P':k==='a'?'m':k==='d'?'b':k==='s'?'g':'b'];c.fillRect(fq(x0+(tg[0]-x0)*ev+Math.sin(v*Math.PI)*bx,g.P),fq(y0+(tg[1]-y0)*ev-Math.sin(v*Math.PI)*30*g.K,g.P),g.P,g.P);}c.globalAlpha=1;fxTgD(c,xx,yy,g.P,k);}});}}
